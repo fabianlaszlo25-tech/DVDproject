@@ -18745,7 +18745,7 @@ MonoBehaviour:
   baseDepressionFillRate: 1
   foodHungerReduction: 250
   toiletNeedsReduction: 100
-  sleepReduction: 100
+  sleepReduction: 500
   cleanDirtinessReduction: 100
   eatDirtinessIncrease: 10
   toiletDirtinessIncrease: 15
