@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public class WorldSpaceUpgradeMenu : MonoBehaviour
 {
-    // Enforces mutual exclusivity globally
     public static WorldSpaceUpgradeMenu ActiveMenu { get; private set; }
 
     [Header("Menu Animation")]
@@ -65,7 +64,6 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
     {
         if (isAnimatingPurchase) return;
 
-        // Force close any other open menu
         if (ActiveMenu != null && ActiveMenu != this) ActiveMenu.CloseMenu();
         ActiveMenu = this;
 
@@ -100,7 +98,6 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             if (obj != null) obj.SetActive(true);
         }
 
-        // Disable hitboxes so they can't be clicked while shrinking
         ToggleAllHitboxes(false);
         StartCoroutine(DestroyPreviewAfterDelay());
     }
@@ -150,7 +147,6 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         statsText.text = $"Multiplier: x{tier.multiplierValue}";
         priceText.text = $"${tier.cost:0.00}";
 
-        // Toggle UI collider states based on logic (replaces button.interactable)
         if (nextInteractable != null)
             nextInteractable.GetComponent<Collider>().enabled = viewingIndex < currentPath.tiers.Count - 1;
 
@@ -171,16 +167,18 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         else if (canAfford) buyButtonImage.color = canAffordColor;
         else buyButtonImage.color = cannotAffordColor;
 
-        SpawnPreviewModel(tier.previewPrefab);
+        SpawnPreviewModel(tier.previewPrefab, tier.previewScale, tier.previewRotation, tier.previewPositionOffset);
     }
 
-    private void SpawnPreviewModel(GameObject prefab)
+    private void SpawnPreviewModel(GameObject prefab, Vector3 scale, Vector3 rotation, Vector3 offset)
     {
         if (currentPreviewModel != null) Destroy(currentPreviewModel);
         if (prefab == null) return;
 
         currentPreviewModel = Instantiate(prefab, previewAnchor);
-        currentPreviewModel.transform.localPosition = Vector3.zero;
+        currentPreviewModel.transform.localPosition = offset;
+        currentPreviewModel.transform.localScale = scale;
+        currentPreviewModel.transform.localRotation = Quaternion.Euler(rotation);
 
         if (currentPreviewModel.GetComponent<FloatingPreview>() == null)
             currentPreviewModel.AddComponent<FloatingPreview>();
@@ -203,11 +201,16 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         currentPreviewModel = null;
 
         var floatScript = flyingModel.GetComponent<FloatingPreview>();
-        if (floatScript != null) Destroy(floatScript);
+        if (floatScript != null)
+        {
+            floatScript.enabled = false; // Disable instantly so it stops fighting the animation's rotation
+            Destroy(floatScript);
+        }
 
         flyingModel.transform.SetParent(null);
         Vector3 startPos = flyingModel.transform.position;
         Quaternion startRot = flyingModel.transform.rotation;
+        Vector3 startScale = flyingModel.transform.localScale;
 
         Transform animTarget = currentPath.animationTargetPoint;
         Vector3 endPos = animTarget != null ? animTarget.position : startPos;
@@ -221,7 +224,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
             flyingModel.transform.position = Vector3.Lerp(startPos, endPos, t);
             flyingModel.transform.rotation = Quaternion.Slerp(startRot, endRot, t);
-            flyingModel.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.8f, t);
+            flyingModel.transform.localScale = Vector3.Lerp(startScale, Vector3.one, t);
 
             time += Time.deltaTime;
             yield return null;
