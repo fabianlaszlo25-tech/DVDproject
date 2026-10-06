@@ -49,13 +49,16 @@ public class SurvivalAction : MonoBehaviour
     private void Start()
     {
         if (targetCamera == null) targetCamera = Camera.main;
-        if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+        // Removed originalFOV from here so it doesn't lock in an outdated number
     }
 
     public void PerformAction()
     {
         if (!isActing && barManager != null)
         {
+            // Capture the exact current FOV the moment the player clicks the object
+            if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+
             StartCoroutine(ActionRoutine());
         }
     }

@@ -7,19 +7,26 @@ public class FloatingPreview : MonoBehaviour
     public float bobHeight = 0.2f;
 
     private Vector3 startLocalPos;
+    private Vector3 baseRotation;
+    private float currentSpin = 0f;
 
     void Start()
     {
-        // Record the position after the offset from the Tier settings has been applied
+        // Record the exact starting offset and tilt set by the Menu script
         startLocalPos = transform.localPosition;
+        baseRotation = transform.localEulerAngles;
     }
 
     void Update()
     {
-        // Space.Self ensures it rotates around its own tilted axis (e.g., spinning like a wheel)
-        transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime, Space.Self);
+        currentSpin += rotateSpeed * Time.deltaTime;
 
-        // Lock X and Z to the exact starting offset, only modifying the Y axis for the bobbing
+        // Quaternion multiplication order matters: 
+        // This tilts the object FIRST (your custom rotation), 
+        // and THEN spins it around the UI's vertical Y-axis (left-to-right).
+        transform.localRotation = Quaternion.Euler(0f, currentSpin, 0f) * Quaternion.Euler(baseRotation);
+
+        // Strictly lock the X and Z position to the offset, only bobbing on the Y axis
         float newY = startLocalPos.y + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         transform.localPosition = new Vector3(startLocalPos.x, newY, startLocalPos.z);
     }
