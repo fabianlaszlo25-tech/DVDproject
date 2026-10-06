@@ -2,24 +2,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WorldSpaceUpgradeMenu : MonoBehaviour
 {
-    public static WorldSpaceUpgradeMenu Instance { get; private set; }
+    // Enforces mutual exclusivity globally
+    public static WorldSpaceUpgradeMenu ActiveMenu { get; private set; }
 
-    [Header("Menu Positioning")]
-    public Vector3 menuOffset = new Vector3(0, 2f, 0);
-    public float transitionSpeed = 5f;
+    [Header("Menu Animation")]
+    public float transitionSpeed = 10f;
 
-    [Header("UI Elements")]
+    [Header("UI Visuals")]
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI statsText;
     public TextMeshProUGUI priceText;
-    public Button buyButton;
     public Image buyButtonImage;
-    public Button nextButton;
-    public Button prevButton;
-    public Button closeButton;
+
+    [Header("Hitboxes (InteractableObjects)")]
+    public InteractableObject buyInteractable;
+    public InteractableObject nextInteractable;
+    public InteractableObject prevInteractable;
+    public InteractableObject closeInteractable;
+
+    [Header("Interaction Blocking")]
+    [Tooltip("GameObjects to disable while this menu is open.")]
+    public List<GameObject> objectsToDisable;
+    public bool IsMenuOpen { get; private set; } = false;
 
     [Header("Preview Settings")]
     public Transform previewAnchor;
@@ -34,64 +42,76 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
     private int viewingIndex = 0;
     private GameObject currentPreviewModel;
 
-    private bool isOpen = false;
     private bool isAnimatingPurchase = false;
-    private Vector3 targetPosition;
-    private Vector3 targetScale = Vector3.zero;
+    private Vector3 originalScale;
+    private Vector3 targetScale;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        originalScale = transform.localScale;
         transform.localScale = Vector3.zero;
-        gameObject.SetActive(false);
+        targetScale = Vector3.zero;
     }
 
     private void Update()
     {
-        if (isOpen)
+        if (transform.localScale != targetScale)
         {
-            // Smoothly track the position and scale
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * transitionSpeed);
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * transitionSpeed);
         }
     }
 
-    public void OpenMenu(UpgradePath path, Transform sourceObject)
+    public void OpenMenu(UpgradePath path)
     {
-        if (isAnimatingPurchase) return; // Prevent opening while a purchase is animating
+        if (isAnimatingPurchase) return;
+
+        // Force close any other open menu
+        if (ActiveMenu != null && ActiveMenu != this) ActiveMenu.CloseMenu();
+        ActiveMenu = this;
 
         currentPath = path;
         viewingIndex = Mathf.Min(path.CurrentLevel + 1, path.tiers.Count - 1);
+        targetScale = originalScale;
 
-        targetPosition = sourceObject.position + menuOffset;
-        targetScale = Vector3.one;
-
-        if (!isOpen)
+        if (!IsMenuOpen)
         {
-            transform.position = sourceObject.position; // Start from inside the object
-            gameObject.SetActive(true);
-            isOpen = true;
+            IsMenuOpen = true;
+            foreach (var obj in objectsToDisable)
+            {
+                if (obj != null) obj.SetActive(false);
+            }
         }
 
+        if (closeInteractable != null) closeInteractable.GetComponent<Collider>().enabled = true;
         UpdateUI();
     }
 
     public void CloseMenu()
     {
-        if (!isOpen || isAnimatingPurchase) return;
-        StartCoroutine(CloseRoutine());
+        if (!IsMenuOpen || isAnimatingPurchase) return;
+
+        if (ActiveMenu == this) ActiveMenu = null;
+
+        targetScale = Vector3.zero;
+        IsMenuOpen = false;
+
+        foreach (var obj in objectsToDisable)
+        {
+            if (obj != null) obj.SetActive(true);
+        }
+
+        // Disable hitboxes so they can't be clicked while shrinking
+        ToggleAllHitboxes(false);
+        StartCoroutine(DestroyPreviewAfterDelay());
     }
 
-    private IEnumerator CloseRoutine()
+    private IEnumerator DestroyPreviewAfterDelay()
     {
-        targetScale = Vector3.zero;
-        isOpen = false;
-
-        // Wait for scale to approximate 0
         yield return new WaitForSeconds(0.3f);
-
-        if (currentPreviewModel != null) Destroy(currentPreviewModel);
-        gameObject.SetActive(false);
+        if (!IsMenuOpen && currentPreviewModel != null)
+        {
+            Destroy(currentPreviewModel);
+        }
     }
 
     public void CycleNext()
@@ -130,13 +150,18 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         statsText.text = $"Multiplier: x{tier.multiplierValue}";
         priceText.text = $"${tier.cost:0.00}";
 
-        nextButton.interactable = viewingIndex < currentPath.tiers.Count - 1;
-        prevButton.interactable = viewingIndex > 0;
+        // Toggle UI collider states based on logic (replaces button.interactable)
+        if (nextInteractable != null)
+            nextInteractable.GetComponent<Collider>().enabled = viewingIndex < currentPath.tiers.Count - 1;
+
+        if (prevInteractable != null)
+            prevInteractable.GetComponent<Collider>().enabled = viewingIndex > 0;
 
         bool isPurchased = viewingIndex <= currentPath.CurrentLevel;
-        bool canAfford = UpgradeManager.Instance.bouncer.currentMoney >= (decimal)tier.cost; //[cite: 2]
+        bool canAfford = UpgradeManager.Instance.bouncer.currentMoney >= (decimal)tier.cost;
 
-        buyButton.interactable = !isPurchased && canAfford;
+        if (buyInteractable != null)
+            buyInteractable.GetComponent<Collider>().enabled = !isPurchased && canAfford;
 
         if (isPurchased)
         {
@@ -161,24 +186,25 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             currentPreviewModel.AddComponent<FloatingPreview>();
     }
 
+    private void ToggleAllHitboxes(bool state)
+    {
+        if (buyInteractable != null) buyInteractable.GetComponent<Collider>().enabled = state;
+        if (nextInteractable != null) nextInteractable.GetComponent<Collider>().enabled = state;
+        if (prevInteractable != null) prevInteractable.GetComponent<Collider>().enabled = state;
+        if (closeInteractable != null) closeInteractable.GetComponent<Collider>().enabled = state;
+    }
+
     private IEnumerator PurchaseAnimationRoutine()
     {
         isAnimatingPurchase = true;
-
-        // Disable UI interaction during animation
-        buyButton.interactable = false;
-        nextButton.interactable = false;
-        prevButton.interactable = false;
-        closeButton.interactable = false;
+        ToggleAllHitboxes(false);
 
         GameObject flyingModel = currentPreviewModel;
-        currentPreviewModel = null; // Detach from menu
+        currentPreviewModel = null;
 
-        // Stop floating script
         var floatScript = flyingModel.GetComponent<FloatingPreview>();
         if (floatScript != null) Destroy(floatScript);
 
-        // Detach from canvas and fly to target
         flyingModel.transform.SetParent(null);
         Vector3 startPos = flyingModel.transform.position;
         Quaternion startRot = flyingModel.transform.rotation;
@@ -191,13 +217,10 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         while (time < animationDuration)
         {
             float t = time / animationDuration;
-            // Use a smooth curve (Ease In-Out)
             t = t * t * (3f - 2f * t);
 
             flyingModel.transform.position = Vector3.Lerp(startPos, endPos, t);
             flyingModel.transform.rotation = Quaternion.Slerp(startRot, endRot, t);
-
-            // Optional: Shrink slightly as it reaches the destination
             flyingModel.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.8f, t);
 
             time += Time.deltaTime;
@@ -206,13 +229,11 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
         Destroy(flyingModel);
 
-        // Apply the actual upgrade (enables the stack/player visuals)
         UpgradeManager.Instance.FinalizeUpgrade(currentPath, viewingIndex);
 
         isAnimatingPurchase = false;
-        closeButton.interactable = true;
+        if (closeInteractable != null) closeInteractable.GetComponent<Collider>().enabled = true;
 
-        // Auto-cycle to the next upgrade or refresh UI
         if (viewingIndex < currentPath.tiers.Count - 1) CycleNext();
         else UpdateUI();
     }
