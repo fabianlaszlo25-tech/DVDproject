@@ -1,132 +1,89 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+public enum UpgradeCategory { MoneyMultiplier, SpeedMultiplier }
 
 [System.Serializable]
-public struct DVDPileTier
+public class UpgradeTier
 {
     public string tierName;
     public float cost;
     public float multiplierValue;
 
-    [Tooltip("The GameObject to enable when this tier is purchased (e.g., the next DVD in the stack)")]
-    public GameObject dvdVisual;
+    [Tooltip("The 3D model spawned in the UI menu")]
+    public GameObject previewPrefab;
+
+    [Tooltip("The objects to enable in the world when purchased (e.g., next DVD in stack, or new Player model)")]
+    public GameObject[] worldVisuals;
 }
 
 [System.Serializable]
-public struct DVDPlayerTier
+public class UpgradePath
 {
-    public string tierName;
-    public float cost;
-    public float multiplierValue;
+    public string pathName;
+    public UpgradeCategory category;
 
-    [Tooltip("The 3D model of the DVD player for this tier")]
-    public GameObject playerModel;
+    [Tooltip("Where should the preview model fly to when bought? (e.g., The DVD tray, or the player base)")]
+    public Transform animationTargetPoint;
 
-    [Tooltip("The parent GameObject containing the 2 logo meshes for this tier")]
-    public GameObject logoVisualParent;
+    public List<UpgradeTier> tiers;
+    public int CurrentLevel { get; private set; } = 0;
+
+    public void InitializeWorldVisuals()
+    {
+        for (int i = 0; i < tiers.Count; i++)
+        {
+            foreach (var visual in tiers[i].worldVisuals)
+            {
+                if (visual != null) visual.SetActive(i == CurrentLevel);
+            }
+        }
+    }
+
+    public void SetLevel(int level)
+    {
+        CurrentLevel = level;
+        InitializeWorldVisuals();
+    }
 }
 
 public class UpgradeManager : MonoBehaviour
 {
+    public static UpgradeManager Instance { get; private set; }
+
     public DVDLogoBouncer bouncer;
+    public List<UpgradePath> upgradePaths;
 
-    [Header("DVD Pile (Money Upgrades)")]
-    public DVDPileTier[] dvdPileTiers;
-    private int currentDvdIndex = 0;
-
-    [Header("DVD Player (Speed Upgrades)")]
-    public DVDPlayerTier[] dvdPlayerTiers;
-    private int currentPlayerIndex = 0;
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
-        InitializeVisuals();
-    }
-
-    private void InitializeVisuals()
-    {
-        // Set up the DVD Pile: Only the first tier's visual is active
-        for (int i = 0; i < dvdPileTiers.Length; i++)
+        foreach (var path in upgradePaths)
         {
-            if (dvdPileTiers[i].dvdVisual != null)
-            {
-                dvdPileTiers[i].dvdVisual.SetActive(i == currentDvdIndex);
-            }
-        }
-
-        // Set up the DVD Player and Logo: Only the first tier's visuals are active
-        for (int i = 0; i < dvdPlayerTiers.Length; i++)
-        {
-            if (dvdPlayerTiers[i].playerModel != null)
-            {
-                dvdPlayerTiers[i].playerModel.SetActive(i == currentPlayerIndex);
-            }
-
-            if (dvdPlayerTiers[i].logoVisualParent != null)
-            {
-                dvdPlayerTiers[i].logoVisualParent.SetActive(i == currentPlayerIndex);
-            }
+            path.InitializeWorldVisuals();
         }
     }
 
-    public void TryUpgradeDVD()
+    public bool TrySpendForUpgrade(UpgradePath path, int targetIndex)
     {
-        // Check if maxed out
-        if (currentDvdIndex >= dvdPileTiers.Length - 1)
-        {
-            Debug.Log("DVD Pile maxed out.");
-            return;
-        }
+        if (targetIndex >= path.tiers.Count || targetIndex <= path.CurrentLevel) return false;
 
-        // We check the cost of the *next* tier
-        int nextIndex = currentDvdIndex + 1;
-        decimal cost = (decimal)dvdPileTiers[nextIndex].cost;
-
-        if (bouncer.TrySpendMoney(cost))
-        {
-            // Activate the new DVD visual
-            if (dvdPileTiers[nextIndex].dvdVisual != null)
-            {
-                dvdPileTiers[nextIndex].dvdVisual.SetActive(true);
-            }
-
-            // If you want the old one to turn OFF instead of stacking, uncomment the line below:
-            // if (dvdPileTiers[currentDvdIndex].dvdVisual != null) dvdPileTiers[currentDvdIndex].dvdVisual.SetActive(false);
-
-            currentDvdIndex = nextIndex;
-            bouncer.SetMoneyMultiplier(dvdPileTiers[currentDvdIndex].multiplierValue);
-        }
+        decimal cost = (decimal)path.tiers[targetIndex].cost;
+        return bouncer.TrySpendMoney(cost); // Deducts money via DVDLogoBouncer[cite: 2]
     }
 
-    public void TryUpgradePlayer()
+    public void FinalizeUpgrade(UpgradePath path, int targetIndex)
     {
-        // Check if maxed out
-        if (currentPlayerIndex >= dvdPlayerTiers.Length - 1)
-        {
-            Debug.Log("DVD Player maxed out.");
-            return;
-        }
+        path.SetLevel(targetIndex);
 
-        int nextIndex = currentPlayerIndex + 1;
-        decimal cost = (decimal)dvdPlayerTiers[nextIndex].cost;
-
-        if (bouncer.TrySpendMoney(cost))
-        {
-            // Deactivate old visuals
-            if (dvdPlayerTiers[currentPlayerIndex].playerModel != null)
-                dvdPlayerTiers[currentPlayerIndex].playerModel.SetActive(false);
-
-            if (dvdPlayerTiers[currentPlayerIndex].logoVisualParent != null)
-                dvdPlayerTiers[currentPlayerIndex].logoVisualParent.SetActive(false);
-
-            // Activate new visuals
-            if (dvdPlayerTiers[nextIndex].playerModel != null)
-                dvdPlayerTiers[nextIndex].playerModel.SetActive(true);
-
-            if (dvdPlayerTiers[nextIndex].logoVisualParent != null)
-                dvdPlayerTiers[nextIndex].logoVisualParent.SetActive(true);
-
-            currentPlayerIndex = nextIndex;
-            bouncer.SetSpeedMultiplier(dvdPlayerTiers[currentPlayerIndex].multiplierValue);
-        }
+        float newMultiplier = path.tiers[targetIndex].multiplierValue;
+        if (path.category == UpgradeCategory.MoneyMultiplier)
+            bouncer.SetMoneyMultiplier(newMultiplier); //[cite: 2]
+        else if (path.category == UpgradeCategory.SpeedMultiplier)
+            bouncer.SetSpeedMultiplier(newMultiplier); //[cite: 2]
     }
 }
