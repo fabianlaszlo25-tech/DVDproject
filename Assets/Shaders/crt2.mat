@@ -45,7 +45,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _density: 444.02
-    - _opacity: 0.56
+    - _opacity: 0.75
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

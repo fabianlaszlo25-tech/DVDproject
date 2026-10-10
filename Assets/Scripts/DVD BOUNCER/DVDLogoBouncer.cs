@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Collider))]
@@ -11,13 +12,27 @@ public class DVDLogoBouncer : MonoBehaviour
     public RenderTexture tvRenderTexture;
     private Collider logoCollider;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip edgeHitSound;
+    public AudioClip cornerHitSound;
+
+    [Header("Visual Bounce Settings")]
+    [Tooltip("Drag the actual TV 3D model here. If left empty, the logo itself will bounce.")]
+    public Transform tvTransform;
+    public float edgeBounceMultiplier = 1.05f; // Lowered slightly since TVs are bigger than logos
+    public float cornerBounceMultiplier = 1.15f;
+    public float visualBounceDuration = 0.2f;
+    private Vector3 originalScale;
+    private Coroutine activeBounceCoroutine;
+
     [Header("Resolution Settings")]
     public int baseVerticalResolution = 1080;
     [Range(0.1f, 4f)] public float resolutionScale = 1f;
 
     [Header("Movement Settings")]
     public float baseSpeed = 2.5f;
-    public float stateMultiplier = 1f; // Changed by DVD Player
+    public float stateMultiplier = 1f;
     public Vector2 manualOffset = new Vector2(0f, 0f);
 
     [Header("Stacking Boost Settings")]
@@ -36,12 +51,11 @@ public class DVDLogoBouncer : MonoBehaviour
     public decimal edgeReward = 0.01m;
     public decimal cornerReward = 0.50m;
     public decimal currentMoney = 0m;
-    public float moneyMultiplier = 1f; // Changed by DVD Pile
+    public float moneyMultiplier = 1f;
 
     public TMP_Text totalMoneyText;
     public Transform popupCanvasParent;
     public GameObject moneyPopupPrefab;
-    [Tooltip("Prefab for when money is spent (should be styled red or with a minus sign)")]
     public GameObject negativeMoneyPopupPrefab;
 
     [Header("Hit Effects")]
@@ -57,6 +71,16 @@ public class DVDLogoBouncer : MonoBehaviour
     {
         if (renderCamera == null) renderCamera = Camera.main;
         logoCollider = GetComponent<Collider>();
+
+        // Store the original scale of the TV (or the logo if no TV is assigned)
+        if (tvTransform != null) originalScale = tvTransform.localScale;
+        else originalScale = transform.localScale;
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
 
         direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
         SyncCameraAndTextureAspect();
@@ -181,6 +205,9 @@ public class DVDLogoBouncer : MonoBehaviour
 
         if (isCorner)
         {
+            if (audioSource != null && cornerHitSound != null) audioSource.PlayOneShot(cornerHitSound);
+            TriggerVisualBounce(cornerBounceMultiplier);
+
             decimal reward = cornerReward * (decimal)moneyMultiplier;
             currentMoney += reward;
             SpawnHitEffect(cornerEffectTemplate);
@@ -188,6 +215,9 @@ public class DVDLogoBouncer : MonoBehaviour
         }
         else
         {
+            if (audioSource != null && edgeHitSound != null) audioSource.PlayOneShot(edgeHitSound);
+            TriggerVisualBounce(edgeBounceMultiplier);
+
             decimal reward = edgeReward * (decimal)moneyMultiplier;
             currentMoney += reward;
             SpawnHitEffect(edgeEffectTemplate);
@@ -195,6 +225,38 @@ public class DVDLogoBouncer : MonoBehaviour
         }
 
         UpdateMoneyUI();
+    }
+
+    private void TriggerVisualBounce(float multiplier)
+    {
+        if (activeBounceCoroutine != null) StopCoroutine(activeBounceCoroutine);
+        activeBounceCoroutine = StartCoroutine(VisualBounceRoutine(multiplier));
+    }
+
+    private IEnumerator VisualBounceRoutine(float scaleMultiplier)
+    {
+        Transform targetTransform = tvTransform != null ? tvTransform : transform;
+        Vector3 peakScale = originalScale * scaleMultiplier;
+        float halfDuration = visualBounceDuration / 2f;
+
+        float time = 0;
+        while (time < halfDuration)
+        {
+            targetTransform.localScale = Vector3.Lerp(originalScale, peakScale, time / halfDuration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0;
+        while (time < halfDuration)
+        {
+            targetTransform.localScale = Vector3.Lerp(peakScale, originalScale, time / halfDuration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        targetTransform.localScale = originalScale;
+        activeBounceCoroutine = null;
     }
 
     private void SpawnHitEffect(GameObject template)
@@ -220,7 +282,6 @@ public class DVDLogoBouncer : MonoBehaviour
 
         if (popupScript != null)
         {
-            // Pass negative amount if it's a cost deduction
             popupScript.AnimatePopup(isNegative ? -amount : amount);
         }
     }

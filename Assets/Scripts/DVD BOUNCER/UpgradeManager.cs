@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Video;
+using System.Collections;
 using System.Collections.Generic;
 
 public enum UpgradeCategory { MoneyMultiplier, SpeedMultiplier }
@@ -9,21 +11,19 @@ public class UpgradeTier
     public string tierName;
     public float cost;
     public float multiplierValue;
-
-    [Tooltip("The 3D model spawned in the UI menu")]
     public GameObject previewPrefab;
-
-    [Tooltip("Shift the model if it doesn't spawn perfectly centered in your UI")]
     public Vector3 previewPositionOffset = Vector3.zero;
-
-    [Tooltip("The exact scale for the UI preview. World Space UIs usually require large numbers (e.g., 50, 50, 50)")]
     public Vector3 previewScale = new Vector3(50f, 50f, 50f);
-
-    [Tooltip("The base starting rotation (Euler Angles) for the UI preview")]
     public Vector3 previewRotation = Vector3.zero;
 
-    [Tooltip("The objects to enable in the world when purchased (e.g., next DVD in stack, or new Player model)")]
-    public GameObject[] worldVisuals;
+    [Header("DVD Video Replacements")]
+    public VideoClip dvdVideoClip;
+    public AudioClip dvdMusic;
+
+    [Header("Player Replacements")]
+    public GameObject worldGameObject;
+    public Mesh playerMesh1;
+    public Mesh playerMesh2;
 }
 
 [System.Serializable]
@@ -31,29 +31,20 @@ public class UpgradePath
 {
     public string pathName;
     public UpgradeCategory category;
+    public Transform[] animationTargetPoints;
 
-    [Tooltip("Where should the preview model fly to when bought?")]
-    public Transform animationTargetPoint;
+    [Header("Targets to Update")]
+    public VideoPlayer targetVideoPlayer;
+    public AudioSource audioSource;
+    public VideoClip staticVideoClip;
+    public AudioClip staticSoundEffect;
+    public float staticDuration = 0.5f;
+    public MeshFilter targetMeshFilter1;
+    public MeshFilter targetMeshFilter2;
 
     public List<UpgradeTier> tiers;
-    public int CurrentLevel { get; private set; } = 0;
-
-    public void InitializeWorldVisuals()
-    {
-        for (int i = 0; i < tiers.Count; i++)
-        {
-            foreach (var visual in tiers[i].worldVisuals)
-            {
-                if (visual != null) visual.SetActive(i == CurrentLevel);
-            }
-        }
-    }
-
-    public void SetLevel(int level)
-    {
-        CurrentLevel = level;
-        InitializeWorldVisuals();
-    }
+    public int equippedIndex = 0;
+    public List<int> unlockedIndices = new List<int>();
 }
 
 public class UpgradeManager : MonoBehaviour
@@ -62,6 +53,8 @@ public class UpgradeManager : MonoBehaviour
 
     public DVDLogoBouncer bouncer;
     public List<UpgradePath> upgradePaths;
+
+    public float worldModelShrinkSpeed = 0.5f;
 
     private void Awake()
     {
@@ -73,26 +66,153 @@ public class UpgradeManager : MonoBehaviour
     {
         foreach (var path in upgradePaths)
         {
-            path.InitializeWorldVisuals();
+            if (!path.unlockedIndices.Contains(0)) path.unlockedIndices.Add(0);
+
+            path.equippedIndex = 0;
+            SnapWorldVisuals(path, 0);
+
+            if (path.category == UpgradeCategory.MoneyMultiplier)
+            {
+                if (path.targetVideoPlayer != null && path.tiers[0].dvdVideoClip != null)
+                {
+                    path.targetVideoPlayer.clip = path.tiers[0].dvdVideoClip;
+                    path.targetVideoPlayer.Play();
+                }
+
+                if (path.audioSource != null && path.tiers[0].dvdMusic != null)
+                {
+                    path.audioSource.clip = path.tiers[0].dvdMusic;
+                    path.audioSource.loop = true;
+                    path.audioSource.Play();
+                }
+            }
         }
     }
 
-    public bool TrySpendForUpgrade(UpgradePath path, int targetIndex)
+    public bool TryPurchaseUpgrade(UpgradePath path, int targetIndex)
     {
-        if (targetIndex >= path.tiers.Count || targetIndex <= path.CurrentLevel) return false;
+        if (path.unlockedIndices.Contains(targetIndex)) return true;
 
         decimal cost = (decimal)path.tiers[targetIndex].cost;
-        return bouncer.TrySpendMoney(cost);
+        if (bouncer.TrySpendMoney(cost))
+        {
+            path.unlockedIndices.Add(targetIndex);
+            return true;
+        }
+        return false;
     }
 
-    public void FinalizeUpgrade(UpgradePath path, int targetIndex)
+    public void FinalizeEquip(UpgradePath path, int targetIndex)
     {
-        path.SetLevel(targetIndex);
+        int previousIndex = path.equippedIndex;
+        path.equippedIndex = targetIndex;
 
         float newMultiplier = path.tiers[targetIndex].multiplierValue;
+
         if (path.category == UpgradeCategory.MoneyMultiplier)
+        {
             bouncer.SetMoneyMultiplier(newMultiplier);
+            if (path.targetVideoPlayer != null)
+            {
+                StartCoroutine(PlayVideoTransition(path, targetIndex));
+            }
+        }
         else if (path.category == UpgradeCategory.SpeedMultiplier)
+        {
             bouncer.SetSpeedMultiplier(newMultiplier);
+            ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
+        }
+    }
+
+    private void SnapWorldVisuals(UpgradePath path, int targetIndex)
+    {
+        if (path.category == UpgradeCategory.SpeedMultiplier)
+        {
+            for (int i = 0; i < path.tiers.Count; i++)
+            {
+                if (path.tiers[i].worldGameObject != null)
+                {
+                    path.tiers[i].worldGameObject.SetActive(i == targetIndex);
+                }
+            }
+
+            if (path.targetMeshFilter1 != null && path.tiers[targetIndex].playerMesh1 != null)
+                path.targetMeshFilter1.mesh = path.tiers[targetIndex].playerMesh1;
+
+            if (path.targetMeshFilter2 != null && path.tiers[targetIndex].playerMesh2 != null)
+                path.targetMeshFilter2.mesh = path.tiers[targetIndex].playerMesh2;
+        }
+    }
+
+    private void ApplyWorldVisualsAnimated(UpgradePath path, int previousIndex, int targetIndex)
+    {
+        if (path.category == UpgradeCategory.SpeedMultiplier)
+        {
+            if (previousIndex != targetIndex && path.tiers[previousIndex].worldGameObject != null)
+            {
+                StartCoroutine(ShrinkAndDisable(path.tiers[previousIndex].worldGameObject));
+            }
+
+            if (path.tiers[targetIndex].worldGameObject != null)
+            {
+                path.tiers[targetIndex].worldGameObject.SetActive(true);
+            }
+
+            if (path.targetMeshFilter1 != null && path.tiers[targetIndex].playerMesh1 != null)
+                path.targetMeshFilter1.mesh = path.tiers[targetIndex].playerMesh1;
+
+            if (path.targetMeshFilter2 != null && path.tiers[targetIndex].playerMesh2 != null)
+                path.targetMeshFilter2.mesh = path.tiers[targetIndex].playerMesh2;
+        }
+    }
+
+    private IEnumerator ShrinkAndDisable(GameObject obj)
+    {
+        Vector3 startScale = obj.transform.localScale;
+        float time = 0;
+        while (time < worldModelShrinkSpeed)
+        {
+            float t = time / worldModelShrinkSpeed;
+            obj.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        obj.transform.localScale = Vector3.zero;
+        obj.SetActive(false);
+        obj.transform.localScale = startScale;
+    }
+
+    private IEnumerator PlayVideoTransition(UpgradePath path, int targetIndex)
+    {
+        if (path.audioSource != null)
+        {
+            path.audioSource.Stop();
+        }
+
+        if (path.staticVideoClip != null)
+        {
+            path.targetVideoPlayer.clip = path.staticVideoClip;
+            path.targetVideoPlayer.Play();
+
+            if (path.audioSource != null && path.staticSoundEffect != null)
+            {
+                path.audioSource.PlayOneShot(path.staticSoundEffect);
+            }
+
+            yield return new WaitForSeconds(path.staticDuration);
+        }
+
+        if (path.tiers[targetIndex].dvdVideoClip != null)
+        {
+            path.targetVideoPlayer.clip = path.tiers[targetIndex].dvdVideoClip;
+            path.targetVideoPlayer.Play();
+        }
+
+        if (path.audioSource != null && path.tiers[targetIndex].dvdMusic != null)
+        {
+            path.audioSource.clip = path.tiers[targetIndex].dvdMusic;
+            path.audioSource.loop = true;
+            path.audioSource.Play();
+        }
     }
 }

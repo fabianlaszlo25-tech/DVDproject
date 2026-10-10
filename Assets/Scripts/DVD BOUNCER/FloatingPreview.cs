@@ -12,7 +12,6 @@ public class FloatingPreview : MonoBehaviour
 
     void Start()
     {
-        // Record the exact starting offset and tilt set by the Menu script
         startLocalPos = transform.localPosition;
         baseRotation = transform.localEulerAngles;
     }
@@ -21,12 +20,8 @@ public class FloatingPreview : MonoBehaviour
     {
         currentSpin += rotateSpeed * Time.deltaTime;
 
-        // Quaternion multiplication order matters: 
-        // This tilts the object FIRST (your custom rotation), 
-        // and THEN spins it around the UI's vertical Y-axis (left-to-right).
         transform.localRotation = Quaternion.Euler(0f, currentSpin, 0f) * Quaternion.Euler(baseRotation);
 
-        // Strictly lock the X and Z position to the offset, only bobbing on the Y axis
         float newY = startLocalPos.y + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         transform.localPosition = new Vector3(startLocalPos.x, newY, startLocalPos.z);
     }
