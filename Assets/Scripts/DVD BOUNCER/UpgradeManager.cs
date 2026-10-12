@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Video;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public enum UpgradeCategory { MoneyMultiplier, SpeedMultiplier }
 
@@ -16,8 +17,9 @@ public class UpgradeTier
     public Vector3 previewScale = new Vector3(50f, 50f, 50f);
     public Vector3 previewRotation = Vector3.zero;
 
-    [Header("DVD Video Replacements")]
-    public VideoClip dvdVideoClip;
+    [Header("DVD Video Replacements (WebGL)")]
+    [Tooltip("Type the exact file name including extension, e.g., 'dvd1.mp4'")]
+    public string dvdVideoFileName;
     public AudioClip dvdMusic;
 
     [Header("Player Replacements")]
@@ -36,9 +38,13 @@ public class UpgradePath
     [Header("Targets to Update")]
     public VideoPlayer targetVideoPlayer;
     public AudioSource audioSource;
-    public VideoClip staticVideoClip;
+
+    [Header("Static Transition (WebGL)")]
+    [Tooltip("Type the exact file name including extension, e.g., 'static.mp4'")]
+    public string staticVideoFileName;
     public AudioClip staticSoundEffect;
     public float staticDuration = 0.5f;
+
     public MeshFilter targetMeshFilter1;
     public MeshFilter targetMeshFilter2;
 
@@ -73,9 +79,10 @@ public class UpgradeManager : MonoBehaviour
 
             if (path.category == UpgradeCategory.MoneyMultiplier)
             {
-                if (path.targetVideoPlayer != null && path.tiers[0].dvdVideoClip != null)
+                if (path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.tiers[0].dvdVideoFileName))
                 {
-                    path.targetVideoPlayer.clip = path.tiers[0].dvdVideoClip;
+                    path.targetVideoPlayer.source = VideoSource.Url;
+                    path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[0].dvdVideoFileName);
                     path.targetVideoPlayer.Play();
                 }
 
@@ -189,9 +196,10 @@ public class UpgradeManager : MonoBehaviour
             path.audioSource.Stop();
         }
 
-        if (path.staticVideoClip != null)
+        if (!string.IsNullOrEmpty(path.staticVideoFileName))
         {
-            path.targetVideoPlayer.clip = path.staticVideoClip;
+            path.targetVideoPlayer.source = VideoSource.Url;
+            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.staticVideoFileName);
             path.targetVideoPlayer.Play();
 
             if (path.audioSource != null && path.staticSoundEffect != null)
@@ -202,9 +210,10 @@ public class UpgradeManager : MonoBehaviour
             yield return new WaitForSeconds(path.staticDuration);
         }
 
-        if (path.tiers[targetIndex].dvdVideoClip != null)
+        if (!string.IsNullOrEmpty(path.tiers[targetIndex].dvdVideoFileName))
         {
-            path.targetVideoPlayer.clip = path.tiers[targetIndex].dvdVideoClip;
+            path.targetVideoPlayer.source = VideoSource.Url;
+            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[targetIndex].dvdVideoFileName);
             path.targetVideoPlayer.Play();
         }
 

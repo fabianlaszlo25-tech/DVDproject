@@ -3487,8 +3487,8 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 0}
     audioSource: {fileID: 0}
-    staticVideoClip: {fileID: 0}
-    staticSoundEffect: {fileID: 0}
+    staticVideoFileName: static.mp4
+    staticSoundEffect: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
     staticDuration: 0.5
     targetMeshFilter1: {fileID: 3627391}
     targetMeshFilter2: {fileID: 1096447375}
@@ -3500,7 +3500,7 @@ MonoBehaviour:
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
       previewRotation: {x: 0, y: 0, z: 0}
-      dvdVideoClip: {fileID: 0}
+      dvdVideoFileName: 
       dvdMusic: {fileID: 0}
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
@@ -3512,7 +3512,7 @@ MonoBehaviour:
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
       previewRotation: {x: 0, y: 0, z: 0}
-      dvdVideoClip: {fileID: 0}
+      dvdVideoFileName: 
       dvdMusic: {fileID: 0}
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
@@ -3526,7 +3526,7 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 900628548}
     audioSource: {fileID: 1541265051}
-    staticVideoClip: {fileID: 32900000, guid: f297e8223fb9da64c95fc66bf2dc2d83, type: 3}
+    staticVideoFileName: 
     staticSoundEffect: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
     staticDuration: 0.5
     targetMeshFilter1: {fileID: 0}
@@ -3539,7 +3539,7 @@ MonoBehaviour:
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
       previewRotation: {x: 90, y: 0, z: 0}
-      dvdVideoClip: {fileID: 32900000, guid: c8433385fe64f6549852f2824ea341ce, type: 3}
+      dvdVideoFileName: 1.mp4
       dvdMusic: {fileID: 8300000, guid: fd2a29981b68f6148a0b663cc8de03f9, type: 3}
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
@@ -3551,7 +3551,7 @@ MonoBehaviour:
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
       previewRotation: {x: 90, y: 0, z: 0}
-      dvdVideoClip: {fileID: 32900000, guid: e4f113999de72c743b1982e4f15a524b, type: 3}
+      dvdVideoFileName: 
       dvdMusic: {fileID: 8300000, guid: fd2a29981b68f6148a0b663cc8de03f9, type: 3}
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
