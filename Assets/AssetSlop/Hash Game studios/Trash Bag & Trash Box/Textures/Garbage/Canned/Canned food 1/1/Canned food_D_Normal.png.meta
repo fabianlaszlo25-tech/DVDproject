@@ -1,5 +1,13 @@
 fileFormatVersion: 2
 guid: 6d2fd94517ab8b440b1666c4aee6f5ab
+AssetOrigin:
+  serializedVersion: 1
+  productId: 316725
+  packageName: Trash bag & Trash box
+  packageVersion: 1.3.0
+  assetPath: Assets/Hash Game studios/Trash Bag & Trash Box/Textures/Garbage/Canned/Canned
+    food 1/1/Canned food_D_Normal.png
+  uploadId: 752217
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,12 +105,12 @@ TextureImporter:
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 0
+    overridden: 1
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -128,11 +136,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 316725
-  packageName: Trash bag & Trash box
-  packageVersion: 1.3.0
-  assetPath: Assets/Hash Game studios/Trash Bag & Trash Box/Textures/Garbage/Canned/Canned
-    food 1/1/Canned food_D_Normal.png
-  uploadId: 752217
