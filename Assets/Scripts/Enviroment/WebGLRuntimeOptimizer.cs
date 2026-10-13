@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 public class WebGLRuntimeOptimizer : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class WebGLRuntimeOptimizer : MonoBehaviour
     [Header("Performance Limits")]
     public int targetFrameRate = 30;
 
-    [Tooltip("0 = Full Res, 1 = Half Res, 2 = Quarter Res. Applies globally to all textures.")]
-    public int globalTextureMipmapLimit = 1;
+    [Tooltip("0=Full, 1=Half, 2=Quarter, 3=Eighth. Try 2 if the textures still look too good.")]
+    public int globalTextureMipmapLimit = 2;
+
+    [Tooltip("Drops the actual screen resolution pixel count. 0.5 = 50% resolution (massive GPU savings).")]
+    [Range(0.1f, 1f)]
+    public float screenResolutionScale = 0.5f;
+
+    private bool resolutionScaled = false;
 
     void Awake()
     {
-        // Singleton pattern to ensure only one optimizer exists across scene loads
         if (instance != null)
         {
             Destroy(gameObject);
@@ -44,24 +50,24 @@ public class WebGLRuntimeOptimizer : MonoBehaviour
     {
         if (Application.platform != RuntimePlatform.WebGLPlayer && !enforceInEditor) return;
 
-        // Force a lower framerate to reduce thermal throttling and CPU load on browsers
         Application.targetFrameRate = targetFrameRate;
-
-        // VSync is often forced by the browser, but we disable Unity's side of it
         QualitySettings.vSyncCount = 0;
 
-        // Force Unity to load lower-resolution mipmaps globally (saves massive amounts of VRAM)
         QualitySettings.globalTextureMipmapLimit = globalTextureMipmapLimit;
 
-        // Disable global shadow cascades
         QualitySettings.shadowCascades = 0;
         QualitySettings.shadowDistance = 0;
-        QualitySettings.shadows = ShadowQuality.Disable;
-
-        // Reduce Level of Detail bias so meshes swap to lower poly versions sooner
         QualitySettings.lodBias = 0.5f;
 
-        Debug.Log("WebGL Runtime Optimizer: Applied global RAM/VRAM restrictions.");
+        if (!resolutionScaled)
+        {
+            int newWidth = Mathf.RoundToInt(Screen.width * screenResolutionScale);
+            int newHeight = Mathf.RoundToInt(Screen.height * screenResolutionScale);
+            Screen.SetResolution(newWidth, newHeight, Screen.fullScreen);
+            resolutionScaled = true;
+        }
+
+        Debug.Log("WebGL Runtime Optimizer: Applied global RAM/VRAM restrictions and dropped resolution.");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -69,32 +75,45 @@ public class WebGLRuntimeOptimizer : MonoBehaviour
         if (Application.platform != RuntimePlatform.WebGLPlayer && !enforceInEditor) return;
 
         OptimizeLights();
+        OptimizeCameras();
 
-        // Force garbage collection and unload unused assets from the previous scene
         Resources.UnloadUnusedAssets();
         System.GC.Collect();
     }
 
+    private void OptimizeCameras()
+    {
+        Camera[] cameras = FindObjectsOfType<Camera>(true);
+        foreach (Camera cam in cameras)
+        {
+            cam.allowMSAA = false;
+            cam.allowHDR = false;
+
+            // Target URP specifically to override the pipeline asset's post-processing
+            UniversalAdditionalCameraData urpCamData = cam.GetComponent<UniversalAdditionalCameraData>();
+            if (urpCamData != null)
+            {
+                urpCamData.renderPostProcessing = false;
+                urpCamData.antialiasing = AntialiasingMode.None;
+            }
+        }
+
+        Debug.Log($"WebGL Runtime Optimizer: Stripped URP Post-Processing on {cameras.Length} cameras.");
+    }
+
     private void OptimizeLights()
     {
-        Light[] allLights = FindObjectsOfType<Light>();
+        Light[] allLights = FindObjectsOfType<Light>(true);
 
         foreach (Light light in allLights)
         {
-            // Disable all shadows on all light types
             light.shadows = LightShadows.None;
 
             if (light.type == LightType.Point || light.type == LightType.Spot)
             {
-                // Force point/spot lights to vertex rendering rather than pixel rendering.
-                // This makes them significantly cheaper on the GPU.
                 light.renderMode = LightRenderMode.ForceVertex;
-
-                // Slightly reduce the range of point lights to cull them faster
-                //light.range *= 0.8f;
+                light.range *= 0.8f;
             }
         }
-
-        Debug.Log($"WebGL Runtime Optimizer: Stripped shadows and forced vertex rendering on {allLights.Length} lights.");
     }
 }
