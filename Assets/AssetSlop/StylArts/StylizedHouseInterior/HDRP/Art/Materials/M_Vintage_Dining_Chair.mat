@@ -33,7 +33,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Vintage_Dining_Chair
+  m_Name: M_Vintage_Dining_Chair_backup
   m_Shader: {fileID: -6465566751694194690, guid: c693885c2583bd84293be597d7cd37d4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

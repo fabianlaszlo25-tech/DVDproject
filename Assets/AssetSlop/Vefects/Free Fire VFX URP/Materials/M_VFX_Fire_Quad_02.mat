@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_VFX_Fire_Quad_02
+  m_Name: M_VFX_Fire_Quad_02_backup
   m_Shader: {fileID: 4800000, guid: 2ce4c95e7106985488f7f5bb730b3ae5, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
