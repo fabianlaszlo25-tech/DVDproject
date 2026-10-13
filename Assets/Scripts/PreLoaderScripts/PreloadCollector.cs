@@ -1,54 +1,73 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class PreloadCollector : EditorWindow
 {
-    [MenuItem("Tools/Auto-Collect Preload Materials")]
-    public static void CollectMaterials()
+    [MenuItem("Tools/Auto-Collect Preload Objects")]
+    public static void CollectObjects()
     {
-        // Find the Preloader script in the current open scene
         WebGLPreloader preloader = FindObjectOfType<WebGLPreloader>();
         if (preloader == null)
         {
-            Debug.LogError("Could not find the WebGLPreloader script in this scene. Open your Loading Scene first!");
+            Debug.LogError("Could not find the WebGLPreloader script. Open your Loading Scene first!");
             return;
         }
 
-        HashSet<Material> uniqueMaterials = new HashSet<Material>();
-
-        // Scan every scene included in your Build Settings
-        foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes)
+        if (preloader.preloadHolder == null)
         {
-            if (!buildScene.enabled) continue;
+            Debug.LogError("Assign a Preload Holder GameObject in the WebGLPreloader script first.");
+            return;
+        }
 
-            Scene scene = EditorSceneManager.OpenScene(buildScene.path, OpenSceneMode.Additive);
+        List<GameObject> queuedObjects = new List<GameObject>();
+        Transform holder = preloader.preloadHolder.transform;
 
-            // Find every MeshRenderer in the scene
-            MeshRenderer[] renderers = FindObjectsOfType<MeshRenderer>(true);
-            foreach (MeshRenderer r in renderers)
+        holder.gameObject.SetActive(true);
+
+        // 1. Process all cameras to keep them active, untagged, and silent
+        Camera[] cameras = holder.GetComponentsInChildren<Camera>(true);
+        foreach (Camera cam in cameras)
+        {
+            if (cam.gameObject.CompareTag("MainCamera"))
             {
-                foreach (Material mat in r.sharedMaterials)
-                {
-                    if (mat != null) uniqueMaterials.Add(mat);
-                }
+                cam.gameObject.tag = "Untagged";
             }
+            cam.enabled = true;
+            cam.gameObject.SetActive(true);
 
-            // Close the scene after scanning (unless it's the active loading scene)
-            if (scene.name != SceneManager.GetActiveScene().name)
+            AudioListener listener = cam.GetComponent<AudioListener>();
+            if (listener != null)
             {
-                EditorSceneManager.CloseScene(scene, true);
+                listener.enabled = false;
             }
         }
 
-        // Apply the collected materials to the Preloader script
-        preloader.allGameMaterials = new List<Material>(uniqueMaterials);
+        // 2. Flatten the hierarchy and process all other transforms
+        // We grab the array first so modifying parents doesn't break the iteration
+        Transform[] allTransforms = holder.GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform t in allTransforms)
+        {
+            if (t == holder) continue;
+
+            // Destroy the nested hierarchy of the copied scene.
+            // By making every object a direct sibling under the holder, we can turn 
+            // them on/off individually without breaking parent-child visibility chains.
+            t.SetParent(holder, true);
+
+            if (t.GetComponent<Camera>() == null)
+            {
+                t.gameObject.SetActive(false);
+                queuedObjects.Add(t.gameObject);
+            }
+        }
+
+        preloader.objectsToLoad = queuedObjects;
         EditorUtility.SetDirty(preloader);
 
-        Debug.Log($"Successfully found and linked {uniqueMaterials.Count} unique materials for pre-compilation!");
+        Debug.Log($"Flattened hierarchy, queued {queuedObjects.Count} objects, and processed {cameras.Length} cameras for strict 1-by-1 preloading!");
     }
 }
 #endif

@@ -12,38 +12,40 @@ public class WebGLPreloader : MonoBehaviour
     [Header("Scene Routing")]
     public string nextSceneName = "MainMenu";
 
-    [Header("Automated Data (Do Not Touch)")]
-    public List<Material> allGameMaterials = new List<Material>();
+    [Header("Preload Setup")]
+    [Tooltip("Assign the Holder GameObject containing the copied scene here.")]
+    public GameObject preloadHolder;
 
-    private GameObject dummyQuad;
+    [Header("Automated Data (Do Not Touch)")]
+    public List<GameObject> objectsToLoad = new List<GameObject>();
 
     IEnumerator Start()
     {
         if (loadingBar != null) loadingBar.value = 0f;
 
-        dummyQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        dummyQuad.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
-        MeshRenderer quadRenderer = dummyQuad.GetComponent<MeshRenderer>();
+        int totalObjects = objectsToLoad.Count;
 
-        int totalMaterials = allGameMaterials.Count;
-
-        for (int i = 0; i < totalMaterials; i++)
+        for (int i = 0; i < totalObjects; i++)
         {
-            if (allGameMaterials[i] != null)
+            if (objectsToLoad[i] != null)
             {
-                quadRenderer.material = allGameMaterials[i];
+                // Turn on ONLY the current object
+                objectsToLoad[i].SetActive(true);
 
                 if (loadingBar != null)
                 {
-                    loadingBar.value = (float)i / totalMaterials;
+                    loadingBar.value = (float)i / totalObjects;
                 }
 
+                // Wait for the GPU to process the meshes/shaders
                 yield return null;
                 yield return null;
+
+                // Turn the object BACK OFF before the next loop. 
+                // This guarantees VRAM never accumulates all props at once.
+                objectsToLoad[i].SetActive(false);
             }
         }
-
-        Destroy(dummyQuad);
 
         if (loadingBar != null) loadingBar.value = 1f;
 
