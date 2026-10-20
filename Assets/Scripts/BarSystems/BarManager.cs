@@ -50,6 +50,10 @@ public class BarManager : MonoBehaviour
 
     public float foodNeedsIncrease = 33.4f;
 
+    [Header("Action Impacts: Trash Clearing")]
+    public float trashDirtinessIncrease = 1f;
+    public float trashDepressionReduction = 1f;
+
     [Header("Action Impacts: Depression Reductions")]
     public float eatDepressionReduction = 5f;
     public float toiletDepressionReduction = 2f;
@@ -151,6 +155,12 @@ public class BarManager : MonoBehaviour
         currentSleep = Mathf.Clamp(currentSleep - sleepReduction, 0, maxSleep);
         currentDirtiness = Mathf.Clamp(currentDirtiness + sleepDirtinessIncrease, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - sleepDepressionReduction, 0, maxDepression);
+    }
+
+    public void CleanTrashItem()
+    {
+        currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease, 0, maxDirtiness);
+        currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
     }
 
     public void CleanSelf()

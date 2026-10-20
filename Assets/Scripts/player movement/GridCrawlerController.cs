@@ -160,7 +160,7 @@ public class GridCrawlerController : MonoBehaviour
                 if (interactTextUI != null)
                 {
                     interactTextUI.text = interactObj.hoverText;
-                    textTargetScale = Vector3.one;
+                    textTargetScale = interactObj.hideHoverText ? Vector3.zero : Vector3.one;
                 }
 
                 if (Mouse.current.leftButton.wasPressedThisFrame)
