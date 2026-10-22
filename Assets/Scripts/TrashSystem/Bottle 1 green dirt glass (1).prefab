@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7928286485418024136}
   - component: {fileID: 3515105172961593652}
   - component: {fileID: 3974533253847647134}
+  - component: {fileID: -8015100113593660229}
   m_Layer: 7
   m_Name: Bottle 1 green dirt glass (1)
   m_TagString: Untagged
@@ -146,6 +147,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrashItem
   holdDuration: 1.5
   hoverMessage: Hold to clear trash
+  levitateHeight: 0.4
+  returnDuration: 0.2
   shakeIntensity: 0.04
   shakeSpeed: 40
   shakeSound: {fileID: 0}
@@ -153,6 +156,38 @@ MonoBehaviour:
   poofParticlePrefab: {fileID: 521877039727993729, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
   poofSound: {fileID: 0}
   poofVolume: 1
+  poofPositionOffset: {x: 0, y: 0.2, z: 0}
+  poofRotationOffset: {x: 0, y: 0, z: 0}
+  poofScale: {x: 1, y: 1, z: 1}
+  offsetsRelativeToTrash: 1
+--- !u!114 &-8015100113593660229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566812916845691038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 1, g: 0.26160848, b: 0, a: 1}
+  thickness: 0.03
+  radialBlend: 0.5
+  fillStrength: 1
+  enablePeriodicGlow: 1
+  periodicWait: 3
+  periodicDuration: 1.6
+  periodicPeakIntensity: 0.7
+  baseBrightness: 1
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1
+  pulsePeriod: 0.9
+  swirlBands: 2
+  swirlTwist: 8
+  smoothing: 10
+  outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}
 --- !u!1 &5072320892434676523
 GameObject:
   m_ObjectHideFlags: 0

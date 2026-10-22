@@ -56,6 +56,7 @@ public class TrashItem : MonoBehaviour
     private AudioSource audioSource;      // one-shot poof
     private AudioSource shakeSource;      // looping shake
     private Collider[] colliders;
+    private InteractVisualizer visualizer; // optional glow, drives from hold progress
     private Renderer[] renderers;
 
     private State state = State.Idle;
@@ -70,6 +71,7 @@ public class TrashItem : MonoBehaviour
         interactable = GetComponent<InteractableObject>();
         colliders = GetComponentsInChildren<Collider>();
         renderers = GetComponentsInChildren<Renderer>();
+        visualizer = GetComponent<InteractVisualizer>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
@@ -181,6 +183,8 @@ public class TrashItem : MonoBehaviour
             Mathf.PerlinNoise(t, t) * 2f - 1f) * strength;
 
         transform.position = basePosition + shake;
+
+        if (visualizer != null) visualizer.SetIntensity(progress);
     }
 
     private void BeginReturn()
@@ -189,6 +193,8 @@ public class TrashItem : MonoBehaviour
         holdProgress = 0f;
         returnElapsed = 0f;
         returnStart = transform.position;
+
+        if (visualizer != null) visualizer.SetIntensity(0f);
 
         interactable.hideHoverText = false;
         shakeSource.Stop();
@@ -212,6 +218,7 @@ public class TrashItem : MonoBehaviour
     private void Clear()
     {
         state = State.Poofing;
+        if (visualizer != null) visualizer.HideImmediate();
         shakeSource.Stop();
         Cleared?.Invoke(this);
         StartCoroutine(PoofRoutine());

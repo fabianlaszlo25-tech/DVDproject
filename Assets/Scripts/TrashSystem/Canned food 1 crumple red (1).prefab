@@ -127,6 +127,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 07c92a4132d69e04fa274c0e3be8bb14, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3093129280791323066}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 07c92a4132d69e04fa274c0e3be8bb14, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1910133807898086147}
   m_SourcePrefab: {fileID: 100100000, guid: 07c92a4132d69e04fa274c0e3be8bb14, type: 3}
 --- !u!1 &6985336376564187592 stripped
 GameObject:
@@ -211,8 +214,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95b369bdb628fed45ab8094ff0acd46e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrashItem
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: Hold to clear trash
+  levitateHeight: 0.4
+  returnDuration: 0.2
   shakeIntensity: 0.04
   shakeSpeed: 40
   shakeSound: {fileID: 0}
@@ -220,6 +225,10 @@ MonoBehaviour:
   poofParticlePrefab: {fileID: 521877039727993729, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
   poofSound: {fileID: 0}
   poofVolume: 1
+  poofPositionOffset: {x: 0, y: 0, z: 0}
+  poofRotationOffset: {x: 0, y: 0, z: 0}
+  poofScale: {x: 1, y: 1, z: 1}
+  offsetsRelativeToTrash: 1
 --- !u!114 &3093129280791323066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,3 +246,31 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hideHoverText: 0
+--- !u!114 &1910133807898086147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6985336376564187592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 1, g: 0.26160848, b: 0, a: 1}
+  thickness: 0.03
+  radialBlend: 0.5
+  fillStrength: 1
+  enablePeriodicGlow: 1
+  periodicWait: 3
+  periodicDuration: 1.6
+  periodicPeakIntensity: 0.7
+  baseBrightness: 1
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1
+  pulsePeriod: 0.9
+  swirlBands: 2
+  swirlTwist: 8
+  smoothing: 10
+  outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}

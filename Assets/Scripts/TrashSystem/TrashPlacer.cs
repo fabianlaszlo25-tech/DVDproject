@@ -15,6 +15,12 @@ public class TrashPlacer : MonoBehaviour
     [Tooltip("Walls, furniture and anything trash must not clip into. Do NOT include the floor or trash here.")]
     public LayerMask obstacleMask;
 
+    [Header("Blocked Zones")]
+    [Tooltip("Cubes marking areas where trash must NOT land (e.g. where the player can walk). " +
+             "Rays pass straight through them, only the landing spot is rejected. " +
+             "Each cube's transform defines the zone, so turn off its Mesh Renderer but keep the object active.")]
+    public List<Transform> blockedZones = new List<Transform>();
+
     [Header("Ray Spread")]
     [Tooltip("Furthest distance from the spawn point trash may land.")]
     public float maxSpreadDistance = 10f;
@@ -95,6 +101,7 @@ public class TrashPlacer : MonoBehaviour
 
             if (!IsFootprintOnFloor(candidate, floorHit.point.y)) continue;
             if (IntersectsObstacle(candidate)) continue;
+            if (IntersectsBlockedZone(candidate)) continue;
             if (OverlapsOtherTrash(candidate, others)) continue;
 
             item.transform.position = pivot;
@@ -136,6 +143,98 @@ public class TrashPlacer : MonoBehaviour
 
         return Physics.CheckBox(center, halfExtents, Quaternion.identity, obstacleMask, QueryTriggerInteraction.Ignore);
     }
+
+    private bool IntersectsBlockedZone(Bounds candidate)
+    {
+        if (blockedZones == null) return false;
+
+        candidate.Expand(wallPadding * 2f);
+
+        foreach (Transform zone in blockedZones)
+        {
+            if (zone == null) continue;
+            if (BoxOverlapsZone(candidate, zone)) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Overlap test between the candidate's axis-aligned box and a zone cube
+    /// (the zone transform is treated as a 1x1x1 box, so rotation and scale are respected).
+    /// Uses the separating axis theorem.
+    /// </summary>
+    private static bool BoxOverlapsZone(Bounds box, Transform zone)
+    {
+        Vector3[] boxAxes = { Vector3.right, Vector3.up, Vector3.forward };
+        Vector3[] zoneAxes = { zone.right, zone.up, zone.forward };
+
+        Vector3 boxHalf = box.extents;
+        Vector3 lossy = zone.lossyScale;
+        Vector3 zoneHalf = new Vector3(Mathf.Abs(lossy.x), Mathf.Abs(lossy.y), Mathf.Abs(lossy.z)) * 0.5f;
+        Vector3 delta = zone.position - box.center;
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (IsSeparatingAxis(boxAxes[i], delta, boxAxes, boxHalf, zoneAxes, zoneHalf)) return false;
+            if (IsSeparatingAxis(zoneAxes[i], delta, boxAxes, boxHalf, zoneAxes, zoneHalf)) return false;
+
+            for (int j = 0; j < 3; j++)
+            {
+                Vector3 cross = Vector3.Cross(boxAxes[i], zoneAxes[j]);
+                if (IsSeparatingAxis(cross, delta, boxAxes, boxHalf, zoneAxes, zoneHalf)) return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool IsSeparatingAxis(Vector3 axis, Vector3 delta,
+        Vector3[] boxAxes, Vector3 boxHalf, Vector3[] zoneAxes, Vector3 zoneHalf)
+    {
+        if (axis.sqrMagnitude < 1e-6f) return false; // parallel edges, no information
+        axis.Normalize();
+
+        float boxRadius = 0f;
+        float zoneRadius = 0f;
+        for (int k = 0; k < 3; k++)
+        {
+            boxRadius += boxHalf[k] * Mathf.Abs(Vector3.Dot(boxAxes[k], axis));
+            zoneRadius += zoneHalf[k] * Mathf.Abs(Vector3.Dot(zoneAxes[k], axis));
+        }
+
+        return Mathf.Abs(Vector3.Dot(delta, axis)) > boxRadius + zoneRadius;
+    }
+
+#if UNITY_EDITOR
+    // Zone boxes are only drawn while the placer, a zone cube, or any of their parents is selected.
+    private void OnDrawGizmos()
+    {
+        if (blockedZones == null) return;
+
+        bool placerSelected = IsSelectedOrParentSelected(transform);
+
+        foreach (Transform zone in blockedZones)
+        {
+            if (zone == null) continue;
+            if (!placerSelected && !IsSelectedOrParentSelected(zone)) continue;
+
+            Gizmos.matrix = zone.localToWorldMatrix;
+            Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
+            Gizmos.DrawCube(Vector3.zero, Vector3.one);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+        }
+        Gizmos.matrix = Matrix4x4.identity;
+    }
+
+    private static bool IsSelectedOrParentSelected(Transform t)
+    {
+        for (; t != null; t = t.parent)
+        {
+            if (UnityEditor.Selection.Contains(t.gameObject)) return true;
+        }
+        return false;
+    }
+#endif
 
     private bool OverlapsOtherTrash(Bounds candidate, IReadOnlyList<TrashItem> others)
     {
