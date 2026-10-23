@@ -12,9 +12,7 @@ public enum ConsumableVisualEffectType
 
 /// <summary>
 /// Attach this to any consumable unlocked BoosterObject (Beer, Energy Drink, Weed/Joint, Cigarette/Vape).
-/// Slowly fades the chosen fullscreen effect IN, holds it for 1 minute (60s), slowly fades it OUT,
-/// reverts the temporary stat modifiers on BoosterObject, and switches back to the unused BuyableBoosterProp!
-/// Also exposes active state queries so <see cref="DynamicMusicManager"/> knows which effects are currently active.
+/// Coordinates automatically with <see cref="SubstanceCombinationManager"/> for 2-effect and 3-effect combos!
 /// </summary>
 public class TimedConsumableBooster : MonoBehaviour
 {
@@ -27,13 +25,11 @@ public class TimedConsumableBooster : MonoBehaviour
             { ConsumableVisualEffectType.Nicotined, 0f }
         };
 
-    /// <summary>Returns true if the specified consumable effect is currently active above a threshold.</summary>
     public static bool IsEffectActive(ConsumableVisualEffectType type, float minThreshold = 0.05f)
     {
         return ActiveEffectIntensities.TryGetValue(type, out float val) && val >= minThreshold;
     }
 
-    /// <summary>Returns the current 0..1 intensity of the specified consumable effect.</summary>
     public static float GetEffectIntensity(ConsumableVisualEffectType type)
     {
         return ActiveEffectIntensities.TryGetValue(type, out float val) ? val : 0f;
@@ -73,6 +69,7 @@ public class TimedConsumableBooster : MonoBehaviour
     public bool startAutomaticallyOnEnable = true;
 
     private Coroutine cycleRoutine;
+    private float lastInternalIntensity;
 
     private void Awake()
     {
@@ -101,6 +98,11 @@ public class TimedConsumableBooster : MonoBehaviour
             cycleRoutine = null;
         }
         SetEffectIntensityImmediate(0f);
+
+        if (SubstanceCombinationManager.Instance != null)
+        {
+            SubstanceCombinationManager.Instance.UnregisterConsumable(this);
+        }
     }
 
     [ContextMenu("Start Consumable Cycle")]
@@ -114,11 +116,35 @@ public class TimedConsumableBooster : MonoBehaviour
             activeBoosterObject.ApplyBooster();
         }
 
+        SubstanceCombinationManager.Instance.RegisterConsumable(this);
+
+        if (SubstanceCombinationManager.Instance.IsOverdoseSequenceRunning)
+        {
+            return;
+        }
+
         if (cycleRoutine != null)
         {
             StopCoroutine(cycleRoutine);
         }
         cycleRoutine = StartCoroutine(ConsumableLifecycleRoutine());
+    }
+
+    public void ForceTerminateAndResetToUnused()
+    {
+        if (cycleRoutine != null)
+        {
+            StopCoroutine(cycleRoutine);
+            cycleRoutine = null;
+        }
+
+        SetEffectIntensityImmediate(0f);
+        ResetToUnusedProp();
+    }
+
+    public void RefreshVisualSuppression()
+    {
+        SetEffectIntensityImmediate(lastInternalIntensity);
     }
 
     private float GetDeltaTime()
@@ -128,7 +154,6 @@ public class TimedConsumableBooster : MonoBehaviour
 
     private IEnumerator ConsumableLifecycleRoutine()
     {
-        // 1. Slowly fade IN
         float fadeIn = Mathf.Max(0.01f, fadeInDuration);
         float elapsed = 0f;
         while (elapsed < fadeIn)
@@ -141,7 +166,6 @@ public class TimedConsumableBooster : MonoBehaviour
 
         SetEffectIntensityImmediate(peakIntensity);
 
-        // 2. Hold for 1 minute (60 seconds)
         float hold = Mathf.Max(0f, activeHoldDuration);
         float holdElapsed = 0f;
         while (holdElapsed < hold)
@@ -151,7 +175,6 @@ public class TimedConsumableBooster : MonoBehaviour
             yield return null;
         }
 
-        // 3. Slowly fade OUT
         float fadeOut = Mathf.Max(0.01f, fadeOutDuration);
         elapsed = 0f;
         while (elapsed < fadeOut)
@@ -165,30 +188,38 @@ public class TimedConsumableBooster : MonoBehaviour
         SetEffectIntensityImmediate(0f);
         cycleRoutine = null;
 
-        // 4. Revert stats & switch back to unused BuyableBoosterProp
+        if (SubstanceCombinationManager.Instance != null)
+        {
+            SubstanceCombinationManager.Instance.UnregisterConsumable(this);
+        }
         ResetToUnusedProp();
     }
 
     private void SetEffectIntensityImmediate(float intensity)
     {
+        lastInternalIntensity = intensity;
         ActiveEffectIntensities[effectType] = intensity;
+
+        bool suppressSingle = SubstanceCombinationManager.Instance != null
+                           && SubstanceCombinationManager.Instance.ShouldSuppressSingleScreenEffects();
+        float visualIntensity = suppressSingle ? 0f : intensity;
 
         switch (effectType)
         {
             case ConsumableVisualEffectType.Drunk:
-                if (drunkEffectController != null) drunkEffectController.SetExternalIntensity(intensity);
+                if (drunkEffectController != null) drunkEffectController.SetExternalIntensity(visualIntensity);
                 break;
 
             case ConsumableVisualEffectType.Caffeinated:
-                if (caffeineEffectController != null) caffeineEffectController.SetExternalIntensity(intensity);
+                if (caffeineEffectController != null) caffeineEffectController.SetExternalIntensity(visualIntensity);
                 break;
 
             case ConsumableVisualEffectType.High:
-                if (highEffectController != null) highEffectController.SetExternalIntensity(intensity);
+                if (highEffectController != null) highEffectController.SetExternalIntensity(visualIntensity);
                 break;
 
             case ConsumableVisualEffectType.Nicotined:
-                if (nicotineEffectController != null) nicotineEffectController.SetExternalIntensity(intensity);
+                if (nicotineEffectController != null) nicotineEffectController.SetExternalIntensity(visualIntensity);
                 break;
         }
     }
