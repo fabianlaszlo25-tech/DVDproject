@@ -122,6 +122,44 @@ public class BuyableBoosterProp : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called by <see cref="TimedConsumableBooster"/> when a 1-minute consumable finishes
+    /// so the unused buyable prop reappears and can be purchased again.
+    /// </summary>
+    public void ResetForRepurchase()
+    {
+        gameObject.SetActive(true);
+        state = State.Idle;
+        holdProgress = 0f;
+
+        if (colliders == null || colliders.Length == 0) colliders = GetComponentsInChildren<Collider>();
+        if (renderers == null || renderers.Length == 0) renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer r in renderers)
+        {
+            if (r != null && !r.name.StartsWith("Glow_"))
+            {
+                r.enabled = true;
+            }
+        }
+        foreach (Collider c in colliders)
+        {
+            if (c != null) c.enabled = true;
+        }
+
+        if (interactable != null)
+        {
+            interactable.hideHoverText = false;
+            UpdateHoverText();
+        }
+
+        if (visualizer != null)
+        {
+            visualizer.enablePeriodicGlow = true;
+            visualizer.SetIntensity(0f);
+        }
+    }
+
     private string FormatHoverText()
     {
         string text = $"{propName} - ${price:0.00}";

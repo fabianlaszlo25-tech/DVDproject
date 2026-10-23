@@ -1,9 +1,8 @@
 // Additive glow shader used by InteractVisualizer.
-// One shader, one pass, two materials:
-// 1. Fill material (Cull Back, Queue Transparent+10) stamps the mesh silhouette into the stencil buffer
-//    (invisible while idle with Alpha 0, glowing while held).
-// 2. Outline material (Cull Front, Queue Transparent+11) tests Stencil != Ref so see-through meshes
-//    only ever render the outer outline rim.
+// Works on both Opaque and Transparent meshes by allowing the Fill pass (Queue Transparent+10)
+// to write to BOTH the Depth buffer (_ZWrite = 1) and Stencil buffer (Ref 173) after the
+// transparent object (Queue 3000) has already rendered, physically and logically blocking
+// the back-facing Outline pass (Queue Transparent+11) from ever drawing inside the silhouette.
 Shader "Custom/TrashOutline"
 {
     Properties
@@ -24,6 +23,7 @@ Shader "Custom/TrashOutline"
         _SwirlTwist ("Swirl Vertical Twist", Float) = 8
 
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 1
+        [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Float) = 0
         _OffsetFactor ("Depth Offset Factor", Float) = 0
         _OffsetUnits ("Depth Offset Units", Float) = 0
 
@@ -40,7 +40,7 @@ Shader "Custom/TrashOutline"
         {
             Name "Glow"
             Cull [_Cull]
-            ZWrite Off
+            ZWrite [_ZWrite]
             ZTest LEqual
             Offset [_OffsetFactor], [_OffsetUnits]
             Blend SrcAlpha One
@@ -50,6 +50,7 @@ Shader "Custom/TrashOutline"
                 Ref [_StencilRef]
                 Comp [_StencilComp]
                 Pass [_StencilPass]
+                ZFail Keep
             }
 
             CGPROGRAM

@@ -10,6 +10,9 @@ public enum BoosterStat
     MoneyAllBounces,
     BounceSpeed,
 
+    // --- Global Game Speed (Time.timeScale) ---
+    GameSpeed,
+
     // --- Bar Fill Rates (BarManager) ---
     HungerFillRate,
     SleepFillRate,
@@ -133,6 +136,52 @@ public class BoosterObject : MonoBehaviour
         onBoosterActivated?.Invoke();
     }
 
+    /// <summary>
+    /// Called by <see cref="TimedConsumableBooster"/> when a temporary consumable expires
+    /// so its stat modifiers are cleanly undone and it can be purchased again.
+    /// </summary>
+    public void RevertBooster()
+    {
+        if (!hasApplied) return;
+        hasApplied = false;
+
+        if (economyBouncer == null) economyBouncer = FindObjectOfType<DVDLogoBouncer>();
+        if (barManager == null) barManager = FindObjectOfType<BarManager>();
+
+        for (int i = modifiers.Count - 1; i >= 0; i--)
+        {
+            StatModifier inverseMod = CreateInverseModifier(modifiers[i]);
+            ApplySingleModifier(inverseMod);
+        }
+    }
+
+    private StatModifier CreateInverseModifier(StatModifier original)
+    {
+        StatModifier inverse = new StatModifier
+        {
+            stat = original.stat,
+            mode = original.mode,
+            value = original.value
+        };
+
+        switch (original.mode)
+        {
+            case ModifierMode.FlatAdd:
+                inverse.value = -original.value;
+                break;
+            case ModifierMode.PercentageChange:
+                float mult = 1f + (original.value / 100f);
+                inverse.mode = ModifierMode.Multiply;
+                inverse.value = Mathf.Abs(mult) > 0.0001f ? (1f / mult) : 1f;
+                break;
+            case ModifierMode.Multiply:
+                inverse.value = Mathf.Abs(original.value) > 0.0001f ? (1f / original.value) : 1f;
+                break;
+        }
+
+        return inverse;
+    }
+
     private void ApplySingleModifier(StatModifier mod)
     {
         switch (mod.stat)
@@ -159,6 +208,11 @@ public class BoosterObject : MonoBehaviour
             case BoosterStat.BounceSpeed:
                 if (economyBouncer != null)
                     economyBouncer.baseSpeed = Mathf.Max(0.01f, CalculateFloat(economyBouncer.baseSpeed, mod));
+                break;
+
+            // --- Global Game Speed (Time.timeScale) ---
+            case BoosterStat.GameSpeed:
+                Time.timeScale = Mathf.Clamp(CalculateFloat(Time.timeScale, mod), 0.05f, 10f);
                 break;
 
             // --- BarManager Fill Rates ---

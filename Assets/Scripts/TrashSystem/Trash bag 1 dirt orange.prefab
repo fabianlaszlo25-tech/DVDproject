@@ -212,10 +212,10 @@ MonoBehaviour:
   returnDuration: 0.2
   shakeIntensity: 0.04
   shakeSpeed: 40
-  shakeSound: {fileID: 0}
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
   shakeVolume: 1
   poofParticlePrefab: {fileID: 521877039727993729, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
-  poofSound: {fileID: 0}
+  poofSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
   poofVolume: 1
   poofPositionOffset: {x: 0, y: 0.4, z: 0}
   poofRotationOffset: {x: 0, y: 0, z: 0}
@@ -330,8 +330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
-  glowColor: {r: 1, g: 0.26160848, b: 0, a: 1}
-  thickness: 0.03
+  glowColor: {r: 1, g: 0.12635222, b: 0, a: 1}
+  thickness: 0.02
   radialBlend: 0.5
   fillStrength: 1
   enablePeriodicGlow: 1

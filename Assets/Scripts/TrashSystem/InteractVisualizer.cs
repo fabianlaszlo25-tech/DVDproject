@@ -5,14 +5,14 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Standalone glow for any object with MeshFilter + MeshRenderer children.
 /// It never touches the object's own materials: it adds hidden child copies of the meshes
-/// that render (1) a glowing fill over the whole surface and (2) a swirling outline.
+/// that render (1) a depth + stencil masking fill over the surface and (2) a swirling outline.
 /// Periodically ramps the outline up and back down with 0 inner fill brightness while idle,
 /// and ramps both outline and inner fill when driven with <see cref="SetIntensity"/> (0..1).
 /// </summary>
 public class InteractVisualizer : MonoBehaviour
 {
     private const string ShaderName = "Custom/TrashOutline";
-    private const float FillThickness = 0.002f; // tiny push so the fill doesn't z-fight the surface
+    private const float FillThickness = 0f; // 0 so vertices match exact silhouette without opening seams
     private const float StencilRefValue = 173f;
 
     private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -23,6 +23,7 @@ public class InteractVisualizer : MonoBehaviour
     private static readonly int RadialBlendId = Shader.PropertyToID("_RadialBlend");
     private static readonly int CenterId = Shader.PropertyToID("_Center");
     private static readonly int CullId = Shader.PropertyToID("_Cull");
+    private static readonly int ZWriteId = Shader.PropertyToID("_ZWrite");
     private static readonly int OffsetFactorId = Shader.PropertyToID("_OffsetFactor");
     private static readonly int OffsetUnitsId = Shader.PropertyToID("_OffsetUnits");
     private static readonly int StencilRefId = Shader.PropertyToID("_StencilRef");
@@ -133,11 +134,13 @@ public class InteractVisualizer : MonoBehaviour
         periodicTimer = Random.Range(0f, totalCycle);
         swirlSeed = Random.Range(0f, Mathf.PI * 2f);
 
-        // Fill (Queue Transparent+10): renders first, stamps Stencil = 173 across the mesh interior.
-        // During idle glow its Alpha is 0 (invisible), masking see-through objects for the outline.
+        // Fill (Queue Transparent+10): renders AFTER the transparent object (Queue 3000),
+        // writes to Depth (ZWrite = 1) and Stencil (Ref = 173) across the front surface.
+        // During idle glow its Alpha is 0 (invisible), physically blocking the back-face outline behind it!
         fillMaterial = CreateMaterial(
             "TrashGlow Fill",
             CullMode.Back,
+            1f, // ZWrite ON: writes depth for transparent objects so back-faces of the outline are depth-culled!
             -1f,
             -1f,
             0f,
@@ -145,10 +148,12 @@ public class InteractVisualizer : MonoBehaviour
             StencilOp.Replace,
             10);
 
-        // Outline (Queue Transparent+11): renders second, only where Stencil != 173 (outside the silhouette).
+        // Outline (Queue Transparent+11): renders second, culled by BOTH Depth (ZTest LEqual against Fill's ZWrite)
+        // and Stencil (Stencil != 173).
         outlineMaterial = CreateMaterial(
             "TrashGlow Outline",
             CullMode.Front,
+            0f, // ZWrite OFF
             0f,
             0f,
             radialBlend,
@@ -162,6 +167,7 @@ public class InteractVisualizer : MonoBehaviour
     private Material CreateMaterial(
         string materialName,
         CullMode cull,
+        float zWrite,
         float offsetFactor,
         float offsetUnits,
         float blend,
@@ -176,6 +182,7 @@ public class InteractVisualizer : MonoBehaviour
             renderQueue = (int)RenderQueue.Transparent + queueOffset
         };
         material.SetFloat(CullId, (float)cull);
+        material.SetFloat(ZWriteId, zWrite);
         material.SetFloat(OffsetFactorId, offsetFactor);
         material.SetFloat(OffsetUnitsId, offsetUnits);
         material.SetFloat(RadialBlendId, blend);
@@ -195,14 +202,16 @@ public class InteractVisualizer : MonoBehaviour
     {
         foreach (MeshFilter filter in GetComponentsInChildren<MeshFilter>())
         {
-            if (filter.sharedMesh == null || filter.GetComponent<MeshRenderer>() == null) continue;
+            MeshRenderer sourceRenderer = filter.GetComponent<MeshRenderer>();
+            if (filter.sharedMesh == null || sourceRenderer == null) continue;
 
-            glowRenderers.Add(CreateCopy(filter, "Glow_Fill_", fillMaterial, false));
-            glowRenderers.Add(CreateCopy(filter, "Glow_Outline_", outlineMaterial, true));
+            int baseSort = sourceRenderer.sortingOrder;
+            glowRenderers.Add(CreateCopy(filter, "Glow_Fill_", fillMaterial, baseSort + 1));
+            glowRenderers.Add(CreateCopy(filter, "Glow_Outline_", outlineMaterial, baseSort + 2));
         }
     }
 
-    private MeshRenderer CreateCopy(MeshFilter source, string namePrefix, Material material, bool needsCenter)
+    private MeshRenderer CreateCopy(MeshFilter source, string namePrefix, Material material, int sortingOrder)
     {
         Mesh mesh = source.sharedMesh;
 
@@ -218,18 +227,18 @@ public class InteractVisualizer : MonoBehaviour
         for (int i = 0; i < materials.Length; i++) materials[i] = material;
         renderer.sharedMaterials = materials;
 
+        renderer.sortingOrder = sortingOrder;
+
         renderer.shadowCastingMode = ShadowCastingMode.Off;
         renderer.receiveShadows = false;
         renderer.lightProbeUsage = LightProbeUsage.Off;
         renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
 
-        if (needsCenter)
-        {
-            // Each mesh has its own center, so it goes in a per-renderer property block.
-            var block = new MaterialPropertyBlock();
-            block.SetVector(CenterId, mesh.bounds.center);
-            renderer.SetPropertyBlock(block);
-        }
+        // Apply MaterialPropertyBlock to BOTH Fill and Outline renderers so URP puts both
+        // in the exact same non-SRP-batcher draw loop, strictly respecting renderQueue 3010 -> 3011.
+        var block = new MaterialPropertyBlock();
+        block.SetVector(CenterId, mesh.bounds.center);
+        renderer.SetPropertyBlock(block);
 
         renderer.enabled = false;
         return renderer;
@@ -306,8 +315,8 @@ public class InteractVisualizer : MonoBehaviour
         outlineMaterial.SetFloat(SwirlBandsId, Mathf.Max(1f, Mathf.Round(swirlBands)));
         outlineMaterial.SetFloat(SwirlTwistId, swirlTwist);
 
-        // Fill: always renders when outline is visible so it stamps the stencil mask for see-through
-        // objects, but its Brightness and Alpha are 0 unless the player is actively holding the item.
+        // Fill: always renders when outline is visible so it stamps both the Depth buffer and Stencil mask
+        // for see-through objects, while remaining completely invisible (Alpha = 0) unless held.
         fillMaterial.SetColor(ColorId, glowColor);
         fillMaterial.SetFloat(ThicknessId, FillThickness);
         fillMaterial.SetFloat(ThicknessScaleId, 1f);
