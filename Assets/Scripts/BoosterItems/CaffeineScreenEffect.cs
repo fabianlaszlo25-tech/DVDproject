@@ -1,12 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Fullscreen Caffeinated / Energy Drink Rush Effect.
-/// Features rapid heartbeat tunnel pulses, high-frequency hand/eye micro-jitter,
-/// hyper-focused center sharpening, and electric radial speed-lines.
-/// Can be driven automatically by <see cref="TimedConsumableBooster"/> or triggered via Button OnClick().
-/// </summary>
 public class CaffeineScreenEffect : MonoBehaviour
 {
     private const string ShaderName = "Custom/CaffeineScreenShader";
@@ -24,39 +18,28 @@ public class CaffeineScreenEffect : MonoBehaviour
     private static readonly int CameraVelocityId = Shader.PropertyToID("_CameraVelocity");
 
     [Header("Target Camera")]
-    [Tooltip("Leave empty to automatically use Camera.main.")]
     public Camera targetCamera;
 
-    [Header("Standalone Activation (If not driven by TimedConsumableBooster)")]
+    [Header("Standalone Activation")]
     public float defaultDuration = 60.0f;
-    public float fadeInSpeed = 0.25f;
-    public float fadeOutSpeed = 0.2f;
+    public float fadeInSpeed = 0.35f;
+    public float fadeOutSpeed = 0.35f;
     [Range(0f, 1f)] public float maxIntensity = 1.0f;
 
     [Header("Caffeine Rush Look")]
-    [Tooltip("High-frequency screen tremor strength.")]
     public float jitterAmount = 0.0026f;
-    [Tooltip("Speed of the caffeinated micro-shakes.")]
     public float jitterSpeed = 55.0f;
-    [Tooltip("Speed of the double-beat adrenaline heart pulse.")]
     public float heartbeatSpeed = 11.5f;
-    [Tooltip("How much the screen zooms on each heartbeat.")]
     public float pulseZoom = 0.022f;
-    [Tooltip("Chromatic RGB split around the edges of the screen.")]
     public float chromaticEdge = 0.0085f;
-    [Tooltip("Contrast multiplier for hyper-focused vision.")]
     public float contrastBoost = 1.22f;
-    [Tooltip("Color saturation boost while caffeinated.")]
     public float saturationBoost = 1.38f;
-    [ColorUsage(true, true)]
-    public Color edgeTint = new Color(0.15f, 1.0f, 0.55f, 1.0f);
+    [ColorUsage(true, true)] public Color edgeTint = new Color(0.15f, 1.0f, 0.55f, 1.0f);
 
     [Header("Physical Camera Micro-Tremor")]
-    [Tooltip("Subtle high-speed camera shake in degrees while wired on caffeine.")]
     public float cameraJitterDegrees = 0.35f;
 
     [Header("Shader Reference")]
-    [Tooltip("Assign 'Custom/CaffeineScreenShader' here, or keep it in a Resources folder.")]
     public Shader caffeineShader;
 
     private Material caffeineMaterial;
@@ -74,13 +57,6 @@ public class CaffeineScreenEffect : MonoBehaviour
     private Vector2 smoothedCamVel;
     private Vector3 appliedCameraJitterEuler;
 
-    // =========================================================================
-    // PUBLIC METHODS FOR TIMEDCONSUMABLEBOOSTER & BUTTON ONCLICK()
-    // =========================================================================
-
-    /// <summary>
-    /// Used by <see cref="TimedConsumableBooster"/> to smoothly fade the effect in and out.
-    /// </summary>
     public void SetExternalIntensity(float value)
     {
         EnsureInitialized();
@@ -135,10 +111,6 @@ public class CaffeineScreenEffect : MonoBehaviour
         remainingTimer = 0f;
     }
 
-    // =========================================================================
-    // LIFECYCLE & RENDERING
-    // =========================================================================
-
     private void Awake()
     {
         EnsureInitialized();
@@ -162,12 +134,7 @@ public class CaffeineScreenEffect : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
         if (caffeineShader == null) caffeineShader = Shader.Find(ShaderName);
-
-        if (caffeineShader == null)
-        {
-            Debug.LogWarning("CaffeineScreenEffect: 'Custom/CaffeineScreenShader' not found! Put it in a Resources folder or assign it.", this);
-            return;
-        }
+        if (caffeineShader == null) return;
 
         if (caffeineMaterial == null)
         {
@@ -245,7 +212,7 @@ public class CaffeineScreenEffect : MonoBehaviour
         {
             if (isEffectActive && remainingTimer > 0f)
             {
-                remainingTimer -= Time.deltaTime;
+                remainingTimer -= Time.unscaledDeltaTime;
                 if (remainingTimer <= 0f)
                 {
                     remainingTimer = 0f;
@@ -255,7 +222,7 @@ public class CaffeineScreenEffect : MonoBehaviour
 
             float target = isEffectActive ? maxIntensity : 0f;
             float speed = isEffectActive ? fadeInSpeed : fadeOutSpeed;
-            currentIntensity = Mathf.MoveTowards(currentIntensity, target, speed * Time.deltaTime);
+            currentIntensity = Mathf.MoveTowards(currentIntensity, target, speed * Time.unscaledDeltaTime);
         }
 
         if (currentIntensity <= 0.001f)
@@ -279,10 +246,9 @@ public class CaffeineScreenEffect : MonoBehaviour
 
         RemoveCameraJitter();
 
-        // High-frequency caffeinated camera buzz
         if (cameraJitterDegrees > 0.001f)
         {
-            float t = Time.time * jitterSpeed;
+            float t = Time.unscaledTime * jitterSpeed;
             appliedCameraJitterEuler = new Vector3(
                 (Mathf.PerlinNoise(t, 0f) * 2f - 1f) * cameraJitterDegrees * currentIntensity,
                 (Mathf.PerlinNoise(0f, t) * 2f - 1f) * cameraJitterDegrees * currentIntensity,
@@ -291,7 +257,6 @@ public class CaffeineScreenEffect : MonoBehaviour
             targetCamera.transform.localRotation *= Quaternion.Euler(appliedCameraJitterEuler);
         }
 
-        // Measure angular velocity for motion streaks
         if (!hasInitializedCam)
         {
             lastCamRotation = targetCamera.transform.rotation;
@@ -306,9 +271,8 @@ public class CaffeineScreenEffect : MonoBehaviour
         Vector2 rawVel = Mathf.Abs(angle) > 0.001f
             ? new Vector2(-axis.y * angle, axis.x * angle) * 0.004f
             : Vector2.zero;
-        smoothedCamVel = Vector2.Lerp(smoothedCamVel, Vector2.ClampMagnitude(rawVel, 0.05f), 1f - Mathf.Exp(-14f * Time.deltaTime));
+        smoothedCamVel = Vector2.Lerp(smoothedCamVel, Vector2.ClampMagnitude(rawVel, 0.05f), 1f - Mathf.Exp(-14f * Time.unscaledDeltaTime));
 
-        // Render camera into RT
         EnsureRT(Screen.width, Screen.height);
         RenderTexture prev = targetCamera.targetTexture;
         targetCamera.targetTexture = currentFrameRT;

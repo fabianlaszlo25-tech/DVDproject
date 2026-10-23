@@ -4,19 +4,36 @@ using UnityEngine;
 public class FoodPriceDisplay : MonoBehaviour
 {
     public BarManager barManager;
-    private InteractableObject interactable;
+    public string notEnoughMoneyMessage = "Not enough money!";
 
-    void Start()
+    private InteractableObject interactable;
+    private float denyMessageTimer = 0f;
+
+    private void Start()
     {
         interactable = GetComponent<InteractableObject>();
+        if (barManager == null) barManager = FindObjectOfType<BarManager>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (barManager != null)
+        if (interactable == null || barManager == null) return;
+
+        decimal currentCost = barManager.GetCurrentFoodCost();
+
+        if (denyMessageTimer > 0f)
         {
-            // Dynamically rewrites the hover text string on your custom script
-            interactable.hoverText = $"Eat Food (${barManager.GetCurrentFoodCost():0.00})";
+            denyMessageTimer -= Time.unscaledDeltaTime;
+            interactable.hoverText = $"Eat Food (${currentCost:0.00})\n{notEnoughMoneyMessage}";
         }
+        else
+        {
+            interactable.hoverText = $"Eat Food (${currentCost:0.00})";
+        }
+    }
+
+    public void ShowNotEnoughMoneyFeedback(float duration = 1.2f)
+    {
+        denyMessageTimer = Mathf.Max(0.2f, duration);
     }
 }

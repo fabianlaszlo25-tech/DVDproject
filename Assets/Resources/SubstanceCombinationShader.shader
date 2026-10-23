@@ -18,7 +18,6 @@ Shader "Custom/SubstanceCombinationShader"
         _GhostOffset2 ("Camera Echo Offset 2 (XY)", Vector) = (0, 0, 0, 0)
         _GhostOffset3 ("Camera Echo Offset 3 (XY)", Vector) = (0, 0, 0, 0)
 
-        // Dynamic packed parameters driven by the Inspector Dropdowns in SubstanceCombinationManager
         _ParamA ("Combo Params A", Vector) = (1, 1, 1, 1)
         _ParamB ("Combo Params B", Vector) = (1, 1, 1, 1)
         _ParamC ("Combo Params C", Vector) = (1, 1, 1, 1)
@@ -163,9 +162,6 @@ Shader "Custom/SubstanceCombinationShader"
         return accum / (float)taps;
     }
 
-    // =========================================================================
-    // PASS 0: PERSISTENT FEEDBACK SMEAR ACCUMULATION PASS
-    // =========================================================================
     float4 fragSmearAccum (v2f i) : SV_Target
     {
         float2 uv = i.uv;
@@ -199,9 +195,6 @@ Shader "Custom/SubstanceCombinationShader"
         return float4(saturate(combined), 1.0);
     }
 
-    // =========================================================================
-    // PASS 1: MAIN FULLSCREEN COMBINATION COMPOSITE PASS
-    // =========================================================================
     float4 fragMain (v2f i) : SV_Target
     {
         if (_Intensity <= 0.001 && _BlackoutFade <= 0.001)
@@ -218,13 +211,6 @@ Shader "Custom/SubstanceCombinationShader"
 
         float3 finalRGB = tex2D(_MainTex, uv).rgb;
 
-        // =====================================================================
-        // MODE 1: HYPERFOCUS (Nicotine + Caffeine)
-        // _ParamA: x = PulseSpeed, y = PulseZoom, z = CenterSharpness, w = PeripheralBlur
-        // _ParamB: x = MicroTremor, y = ChromaticSplit, z = SaturationBoost, w = ContrastBoost
-        // _ParamC: x = RimGlowStrength
-        // _ColorA: Primary Electric Rim Color, _ColorB: Secondary Rim Color
-        // =====================================================================
         if (_ComboMode == 1)
         {
             float beatT = t * _ParamA.x;
@@ -275,13 +261,6 @@ Shader "Custom/SubstanceCombinationShader"
             float3 rimColor = lerp(_ColorA.rgb, _ColorB.rgb, sin(angle * 2.0 + t * 4.0) * 0.5 + 0.5);
             finalRGB += rimColor * (rays * smoothstep(0.28, 0.68, dist) * (0.4 + 0.6 * heartPulse) * _ParamC.x * _Intensity);
         }
-
-        // =====================================================================
-        // MODE 2: HEART ATTACK (Alcohol + Caffeine)
-        // _ParamA: x = HeartbeatRate, y = SystolicZoomSlam, z = RadialBlurStrength, w = ChromaticStrength
-        // _ParamB: x = GhostSplitAmount, y = GreyscaleDrain, z = TunnelOpenRadius, w = TunnelSlamRadius
-        // _ColorA: Arterial Blood Vignette Color
-        // =====================================================================
         else if (_ComboMode == 2)
         {
             float cycle = fmod(t * _ParamA.x, 1.0);
@@ -327,13 +306,6 @@ Shader "Custom/SubstanceCombinationShader"
             float3 bloodDarkness = lerp(_ColorA.rgb * (0.5 + cardiacSlam), float3(0.02, 0.0, 0.0), smoothstep(0.35, 0.72, dist));
             finalRGB = lerp(finalRGB, bloodDarkness, tunnelMask * (0.82 + 0.18 * cardiacSlam) * _Intensity);
         }
-
-        // =====================================================================
-        // MODE 3: HANYINGER / NAUSEA & THE SPINS (Alcohol + Weed)
-        // _ParamA: x = SpinSpeed, y = SpinMaxAngle, z = StomachHeaveAmplitude, w = BlurRadius
-        // _ParamB: x = TrailBlendWeight, y = BileColorStrength, z = VignetteStrength
-        // _ColorA: Bile Primary Tint, _ColorB: Bile Secondary Tint
-        // =====================================================================
         else if (_ComboMode == 3)
         {
             float spinPhase = t * _ParamA.x;
@@ -371,13 +343,6 @@ Shader "Custom/SubstanceCombinationShader"
             float nauseaVignette = smoothstep(0.22, 0.72, dist);
             finalRGB = lerp(finalRGB, _ColorA.rgb * 0.15, nauseaVignette * _ParamB.z * _Intensity);
         }
-
-        // =====================================================================
-        // MODE 4: ANXIETY ATTACK (Weed + Nicotine OR Weed + Caffeine)
-        // _ParamA: x = PanicPulseSpeed, y = BarrelWarpStrength, z = NerveJitterAmount, w = ChromaticSplit
-        // _ParamB: x = ColdContrastBoost, y = Desaturation, z = ParanoiaTunnelStrength
-        // _ColorA: Cold Panic Tint
-        // =====================================================================
         else if (_ComboMode == 4)
         {
             float panicPulse = pow(sin(t * _ParamA.x) * 0.5 + 0.5, 3.0) * _Intensity;
@@ -412,13 +377,6 @@ Shader "Custom/SubstanceCombinationShader"
             float paranoiaTunnel = smoothstep(0.18, 0.62 - panicPulse * 0.12 - shadowNoise * 0.15, dist);
             finalRGB *= (1.0 - paranoiaTunnel * _ParamB.z * _Intensity);
         }
-
-        // =====================================================================
-        // MODE 5: DIZZY BUZZ (Alcohol + Nicotine)
-        // _ParamA: x = SwaySpeed, y = GravitySinkAmplitude, z = BlurAmount, w = ChromaticSplit
-        // _ParamB: x = EchoTrailStrength, y = VignetteStrength
-        // _ColorA: Warm Amber Tint
-        // =====================================================================
         else if (_ComboMode == 5)
         {
             float headRushWave = sin(t * _ParamA.x) * 0.5 + 0.5;
@@ -441,12 +399,6 @@ Shader "Custom/SubstanceCombinationShader"
             float smokeVignette = smoothstep(0.25, 0.75, dist);
             finalRGB = lerp(finalRGB, finalRGB * (_ColorA.rgb * 0.25), smokeVignette * (_ParamB.y + 0.15 * headRushWave) * _Intensity);
         }
-
-        // =====================================================================
-        // MODE 6: 3-EFFECT SUPER OVERDOSE (Organic Melting & Temporal Smearing + Video)
-        // _ParamA: x = FluidFlowSpeed, y = FluidMeltDistortion, z = VortexSwirlAngle, w = BlurRadius
-        // _ParamB: x = PersistentSmearWeight, y = RainbowHueDrift, z = ChromaticSpread
-        // =====================================================================
         else if (_ComboMode == 6)
         {
             float flowSpeed = _ParamA.x;
@@ -489,7 +441,7 @@ Shader "Custom/SubstanceCombinationShader"
             finalRGB = lerp(smearedWorld, lerp(smearedWorld * 0.35 + videoCol * 0.85, videoCol, _VideoFade), organicVideoBlend);
         }
 
-        // Fade to pitch black during unconsciousness
+        // Apply Blackout Fade
         finalRGB = lerp(finalRGB, float3(0.0, 0.0, 0.0), saturate(_BlackoutFade));
 
         float finalAlpha = max(saturate(_Intensity * 1.2), saturate(_BlackoutFade));

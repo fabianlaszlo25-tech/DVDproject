@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Fullscreen Nicotine Buzz Effect: a subtle hybrid combining a lightheaded alcohol swim
-/// and motion echo with a crisp caffeine focus pulse and micro-tremor.
-/// Driven automatically by <see cref="TimedConsumableBooster"/> or via Button OnClick().
-/// </summary>
 public class NicotineScreenEffect : MonoBehaviour
 {
     private const string ShaderName = "Custom/NicotineScreenShader";
@@ -26,8 +21,8 @@ public class NicotineScreenEffect : MonoBehaviour
 
     [Header("Standalone Activation")]
     public float defaultDuration = 60.0f;
-    public float fadeInSpeed = 0.25f;
-    public float fadeOutSpeed = 0.2f;
+    public float fadeInSpeed = 0.35f;
+    public float fadeOutSpeed = 0.35f;
     [Range(0f, 1f)] public float maxIntensity = 1.0f;
 
     [Header("Nicotine Buzz Settings (Subtle Alcohol + Caffeine Mix)")]
@@ -141,12 +136,7 @@ public class NicotineScreenEffect : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
         if (nicotineShader == null) nicotineShader = Shader.Find(ShaderName);
-
-        if (nicotineShader == null)
-        {
-            Debug.LogWarning("NicotineScreenEffect: 'Custom/NicotineScreenShader' not found! Put it in a Resources folder or assign it.", this);
-            return;
-        }
+        if (nicotineShader == null) return;
 
         if (nicotineMaterial == null)
         {
@@ -218,18 +208,8 @@ public class NicotineScreenEffect : MonoBehaviour
 
     private void ReleaseRTs()
     {
-        if (currentFrameRT != null)
-        {
-            currentFrameRT.Release();
-            Destroy(currentFrameRT);
-            currentFrameRT = null;
-        }
-        if (echoFrameRT != null)
-        {
-            echoFrameRT.Release();
-            Destroy(echoFrameRT);
-            echoFrameRT = null;
-        }
+        if (currentFrameRT != null) { currentFrameRT.Release(); Destroy(currentFrameRT); currentFrameRT = null; }
+        if (echoFrameRT != null) { echoFrameRT.Release(); Destroy(echoFrameRT); echoFrameRT = null; }
     }
 
     private void Update()

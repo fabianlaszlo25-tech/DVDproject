@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// 100% Pipeline-Independent Fullscreen Drunk Effect + "Seeing Camera Movement 3 Times" Triple Echo.
-/// Works reliably in Unity 6 URP (RenderGraph), Legacy URP, and Built-in without any Renderer Features.
-/// Can be driven automatically by <see cref="TimedConsumableBooster"/> or triggered via Button OnClick().
-/// </summary>
 public class DrunkScreenEffect : MonoBehaviour
 {
     private const string ShaderName = "Custom/DrunkScreenShader";
@@ -28,51 +23,33 @@ public class DrunkScreenEffect : MonoBehaviour
     private static readonly int GhostOffset3Id = Shader.PropertyToID("_GhostOffset3");
 
     [Header("Target Camera")]
-    [Tooltip("Leave empty to automatically use Camera.main.")]
     public Camera targetCamera;
 
     [Header("Activation & Duration")]
-    [Tooltip("How long the drunk effect lasts when TriggerDrunkEffect() is called (set to 0 for infinite until toggled off).")]
     public float defaultDuration = 60.0f;
-    [Tooltip("How fast the drunk effect fades in when activated directly.")]
-    public float fadeInSpeed = 0.25f;
-    [Tooltip("How fast the drunk effect fades out when ending.")]
-    public float fadeOutSpeed = 0.2f;
-    [Tooltip("Peak intensity of the drunk effect (0..1).")]
+    public float fadeInSpeed = 0.35f;
+    public float fadeOutSpeed = 0.35f;
     [Range(0f, 1f)] public float maxIntensity = 1.0f;
 
     [Header("Blurry Swimming / Meshing")]
-    [Tooltip("How strongly the screen warps and swims.")]
     public float wobbleAmplitude = 0.014f;
-    [Tooltip("Density of the wavy screen distortion.")]
     public float wobbleFrequency = 4.2f;
-    [Tooltip("Speed of the wavy screen swimming.")]
     public float wobbleSpeed = 2.3f;
-    [Tooltip("Base blurriness of the screen.")]
     public float blurAmount = 0.0038f;
-    [Tooltip("Color fringe separation at the edges of objects.")]
     public float chromaticSplit = 0.005f;
 
     [Header("Camera 'Seeing Movement 3 Times' Echo")]
-    [Tooltip("How strongly the 3 lagged copies appear whenever the camera rotates or moves.")]
     [Range(0f, 1f)] public float tripleEchoStrength = 0.85f;
-    [Tooltip("How sensitive the 3 ghost echoes are to tiny camera rotations.")]
     public float rotationEchoSensitivity = 0.065f;
-    [Tooltip("How sensitive the 3 ghost echoes are to positional camera movement.")]
     public float positionEchoSensitivity = 0.16f;
-    [Tooltip("Maximum screen UV distance the 3 ghost copies can trail behind the camera.")]
     public float maxEchoUVOffset = 0.11f;
-    [Tooltip("How quickly the 3 lagged copies catch back up after the camera stops moving.")]
     public float echoDecaySpeed = 7.5f;
-    [Tooltip("Time interval in seconds between captured echo frames (e.g. 0.035s = snappy 1-2-3 triple vision).")]
     public float echoFrameStepInterval = 0.035f;
 
     [Header("Optional Physical Camera Sway")]
-    [Tooltip("Adds a subtle Dutch-angle roll sway to the camera while drunk.")]
     public float cameraRollSwayDegrees = 3.5f;
 
     [Header("Shader Reference")]
-    [Tooltip("Assign 'Custom/DrunkScreenShader' here, or keep it in a Resources folder.")]
     public Shader drunkShader;
 
     private Material drunkMaterial;
@@ -99,13 +76,6 @@ public class DrunkScreenEffect : MonoBehaviour
     private float echoPulsePhase;
     private float appliedRollAngle;
 
-    // =========================================================================
-    // PUBLIC METHODS FOR TIMEDCONSUMABLEBOOSTER & BUTTON ONCLICK()
-    // =========================================================================
-
-    /// <summary>
-    /// Used by <see cref="TimedConsumableBooster"/> to smoothly fade the effect in and out.
-    /// </summary>
     public void SetExternalIntensity(float value)
     {
         EnsureInitialized();
@@ -140,13 +110,9 @@ public class DrunkScreenEffect : MonoBehaviour
     public void ToggleDrunkEffect()
     {
         if (isEffectActive || currentIntensity > 0.01f)
-        {
             DisableDrunkEffect();
-        }
         else
-        {
             EnableDrunkEffect();
-        }
     }
 
     public void EnableDrunkEffect()
@@ -163,10 +129,6 @@ public class DrunkScreenEffect : MonoBehaviour
         isEffectActive = false;
         remainingTimer = 0f;
     }
-
-    // =========================================================================
-    // LIFECYCLE & RUNTIME OVERLAY SETUP
-    // =========================================================================
 
     private void Awake()
     {
@@ -191,12 +153,7 @@ public class DrunkScreenEffect : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
         if (drunkShader == null) drunkShader = Shader.Find(ShaderName);
-
-        if (drunkShader == null)
-        {
-            Debug.LogWarning("DrunkScreenEffect: 'Custom/DrunkScreenShader' not found! Assign it in the Inspector or place it in a Resources folder.", this);
-            return;
-        }
+        if (drunkShader == null) return;
 
         if (drunkMaterial == null)
         {
@@ -242,9 +199,7 @@ public class DrunkScreenEffect : MonoBehaviour
         height = Mathf.Max(64, height);
 
         if (currentFrameRT != null && currentFrameRT.width == width && currentFrameRT.height == height)
-        {
             return;
-        }
 
         ReleaseRenderTextures();
 
@@ -257,10 +212,7 @@ public class DrunkScreenEffect : MonoBehaviour
             echoHistoryRTs[i] = CreateRT(echoW, echoH, "Drunk_EchoRT_" + i);
         }
 
-        if (overlayImage != null)
-        {
-            overlayImage.texture = currentFrameRT;
-        }
+        if (overlayImage != null) overlayImage.texture = currentFrameRT;
     }
 
     private RenderTexture CreateRT(int w, int h, string rtName)
@@ -303,7 +255,7 @@ public class DrunkScreenEffect : MonoBehaviour
         {
             if (isEffectActive && remainingTimer > 0f)
             {
-                remainingTimer -= Time.deltaTime;
+                remainingTimer -= Time.unscaledDeltaTime;
                 if (remainingTimer <= 0f)
                 {
                     remainingTimer = 0f;
@@ -313,15 +265,14 @@ public class DrunkScreenEffect : MonoBehaviour
 
             float target = isEffectActive ? maxIntensity : 0f;
             float speed = isEffectActive ? fadeInSpeed : fadeOutSpeed;
-            currentIntensity = Mathf.MoveTowards(currentIntensity, target, speed * Time.deltaTime);
+            currentIntensity = Mathf.MoveTowards(currentIntensity, target, speed * Time.unscaledDeltaTime);
         }
 
         if (currentIntensity <= 0.001f)
         {
             if (overlayCanvas != null && overlayCanvas.gameObject.activeSelf)
-            {
                 overlayCanvas.gameObject.SetActive(false);
-            }
+
             RemoveCameraRoll();
             hasInitializedCameraPose = false;
             return;
@@ -329,9 +280,7 @@ public class DrunkScreenEffect : MonoBehaviour
 
         EnsureInitialized();
         if (overlayCanvas != null && !overlayCanvas.gameObject.activeSelf)
-        {
             overlayCanvas.gameObject.SetActive(true);
-        }
 
         UpdateCameraMotionEchoes();
     }
@@ -343,7 +292,7 @@ public class DrunkScreenEffect : MonoBehaviour
         RemoveCameraRoll();
         if (cameraRollSwayDegrees > 0.001f)
         {
-            float t = Time.time * wobbleSpeed * 0.7f;
+            float t = Time.unscaledTime * wobbleSpeed * 0.7f;
             appliedRollAngle = (Mathf.Sin(t) * 0.65f + Mathf.Cos(t * 1.7f) * 0.35f) * cameraRollSwayDegrees * currentIntensity;
             targetCamera.transform.localRotation *= Quaternion.Euler(0f, 0f, appliedRollAngle);
         }
@@ -366,7 +315,7 @@ public class DrunkScreenEffect : MonoBehaviour
             hasInitializedCameraPose = true;
         }
 
-        echoCaptureTimer += Time.deltaTime;
+        echoCaptureTimer += Time.unscaledDeltaTime;
         if (echoCaptureTimer >= Mathf.Max(0.01f, echoFrameStepInterval))
         {
             echoCaptureTimer = 0f;
@@ -395,7 +344,7 @@ public class DrunkScreenEffect : MonoBehaviour
         if (targetCamera == null || !hasInitializedCameraPose) return;
 
         Transform camTransform = targetCamera.transform;
-        float dt = Mathf.Max(0.0001f, Time.deltaTime);
+        float dt = Mathf.Max(0.0001f, Time.unscaledDeltaTime);
 
         Quaternion deltaRot = Quaternion.Inverse(lastCamRotation) * camTransform.rotation;
         deltaRot.ToAngleAxis(out float angleDegrees, out Vector3 axis);

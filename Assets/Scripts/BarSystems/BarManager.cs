@@ -6,6 +6,8 @@ public class BarManager : MonoBehaviour
 {
     [Header("References")]
     public DVDLogoBouncer economyBouncer;
+    [Tooltip("Auto-found or auto-created if left empty. Triggered when Depression reaches 100%.")]
+    public DepressionBreakdownSequence depressionBreakdown;
 
     [Header("UI Sliders")]
     public Slider hungerSlider;
@@ -69,8 +71,19 @@ public class BarManager : MonoBehaviour
     [Header("Penalty Settings")]
     public float penaltyMultiplier = 2f;
 
+    private bool hasTriggeredDepressionEnding = false;
+
     void Start()
     {
+        if (depressionBreakdown == null)
+        {
+            depressionBreakdown = GetComponent<DepressionBreakdownSequence>();
+            if (depressionBreakdown == null)
+            {
+                depressionBreakdown = FindObjectOfType<DepressionBreakdownSequence>();
+            }
+        }
+
         UpdateUI();
     }
 
@@ -83,6 +96,7 @@ public class BarManager : MonoBehaviour
 
     private void ProcessInflation()
     {
+        if (economyBouncer == null) return;
         float moneyFloat = (float)economyBouncer.currentMoney;
         currentInflationMultiplier = 1f + (moneyFloat * inflationRatePerDollar);
         currentFoodCost = (decimal)(baseFoodCost * currentInflationMultiplier);
@@ -90,6 +104,12 @@ public class BarManager : MonoBehaviour
 
     private void ProcessBars()
     {
+        if (hasTriggeredDepressionEnding)
+        {
+            currentDepression = maxDepression;
+            return;
+        }
+
         currentHunger = Mathf.Clamp(currentHunger + (hungerFillRate * Time.deltaTime), 0, maxHunger);
         currentSleep = Mathf.Clamp(currentSleep + (sleepFillRate * Time.deltaTime), 0, maxSleep);
 
@@ -107,9 +127,22 @@ public class BarManager : MonoBehaviour
 
         currentDepression = Mathf.Clamp(currentDepression + (depressionSpeed * Time.deltaTime), 0, maxDepression);
 
+        // When Depression reaches 100%, lock it at max and trigger the Heart-Attack Breakdown -> Cut to Black -> Gun Cocking -> UI Popup!
         if (currentDepression >= maxDepression)
         {
-            currentDepression = maxDepression - 0.01f;
+            currentDepression = maxDepression;
+            hasTriggeredDepressionEnding = true;
+
+            if (depressionBreakdown == null)
+            {
+                depressionBreakdown = FindObjectOfType<DepressionBreakdownSequence>();
+                if (depressionBreakdown == null)
+                {
+                    depressionBreakdown = gameObject.AddComponent<DepressionBreakdownSequence>();
+                }
+            }
+
+            depressionBreakdown.TriggerDepressionBreakdown();
         }
     }
 
@@ -137,7 +170,7 @@ public class BarManager : MonoBehaviour
         if (economyBouncer.TrySpendMoney(currentFoodCost))
         {
             currentHunger = Mathf.Clamp(currentHunger - foodHungerReduction, 0, maxHunger);
-            currentNeeds = Mathf.Clamp(currentNeeds + foodNeedsIncrease, 0, maxNeeds); // Restored!
+            currentNeeds = Mathf.Clamp(currentNeeds + foodNeedsIncrease, 0, maxNeeds);
             currentDirtiness = Mathf.Clamp(currentDirtiness + eatDirtinessIncrease, 0, maxDirtiness);
             currentDepression = Mathf.Clamp(currentDepression - eatDepressionReduction, 0, maxDepression);
         }

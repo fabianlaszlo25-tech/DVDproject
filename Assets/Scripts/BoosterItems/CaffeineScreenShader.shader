@@ -82,24 +82,20 @@ Shader "Custom/CaffeineScreenShader"
                 float distSq = dot(centered, centered);
                 float dist = sqrt(distSq);
 
-                // 1. Rapid double-beat heart thump (lub-dub) zoom & peripheral tunnel pulse
                 float beatTime = _Time.y * _HeartbeatSpeed;
                 float lub = pow(max(0.0, sin(beatTime)), 6.0);
                 float dub = pow(max(0.0, sin(beatTime - 0.85)), 8.0) * 0.65;
                 float heartbeat = (lub + dub) * _Intensity;
 
-                // 2. High-frequency caffeinated micro-tremor / jitter
                 float jitterTime = floor(_Time.y * _JitterSpeed);
                 float2 tremor = float2(
                     HashNoise(float2(jitterTime, i.uv.y * 8.0)) * 2.0 - 1.0,
                     HashNoise(float2(i.uv.x * 8.0, jitterTime + 19.3)) * 2.0 - 1.0
                 ) * (_JitterAmount * _Intensity * (0.4 + dist * 1.4));
 
-                // 3. Radial adrenaline zoom + camera velocity streak pull
                 float zoomFactor = 1.0 - (_PulseZoom * (0.35 + heartbeat * 0.65)) - (_JitterAmount * 2.0 * _Intensity);
                 float2 zoomedUV = centered * zoomFactor + 0.5 + tremor;
 
-                // 4. Radial Chromatic Aberration + Velocity Streak
                 float2 radialDir = normalize(centered + 0.0001) * distSq * 2.2;
                 float2 streakDir = radialDir * (_ChromaticEdge * (1.0 + heartbeat * 0.8) * _Intensity)
                                  + _CameraVelocity.xy * (0.35 * _Intensity);
@@ -113,7 +109,6 @@ Shader "Custom/CaffeineScreenShader"
                 float b = tex2D(_MainTex, uvB).b;
                 float3 col = float3(r, g, b);
 
-                // 5. Hyper-Focus Center Sharpening (Unsharp Mask)
                 float2 texel = _MainTex_TexelSize.xy * 1.5;
                 float3 neighbors = (
                     tex2D(_MainTex, clamp(uvG + float2(texel.x, 0), 0.002, 0.998)).rgb +
@@ -123,12 +118,10 @@ Shader "Custom/CaffeineScreenShader"
                 ) * 0.25;
                 col += (col - neighbors) * (0.85 * _Intensity);
 
-                // 6. Hyper-Saturation & Crisp Contrast Boost
                 float luma = dot(col, float3(0.299, 0.587, 0.114));
                 col = lerp(float3(luma, luma, luma), col, lerp(1.0, _SaturationBoost, _Intensity));
                 col = saturate((col - 0.5) * lerp(1.0, _ContrastBoost, _Intensity) + 0.5);
 
-                // 7. Peripheral Electric Speed-Lines / Adrenaline Vignette
                 float angle = atan2(centered.y, centered.x);
                 float speedLines = sin(angle * 48.0 + jitterTime * 3.7) * 0.5 + 0.5;
                 speedLines = pow(speedLines, 4.0) * smoothstep(0.28, 0.68, dist) * (0.35 + 0.65 * heartbeat);

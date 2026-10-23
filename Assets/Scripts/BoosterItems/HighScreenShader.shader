@@ -63,7 +63,6 @@ Shader "Custom/HighScreenShader"
                 return o;
             }
 
-            // Fast RGB Hue rotation using Rodrigues' rotation formula around (1,1,1)
             float3 ShiftHue(float3 col, float hueAngle)
             {
                 float3 k = float3(0.57735, 0.57735, 0.57735);
@@ -85,7 +84,6 @@ Shader "Custom/HighScreenShader"
                 float3 s4 = tex2D(tex, clamp(cUV - d2, 0.002, 0.998)).rgb;
 
                 float3 soft = (s1 + s2 + s3 + s4) * 0.25;
-                // Boost highlights for a hazy euphoric bloom
                 float3 highlights = max(0.0, soft - 0.35) * 1.45;
                 return lerp(center, soft, 0.65) + highlights * 0.45;
             }
@@ -101,7 +99,6 @@ Shader "Custom/HighScreenShader"
                 float2 centered = i.uv - 0.5;
                 float dist = length(centered);
 
-                // 1. Slow, symmetric "breathing walls" expansion & ripple
                 float breath = sin(t) * 0.018 * _Intensity;
                 float rippleX = sin(i.uv.y * 5.0 + t * 1.2) * cos(i.uv.x * 4.0 - t * 0.8);
                 float rippleY = cos(i.uv.x * 5.0 - t * 1.1) * sin(i.uv.y * 4.0 + t * 0.9);
@@ -112,20 +109,17 @@ Shader "Custom/HighScreenShader"
 
                 float glowRad = _DreamBloom * _Intensity;
 
-                // 2. Sample current frame + slow dreamy afterimage trail
                 float3 mainCol = SampleDreamyGlow(_MainTex, dreamUV, glowRad);
                 float3 echoCol = SampleDreamyGlow(_EchoTex, dreamUV + float2(rippleY, -rippleX) * (0.004 * _Intensity), glowRad * 1.5);
 
                 float3 blended = lerp(mainCol, echoCol, _TrailBlend * _Intensity);
 
-                // 3. Psychedelic spatially-varying rainbow hue shift (stronger toward periphery)
                 float hueWave = (_Time.y * _HueShiftSpeed + dist * 1.6 + sin(i.uv.x * 3.0 + t) * 0.25) * 6.28318;
                 float3 trippyCol = ShiftHue(blended, hueWave);
 
                 float hueWeight = _HueShiftStrength * _Intensity * smoothstep(0.05, 0.65, dist + 0.2);
                 float3 finalRGB = lerp(blended, trippyCol, hueWeight);
 
-                // 4. Warm, lifted saturation & mellow magenta/gold peripheral haze
                 float luma = dot(finalRGB, float3(0.299, 0.587, 0.114));
                 finalRGB = lerp(float3(luma, luma, luma), finalRGB, 1.0 + 0.45 * _Intensity);
 

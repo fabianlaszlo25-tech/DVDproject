@@ -80,7 +80,6 @@ Shader "Custom/NicotineScreenShader"
                 float2 centered = i.uv - 0.5;
                 float dist = length(centered);
 
-                // 1. Subtle Caffeine-like head-rush pulse & micro-tremor
                 float pulse = pow(max(0.0, sin(_Time.y * _PulseSpeed)), 4.0) * _Intensity;
                 float jitterStep = floor(_Time.y * 42.0);
                 float2 jitter = float2(
@@ -88,21 +87,18 @@ Shader "Custom/NicotineScreenShader"
                     HashNoise(float2(i.uv.x * 6.0, jitterStep + 11.7)) * 2.0 - 1.0
                 ) * (_MicroTremor * _Intensity * (0.3 + dist));
 
-                // 2. Subtle Alcohol-like lightheaded swimming wave
                 float swimX = sin(i.uv.y * 3.5 + t) * (_BuzzSwimAmplitude * _Intensity * (0.4 + dist));
                 float swimY = cos(i.uv.x * 3.5 + t * 0.9) * (_BuzzSwimAmplitude * _Intensity * (0.4 + dist));
 
                 float zoomSafe = 1.0 - (_BuzzSwimAmplitude * 2.0 * _Intensity) - (0.008 * pulse);
                 float2 buzzUV = centered * zoomSafe + 0.5 + float2(swimX, swimY) + jitter;
 
-                // 3. Subtle Chromatic edge split
                 float2 chroma = normalize(centered + 0.0001) * (dist * _ChromaticSplit * _Intensity);
                 float r = tex2D(_MainTex, clamp(buzzUV + chroma, 0.002, 0.998)).r;
                 float g = tex2D(_MainTex, clamp(buzzUV, 0.002, 0.998)).g;
                 float b = tex2D(_MainTex, clamp(buzzUV - chroma, 0.002, 0.998)).b;
                 float3 baseCol = float3(r, g, b);
 
-                // 4. Center sharpening (Caffeine focus) + Peripheral softness (Alcohol haze)
                 float2 texel = _MainTex_TexelSize.xy * 1.35;
                 float3 surround = (
                     tex2D(_MainTex, clamp(buzzUV + float2(texel.x, 0), 0.002, 0.998)).rgb +
@@ -111,19 +107,16 @@ Shader "Custom/NicotineScreenShader"
                     tex2D(_MainTex, clamp(buzzUV - float2(0, texel.y), 0.002, 0.998)).rgb
                 ) * 0.25;
 
-                // Sharpen in center, soften at edges
                 float centerMask = 1.0 - smoothstep(0.1, 0.5, dist);
                 float3 sharpened = baseCol + (baseCol - surround) * (0.55 * _Intensity);
                 float3 peripheralSoft = lerp(baseCol, surround, 0.65 * _Intensity);
                 float3 hybridCol = lerp(peripheralSoft, sharpened, centerMask);
 
-                // 5. Subtle 2-tap motion echo when moving camera
                 float2 echoUV = clamp(buzzUV + _EchoOffset.xy * _Intensity, 0.002, 0.998);
                 float3 echoCol = tex2D(_EchoTex, echoUV).rgb;
                 float echoWeight = saturate(_EchoOffset.z * 0.45 * _Intensity);
                 hybridCol = lerp(hybridCol, echoCol, echoWeight);
 
-                // 6. Crisp smoky contrast & subtle cool/amber vignette
                 hybridCol = saturate((hybridCol - 0.5) * lerp(1.0, _FocusContrast, _Intensity) + 0.5);
                 float vignette = smoothstep(0.32, 0.82, dist);
                 hybridCol *= 1.0 - (vignette * (0.22 + 0.08 * pulse) * _Intensity);

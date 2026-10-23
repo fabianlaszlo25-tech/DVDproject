@@ -12,7 +12,9 @@ public enum ConsumableVisualEffectType
 
 /// <summary>
 /// Attach this to any consumable unlocked BoosterObject (Beer, Energy Drink, Weed/Joint, Cigarette/Vape).
-/// Coordinates automatically with <see cref="SubstanceCombinationManager"/> for 2-effect and 3-effect combos!
+/// - When used alone: Ramps in and unwinds at the exact same smooth rate as the combined effects!
+/// - When combined: <see cref="SubstanceCombinationManager"/> locks both consumables together for 15 seconds,
+///   unwinds the combined effect to 0, and resets both consumables together.
 /// </summary>
 public class TimedConsumableBooster : MonoBehaviour
 {
@@ -36,26 +38,19 @@ public class TimedConsumableBooster : MonoBehaviour
     }
 
     [Header("Effect Selection")]
-    [Tooltip("Choose Drunk, Caffeinated, High, or Nicotined for this prop.")]
     public ConsumableVisualEffectType effectType = ConsumableVisualEffectType.Drunk;
     [Range(0f, 1f)]
-    [Tooltip("Peak screen effect intensity reached after fading in.")]
     public float peakIntensity = 1.0f;
 
-    [Header("Timing (Seconds)")]
-    [Tooltip("How many seconds it takes to slowly fade the fullscreen effect IN.")]
-    public float fadeInDuration = 4.0f;
-    [Tooltip("How long the effect stays at full strength (60 = 1 minute).")]
+    [Header("Timing & Smooth Unwind Speed")]
+    [Tooltip("Speed at which the effect ramps in and unwinds when ending (0.35 matches the combined effects' ~3s unwind!).")]
+    public float fadeSpeed = 0.35f;
+    [Tooltip("How long the standalone effect stays active before unwinding (60 = 1 minute).")]
     public float activeHoldDuration = 60.0f;
-    [Tooltip("How many seconds it takes to slowly fade the fullscreen effect OUT before resetting.")]
-    public float fadeOutDuration = 5.0f;
-    [Tooltip("If true, uses real-world unscaled time so GameSpeed changes don't shorten the 1-minute duration.")]
     public bool useUnscaledTime = true;
 
     [Header("Prop Reset References (Auto-Found if left empty)")]
-    [Tooltip("The unused grayed-out BuyableBoosterProp that spawns this object.")]
     public BuyableBoosterProp unusedBuyableProp;
-    [Tooltip("The BoosterObject on this active prop (auto-found on this GameObject).")]
     public BoosterObject activeBoosterObject;
 
     [Header("Screen Effect Controllers (Auto-Created if not in scene)")]
@@ -65,11 +60,13 @@ public class TimedConsumableBooster : MonoBehaviour
     public NicotineScreenEffect nicotineEffectController;
 
     [Header("Auto-Trigger")]
-    [Tooltip("If true, starts the 1-minute cycle automatically whenever this unlocked prop is enabled.")]
     public bool startAutomaticallyOnEnable = true;
 
     private Coroutine cycleRoutine;
     private float lastInternalIntensity;
+    private bool isLockedByCombination;
+
+    public bool IsLockedByCombination => isLockedByCombination;
 
     private void Awake()
     {
@@ -84,6 +81,7 @@ public class TimedConsumableBooster : MonoBehaviour
 
     private void OnEnable()
     {
+        isLockedByCombination = false;
         if (startAutomaticallyOnEnable)
         {
             StartConsumableCycle();
@@ -97,9 +95,10 @@ public class TimedConsumableBooster : MonoBehaviour
             StopCoroutine(cycleRoutine);
             cycleRoutine = null;
         }
+        isLockedByCombination = false;
         SetEffectIntensityImmediate(0f);
 
-        if (SubstanceCombinationManager.Instance != null)
+        if (SubstanceCombinationManager.HasInstance)
         {
             SubstanceCombinationManager.Instance.UnregisterConsumable(this);
         }
@@ -110,6 +109,7 @@ public class TimedConsumableBooster : MonoBehaviour
     {
         FindUnusedBuyablePropIfNeeded();
         EnsureEffectControllerExists();
+        isLockedByCombination = false;
 
         if (activeBoosterObject != null)
         {
@@ -118,7 +118,7 @@ public class TimedConsumableBooster : MonoBehaviour
 
         SubstanceCombinationManager.Instance.RegisterConsumable(this);
 
-        if (SubstanceCombinationManager.Instance.IsOverdoseSequenceRunning)
+        if (isLockedByCombination || SubstanceCombinationManager.Instance.IsOverdoseSequenceRunning)
         {
             return;
         }
@@ -127,11 +127,23 @@ public class TimedConsumableBooster : MonoBehaviour
         {
             StopCoroutine(cycleRoutine);
         }
-        cycleRoutine = StartCoroutine(ConsumableLifecycleRoutine());
+        cycleRoutine = StartCoroutine(StandaloneLifecycleRoutine());
+    }
+
+    public void LockIntoCombinedCycle()
+    {
+        isLockedByCombination = true;
+        if (cycleRoutine != null)
+        {
+            StopCoroutine(cycleRoutine);
+            cycleRoutine = null;
+        }
+        SetEffectIntensityImmediate(peakIntensity);
     }
 
     public void ForceTerminateAndResetToUnused()
     {
+        isLockedByCombination = false;
         if (cycleRoutine != null)
         {
             StopCoroutine(cycleRoutine);
@@ -152,43 +164,45 @@ public class TimedConsumableBooster : MonoBehaviour
         return useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }
 
-    private IEnumerator ConsumableLifecycleRoutine()
+    private IEnumerator StandaloneLifecycleRoutine()
     {
-        float fadeIn = Mathf.Max(0.01f, fadeInDuration);
-        float elapsed = 0f;
-        while (elapsed < fadeIn)
+        float spd = Mathf.Max(0.05f, fadeSpeed);
+        float current = 0f;
+
+        // 1. Smoothly ramp IN using MoveTowards (same curve as SubstanceCombinationManager)
+        while (current < peakIntensity - 0.001f)
         {
-            elapsed += GetDeltaTime();
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / fadeIn));
-            SetEffectIntensityImmediate(t * peakIntensity);
+            if (isLockedByCombination) yield break;
+            current = Mathf.MoveTowards(current, peakIntensity, spd * GetDeltaTime());
+            SetEffectIntensityImmediate(current);
             yield return null;
         }
-
         SetEffectIntensityImmediate(peakIntensity);
 
+        // 2. Hold for activeHoldDuration
         float hold = Mathf.Max(0f, activeHoldDuration);
         float holdElapsed = 0f;
         while (holdElapsed < hold)
         {
+            if (isLockedByCombination) yield break;
             holdElapsed += GetDeltaTime();
             SetEffectIntensityImmediate(peakIntensity);
             yield return null;
         }
 
-        float fadeOut = Mathf.Max(0.01f, fadeOutDuration);
-        elapsed = 0f;
-        while (elapsed < fadeOut)
+        // 3. Smoothly unwind to 0 using MoveTowards (exact same ending feel as the combined effects!)
+        while (current > 0.001f)
         {
-            elapsed += GetDeltaTime();
-            float t = Mathf.SmoothStep(1f, 0f, Mathf.Clamp01(elapsed / fadeOut));
-            SetEffectIntensityImmediate(t * peakIntensity);
+            if (isLockedByCombination) yield break;
+            current = Mathf.MoveTowards(current, 0f, spd * GetDeltaTime());
+            SetEffectIntensityImmediate(current);
             yield return null;
         }
 
         SetEffectIntensityImmediate(0f);
         cycleRoutine = null;
 
-        if (SubstanceCombinationManager.Instance != null)
+        if (SubstanceCombinationManager.HasInstance)
         {
             SubstanceCombinationManager.Instance.UnregisterConsumable(this);
         }
@@ -200,7 +214,7 @@ public class TimedConsumableBooster : MonoBehaviour
         lastInternalIntensity = intensity;
         ActiveEffectIntensities[effectType] = intensity;
 
-        bool suppressSingle = SubstanceCombinationManager.Instance != null
+        bool suppressSingle = SubstanceCombinationManager.HasInstance
                            && SubstanceCombinationManager.Instance.ShouldSuppressSingleScreenEffects();
         float visualIntensity = suppressSingle ? 0f : intensity;
 

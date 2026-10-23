@@ -7,6 +7,10 @@ public class SurvivalAction : MonoBehaviour
 {
     [Header("References")]
     public BarManager barManager;
+    [Tooltip("Auto-filled if left empty. Used to verify the player has enough money before playing the Eat animation.")]
+    public DVDLogoBouncer economyBouncer;
+    [Tooltip("Optional reference to FoodPriceDisplay to show 'Not enough money!' when clicked broke.")]
+    public FoodPriceDisplay foodPriceDisplay;
 
     public enum ActionType { Eat, Toilet, Sleep, Clean }
     public ActionType actionType;
@@ -39,6 +43,8 @@ public class SurvivalAction : MonoBehaviour
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip actionSound;
+    [Tooltip("Optional sound played if the player tries to eat without enough money.")]
+    public AudioClip cantAffordSound;
 
     [Header("Input Blocking")]
     public MonoBehaviour[] scriptsToDisable;
@@ -49,18 +55,47 @@ public class SurvivalAction : MonoBehaviour
     private void Start()
     {
         if (targetCamera == null) targetCamera = Camera.main;
-        // Removed originalFOV from here so it doesn't lock in an outdated number
+        if (barManager == null) barManager = FindObjectOfType<BarManager>();
+        if (economyBouncer == null) if (barManager != null) economyBouncer = barManager.economyBouncer;
+        if (economyBouncer == null) economyBouncer = FindObjectOfType<DVDLogoBouncer>();
+        if (foodPriceDisplay == null) foodPriceDisplay = GetComponent<FoodPriceDisplay>();
     }
 
     public void PerformAction()
     {
-        if (!isActing && barManager != null)
-        {
-            // Capture the exact current FOV the moment the player clicks the object
-            if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+        if (isActing || barManager == null) return;
 
-            StartCoroutine(ActionRoutine());
+        // If this is the Eat action, verify the player actually has enough money BEFORE zooming in or playing audio!
+        if (actionType == ActionType.Eat && !CanAffordFood())
+        {
+            if (audioSource != null && cantAffordSound != null)
+            {
+                audioSource.PlayOneShot(cantAffordSound);
+            }
+            if (foodPriceDisplay != null)
+            {
+                foodPriceDisplay.ShowNotEnoughMoneyFeedback(1.2f);
+            }
+            return;
         }
+
+        if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+
+        StartCoroutine(ActionRoutine());
+    }
+
+    private bool CanAffordFood()
+    {
+        if (barManager == null) return false;
+        if (economyBouncer == null) economyBouncer = barManager.economyBouncer;
+        if (economyBouncer == null) economyBouncer = FindObjectOfType<DVDLogoBouncer>();
+
+        decimal foodCost = barManager.GetCurrentFoodCost();
+        if (economyBouncer != null && economyBouncer.currentMoney < foodCost)
+        {
+            return false;
+        }
+        return true;
     }
 
     private IEnumerator ActionRoutine()
@@ -78,7 +113,6 @@ public class SurvivalAction : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / zoomInTime;
 
-            // Camera & Fade
             if (targetCamera != null) targetCamera.fieldOfView = Mathf.Lerp(originalFOV, zoomTargetFOV, t);
             if (fadeImage != null)
             {
@@ -86,7 +120,6 @@ public class SurvivalAction : MonoBehaviour
                 fadeImage.color = fadeColor;
             }
 
-            // Grow UI rapidly to push it off-screen before the halfway point
             float scaleT = Mathf.Clamp01(elapsedTime / (zoomInTime * scaleSpeedFraction));
             Vector3 currentScale = Vector3.Lerp(Vector3.one, Vector3.one * uiExitScale, scaleT);
             foreach (RectTransform ui in uiToScale)
@@ -101,7 +134,7 @@ public class SurvivalAction : MonoBehaviour
         if (fadeImage != null) { fadeColor.a = 1f; fadeImage.color = fadeColor; }
         foreach (RectTransform ui in uiToScale) { if (ui != null) ui.localScale = Vector3.one * uiExitScale; }
 
-        // Phase 2: Hold 
+        // Phase 2: Hold
         ApplyActionStats();
 
         if (audioSource != null && actionSound != null)
@@ -120,7 +153,6 @@ public class SurvivalAction : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / zoomOutTime;
 
-            // Camera & Fade
             if (targetCamera != null) targetCamera.fieldOfView = Mathf.Lerp(zoomTargetFOV, originalFOV, t);
             if (fadeImage != null)
             {
@@ -128,7 +160,6 @@ public class SurvivalAction : MonoBehaviour
                 fadeImage.color = fadeColor;
             }
 
-            // Return UI to normal scale only during the final percentage of the zoom out
             float returnT = Mathf.Clamp01((elapsedTime - returnStartTime) / (zoomOutTime * scaleSpeedFraction));
             Vector3 returnScale = Vector3.Lerp(Vector3.one * uiExitScale, Vector3.one, returnT);
             foreach (RectTransform ui in uiToScale)

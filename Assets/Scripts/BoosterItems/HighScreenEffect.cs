@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Fullscreen "High" Effect: slow breathing geometry, dreamy bloom, mellow time-trail,
-/// and psychedelic peripheral hue-shifting.
-/// Driven automatically by <see cref="TimedConsumableBooster"/> or via Button OnClick().
-/// </summary>
 public class HighScreenEffect : MonoBehaviour
 {
     private const string ShaderName = "Custom/HighScreenShader";
@@ -26,8 +21,8 @@ public class HighScreenEffect : MonoBehaviour
 
     [Header("Standalone Activation")]
     public float defaultDuration = 60.0f;
-    public float fadeInSpeed = 0.25f;
-    public float fadeOutSpeed = 0.2f;
+    public float fadeInSpeed = 0.35f;
+    public float fadeOutSpeed = 0.35f;
     [Range(0f, 1f)] public float maxIntensity = 1.0f;
 
     [Header("Dreamy / High Visual Settings")]
@@ -40,7 +35,6 @@ public class HighScreenEffect : MonoBehaviour
     [Range(0f, 1f)] public float trailBlend = 0.45f;
 
     [Header("Floaty Camera Drift")]
-    [Tooltip("Slow, weightless pitch/roll camera float while high.")]
     public float floatyCameraDegrees = 2.2f;
 
     [Header("Shader Reference")]
@@ -138,12 +132,7 @@ public class HighScreenEffect : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
         if (highShader == null) highShader = Shader.Find(ShaderName);
-
-        if (highShader == null)
-        {
-            Debug.LogWarning("HighScreenEffect: 'Custom/HighScreenShader' not found! Put it in a Resources folder or assign it.", this);
-            return;
-        }
+        if (highShader == null) return;
 
         if (highMaterial == null)
         {
@@ -215,18 +204,8 @@ public class HighScreenEffect : MonoBehaviour
 
     private void ReleaseRTs()
     {
-        if (currentFrameRT != null)
-        {
-            currentFrameRT.Release();
-            Destroy(currentFrameRT);
-            currentFrameRT = null;
-        }
-        if (dreamTrailRT != null)
-        {
-            dreamTrailRT.Release();
-            Destroy(dreamTrailRT);
-            dreamTrailRT = null;
-        }
+        if (currentFrameRT != null) { currentFrameRT.Release(); Destroy(currentFrameRT); currentFrameRT = null; }
+        if (dreamTrailRT != null) { dreamTrailRT.Release(); Destroy(dreamTrailRT); dreamTrailRT = null; }
     }
 
     private void Update()
@@ -288,7 +267,6 @@ public class HighScreenEffect : MonoBehaviour
         targetCamera.Render();
         targetCamera.targetTexture = prev;
 
-        // Update dreamy afterimage trail every ~0.06s
         trailCaptureTimer += Time.unscaledDeltaTime;
         if (trailCaptureTimer >= 0.06f)
         {

@@ -15,123 +15,77 @@ public enum ActiveSubstanceComboState
     SuperOverdose_ThreeEffects = 6
 }
 
-// =============================================================================
-// INSPECTOR DROPDOWN / FOLDOUT PARAMETER GROUPS FOR EACH COMBINATION
-// =============================================================================
-
 [System.Serializable]
 public class HyperfocusComboSettings
 {
-    [Tooltip("Speed of the double-beat adrenaline pulse.")]
     [Range(2f, 30f)] public float pulseSpeed = 13.5f;
-    [Tooltip("How much the screen zooms in on each heartbeat.")]
     [Range(0f, 0.08f)] public float pulseZoom = 0.024f;
-    [Tooltip("Strength of the 9-tap Laplacian sharpening in the center of your vision.")]
     [Range(0f, 3f)] public float centerSharpness = 1.45f;
-    [Tooltip("Radial speed-blur strength around the periphery.")]
     [Range(0f, 0.12f)] public float peripheralBlur = 0.045f;
-    [Tooltip("High-frequency caffeinated tremor in the outer vision.")]
     [Range(0f, 0.01f)] public float microTremor = 0.0022f;
-    [Tooltip("Chromatic RGB separation in the periphery.")]
     [Range(0f, 0.03f)] public float chromaticSplit = 0.012f;
-    [Tooltip("Color saturation boost.")]
     [Range(0f, 1.5f)] public float saturationBoost = 0.42f;
-    [Tooltip("Crisp S-curve contrast boost.")]
     [Range(0f, 1f)] public float contrastBoost = 0.28f;
-    [Tooltip("Intensity of the electric speed-lines around the screen edge.")]
     [Range(0f, 1.5f)] public float rimGlowStrength = 0.65f;
     [ColorUsage(true, true)] public Color primaryRimColor = new Color(0.05f, 0.95f, 1.0f, 1f);
     [ColorUsage(true, true)] public Color secondaryRimColor = new Color(1.0f, 0.8f, 0.15f, 1f);
-    [Tooltip("Subtle camera buzz in degrees.")]
     [Range(0f, 2f)] public float cameraBuzzDegrees = 0.25f;
 }
 
 [System.Serializable]
 public class HeartAttackComboSettings
 {
-    [Tooltip("Frequency of the irregular cardiac arrhythmia cycle.")]
     [Range(0.4f, 4f)] public float heartbeatRate = 1.45f;
-    [Tooltip("How violently the screen zooms in on each systolic chest slam.")]
     [Range(0f, 0.18f)] public float systolicZoomSlam = 0.075f;
-    [Tooltip("Directional radial zoom-blur during each heart contraction.")]
     [Range(0f, 0.18f)] public float radialBlurStrength = 0.085f;
-    [Tooltip("Chromatic RGB tearing during heart spasms.")]
     [Range(0f, 0.04f)] public float chromaticStrength = 0.018f;
-    [Tooltip("UV distance the 3 ghost echoes split apart on each heartbeat.")]
     [Range(0f, 0.05f)] public float ghostSplitAmount = 0.014f;
-    [Tooltip("How much color drains into cold ashen greyscale (0..1).")]
     [Range(0f, 1f)] public float greyscaleDrain = 0.72f;
-    [Tooltip("Tunnel vision radius between beats (larger = more open).")]
     [Range(0.2f, 0.9f)] public float tunnelOpenRadius = 0.58f;
-    [Tooltip("Tunnel vision radius during a heart contraction (smaller = nearly blacked out).")]
     [Range(0.05f, 0.6f)] public float tunnelSlamRadius = 0.22f;
     [ColorUsage(true, true)] public Color arterialBloodColor = new Color(0.42f, 0.0f, 0.02f, 1f);
-    [Tooltip("Physical camera chest-thump jolt in degrees.")]
     [Range(0f, 8f)] public float cameraThumpDegrees = 3.2f;
 }
 
 [System.Serializable]
 public class HanyingerComboSettings
 {
-    [Tooltip("How fast the room spins in a corkscrew motion.")]
     [Range(0.2f, 4f)] public float spinSpeed = 1.15f;
-    [Tooltip("Maximum rotational angle (in radians) of the room spin.")]
     [Range(0f, 0.8f)] public float spinMaxAngle = 0.38f;
-    [Tooltip("Amplitude of the stomach-churning liquid wave distortion.")]
     [Range(0f, 0.06f)] public float stomachHeaveAmplitude = 0.024f;
-    [Tooltip("Nauseating blurriness of the vision.")]
     [Range(0f, 0.015f)] public float blurRadius = 0.0045f;
-    [Tooltip("How strongly the 3 lagged echoes and persistent smear trail behind movement.")]
     [Range(0f, 1f)] public float trailBlendWeight = 0.52f;
-    [Tooltip("How strongly the sickly green/yellow bile color grade is applied.")]
     [Range(0f, 1f)] public float bileColorStrength = 0.78f;
-    [Tooltip("Darkness of the sweaty green nausea vignette.")]
     [Range(0f, 1f)] public float vignetteStrength = 0.68f;
     [ColorUsage(true, true)] public Color primaryBileTint = new Color(0.68f, 1.05f, 0.42f, 1f);
     [ColorUsage(true, true)] public Color secondaryBileTint = new Color(0.92f, 0.98f, 0.35f, 1f);
-    [Tooltip("Continuous vertiginous camera roll/pitch sway in degrees.")]
     [Range(0f, 15f)] public float cameraVertigoDegrees = 6.8f;
 }
 
 [System.Serializable]
 public class AnxietyAttackComboSettings
 {
-    [Tooltip("Speed of the racing panic hyperventilation pulse.")]
     [Range(2f, 35f)] public float panicPulseSpeed = 17.0f;
-    [Tooltip("Claustrophobic barrel distortion (walls bowing inward).")]
     [Range(0f, 0.4f)] public float barrelWarpStrength = 0.14f;
-    [Tooltip("High-strung nerve twitch UV jitter.")]
     [Range(0f, 0.015f)] public float nerveJitterAmount = 0.0035f;
-    [Tooltip("Sharp RGB nerve-split distance.")]
     [Range(0f, 0.03f)] public float chromaticSplit = 0.008f;
-    [Tooltip("Stark, hyper-vigilant contrast boost.")]
     [Range(0f, 1.5f)] public float coldContrastBoost = 0.55f;
-    [Tooltip("Cold-sweat color desaturation.")]
     [Range(0f, 1f)] public float desaturation = 0.55f;
-    [Tooltip("Strength of the creeping dark paranoia shadow tendrils at the screen edges.")]
     [Range(0f, 1f)] public float paranoiaTunnelStrength = 0.92f;
     [ColorUsage(true, true)] public Color coldPanicTint = new Color(0.84f, 0.93f, 1.12f, 1f);
-    [Tooltip("High-frequency nervous camera tremor in degrees.")]
     [Range(0f, 4f)] public float cameraTremorDegrees = 0.75f;
 }
 
 [System.Serializable]
 public class DizzyBuzzComboSettings
 {
-    [Tooltip("Speed of the heavy head-rush wave.")]
     [Range(0.5f, 8f)] public float swaySpeed = 2.6f;
-    [Tooltip("Gravitational downward pull / swim amplitude.")]
     [Range(0f, 0.05f)] public float gravitySinkAmplitude = 0.016f;
-    [Tooltip("Soft blurriness of the head-rush.")]
     [Range(0f, 0.012f)] public float blurAmount = 0.0035f;
-    [Tooltip("Subtle chromatic edge split.")]
     [Range(0f, 0.015f)] public float chromaticSplit = 0.0045f;
-    [Tooltip("Weight of the 3-frame rotational motion echo.")]
     [Range(0f, 1f)] public float echoTrailStrength = 0.45f;
-    [Tooltip("Smoky peripheral vignette darkness.")]
     [Range(0f, 1f)] public float vignetteStrength = 0.55f;
     [ColorUsage(true, true)] public Color warmAmberTint = new Color(1.12f, 0.94f, 0.76f, 1f);
-    [Tooltip("Head-rush camera sway in degrees.")]
     [Range(0f, 6f)] public float cameraSwayDegrees = 2.2f;
 }
 
@@ -139,47 +93,26 @@ public class DizzyBuzzComboSettings
 public class SuperOverdoseComboSettings
 {
     [Header("Organic Fluid Smearing & Melting")]
-    [Tooltip("Speed of the 2D curl-noise fluid advection waves.")]
     [Range(0.1f, 3f)] public float fluidFlowSpeed = 0.95f;
-    [Tooltip("How strongly the screen melts and flows like wet paint.")]
     [Range(0f, 0.12f)] public float fluidMeltDistortion = 0.042f;
-    [Tooltip("Breathing vortex swirl angle across the screen.")]
     [Range(0f, 0.6f)] public float vortexSwirlAngle = 0.18f;
-    [Tooltip("Hazy blur radius across the melting trails.")]
     [Range(0f, 0.015f)] public float blurRadius = 0.005f;
-    [Tooltip("How strongly the persistent feedback smear buffer is blended in (higher = longer wet-paint trails).")]
     [Range(0f, 1f)] public float persistentSmearWeight = 0.58f;
-    [Tooltip("Frame-to-frame retention of the feedback smear buffer (0.85 - 0.96 gives lush long trails).")]
     [Range(0.5f, 0.97f)] public float smearBufferRetention = 0.88f;
-    [Tooltip("Iridescent oil-slick rainbow hue drift across the smeared trails.")]
     [Range(0f, 2f)] public float rainbowHueDrift = 0.55f;
-    [Tooltip("Chromatic dispersion across the fluid waves.")]
     [Range(0f, 0.03f)] public float chromaticSpread = 0.008f;
-    [Tooltip("Slow, heavy, melting camera roll in degrees.")]
     [Range(0f, 15f)] public float cameraMeltSwayDegrees = 8.5f;
 
     [Header("Hallucination Video & Blackout Timings")]
-    [Tooltip("Assign your Hallucination VideoClip here!")]
     public VideoClip hallucinationVideoClip;
-    [Range(0f, 1f)]
-    [Tooltip("Peak opacity of the Hallucination Video blended into the smeared world.")]
-    public float maxVideoOpacity = 0.88f;
-    [Tooltip("Seconds of organic screen melting/smearing before the hallucination video reaches full visibility.")]
+    [Range(0f, 1f)] public float maxVideoOpacity = 0.88f;
     public float smearAndVideoFadeInDuration = 3.5f;
-    [Tooltip("Seconds the hallucination video plays with fluid smearing before fading to black.")]
     public float hallucinationPlayDuration = 8.0f;
-    [Tooltip("Seconds to fade to pitch black.")]
     public float fadeToBlackDuration = 2.5f;
-    [Tooltip("Seconds spent unconscious in pitch black while bars max out.")]
     public float unconsciousHoldDuration = 1.8f;
-    [Tooltip("Seconds to slowly open eyes / fade back in from black after waking up.")]
     public float wakeUpFadeDuration = 3.0f;
 }
 
-/// <summary>
-/// Full-pipeline coordinator for all TimedConsumableBooster combinations with Inspector Dropdowns
-/// for every single effect's parameters and a Live Preview dropdown for real-time tuning.
-/// </summary>
 public class SubstanceCombinationManager : MonoBehaviour
 {
     private const string ComboShaderName = "Custom/SubstanceCombinationShader";
@@ -209,6 +142,8 @@ public class SubstanceCombinationManager : MonoBehaviour
     private static readonly int SmearParamsId = Shader.PropertyToID("_SmearParams");
 
     private static SubstanceCombinationManager instance;
+    public static bool HasInstance => instance != null;
+
     public static SubstanceCombinationManager Instance
     {
         get
@@ -227,7 +162,6 @@ public class SubstanceCombinationManager : MonoBehaviour
     }
 
     [Header("Live Inspector Preview / Testing Dropdown")]
-    [Tooltip("Select any combination in this dropdown during Play Mode to immediately preview and tune its sliders below! Set back to None for normal gameplay.")]
     public ActiveSubstanceComboState livePreviewComboDropdown = ActiveSubstanceComboState.None;
 
     [Header("Core References (Auto-Found if left empty)")]
@@ -235,53 +169,32 @@ public class SubstanceCombinationManager : MonoBehaviour
     public BarManager barManager;
 
     [Header("Combined Booster Objects (Empty GameObjects with BoosterObject attached)")]
-    [Tooltip("Optional bonus BoosterObject for Nicotine + Caffeine (both individual boosters ALSO stay applied).")]
     public BoosterObject hyperfocusBooster;
-    [Tooltip("BoosterObject for Alcohol + Caffeine (Heart Attack). Individual boosters are reverted.")]
     public BoosterObject heartAttackBooster;
-    [Tooltip("BoosterObject for Alcohol + Weed (Hányinger / Nausea). Individual boosters are reverted.")]
     public BoosterObject hanyingerBooster;
-    [Tooltip("BoosterObject for Weed + Nicotine OR Weed + Caffeine (Anxiety Attack). Individual boosters are reverted.")]
     public BoosterObject anxietyAttackBooster;
-    [Tooltip("BoosterObject for Alcohol + Nicotine (Dizzy Buzz). Individual boosters are reverted.")]
     public BoosterObject dizzyBuzzBooster;
-    [Tooltip("Optional BoosterObject during the 3-Effect Super Overdose.")]
     public BoosterObject threeEffectOverdoseBooster;
 
-    // =========================================================================
-    // COLLAPSIBLE DROPDOWN MENUS FOR EVERY COMBINATION EFFECT
-    // =========================================================================
+    [Header("2-Effect Combination Duration & Original Fade Speed")]
+    [Tooltip("How long any 2-substance combined effect lasts before smoothly unwinding (15 seconds).")]
+    public float combinedDuration = 15.0f;
+    [Tooltip("The original smooth fade/unwind speed (0.35 gives the ~3 second unwind where the distortion/zoom/trails settle back to normal).")]
+    public float comboFadeSpeed = 0.35f;
 
     [Header("Effect Parameters (Click Dropdowns to Customize)")]
-    [Tooltip("Mode 1: Nicotine + Caffeine (Hyperfocus) parameters.")]
     public HyperfocusComboSettings hyperfocusSettings = new HyperfocusComboSettings();
-
-    [Tooltip("Mode 2: Alcohol + Caffeine (Heart Attack) parameters.")]
     public HeartAttackComboSettings heartAttackSettings = new HeartAttackComboSettings();
-
-    [Tooltip("Mode 3: Alcohol + Weed (Hányinger / Nausea & The Spins) parameters.")]
     public HanyingerComboSettings hanyingerSettings = new HanyingerComboSettings();
-
-    [Tooltip("Mode 4: Weed + Nicotine OR Weed + Caffeine (Anxiety Attack) parameters.")]
     public AnxietyAttackComboSettings anxietyAttackSettings = new AnxietyAttackComboSettings();
-
-    [Tooltip("Mode 5: Alcohol + Nicotine (Dizzy Buzz) parameters.")]
     public DizzyBuzzComboSettings dizzyBuzzSettings = new DizzyBuzzComboSettings();
-
-    [Tooltip("Mode 6: 3-Effect Super Overdose (Organic Smearing + Hallucination Video + Blackout) parameters.")]
     public SuperOverdoseComboSettings superOverdoseSettings = new SuperOverdoseComboSettings();
 
-    [Header("Global Transition & Camera Motion Echo Settings")]
-    public float comboFadeSpeed = 0.35f;
-    [Tooltip("How sensitive the 3 temporal echoes are to camera rotation.")]
+    [Header("Camera Motion Echo Settings")]
     public float rotationEchoSensitivity = 0.065f;
-    [Tooltip("How sensitive the 3 temporal echoes are to camera movement.")]
     public float positionEchoSensitivity = 0.16f;
-    [Tooltip("Maximum UV distance the temporal echoes can trail behind the camera.")]
     public float maxEchoUVOffset = 0.11f;
-    [Tooltip("How quickly the echoes settle after stopping camera movement.")]
     public float echoDecaySpeed = 7.0f;
-    [Tooltip("Seconds between temporal ring-buffer captures.")]
     public float echoFrameStepInterval = 0.035f;
 
     [Header("Shader Reference")]
@@ -296,6 +209,12 @@ public class SubstanceCombinationManager : MonoBehaviour
     private float currentComboIntensity;
     private float currentVideoFade;
     private float currentBlackoutFade;
+
+    // Bulletproof Update-driven state machine for 2-effect combinations so it can NEVER get stuck!
+    private bool isTwoEffectComboLocked;
+    private bool isTwoEffectComboUnwinding;
+    private float comboRemainingTimer;
+
     private bool isOverdoseSequenceRunning;
     public bool IsOverdoseSequenceRunning => isOverdoseSequenceRunning;
 
@@ -305,7 +224,6 @@ public class SubstanceCombinationManager : MonoBehaviour
     private Image raycastBlockerImage;
     private VideoPlayer videoPlayer;
 
-    // Multi-buffer temporal pipeline
     private RenderTexture screenCaptureRT;
     private readonly RenderTexture[] echoHistoryRTs = new RenderTexture[EchoBufferCount];
     private RenderTexture smearAccumRT_A;
@@ -317,7 +235,6 @@ public class SubstanceCombinationManager : MonoBehaviour
     private float echoCaptureTimer;
     private bool hasInitializedBuffers;
 
-    // Camera motion tracking
     private Quaternion lastCamRotation;
     private Vector3 lastCamPosition;
     private Vector2 echoVelocity1;
@@ -325,6 +242,12 @@ public class SubstanceCombinationManager : MonoBehaviour
     private Vector2 echoVelocity3;
     private float echoPulsePhase;
     private Vector3 appliedCameraShake;
+
+    private void OnValidate()
+    {
+        if (combinedDuration <= 0.1f) combinedDuration = 15.0f;
+        if (comboFadeSpeed <= 0.01f) comboFadeSpeed = 0.35f;
+    }
 
     private void Awake()
     {
@@ -335,6 +258,9 @@ public class SubstanceCombinationManager : MonoBehaviour
         }
         instance = this;
 
+        if (combinedDuration <= 0.1f) combinedDuration = 15.0f;
+        if (comboFadeSpeed <= 0.01f) comboFadeSpeed = 0.35f;
+
         if (barManager == null) barManager = FindObjectOfType<BarManager>();
         if (targetCamera == null) targetCamera = Camera.main;
 
@@ -344,6 +270,7 @@ public class SubstanceCombinationManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (instance == this) instance = null;
         RemoveCameraShake();
         ReleaseRTs();
         if (comboMaterial != null) Destroy(comboMaterial);
@@ -351,7 +278,7 @@ public class SubstanceCombinationManager : MonoBehaviour
     }
 
     // =========================================================================
-    // REGISTRATION FROM TIMEDCONSUMABLEBOOSTER
+    // REGISTRATION & COMBINATION LOCKING
     // =========================================================================
 
     public void RegisterConsumable(TimedConsumableBooster consumable)
@@ -367,11 +294,10 @@ public class SubstanceCombinationManager : MonoBehaviour
     public void UnregisterConsumable(TimedConsumableBooster consumable)
     {
         if (consumable == null) return;
+        if (isTwoEffectComboLocked || isOverdoseSequenceRunning) return;
+
         activeConsumables.Remove(consumable);
-        if (!isOverdoseSequenceRunning)
-        {
-            RecalculateCombinationState();
-        }
+        RecalculateCombinationState();
     }
 
     public bool IsTypeActive(ConsumableVisualEffectType type)
@@ -386,12 +312,11 @@ public class SubstanceCombinationManager : MonoBehaviour
 
     public bool ShouldSuppressSingleScreenEffects()
     {
-        return CurrentComboState != ActiveSubstanceComboState.None || isOverdoseSequenceRunning;
+        return CurrentComboState != ActiveSubstanceComboState.None
+            || isTwoEffectComboLocked
+            || isOverdoseSequenceRunning
+            || currentComboIntensity > 0.001f;
     }
-
-    // =========================================================================
-    // COMBINATION MATRIX EVALUATION & BOOSTER SWAPPING
-    // =========================================================================
 
     private void RecalculateCombinationState()
     {
@@ -409,45 +334,94 @@ public class SubstanceCombinationManager : MonoBehaviour
         // 1. 3-SUBSTANCE SUPER OVERDOSE
         if (distinctCount >= 3)
         {
+            isTwoEffectComboLocked = false;
+            isTwoEffectComboUnwinding = false;
+            comboRemainingTimer = 0f;
             StartCoroutine(ThreeEffectOverdoseRoutine());
             return;
         }
 
-        // 2. 2-SUBSTANCE COMBINATIONS
-        if (distinctCount == 2)
+        // 2. 2-SUBSTANCE COMBINATIONS (Locks both consumables for 15 seconds, then unwinds!)
+        if (distinctCount == 2 && !isTwoEffectComboLocked)
         {
             if (nic && caff)
             {
-                ApplyComboState(ActiveSubstanceComboState.Hyperfocus_NicotineCaffeine, keepIndividualBoosters: true, hyperfocusBooster);
+                LockIntoTwoEffectCombo(ActiveSubstanceComboState.Hyperfocus_NicotineCaffeine, keepIndividualBoosters: true, hyperfocusBooster);
                 return;
             }
             if (alc && caff)
             {
-                ApplyComboState(ActiveSubstanceComboState.HeartAttack_AlcoholCaffeine, keepIndividualBoosters: false, heartAttackBooster);
+                LockIntoTwoEffectCombo(ActiveSubstanceComboState.HeartAttack_AlcoholCaffeine, keepIndividualBoosters: false, heartAttackBooster);
                 return;
             }
             if (alc && weed)
             {
-                ApplyComboState(ActiveSubstanceComboState.Hanyinger_AlcoholWeed, keepIndividualBoosters: false, hanyingerBooster);
+                LockIntoTwoEffectCombo(ActiveSubstanceComboState.Hanyinger_AlcoholWeed, keepIndividualBoosters: false, hanyingerBooster);
                 return;
             }
             if ((weed && nic) || (weed && caff))
             {
-                ApplyComboState(ActiveSubstanceComboState.AnxietyAttack_WeedNicOrCaff, keepIndividualBoosters: false, anxietyAttackBooster);
+                LockIntoTwoEffectCombo(ActiveSubstanceComboState.AnxietyAttack_WeedNicOrCaff, keepIndividualBoosters: false, anxietyAttackBooster);
                 return;
             }
             if (alc && nic)
             {
-                ApplyComboState(ActiveSubstanceComboState.DizzyBuzz_AlcoholNicotine, keepIndividualBoosters: false, dizzyBuzzBooster);
+                LockIntoTwoEffectCombo(ActiveSubstanceComboState.DizzyBuzz_AlcoholNicotine, keepIndividualBoosters: false, dizzyBuzzBooster);
                 return;
             }
         }
 
         // 3. 0 OR 1 SUBSTANCE ACTIVE
-        ApplyComboState(ActiveSubstanceComboState.None, keepIndividualBoosters: true, null);
+        if (!isTwoEffectComboLocked)
+        {
+            ApplyComboStateAndBoosters(ActiveSubstanceComboState.None, keepIndividualBoosters: true, null);
+        }
     }
 
-    private void ApplyComboState(
+    private void LockIntoTwoEffectCombo(
+        ActiveSubstanceComboState comboState,
+        bool keepIndividualBoosters,
+        BoosterObject targetComboBooster)
+    {
+        isTwoEffectComboLocked = true;
+        isTwoEffectComboUnwinding = false;
+        comboRemainingTimer = Mathf.Max(1f, combinedDuration); // Default 15 seconds
+
+        // Stop individual timers on both consumables so the first one NEVER ends early
+        for (int i = 0; i < activeConsumables.Count; i++)
+        {
+            if (activeConsumables[i] != null)
+            {
+                activeConsumables[i].LockIntoCombinedCycle();
+            }
+        }
+
+        ApplyComboStateAndBoosters(comboState, keepIndividualBoosters, targetComboBooster);
+    }
+
+    private void FinishTwoEffectComboAndResetProps()
+    {
+        currentComboIntensity = 0f;
+        DeactivateAllComboBoosters();
+
+        List<TimedConsumableBooster> snapshot = new List<TimedConsumableBooster>(activeConsumables);
+        activeConsumables.Clear();
+
+        isTwoEffectComboLocked = false;
+        isTwoEffectComboUnwinding = false;
+        comboRemainingTimer = 0f;
+        currentComboState = ActiveSubstanceComboState.None;
+
+        for (int i = 0; i < snapshot.Count; i++)
+        {
+            if (snapshot[i] != null)
+            {
+                snapshot[i].ForceTerminateAndResetToUnused();
+            }
+        }
+    }
+
+    private void ApplyComboStateAndBoosters(
         ActiveSubstanceComboState newState,
         bool keepIndividualBoosters,
         BoosterObject targetComboBooster)
@@ -506,7 +480,7 @@ public class SubstanceCombinationManager : MonoBehaviour
     }
 
     // =========================================================================
-    // 3-EFFECT SUPER OVERDOSE SEQUENCE (NATURAL SMEARING + VIDEO + MAX BARS)
+    // 3-EFFECT SUPER OVERDOSE SEQUENCE
     // =========================================================================
 
     [ContextMenu("Trigger 3-Effect Overdose Sequence Now")]
@@ -523,10 +497,15 @@ public class SubstanceCombinationManager : MonoBehaviour
         isOverdoseSequenceRunning = true;
         EnsureOverlayInitialized();
 
-        // 1. INSTANTLY block all raycasts & world clicks so a 4th effect is impossible
         SetGlobalInputBlocked(true);
 
-        ApplyComboState(ActiveSubstanceComboState.SuperOverdose_ThreeEffects, keepIndividualBoosters: false, threeEffectOverdoseBooster);
+        for (int i = 0; i < activeConsumables.Count; i++)
+        {
+            if (activeConsumables[i] != null)
+                activeConsumables[i].LockIntoCombinedCycle();
+        }
+
+        ApplyComboStateAndBoosters(ActiveSubstanceComboState.SuperOverdose_ThreeEffects, keepIndividualBoosters: false, threeEffectOverdoseBooster);
 
         VideoClip clipToPlay = superOverdoseSettings.hallucinationVideoClip;
         if (videoPlayer != null && clipToPlay != null)
@@ -537,7 +516,6 @@ public class SubstanceCombinationManager : MonoBehaviour
             videoPlayer.Play();
         }
 
-        // 2. Smoothly ramp up organic melting/smearing & fade in the Hallucination Video
         float fadeInDur = Mathf.Max(0.1f, superOverdoseSettings.smearAndVideoFadeInDuration);
         float elapsed = 0f;
         float startIntensity = currentComboIntensity;
@@ -554,7 +532,6 @@ public class SubstanceCombinationManager : MonoBehaviour
         currentComboIntensity = 1f;
         currentVideoFade = (clipToPlay != null) ? superOverdoseSettings.maxVideoOpacity : 0f;
 
-        // 3. Play Hallucination Video with heavy organic temporal smearing
         float playDur = Mathf.Max(0.1f, superOverdoseSettings.hallucinationPlayDuration);
         elapsed = 0f;
         while (elapsed < playDur)
@@ -563,7 +540,6 @@ public class SubstanceCombinationManager : MonoBehaviour
             yield return null;
         }
 
-        // 4. Slowly fade to pitch black
         float blackDur = Mathf.Max(0.1f, superOverdoseSettings.fadeToBlackDuration);
         elapsed = 0f;
         while (elapsed < blackDur)
@@ -579,9 +555,6 @@ public class SubstanceCombinationManager : MonoBehaviour
             videoPlayer.Stop();
         }
 
-        // 5. While pitch black:
-        //    - Reset all active consumables back to their unused BuyableBoosterProps
-        //    - Max out Hunger, Needs, Sleep, and Dirtiness (leave Depression untouched!)
         DeactivateAllComboBoosters();
 
         List<TimedConsumableBooster> snapshot = new List<TimedConsumableBooster>(activeConsumables);
@@ -603,7 +576,6 @@ public class SubstanceCombinationManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, superOverdoseSettings.unconsciousHoldDuration));
 
-        // 6. Wake up: slowly fade back in from black
         float wakeDur = Mathf.Max(0.1f, superOverdoseSettings.wakeUpFadeDuration);
         elapsed = 0f;
         while (elapsed < wakeDur)
@@ -628,7 +600,6 @@ public class SubstanceCombinationManager : MonoBehaviour
         barManager.currentNeeds = barManager.maxNeeds;
         barManager.currentSleep = barManager.maxSleep;
         barManager.currentDirtiness = barManager.maxDirtiness;
-        // barManager.currentDepression is intentionally NOT touched!
     }
 
     private void SetGlobalInputBlocked(bool blocked)
@@ -647,19 +618,14 @@ public class SubstanceCombinationManager : MonoBehaviour
     }
 
     // =========================================================================
-    // MULTI-BUFFER RENDERING, SMEAR ACCUMULATION & SHADER PARAMETER BINDING
+    // MULTI-BUFFER RENDERING & UPDATE LOOP
     // =========================================================================
 
     private void EnsureOverlayInitialized()
     {
         if (targetCamera == null) targetCamera = Camera.main;
         if (combinationShader == null) combinationShader = Shader.Find(ComboShaderName);
-
-        if (combinationShader == null)
-        {
-            Debug.LogWarning("SubstanceCombinationManager: 'Custom/SubstanceCombinationShader' not found! Put it in a Resources folder or assign it.", this);
-            return;
-        }
+        if (combinationShader == null) return;
 
         if (comboMaterial == null)
         {
@@ -779,30 +745,58 @@ public class SubstanceCombinationManager : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
-        ActiveSubstanceComboState activeState = CurrentComboState;
+        float dt = Time.unscaledDeltaTime;
 
         if (!isOverdoseSequenceRunning)
         {
-            float target = (activeState != ActiveSubstanceComboState.None) ? 1f : 0f;
-            currentComboIntensity = Mathf.MoveTowards(currentComboIntensity, target, comboFadeSpeed * Time.unscaledDeltaTime);
-
-            // If previewing SuperOverdose via the Live Preview dropdown, also preview the video blend
-            if (livePreviewComboDropdown == ActiveSubstanceComboState.SuperOverdose_ThreeEffects && superOverdoseSettings.hallucinationVideoClip != null)
+            if (isTwoEffectComboLocked)
             {
-                EnsureRTs(Screen.width, Screen.height);
-                if (videoPlayer != null && !videoPlayer.isPlaying)
+                if (!isTwoEffectComboUnwinding)
                 {
-                    videoPlayer.clip = superOverdoseSettings.hallucinationVideoClip;
-                    videoPlayer.targetTexture = videoRT;
-                    videoPlayer.Play();
+                    // Ramp in & hold for 15 seconds (combinedDuration)
+                    currentComboIntensity = Mathf.MoveTowards(currentComboIntensity, 1f, comboFadeSpeed * dt);
+                    comboRemainingTimer -= dt;
+                    if (comboRemainingTimer <= 0f)
+                    {
+                        comboRemainingTimer = 0f;
+                        isTwoEffectComboUnwinding = true;
+                    }
                 }
-                currentVideoFade = superOverdoseSettings.maxVideoOpacity * currentComboIntensity;
+                else
+                {
+                    // The original smooth unwind back to 0 at comboFadeSpeed!
+                    currentComboIntensity = Mathf.MoveTowards(currentComboIntensity, 0f, comboFadeSpeed * dt);
+                    if (currentComboIntensity <= 0.001f)
+                    {
+                        FinishTwoEffectComboAndResetProps();
+                    }
+                }
+                currentVideoFade = 0f;
+                currentBlackoutFade = 0f;
             }
             else
             {
-                currentVideoFade = 0f;
+                // Live Inspector Preview Dropdown
+                float target = (livePreviewComboDropdown != ActiveSubstanceComboState.None) ? 1f : 0f;
+                currentComboIntensity = Mathf.MoveTowards(currentComboIntensity, target, comboFadeSpeed * dt);
+
+                if (livePreviewComboDropdown == ActiveSubstanceComboState.SuperOverdose_ThreeEffects && superOverdoseSettings.hallucinationVideoClip != null)
+                {
+                    EnsureRTs(Screen.width, Screen.height);
+                    if (videoPlayer != null && !videoPlayer.isPlaying)
+                    {
+                        videoPlayer.clip = superOverdoseSettings.hallucinationVideoClip;
+                        videoPlayer.targetTexture = videoRT;
+                        videoPlayer.Play();
+                    }
+                    currentVideoFade = superOverdoseSettings.maxVideoOpacity * currentComboIntensity;
+                }
+                else
+                {
+                    currentVideoFade = 0f;
+                }
+                currentBlackoutFade = 0f;
             }
-            currentBlackoutFade = 0f;
         }
 
         bool shouldShowCanvas = currentComboIntensity > 0.001f || currentBlackoutFade > 0.001f || isOverdoseSequenceRunning;
@@ -932,7 +926,6 @@ public class SubstanceCombinationManager : MonoBehaviour
         comboMaterial.SetVector(GhostOffset2Id, new Vector4(echoVelocity2.x, echoVelocity2.y, activeEchoWeight, 0f));
         comboMaterial.SetVector(GhostOffset3Id, new Vector4(echoVelocity3.x, echoVelocity3.y, activeEchoWeight, 0f));
 
-        // Update the ping-pong persistent smear buffer using Pass 0
         RenderTexture smearSource = smearPingPong ? smearAccumRT_A : smearAccumRT_B;
         RenderTexture smearDest = smearPingPong ? smearAccumRT_B : smearAccumRT_A;
         smearPingPong = !smearPingPong;
@@ -944,7 +937,6 @@ public class SubstanceCombinationManager : MonoBehaviour
 
     private void BindModeParametersToMaterial(ActiveSubstanceComboState state)
     {
-        // Always feed the smear accumulation parameters
         comboMaterial.SetVector(SmearParamsId, new Vector4(
             superOverdoseSettings.smearBufferRetention,
             superOverdoseSettings.fluidFlowSpeed,

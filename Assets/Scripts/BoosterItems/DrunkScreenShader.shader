@@ -74,7 +74,6 @@ Shader "Custom/DrunkScreenShader"
                 return o;
             }
 
-            // 5-tap cross blur with RGB chromatic separation
             float3 SampleBlurred(sampler2D tex, float2 uv, float blurRadius, float chromaOffset)
             {
                 float2 cUV = clamp(uv, 0.002, 0.998);
@@ -105,26 +104,20 @@ Shader "Custom/DrunkScreenShader"
 
                 float t = _Time.y * _WobbleSpeed;
 
-                // 1. Swimming / meshing liquid distortion
                 float2 centered = i.uv - 0.5;
                 float edgeFactor = dot(centered, centered) * 1.8 + 0.4;
 
                 float waveX = sin(i.uv.y * _WobbleFrequency + t) + cos(i.uv.x * (_WobbleFrequency * 0.8) - t * 0.9);
                 float waveY = cos(i.uv.x * _WobbleFrequency + t * 1.15) + sin(i.uv.y * (_WobbleFrequency * 0.85) + t * 0.7);
 
-                // Slight inward zoom so warped edges never sample outside the screen
                 float zoomSafe = 1.0 - (_WobbleAmplitude * 2.4 * _Intensity);
                 float2 warpedUV = (centered * zoomSafe) + 0.5 + float2(waveX, waveY) * (_WobbleAmplitude * 0.55 * _Intensity * edgeFactor);
 
                 float blur = _BlurAmount * _Intensity;
                 float chroma = _ChromaticSplit * _Intensity;
 
-                // Current warped & blurred frame
                 float3 currentFrame = SampleBlurred(_MainTex, warpedUV, blur, chroma);
 
-                // 2. "Seeing Movement 3 Times" - combines the 3 time-delayed frame textures
-                //    AND spatial camera-velocity UV offsets so even the tiniest camera movement
-                //    visibly snaps 1 -> 2 -> 3 times across your vision!
                 float2 uvEcho1 = warpedUV + _GhostOffset1.xy * _Intensity;
                 float2 uvEcho2 = warpedUV + _GhostOffset2.xy * _Intensity;
                 float2 uvEcho3 = warpedUV + _GhostOffset3.xy * _Intensity;
@@ -133,13 +126,9 @@ Shader "Custom/DrunkScreenShader"
                 float3 echo2 = SampleBlurred(_EchoTex2, uvEcho2, blur * 1.9, chroma * 1.7);
                 float3 echo3 = SampleBlurred(_EchoTex3, uvEcho3, blur * 2.5, chroma * 2.1);
 
-                // Weight of the 3 staggered echoes (boosted whenever the camera moves, stored in _GhostOffset1.z)
                 float motionWeight = saturate(_GhostOffset1.z * _TripleEchoStrength * _Intensity);
-
-                // Blend the 3 temporal/spatial echoes together
                 float3 tripleEchoVision = echo1 * 0.45 + echo2 * 0.33 + echo3 * 0.22;
 
-                // Subtle persistent double-vision drift even when standing completely still
                 float2 idleDrift = float2(cos(t * 1.4), sin(t * 1.0)) * (0.005 * _Intensity);
                 float3 idleDouble = SampleBlurred(_MainTex, warpedUV + idleDrift, blur * 1.5, chroma * 1.2);
 

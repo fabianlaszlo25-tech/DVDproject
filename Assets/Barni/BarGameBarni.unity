@@ -1770,19 +1770,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionOut
   sceneToLoad: BarGameBarni
   zoomInTime: 0.6
-  targetCamera: {fileID: 0}
-  fadeImage: {fileID: 0}
+  targetCamera: {fileID: 740402689}
+  fadeImage: {fileID: 1991752327}
   zoomTargetFOV: 30
   uiToScale:
-  - {fileID: 0}
+  - {fileID: 114590949}
   scaleSpeedFraction: 0.4
   uiExitScale: 3
   uiToHide:
-  - {fileID: 0}
+  - {fileID: 1884043457}
   scriptsToDisable:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2028949024}
+  - {fileID: 740402688}
 --- !u!114 &318176456
 MonoBehaviour:
   m_ObjectHideFlags: 0

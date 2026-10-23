@@ -6969,9 +6969,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimedConsumableBooster
   effectType: 1
   peakIntensity: 1
-  fadeInDuration: 4
+  fadeSpeed: 0.35
   activeHoldDuration: 15
-  fadeOutDuration: 5
   useUnscaledTime: 1
   unusedBuyableProp: {fileID: 1684302470}
   activeBoosterObject: {fileID: 272473311}
@@ -9584,6 +9583,8 @@ MonoBehaviour:
   anxietyAttackBooster: {fileID: 2046018331}
   dizzyBuzzBooster: {fileID: 642744299}
   threeEffectOverdoseBooster: {fileID: 1918169969}
+  combinedDuration: 15
+  comboFadeSpeed: 0.35
   hyperfocusSettings:
     pulseSpeed: 13.5
     pulseZoom: 0.024
@@ -9655,7 +9656,6 @@ MonoBehaviour:
     fadeToBlackDuration: 2.5
     unconsciousHoldDuration: 1.8
     wakeUpFadeDuration: 3
-  comboFadeSpeed: 1.5
   rotationEchoSensitivity: 0.065
   positionEchoSensitivity: 0.16
   maxEchoUVOffset: 0.11
@@ -14379,6 +14379,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
   barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 0}
+  foodPriceDisplay: {fileID: 0}
   actionType: 3
   zoomInTime: 0.25
   holdTime: 4
@@ -14394,6 +14396,7 @@ MonoBehaviour:
   - {fileID: 1529998231}
   audioSource: {fileID: 597446306}
   actionSound: {fileID: 8300000, guid: fab57b85292fdb146ae07d538ea845b3, type: 3}
+  cantAffordSound: {fileID: 0}
   scriptsToDisable:
   - {fileID: 398708319}
   - {fileID: 1564629742}
@@ -15899,9 +15902,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimedConsumableBooster
   effectType: 2
   peakIntensity: 1
-  fadeInDuration: 4
+  fadeSpeed: 0.35
   activeHoldDuration: 15
-  fadeOutDuration: 5
   useUnscaledTime: 1
   unusedBuyableProp: {fileID: 54771818}
   activeBoosterObject: {fileID: 684525973}
@@ -16428,6 +16430,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
   barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 0}
+  foodPriceDisplay: {fileID: 0}
   actionType: 0
   zoomInTime: 0.25
   holdTime: 4
@@ -16443,6 +16447,7 @@ MonoBehaviour:
   - {fileID: 1529998231}
   audioSource: {fileID: 702624642}
   actionSound: {fileID: 8300000, guid: 73781874a5259234d8252fb8d155667a, type: 3}
+  cantAffordSound: {fileID: 0}
   scriptsToDisable:
   - {fileID: 398708319}
   - {fileID: 1564629742}
@@ -16460,6 +16465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodPriceDisplay
   barManager: {fileID: 1003284028}
+  notEnoughMoneyMessage: Not enough money!
 --- !u!114 &702624639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20943,9 +20949,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimedConsumableBooster
   effectType: 0
   peakIntensity: 1
-  fadeInDuration: 4
+  fadeSpeed: 0.35
   activeHoldDuration: 15
-  fadeOutDuration: 5
   useUnscaledTime: 1
   unusedBuyableProp: {fileID: 65720121}
   activeBoosterObject: {fileID: 882760222}
@@ -23504,6 +23509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BarManager
   economyBouncer: {fileID: 854348182134054070}
+  depressionBreakdown: {fileID: 0}
   hungerSlider: {fileID: 561559784}
   needsSlider: {fileID: 1380958987}
   sleepSlider: {fileID: 1229108077}
@@ -31808,7 +31814,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1410935575}
-  - component: {fileID: 1410935574}
+  - component: {fileID: 1410935576}
   m_Layer: 0
   m_Name: volume
   m_TagString: Untagged
@@ -31816,23 +31822,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1410935574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1410935573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 82b9f5707bad4ba4197ec51b33312ef6, type: 2}
 --- !u!4 &1410935575
 Transform:
   m_ObjectHideFlags: 0
@@ -31848,6 +31837,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1410935576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410935573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6eba90aad09f604499700748af15de2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AdjustableACESEffect
+  targetCamera: {fileID: 1564629741}
+  acesAmount: 0.72
+  postExposure: -0.69
+  contrast: 1.11
+  saturation: 1.32
+  disableBuiltInVolumeTonemapping: 1
+  acesShader: {fileID: 4800000, guid: e03427a53a433bd4f95d35289690d0af, type: 3}
 --- !u!1001 &1412208725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35439,6 +35447,73 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1573847840}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1574703661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1574703663}
+  - component: {fileID: 1574703662}
+  m_Layer: 0
+  m_Name: DeathSeq
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1574703662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574703661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d3ea1bfc72faf54b87e0cc112dd8098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DepressionBreakdownSequence
+  barManager: {fileID: 1003284028}
+  targetCamera: {fileID: 1564629741}
+  playerRootObject: {fileID: 1513593849}
+  playerAudioListener: {fileID: 1564629740}
+  scriptsToDisableDuringRampUp:
+  - {fileID: 1513593850}
+  endingPopupUI: {fileID: 1809932052}
+  unlockCursorWhenUIPopsUp: 1
+  gunCockingSound: {fileID: 8300000, guid: 8f9e117d98feebb49ae6395f4aa2e961, type: 3}
+  gunCockingVolume: 1
+  gunshotSound: {fileID: 8300000, guid: c9cb496126a900b45890ce9afe1cc64d, type: 3}
+  gunshotVolume: 1
+  optionalHeartbeatLoop: {fileID: 8300000, guid: c2c8acce80497d740a476f4e1e8425ba, type: 3}
+  heartbeatVolume: 0.85
+  heartAttackRampDuration: 6.5
+  silenceBeforeGunCock: 1
+  tastefulDelayAfterCockFinishes: 1.4
+  delayAfterGunshotBeforeUI: 0
+  startPulseFrequency: 1.1
+  endPulseFrequency: 3.2
+  maxCameraCollapseDegrees: 6.5
+  breakdownShader: {fileID: 4800000, guid: aafe1985547a4a246a3148332d58b9cd, type: 3}
+--- !u!4 &1574703663
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574703661}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 15.20826, y: -0, z: 14.31457}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1809932057}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1575823598
 GameObject:
   m_ObjectHideFlags: 0
@@ -41349,6 +41424,108 @@ Transform:
   - {fileID: 93917624}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1809932052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1809932057}
+  - component: {fileID: 1809932056}
+  - component: {fileID: 1809932055}
+  - component: {fileID: 1809932054}
+  m_Layer: 0
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1809932054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809932052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1809932055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809932052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &1809932056
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809932052}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &1809932057
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809932052}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2129895522}
+  m_Father: {fileID: 1574703663}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1 &1814855376
 GameObject:
   m_ObjectHideFlags: 0
@@ -44828,6 +45005,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
   barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 0}
+  foodPriceDisplay: {fileID: 0}
   actionType: 1
   zoomInTime: 0.25
   holdTime: 4
@@ -44843,6 +45022,7 @@ MonoBehaviour:
   - {fileID: 1529998231}
   audioSource: {fileID: 1944640895}
   actionSound: {fileID: 8300000, guid: 8981f2fafc451054d9ca0e2a26703216, type: 3}
+  cantAffordSound: {fileID: 0}
   scriptsToDisable:
   - {fileID: 398708319}
   - {fileID: 1564629742}
@@ -47746,9 +47926,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimedConsumableBooster
   effectType: 3
   peakIntensity: 1
-  fadeInDuration: 4
+  fadeSpeed: 0.35
   activeHoldDuration: 15
-  fadeOutDuration: 5
   useUnscaledTime: 1
   unusedBuyableProp: {fileID: 471559761}
   activeBoosterObject: {fileID: 2087382243}
@@ -48420,6 +48599,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030988002, guid: abc00000000011765915237552469516, type: 3}
   m_PrefabInstance: {fileID: 2122365026}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2129895521
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2129895522}
+  - component: {fileID: 2129895524}
+  - component: {fileID: 2129895523}
+  m_Layer: 0
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2129895522
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129895521}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1809932057}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2129895523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129895521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2129895524
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129895521}
+  m_CullTransparentMesh: 1
 --- !u!1001 &2129971858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51058,6 +51312,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
   barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 0}
+  foodPriceDisplay: {fileID: 0}
   actionType: 2
   zoomInTime: 0.25
   holdTime: 5
@@ -51073,6 +51329,7 @@ MonoBehaviour:
   - {fileID: 1529998231}
   audioSource: {fileID: 2776424364957985577}
   actionSound: {fileID: 0}
+  cantAffordSound: {fileID: 0}
   scriptsToDisable:
   - {fileID: 398708319}
   - {fileID: 1564629742}
@@ -53876,3 +54133,4 @@ SceneRoots:
   - {fileID: 1666094242}
   - {fileID: 1990579555}
   - {fileID: 1410935575}
+  - {fileID: 1574703663}
