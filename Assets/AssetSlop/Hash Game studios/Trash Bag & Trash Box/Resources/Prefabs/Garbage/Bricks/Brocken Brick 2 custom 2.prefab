@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 44562d42fb7a01e4eaab8a57e3f1bb83, type: 2}
     - target: {fileID: 919132149155446097, guid: e47d9cf21e903d941b7a76707aee9b5e, type: 3}
       propertyPath: m_Name
-      value: Brocken Brick 2 custom 1 (1)
+      value: Brocken Brick 2 custom 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 254da1a0fa44c8d49bfff51432de5584, type: 2}
     - target: {fileID: 919132149155446097, guid: d1072dece9fc1b64fa0f47e31d3ec033, type: 3}
       propertyPath: m_Name
-      value: Recycle bin blue
+      value: Recycle 1 bin blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

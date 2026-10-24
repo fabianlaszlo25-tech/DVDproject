@@ -186,6 +186,7 @@ MonoBehaviour:
   pulsePeriod: 0.9
   swirlBands: 2
   swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
   smoothing: 10
   outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}
 --- !u!1 &5072320892434676523
