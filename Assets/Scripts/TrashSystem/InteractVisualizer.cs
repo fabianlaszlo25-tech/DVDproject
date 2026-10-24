@@ -4,10 +4,13 @@ using UnityEngine.Rendering;
 
 /// <summary>
 /// Standalone glow for any object with MeshFilter + MeshRenderer children.
-/// It never touches the object's own materials: it adds hidden child copies of the meshes
-/// that render (1) a depth + stencil masking fill over the surface and (2) a swirling outline.
-/// Periodically ramps the outline up and back down with 0 inner fill brightness while idle,
-/// and ramps both outline and inner fill when driven with <see cref="SetIntensity"/> (0..1).
+/// Fixed for Windows/WebGL platform switching, Static Batching ("Combined Mesh" ghosting),
+/// and LODGroup hierarchies:
+/// 1. Caches original unbatched meshes in Awake() BEFORE Unity's Static Batcher merges them into
+///    a scene-wide megamesh, while delaying child GameObject creation until Start() so other scripts
+///    caching renderers in Awake() never see the glow copies.
+/// 2. Detects LODGroups so only the active LOD0 (or currently visible LOD) glows, preventing
+///    LOD1/LOD2/LOD3 meshes from stacking or floating in mid-air.
 /// </summary>
 public class InteractVisualizer : MonoBehaviour
 {
@@ -72,6 +75,10 @@ public class InteractVisualizer : MonoBehaviour
     [Tooltip("How tightly the swirl twists vertically along the mesh.")]
     public float swirlTwist = 8f;
 
+    [Header("LOD Settings")]
+    [Tooltip("If true and an LODGroup is present, only builds glow meshes for LOD0 so lower LODs never double-render.")]
+    public bool onlyUseLOD0WhenLODGroupPresent = true;
+
     [Header("Response")]
     [Tooltip("How quickly the glow follows the intensity you set.")]
     public float smoothing = 10f;
@@ -80,7 +87,26 @@ public class InteractVisualizer : MonoBehaviour
     [Tooltip("Leave empty to find 'Custom/TrashOutline' automatically (keep the shader file in a Resources folder).")]
     public Shader outlineShader;
 
-    private readonly List<MeshRenderer> glowRenderers = new List<MeshRenderer>();
+    private struct CachedSourceMesh
+    {
+        public MeshFilter filter;
+        public MeshRenderer sourceRenderer;
+        public Mesh originalMesh;
+        public Vector3 localCenter;
+        public int submeshCount;
+    }
+
+    private struct GlowRendererPair
+    {
+        public MeshRenderer sourceRenderer;
+        public MeshRenderer fillRenderer;
+        public MeshRenderer outlineRenderer;
+    }
+
+    private readonly List<CachedSourceMesh> preBatchCache = new List<CachedSourceMesh>();
+    private readonly List<GlowRendererPair> glowPairs = new List<GlowRendererPair>();
+    private readonly List<Mesh> runtimeExtractedMeshes = new List<Mesh>();
+
     private Material outlineMaterial;
     private Material fillMaterial;
     private float currentIntensity;
@@ -96,7 +122,6 @@ public class InteractVisualizer : MonoBehaviour
     {
         float clamped = Mathf.Clamp01(value);
 
-        // If releasing a hold, reset the periodic timer so it waits cleanly before the next idle glow-up.
         if (targetIntensity > 0f && clamped <= 0f)
         {
             periodicTimer = 0f;
@@ -117,10 +142,15 @@ public class InteractVisualizer : MonoBehaviour
         SetVisible(false);
     }
 
+    private void Awake()
+    {
+        // Cache the original unbatched meshes in Awake() BEFORE Unity's StaticBatchingUtility runs!
+        // We do NOT create child GameObjects here so BuyableBoosterProp.Awake() never caches our glow renderers.
+        CacheSourceMeshesBeforeStaticBatching();
+    }
+
     private void Start()
     {
-        // Built in Start (not Awake) so other scripts that cache this object's renderers
-        // in Awake never see the glow copies.
         if (outlineShader == null) outlineShader = Shader.Find(ShaderName);
         if (outlineShader == null)
         {
@@ -129,18 +159,14 @@ public class InteractVisualizer : MonoBehaviour
             return;
         }
 
-        // Randomize the starting point in the periodic cycle and swirl phase so objects don't sync up.
         float totalCycle = Mathf.Max(0f, periodicWait) + Mathf.Max(0.1f, periodicDuration);
         periodicTimer = Random.Range(0f, totalCycle);
         swirlSeed = Random.Range(0f, Mathf.PI * 2f);
 
-        // Fill (Queue Transparent+10): renders AFTER the transparent object (Queue 3000),
-        // writes to Depth (ZWrite = 1) and Stencil (Ref = 173) across the front surface.
-        // During idle glow its Alpha is 0 (invisible), physically blocking the back-face outline behind it!
         fillMaterial = CreateMaterial(
             "TrashGlow Fill",
             CullMode.Back,
-            1f, // ZWrite ON: writes depth for transparent objects so back-faces of the outline are depth-culled!
+            1f, // ZWrite ON
             -1f,
             -1f,
             0f,
@@ -148,8 +174,6 @@ public class InteractVisualizer : MonoBehaviour
             StencilOp.Replace,
             10);
 
-        // Outline (Queue Transparent+11): renders second, culled by BOTH Depth (ZTest LEqual against Fill's ZWrite)
-        // and Stencil (Stencil != 173).
         outlineMaterial = CreateMaterial(
             "TrashGlow Outline",
             CullMode.Front,
@@ -161,7 +185,134 @@ public class InteractVisualizer : MonoBehaviour
             StencilOp.Keep,
             11);
 
-        BuildRenderers();
+        BuildRenderersFromCache();
+    }
+
+    private void CacheSourceMeshesBeforeStaticBatching()
+    {
+        preBatchCache.Clear();
+
+        // Collect allowed renderers if an LODGroup exists on this object or its children
+        HashSet<Renderer> allowedLODRenderers = null;
+        LODGroup[] lodGroups = GetComponentsInChildren<LODGroup>(true);
+        if (lodGroups != null && lodGroups.Length > 0 && onlyUseLOD0WhenLODGroupPresent)
+        {
+            allowedLODRenderers = new HashSet<Renderer>();
+            foreach (LODGroup group in lodGroups)
+            {
+                if (group == null) continue;
+                LOD[] lods = group.GetLODs();
+                if (lods != null && lods.Length > 0 && lods[0].renderers != null)
+                {
+                    foreach (Renderer r in lods[0].renderers)
+                    {
+                        if (r != null) allowedLODRenderers.Add(r);
+                    }
+                }
+            }
+        }
+
+        foreach (MeshFilter filter in GetComponentsInChildren<MeshFilter>(true))
+        {
+            if (filter == null || filter.gameObject.name.StartsWith("Glow_")) continue;
+
+            MeshRenderer sourceRenderer = filter.GetComponent<MeshRenderer>();
+            if (sourceRenderer == null) continue;
+
+            // If this hierarchy has an LODGroup, skip LOD1/LOD2/LOD3 renderers so they never spawn duplicate/offset ghosts
+            if (allowedLODRenderers != null && allowedLODRenderers.Count > 0 && !allowedLODRenderers.Contains(sourceRenderer))
+            {
+                continue;
+            }
+
+            // Skip non-LOD0 meshes by name convention even if LODGroup component was stripped
+            string objNameLower = filter.gameObject.name.ToLowerInvariant();
+            if (objNameLower.Contains("_lod1") || objNameLower.Contains("_lod2") || objNameLower.Contains("_lod3") || objNameLower.Contains("_shadow"))
+            {
+                continue;
+            }
+
+            Mesh shared = filter.sharedMesh;
+            if (shared == null) continue;
+
+            // Guard against meshes that were already static-batched at build time ("Combined Mesh (root: scene)")
+            Mesh validMesh = ResolveUnbatchedMesh(filter, sourceRenderer, shared);
+            if (validMesh == null) continue;
+
+            preBatchCache.Add(new CachedSourceMesh
+            {
+                filter = filter,
+                sourceRenderer = sourceRenderer,
+                originalMesh = validMesh,
+                localCenter = validMesh.bounds.center,
+                submeshCount = Mathf.Max(1, validMesh.subMeshCount)
+            });
+        }
+    }
+
+    /// <summary>
+    /// If Unity's build-time Static Batching replaced filter.sharedMesh with "Combined Mesh (root: scene)",
+    /// its vertices are in World Space and contain all static objects in the scene!
+    /// This method either extracts ONLY this renderer's submesh slice and transforms it back to local space,
+    /// or skips corrupt combined meshes so random ghost objects never spawn in mid-air.
+    /// </summary>
+    private Mesh ResolveUnbatchedMesh(MeshFilter filter, MeshRenderer renderer, Mesh shared)
+    {
+        if (!renderer.isPartOfStaticBatch && !shared.name.StartsWith("Combined Mesh"))
+        {
+            return shared;
+        }
+
+        // If the combined mesh is readable, extract ONLY this object's submesh slice and convert World -> Local space
+        if (shared.isReadable && renderer.subMeshStartIndex >= 0 && renderer.subMeshStartIndex < shared.subMeshCount)
+        {
+            int subIndex = renderer.subMeshStartIndex;
+            int[] tris = shared.GetTriangles(subIndex);
+            if (tris != null && tris.Length > 0)
+            {
+                Vector3[] allVerts = shared.vertices;
+                Vector3[] allNormals = shared.normals;
+
+                Dictionary<int, int> indexMap = new Dictionary<int, int>(tris.Length);
+                List<Vector3> localVerts = new List<Vector3>();
+                List<Vector3> localNormals = new List<Vector3>();
+                int[] newTris = new int[tris.Length];
+
+                Matrix4x4 worldToLocal = filter.transform.worldToLocalMatrix;
+
+                for (int i = 0; i < tris.Length; i++)
+                {
+                    int oldIdx = tris[i];
+                    if (!indexMap.TryGetValue(oldIdx, out int newIdx))
+                    {
+                        newIdx = localVerts.Count;
+                        indexMap[oldIdx] = newIdx;
+                        localVerts.Add(worldToLocal.MultiplyPoint3x4(allVerts[oldIdx]));
+                        if (allNormals != null && oldIdx < allNormals.Length)
+                            localNormals.Add(worldToLocal.MultiplyVector(allNormals[oldIdx]).normalized);
+                        else
+                            localNormals.Add(Vector3.up);
+                    }
+                    newTris[i] = newIdx;
+                }
+
+                Mesh extracted = new Mesh
+                {
+                    name = "ExtractedLocal_" + filter.name
+                };
+                extracted.SetVertices(localVerts);
+                extracted.SetNormals(localNormals);
+                extracted.SetTriangles(newTris, 0);
+                extracted.RecalculateBounds();
+                runtimeExtractedMeshes.Add(extracted);
+                return extracted;
+            }
+        }
+
+        // If Unity locked the static batch megamesh as non-readable, never assign the megamesh to a new MeshRenderer
+        // (doing so draws the entire room's static geometry floating in the air!).
+        Debug.LogWarning($"InteractVisualizer: '{filter.name}' is marked Batching Static with a non-readable Combined Mesh. Uncheck 'Batching Static' on interactive props so their outline can render.", filter);
+        return null;
     }
 
     private Material CreateMaterial(
@@ -179,7 +330,8 @@ public class InteractVisualizer : MonoBehaviour
         {
             name = materialName,
             hideFlags = HideFlags.HideAndDontSave,
-            renderQueue = (int)RenderQueue.Transparent + queueOffset
+            renderQueue = (int)RenderQueue.Transparent + queueOffset,
+            enableInstancing = false // Prevents Windows DX11/DX12 instancing buffer stomping across different meshes
         };
         material.SetFloat(CullId, (float)cull);
         material.SetFloat(ZWriteId, zWrite);
@@ -196,48 +348,66 @@ public class InteractVisualizer : MonoBehaviour
     {
         if (outlineMaterial != null) Destroy(outlineMaterial);
         if (fillMaterial != null) Destroy(fillMaterial);
+
+        for (int i = 0; i < runtimeExtractedMeshes.Count; i++)
+        {
+            if (runtimeExtractedMeshes[i] != null) Destroy(runtimeExtractedMeshes[i]);
+        }
+        runtimeExtractedMeshes.Clear();
     }
 
-    private void BuildRenderers()
+    private void BuildRenderersFromCache()
     {
-        foreach (MeshFilter filter in GetComponentsInChildren<MeshFilter>())
+        if (preBatchCache.Count == 0)
         {
-            MeshRenderer sourceRenderer = filter.GetComponent<MeshRenderer>();
-            if (filter.sharedMesh == null || sourceRenderer == null) continue;
+            CacheSourceMeshesBeforeStaticBatching();
+        }
 
-            int baseSort = sourceRenderer.sortingOrder;
-            glowRenderers.Add(CreateCopy(filter, "Glow_Fill_", fillMaterial, baseSort + 1));
-            glowRenderers.Add(CreateCopy(filter, "Glow_Outline_", outlineMaterial, baseSort + 2));
+        for (int i = 0; i < preBatchCache.Count; i++)
+        {
+            CachedSourceMesh item = preBatchCache[i];
+            if (item.filter == null || item.sourceRenderer == null || item.originalMesh == null) continue;
+
+            int baseSort = item.sourceRenderer.sortingOrder;
+            MeshRenderer fillR = CreateCopy(item, "Glow_Fill_", fillMaterial, baseSort + 1);
+            MeshRenderer outlineR = CreateCopy(item, "Glow_Outline_", outlineMaterial, baseSort + 2);
+
+            glowPairs.Add(new GlowRendererPair
+            {
+                sourceRenderer = item.sourceRenderer,
+                fillRenderer = fillR,
+                outlineRenderer = outlineR
+            });
         }
     }
 
-    private MeshRenderer CreateCopy(MeshFilter source, string namePrefix, Material material, int sortingOrder)
+    private MeshRenderer CreateCopy(CachedSourceMesh item, string namePrefix, Material material, int sortingOrder)
     {
-        Mesh mesh = source.sharedMesh;
+        GameObject copy = new GameObject(namePrefix + item.filter.name);
+        copy.layer = item.filter.gameObject.layer;
+        copy.transform.SetParent(item.filter.transform, false);
+        copy.transform.localPosition = Vector3.zero;
+        copy.transform.localRotation = Quaternion.identity;
+        copy.transform.localScale = Vector3.one;
 
-        GameObject copy = new GameObject(namePrefix + source.name);
-        copy.layer = source.gameObject.layer;
-        copy.transform.SetParent(source.transform, false);
-
-        copy.AddComponent<MeshFilter>().sharedMesh = mesh;
+        copy.AddComponent<MeshFilter>().sharedMesh = item.originalMesh;
         MeshRenderer renderer = copy.AddComponent<MeshRenderer>();
 
-        // One material per submesh so the whole mesh is covered.
-        Material[] materials = new Material[Mathf.Max(1, mesh.subMeshCount)];
+        Material[] materials = new Material[item.submeshCount];
         for (int i = 0; i < materials.Length; i++) materials[i] = material;
         renderer.sharedMaterials = materials;
 
+        renderer.sortingLayerID = item.sourceRenderer.sortingLayerID;
         renderer.sortingOrder = sortingOrder;
 
         renderer.shadowCastingMode = ShadowCastingMode.Off;
         renderer.receiveShadows = false;
         renderer.lightProbeUsage = LightProbeUsage.Off;
         renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+        renderer.allowOcclusionWhenDynamic = false;
 
-        // Apply MaterialPropertyBlock to BOTH Fill and Outline renderers so URP puts both
-        // in the exact same non-SRP-batcher draw loop, strictly respecting renderQueue 3010 -> 3011.
         var block = new MaterialPropertyBlock();
-        block.SetVector(CenterId, mesh.bounds.center);
+        block.SetVector(CenterId, item.localCenter);
         renderer.SetPropertyBlock(block);
 
         renderer.enabled = false;
@@ -246,16 +416,16 @@ public class InteractVisualizer : MonoBehaviour
 
     private void Update()
     {
-        if (glowRenderers.Count == 0) return;
+        if (glowPairs.Count == 0) return;
 
-        // 1. Smooth the hold intensity driven by TrashItem.
+        // 1. Smooth the hold intensity
         currentIntensity = Mathf.Lerp(currentIntensity, targetIntensity, 1f - Mathf.Exp(-smoothing * Time.deltaTime));
         if (targetIntensity <= 0f && currentIntensity < 0.002f)
         {
             currentIntensity = 0f;
         }
 
-        // 2. Run the periodic outline ramp (0 -> 1 -> 0) while idle.
+        // 2. Run the periodic outline ramp (0 -> 1 -> 0) while idle
         if (enablePeriodicGlow && targetIntensity <= 0f && currentIntensity <= 0f)
         {
             float wait = Mathf.Max(0f, periodicWait);
@@ -267,8 +437,7 @@ public class InteractVisualizer : MonoBehaviour
 
             if (periodicTimer >= wait)
             {
-                float t = (periodicTimer - wait) / duration; // 0..1 across the glow duration
-                // Smoothly ramps 0 -> 1 -> 0 just like holding and releasing
+                float t = (periodicTimer - wait) / duration;
                 periodicIntensity = (0.5f - 0.5f * Mathf.Cos(t * Mathf.PI * 2f)) * periodicPeakIntensity;
             }
             else
@@ -278,7 +447,6 @@ public class InteractVisualizer : MonoBehaviour
         }
         else
         {
-            // Smoothly blend out periodic intensity if the player grabs the item mid-pulse.
             periodicIntensity = Mathf.Lerp(periodicIntensity, 0f, 1f - Mathf.Exp(-smoothing * Time.deltaTime));
         }
 
@@ -291,7 +459,29 @@ public class InteractVisualizer : MonoBehaviour
         }
 
         SetVisible(true);
+        SyncWithSourceRendererVisibility();
         ApplyMaterialValues(outlineIntensity, currentIntensity);
+    }
+
+    private void SyncWithSourceRendererVisibility()
+    {
+        if (!isVisible) return;
+
+        // Ensure that if the source MeshRenderer was disabled (e.g. by BuyableBoosterProp purchase or LOD culling),
+        // its corresponding glow copies never stay floating in the air!
+        for (int i = 0; i < glowPairs.Count; i++)
+        {
+            GlowRendererPair pair = glowPairs[i];
+            bool sourceActive = pair.sourceRenderer != null
+                             && pair.sourceRenderer.enabled
+                             && pair.sourceRenderer.gameObject.activeInHierarchy;
+
+            if (pair.fillRenderer != null && pair.fillRenderer.enabled != sourceActive)
+                pair.fillRenderer.enabled = sourceActive;
+
+            if (pair.outlineRenderer != null && pair.outlineRenderer.enabled != sourceActive)
+                pair.outlineRenderer.enabled = sourceActive;
+        }
     }
 
     private void ApplyMaterialValues(float outlineIntensity, float holdIntensity)
@@ -299,7 +489,6 @@ public class InteractVisualizer : MonoBehaviour
         float elapsed = Time.time - pulseStartTime;
         float swirlPhase = swirlSeed + (elapsed / Mathf.Max(0.05f, pulsePeriod)) * Mathf.PI * 2f;
 
-        // Outline: uses outlineIntensity (driven by either periodic idle glow OR holding).
         float growth = Mathf.Lerp(0.3f, 1f, outlineIntensity);
         outlineMaterial.SetColor(ColorId, glowColor);
         outlineMaterial.SetFloat(ThicknessId, thickness);
@@ -315,8 +504,6 @@ public class InteractVisualizer : MonoBehaviour
         outlineMaterial.SetFloat(SwirlBandsId, Mathf.Max(1f, Mathf.Round(swirlBands)));
         outlineMaterial.SetFloat(SwirlTwistId, swirlTwist);
 
-        // Fill: always renders when outline is visible so it stamps both the Depth buffer and Stencil mask
-        // for see-through objects, while remaining completely invisible (Alpha = 0) unless held.
         fillMaterial.SetColor(ColorId, glowColor);
         fillMaterial.SetFloat(ThicknessId, FillThickness);
         fillMaterial.SetFloat(ThicknessScaleId, 1f);
@@ -332,9 +519,16 @@ public class InteractVisualizer : MonoBehaviour
 
         if (visible) pulseStartTime = Time.time;
 
-        foreach (MeshRenderer r in glowRenderers)
+        for (int i = 0; i < glowPairs.Count; i++)
         {
-            if (r != null) r.enabled = visible;
+            GlowRendererPair pair = glowPairs[i];
+            bool shouldEnable = visible
+                             && pair.sourceRenderer != null
+                             && pair.sourceRenderer.enabled
+                             && pair.sourceRenderer.gameObject.activeInHierarchy;
+
+            if (pair.fillRenderer != null) pair.fillRenderer.enabled = shouldEnable;
+            if (pair.outlineRenderer != null) pair.outlineRenderer.enabled = shouldEnable;
         }
     }
 }

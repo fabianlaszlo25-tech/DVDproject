@@ -1,8 +1,6 @@
 // Additive glow shader used by InteractVisualizer.
-// Works on both Opaque and Transparent meshes by allowing the Fill pass (Queue Transparent+10)
-// to write to BOTH the Depth buffer (_ZWrite = 1) and Stencil buffer (Ref 173) after the
-// transparent object (Queue 3000) has already rendered, physically and logically blocking
-// the back-facing Outline pass (Queue Transparent+11) from ever drawing inside the silhouette.
+// Includes "DisableBatching"="True" so Windows DX11/DX12 dynamic batching never merges
+// object-space vertices across different props before vert() computes (v.vertex.xyz - _Center.xyz).
 Shader "Custom/TrashOutline"
 {
     Properties
@@ -34,7 +32,13 @@ Shader "Custom/TrashOutline"
 
     SubShader
     {
-        Tags { "Queue"="Transparent+10" "RenderType"="Transparent" "IgnoreProjector"="True" }
+        Tags
+        {
+            "Queue"="Transparent+10"
+            "RenderType"="Transparent"
+            "IgnoreProjector"="True"
+            "DisableBatching"="True"
+        }
 
         Pass
         {
