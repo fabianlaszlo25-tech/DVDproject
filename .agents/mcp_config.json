@@ -3,8 +3,12 @@
     "mcp-unity": {
       "command": "node",
       "args": [
-        "Library/PackageCache/com.gamelovers.mcp-unity/Server~/build/index.js"
-      ]
+        "C:/Users/Legion Pro 7 User/Documents/GitHub/DVDproject/Packages/com.gamelovers.mcp-unity/Server~/build/index.js"
+      ],
+      "env": {
+        "MCP_UNITY_SETTINGS_PATH": "C:/Users/Legion Pro 7 User/Documents/GitHub/DVDproject/ProjectSettings/McpUnitySettings.json",
+        "MCP_UNITY_AUTH_TOKEN_PATH": "C:/Users/Legion Pro 7 User/Documents/GitHub/DVDproject/Library/McpUnity/bridge-token"
+      }
     }
   }
 }
