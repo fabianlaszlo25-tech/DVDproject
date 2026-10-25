@@ -364,7 +364,7 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
-        // 1. Resolve or wrap Main Buttons
+        // 1. Resolve Main Buttons Panel from Inspector or Scene Hierarchy
         if (mainButtonsPanel == null && holderTransform != null)
         {
             Transform existingMain = holderTransform.Find("MainButtonsPanel");
@@ -372,46 +372,24 @@ public class MainMenuController : MonoBehaviour
             {
                 mainButtonsPanel = existingMain.gameObject;
             }
-            else
+        }
+
+        // Locate buttons inside mainButtonsPanel or holder
+        Transform buttonsContainer = (mainButtonsPanel != null) ? mainButtonsPanel.transform : holderTransform;
+        if (buttonsContainer != null)
+        {
+            if (startRunButton == null)
             {
-                // Create a sub-panel inside holder for the 3 main buttons
-                GameObject mbp = new GameObject("MainButtonsPanel", typeof(RectTransform));
-                mbp.layer = 5;
-                mbp.transform.SetParent(holderTransform, false);
-                RectTransform mbpRT = mbp.GetComponent<RectTransform>();
-                mbpRT.anchorMin = new Vector2(0f, 0.5f);
-                mbpRT.anchorMax = new Vector2(0f, 0.5f);
-                mbpRT.pivot = new Vector2(0.5f, 0.5f);
-                mbpRT.anchoredPosition = new Vector2(-529.6f, -140f);
-                mbpRT.sizeDelta = new Vector2(200f, 300f);
-                mainButtonsPanel = mbp;
-
-                // Reparent existing Story, Settings, Quit buttons into mbp
-                ReparentButtonIfFound(holderTransform, "Story", mbp.transform, new Vector2(0f, 115f), "START RUN");
-                ReparentButtonIfFound(holderTransform, "Settings", mbp.transform, new Vector2(0f, 0f), "SETTINGS");
-                ReparentButtonIfFound(holderTransform, "Quit", mbp.transform, new Vector2(0f, -115f), "QUIT");
-
-                // Remove or deactivate temporary Endless button
-                Transform endlessBtn = holderTransform.Find("Endless");
-                if (endlessBtn != null)
-                {
-                    endlessBtn.gameObject.SetActive(false);
-                }
+                startRunButton = FindButtonByNameOrIndex(buttonsContainer, "Story", "StartRun", 0);
             }
-        }
-
-        // Locate buttons inside mainButtonsPanel or scene
-        if (startRunButton == null && mainButtonsPanel != null)
-        {
-            startRunButton = FindButtonByNameOrIndex(mainButtonsPanel.transform, "Story", "StartRun", 0);
-        }
-        if (settingsButton == null && mainButtonsPanel != null)
-        {
-            settingsButton = FindButtonByNameOrIndex(mainButtonsPanel.transform, "Settings", "Settings", 1);
-        }
-        if (quitButton == null && mainButtonsPanel != null)
-        {
-            quitButton = FindButtonByNameOrIndex(mainButtonsPanel.transform, "Quit", "Quit", 2);
+            if (settingsButton == null)
+            {
+                settingsButton = FindButtonByNameOrIndex(buttonsContainer, "Settings", "Settings", 1);
+            }
+            if (quitButton == null)
+            {
+                quitButton = FindButtonByNameOrIndex(buttonsContainer, "Quit", "Quit", 2);
+            }
         }
 
         // Relabel Start Run button if it still says Story
@@ -424,7 +402,7 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
-        // 2. Resolve or build Settings Panel
+        // 2. Resolve Settings Panel from Inspector or Scene Hierarchy (No dynamic runtime creation)
         if (settingsPanel == null && holderTransform != null)
         {
             Transform existingSettings = holderTransform.Find("SettingsPanel");
@@ -432,16 +410,84 @@ public class MainMenuController : MonoBehaviour
             {
                 settingsPanel = existingSettings.gameObject;
             }
-            else
+        }
+
+        // Locate Settings Panel controls if not already assigned
+        if (settingsPanel != null)
+        {
+            if (musicVolumeSlider == null)
             {
-                BuildSettingsPanelRuntime(holderTransform);
+                Slider[] sliders = settingsPanel.GetComponentsInChildren<Slider>(true);
+                foreach (Slider s in sliders)
+                {
+                    if (s.name.IndexOf("Music", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        musicVolumeSlider = s;
+                        break;
+                    }
+                }
+                if (musicVolumeSlider == null && sliders.Length > 0) musicVolumeSlider = sliders[0];
+            }
+
+            if (sfxVolumeSlider == null)
+            {
+                Slider[] sliders = settingsPanel.GetComponentsInChildren<Slider>(true);
+                foreach (Slider s in sliders)
+                {
+                    if (s.name.IndexOf("Sfx", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sfxVolumeSlider = s;
+                        break;
+                    }
+                }
+                if (sfxVolumeSlider == null && sliders.Length > 1) sfxVolumeSlider = sliders[1];
+            }
+
+            if (backFromSettingsButton == null)
+            {
+                Button[] buttons = settingsPanel.GetComponentsInChildren<Button>(true);
+                foreach (Button b in buttons)
+                {
+                    if (b.name.IndexOf("Back", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        backFromSettingsButton = b;
+                        break;
+                    }
+                }
+                if (backFromSettingsButton == null && buttons.Length > 0) backFromSettingsButton = buttons[0];
+            }
+
+            if (musicValueText == null)
+            {
+                TextMeshProUGUI[] tmps = settingsPanel.GetComponentsInChildren<TextMeshProUGUI>(true);
+                foreach (TextMeshProUGUI t in tmps)
+                {
+                    if (t.name.IndexOf("MusicValue", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        musicValueText = t;
+                        break;
+                    }
+                }
+            }
+
+            if (sfxValueText == null)
+            {
+                TextMeshProUGUI[] tmps = settingsPanel.GetComponentsInChildren<TextMeshProUGUI>(true);
+                foreach (TextMeshProUGUI t in tmps)
+                {
+                    if (t.name.IndexOf("SfxValue", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sfxValueText = t;
+                        break;
+                    }
+                }
             }
         }
 
         EnsureCanvasGroups();
         RecordBasePositions();
 
-        // Settings panel starts hidden
+        // Settings panel starts hidden at runtime
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
@@ -453,35 +499,15 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
-        if (mainButtonsPanel != null && mainButtonsCanvasGroup != null)
+        // Main buttons start visible and interactable at runtime
+        if (mainButtonsPanel != null)
         {
-            mainButtonsCanvasGroup.alpha = 1f;
-            mainButtonsCanvasGroup.interactable = true;
-            mainButtonsCanvasGroup.blocksRaycasts = true;
-        }
-    }
-
-    private void ReparentButtonIfFound(Transform holder, string btnName, Transform newParent, Vector2 localPos, string newLabel)
-    {
-        Transform btnTrans = holder.Find(btnName);
-        if (btnTrans != null)
-        {
-            btnTrans.SetParent(newParent, false);
-            RectTransform rt = btnTrans.GetComponent<RectTransform>();
-            if (rt != null)
+            mainButtonsPanel.SetActive(true);
+            if (mainButtonsCanvasGroup != null)
             {
-                rt.anchorMin = new Vector2(0.5f, 0.5f);
-                rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.anchoredPosition = localPos;
-                rt.sizeDelta = new Vector2(180f, 32f);
-                rt.localScale = Vector3.one * 2.5f;
-            }
-
-            TextMeshProUGUI txt = btnTrans.GetComponentInChildren<TextMeshProUGUI>(true);
-            if (txt != null && !string.IsNullOrEmpty(newLabel))
-            {
-                txt.text = newLabel;
+                mainButtonsCanvasGroup.alpha = 1f;
+                mainButtonsCanvasGroup.interactable = true;
+                mainButtonsCanvasGroup.blocksRaycasts = true;
             }
         }
     }
@@ -508,168 +534,6 @@ public class MainMenuController : MonoBehaviour
         }
 
         return null;
-    }
-
-    private void BuildSettingsPanelRuntime(Transform parent)
-    {
-        GameObject sp = new GameObject("SettingsPanel", typeof(RectTransform));
-        sp.layer = 5;
-        sp.transform.SetParent(parent, false);
-        RectTransform spRT = sp.GetComponent<RectTransform>();
-        spRT.anchorMin = new Vector2(0f, 0.5f);
-        spRT.anchorMax = new Vector2(0f, 0.5f);
-        spRT.pivot = new Vector2(0.5f, 0.5f);
-        spRT.anchoredPosition = new Vector2(-529.6f, -140f);
-        spRT.sizeDelta = new Vector2(190f, 130f);
-        spRT.localScale = Vector3.one * 2.5f;
-        settingsPanel = sp;
-
-        Image bg = sp.AddComponent<Image>();
-        bg.color = new Color(0.08f, 0.08f, 0.10f, 0.90f);
-
-        // Title
-        CreateText("SettingsTitle", sp.transform, "SETTINGS", 18f, new Vector2(0f, 48f), new Vector2(180f, 22f), Color.white, TextAlignmentOptions.Center);
-
-        // Music Section
-        CreateText("MusicLabel", sp.transform, "MUSIC", 11f, new Vector2(-48f, 22f), new Vector2(80f, 16f), new Color(0.85f, 0.85f, 0.85f, 1f), TextAlignmentOptions.Left);
-        musicValueText = CreateText("MusicValue", sp.transform, "100%", 11f, new Vector2(48f, 22f), new Vector2(60f, 16f), new Color(0.75f, 0.75f, 0.75f, 1f), TextAlignmentOptions.Right);
-        musicVolumeSlider = CreateSlider("MusicSlider", sp.transform, new Vector2(0f, 8f), new Vector2(165f, 12f));
-
-        // SFX Section
-        CreateText("SfxLabel", sp.transform, "SFX", 11f, new Vector2(-48f, -12f), new Vector2(80f, 16f), new Color(0.85f, 0.85f, 0.85f, 1f), TextAlignmentOptions.Left);
-        sfxValueText = CreateText("SfxValue", sp.transform, "100%", 11f, new Vector2(48f, -12f), new Vector2(60f, 16f), new Color(0.75f, 0.75f, 0.75f, 1f), TextAlignmentOptions.Right);
-        sfxVolumeSlider = CreateSlider("SfxSlider", sp.transform, new Vector2(0f, -26f), new Vector2(165f, 12f));
-
-        // Back Button
-        backFromSettingsButton = CreateButton("BackButton", sp.transform, "BACK", new Vector2(0f, -48f), new Vector2(95f, 20f));
-    }
-
-    private TextMeshProUGUI CreateText(string name, Transform parent, string text, float size, Vector2 pos, Vector2 sizeDelta, Color color, TextAlignmentOptions align)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform));
-        go.layer = 5;
-        go.transform.SetParent(parent, false);
-        RectTransform rt = go.GetComponent<RectTransform>();
-        rt.anchoredPosition = pos;
-        rt.sizeDelta = sizeDelta;
-
-        TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
-        tmp.text = text;
-        if (fontAsset != null) tmp.font = fontAsset;
-        tmp.fontSize = size;
-        tmp.color = color;
-        tmp.alignment = align;
-        tmp.raycastTarget = false;
-        return tmp;
-    }
-
-    private Button CreateButton(string name, Transform parent, string label, Vector2 pos, Vector2 sizeDelta)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform));
-        go.layer = 5;
-        go.transform.SetParent(parent, false);
-        RectTransform rt = go.GetComponent<RectTransform>();
-        rt.anchoredPosition = pos;
-        rt.sizeDelta = sizeDelta;
-
-        Image img = go.AddComponent<Image>();
-        img.color = new Color(0.92f, 0.92f, 0.92f, 1f);
-
-        Button btn = go.AddComponent<Button>();
-        btn.targetGraphic = img;
-
-        ColorBlock cb = btn.colors;
-        cb.normalColor = Color.white;
-        cb.highlightedColor = new Color(0.96f, 0.96f, 0.96f, 1f);
-        cb.pressedColor = new Color(0.78f, 0.78f, 0.78f, 1f);
-        cb.selectedColor = Color.white;
-        btn.colors = cb;
-
-        GameObject txtGo = new GameObject("Text (TMP)", typeof(RectTransform));
-        txtGo.layer = 5;
-        txtGo.transform.SetParent(go.transform, false);
-        RectTransform txtRT = txtGo.GetComponent<RectTransform>();
-        txtRT.anchorMin = Vector2.zero;
-        txtRT.anchorMax = Vector2.one;
-        txtRT.offsetMin = Vector2.zero;
-        txtRT.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI tmp = txtGo.AddComponent<TextMeshProUGUI>();
-        tmp.text = label;
-        if (fontAsset != null) tmp.font = fontAsset;
-        tmp.fontSize = 13f;
-        tmp.color = new Color(0.12f, 0.12f, 0.12f, 1f);
-        tmp.alignment = TextAlignmentOptions.Center;
-        tmp.raycastTarget = false;
-
-        return btn;
-    }
-
-    private Slider CreateSlider(string name, Transform parent, Vector2 pos, Vector2 sizeDelta)
-    {
-        GameObject sliderObj = new GameObject(name, typeof(RectTransform));
-        sliderObj.layer = 5;
-        sliderObj.transform.SetParent(parent, false);
-        RectTransform sliderRT = sliderObj.GetComponent<RectTransform>();
-        sliderRT.anchoredPosition = pos;
-        sliderRT.sizeDelta = sizeDelta;
-
-        GameObject bgObj = new GameObject("Background", typeof(RectTransform));
-        bgObj.layer = 5;
-        bgObj.transform.SetParent(sliderObj.transform, false);
-        RectTransform bgRT = bgObj.GetComponent<RectTransform>();
-        bgRT.anchorMin = new Vector2(0f, 0.25f);
-        bgRT.anchorMax = new Vector2(1f, 0.75f);
-        bgRT.offsetMin = Vector2.zero;
-        bgRT.offsetMax = Vector2.zero;
-        Image bgImg = bgObj.AddComponent<Image>();
-        bgImg.color = new Color(0.24f, 0.24f, 0.28f, 1f);
-
-        GameObject fillAreaObj = new GameObject("Fill Area", typeof(RectTransform));
-        fillAreaObj.layer = 5;
-        fillAreaObj.transform.SetParent(sliderObj.transform, false);
-        RectTransform fillAreaRT = fillAreaObj.GetComponent<RectTransform>();
-        fillAreaRT.anchorMin = new Vector2(0f, 0.25f);
-        fillAreaRT.anchorMax = new Vector2(1f, 0.75f);
-        fillAreaRT.offsetMin = new Vector2(3f, 0f);
-        fillAreaRT.offsetMax = new Vector2(-10f, 0f);
-
-        GameObject fillObj = new GameObject("Fill", typeof(RectTransform));
-        fillObj.layer = 5;
-        fillObj.transform.SetParent(fillAreaObj.transform, false);
-        RectTransform fillRT = fillObj.GetComponent<RectTransform>();
-        fillRT.anchorMin = Vector2.zero;
-        fillRT.anchorMax = Vector2.one;
-        fillRT.sizeDelta = new Vector2(6f, 0f);
-        Image fillImg = fillObj.AddComponent<Image>();
-        fillImg.color = new Color(0.88f, 0.88f, 0.90f, 1f);
-
-        GameObject handleAreaObj = new GameObject("Handle Slide Area", typeof(RectTransform));
-        handleAreaObj.layer = 5;
-        handleAreaObj.transform.SetParent(sliderObj.transform, false);
-        RectTransform handleAreaRT = handleAreaObj.GetComponent<RectTransform>();
-        handleAreaRT.anchorMin = Vector2.zero;
-        handleAreaRT.anchorMax = Vector2.one;
-        handleAreaRT.offsetMin = new Vector2(6f, 0f);
-        handleAreaRT.offsetMax = new Vector2(-6f, 0f);
-
-        GameObject handleObj = new GameObject("Handle", typeof(RectTransform));
-        handleObj.layer = 5;
-        handleObj.transform.SetParent(handleAreaObj.transform, false);
-        RectTransform handleRT = handleObj.GetComponent<RectTransform>();
-        handleRT.sizeDelta = new Vector2(14f, 14f);
-        Image handleImg = handleObj.AddComponent<Image>();
-        handleImg.color = Color.white;
-
-        Slider slider = sliderObj.AddComponent<Slider>();
-        slider.fillRect = fillRT;
-        slider.handleRect = handleRT;
-        slider.targetGraphic = handleImg;
-        slider.direction = Slider.Direction.LeftToRight;
-        slider.minValue = 0f;
-        slider.maxValue = 1f;
-
-        return slider;
     }
 
     private void BindUIEvents()

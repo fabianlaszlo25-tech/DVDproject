@@ -25,12 +25,12 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Curvature: 0.089
+    - _Curvature: 0.08
     - _ScanlineCenterAlpha: 1
     - _ScanlineCount: 81.5
-    - _ScanlineIntensity: 0.007
+    - _ScanlineIntensity: 0.01
     - _ScanlineVignettePower: 0.1
-    - _Vignette: 21.9
+    - _Vignette: 28
     - _VignettePower: 0.478
     m_Colors: []
   m_BuildTextureStacks: []
