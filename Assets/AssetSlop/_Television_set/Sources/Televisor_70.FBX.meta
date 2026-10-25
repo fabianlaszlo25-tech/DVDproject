@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: ae036e67213013941ae9cb3d1b4e403a
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26193
+  packageName: TV Set
+  packageVersion: 1.0
+  assetPath: Assets/_Television_set/Sources/Televisor_70.FBX
+  uploadId: 43628
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable:
@@ -153,10 +160,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 26193
-  packageName: TV Set
-  packageVersion: 1.0
-  assetPath: Assets/_Television_set/Sources/Televisor_70.FBX
-  uploadId: 43628

@@ -1,90 +1,248 @@
 fileFormatVersion: 2
 guid: 4cfea64d6286f4a55817dfa9db8b8b41
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: Car_Body
-    100004: Car_Body_Stripes
-    100006: Car_Grill
-    100008: Car_Lights
-    100010: Car_Lights_Frames
-    100012: Car_Wheel_Front_Left
-    100014: Car_Wheel_Front_Left_Rim
-    100016: Car_Wheel_Front_Right
-    100018: Car_Wheel_Front_Right_Rim
-    100020: Car_Wheel_Rear_Left
-    100022: Car_Wheel_Rear_Left_Rim
-    100024: Car_Wheel_Rear_Right
-    100026: Car_Wheel_Rear_Right_Rim
-    100028: Car_Windows
-    400000: //RootNode
-    400002: Car_Body
-    400004: Car_Body_Stripes
-    400006: Car_Grill
-    400008: Car_Lights
-    400010: Car_Lights_Frames
-    400012: Car_Wheel_Front_Left
-    400014: Car_Wheel_Front_Left_Rim
-    400016: Car_Wheel_Front_Right
-    400018: Car_Wheel_Front_Right_Rim
-    400020: Car_Wheel_Rear_Left
-    400022: Car_Wheel_Rear_Left_Rim
-    400024: Car_Wheel_Rear_Right
-    400026: Car_Wheel_Rear_Right_Rim
-    400028: Car_Windows
-    2100000: Material.005
-    2100002: Material.004
-    2100004: Material.008
-    2100006: Material.007
-    2100008: Material.002
-    2100010: Material.001
-    2100012: Material.009
-    2300000: Car_Body
-    2300002: Car_Body_Stripes
-    2300004: Car_Grill
-    2300006: Car_Lights
-    2300008: Car_Lights_Frames
-    2300010: Car_Wheel_Front_Left
-    2300012: Car_Wheel_Front_Left_Rim
-    2300014: Car_Wheel_Front_Right
-    2300016: Car_Wheel_Front_Right_Rim
-    2300018: Car_Wheel_Rear_Left
-    2300020: Car_Wheel_Rear_Left_Rim
-    2300022: Car_Wheel_Rear_Right
-    2300024: Car_Wheel_Rear_Right_Rim
-    2300026: Car_Windows
-    3300000: Car_Body
-    3300002: Car_Body_Stripes
-    3300004: Car_Grill
-    3300006: Car_Lights
-    3300008: Car_Lights_Frames
-    3300010: Car_Wheel_Front_Left
-    3300012: Car_Wheel_Front_Left_Rim
-    3300014: Car_Wheel_Front_Right
-    3300016: Car_Wheel_Front_Right_Rim
-    3300018: Car_Wheel_Rear_Left
-    3300020: Car_Wheel_Rear_Left_Rim
-    3300022: Car_Wheel_Rear_Right
-    3300024: Car_Wheel_Rear_Right_Rim
-    3300026: Car_Windows
-    4300000: Car_Wheel_Rear_Right
-    4300002: Car_Wheel_Rear_Right_Rim
-    4300004: Car_Wheel_Front_Right_Rim
-    4300006: Car_Wheel_Front_Right
-    4300008: Car_Wheel_Front_Left
-    4300010: Car_Wheel_Rear_Left_Rim
-    4300012: Car_Wheel_Rear_Left
-    4300014: Car_Wheel_Front_Left_Rim
-    4300016: Car_Lights
-    4300018: Car_Lights_Frames
-    4300020: Car_Grill
-    4300022: Car_Windows
-    4300024: Car_Body
-    4300026: Car_Body_Stripes
+  serializedVersion: 24200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: Car_Body
+  - first:
+      1: 100004
+    second: Car_Body_Stripes
+  - first:
+      1: 100006
+    second: Car_Grill
+  - first:
+      1: 100008
+    second: Car_Lights
+  - first:
+      1: 100010
+    second: Car_Lights_Frames
+  - first:
+      1: 100012
+    second: Car_Wheel_Front_Left
+  - first:
+      1: 100014
+    second: Car_Wheel_Front_Left_Rim
+  - first:
+      1: 100016
+    second: Car_Wheel_Front_Right
+  - first:
+      1: 100018
+    second: Car_Wheel_Front_Right_Rim
+  - first:
+      1: 100020
+    second: Car_Wheel_Rear_Left
+  - first:
+      1: 100022
+    second: Car_Wheel_Rear_Left_Rim
+  - first:
+      1: 100024
+    second: Car_Wheel_Rear_Right
+  - first:
+      1: 100026
+    second: Car_Wheel_Rear_Right_Rim
+  - first:
+      1: 100028
+    second: Car_Windows
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: Car_Body
+  - first:
+      4: 400004
+    second: Car_Body_Stripes
+  - first:
+      4: 400006
+    second: Car_Grill
+  - first:
+      4: 400008
+    second: Car_Lights
+  - first:
+      4: 400010
+    second: Car_Lights_Frames
+  - first:
+      4: 400012
+    second: Car_Wheel_Front_Left
+  - first:
+      4: 400014
+    second: Car_Wheel_Front_Left_Rim
+  - first:
+      4: 400016
+    second: Car_Wheel_Front_Right
+  - first:
+      4: 400018
+    second: Car_Wheel_Front_Right_Rim
+  - first:
+      4: 400020
+    second: Car_Wheel_Rear_Left
+  - first:
+      4: 400022
+    second: Car_Wheel_Rear_Left_Rim
+  - first:
+      4: 400024
+    second: Car_Wheel_Rear_Right
+  - first:
+      4: 400026
+    second: Car_Wheel_Rear_Right_Rim
+  - first:
+      4: 400028
+    second: Car_Windows
+  - first:
+      21: 2100000
+    second: Material.005
+  - first:
+      21: 2100002
+    second: Material.004
+  - first:
+      21: 2100004
+    second: Material.008
+  - first:
+      21: 2100006
+    second: Material.007
+  - first:
+      21: 2100008
+    second: Material.002
+  - first:
+      21: 2100010
+    second: Material.001
+  - first:
+      21: 2100012
+    second: Material.009
+  - first:
+      23: 2300000
+    second: Car_Body
+  - first:
+      23: 2300002
+    second: Car_Body_Stripes
+  - first:
+      23: 2300004
+    second: Car_Grill
+  - first:
+      23: 2300006
+    second: Car_Lights
+  - first:
+      23: 2300008
+    second: Car_Lights_Frames
+  - first:
+      23: 2300010
+    second: Car_Wheel_Front_Left
+  - first:
+      23: 2300012
+    second: Car_Wheel_Front_Left_Rim
+  - first:
+      23: 2300014
+    second: Car_Wheel_Front_Right
+  - first:
+      23: 2300016
+    second: Car_Wheel_Front_Right_Rim
+  - first:
+      23: 2300018
+    second: Car_Wheel_Rear_Left
+  - first:
+      23: 2300020
+    second: Car_Wheel_Rear_Left_Rim
+  - first:
+      23: 2300022
+    second: Car_Wheel_Rear_Right
+  - first:
+      23: 2300024
+    second: Car_Wheel_Rear_Right_Rim
+  - first:
+      23: 2300026
+    second: Car_Windows
+  - first:
+      33: 3300000
+    second: Car_Body
+  - first:
+      33: 3300002
+    second: Car_Body_Stripes
+  - first:
+      33: 3300004
+    second: Car_Grill
+  - first:
+      33: 3300006
+    second: Car_Lights
+  - first:
+      33: 3300008
+    second: Car_Lights_Frames
+  - first:
+      33: 3300010
+    second: Car_Wheel_Front_Left
+  - first:
+      33: 3300012
+    second: Car_Wheel_Front_Left_Rim
+  - first:
+      33: 3300014
+    second: Car_Wheel_Front_Right
+  - first:
+      33: 3300016
+    second: Car_Wheel_Front_Right_Rim
+  - first:
+      33: 3300018
+    second: Car_Wheel_Rear_Left
+  - first:
+      33: 3300020
+    second: Car_Wheel_Rear_Left_Rim
+  - first:
+      33: 3300022
+    second: Car_Wheel_Rear_Right
+  - first:
+      33: 3300024
+    second: Car_Wheel_Rear_Right_Rim
+  - first:
+      33: 3300026
+    second: Car_Windows
+  - first:
+      43: 4300000
+    second: Car_Wheel_Rear_Right
+  - first:
+      43: 4300002
+    second: Car_Wheel_Rear_Right_Rim
+  - first:
+      43: 4300004
+    second: Car_Wheel_Front_Right_Rim
+  - first:
+      43: 4300006
+    second: Car_Wheel_Front_Right
+  - first:
+      43: 4300008
+    second: Car_Wheel_Front_Left
+  - first:
+      43: 4300010
+    second: Car_Wheel_Rear_Left_Rim
+  - first:
+      43: 4300012
+    second: Car_Wheel_Rear_Left
+  - first:
+      43: 4300014
+    second: Car_Wheel_Front_Left_Rim
+  - first:
+      43: 4300016
+    second: Car_Lights
+  - first:
+      43: 4300018
+    second: Car_Lights_Frames
+  - first:
+      43: 4300020
+    second: Car_Grill
+  - first:
+      43: 4300022
+    second: Car_Windows
+  - first:
+      43: 4300024
+    second: Car_Body
+  - first:
+      43: 4300026
+    second: Car_Body_Stripes
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -93,9 +251,8 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -117,25 +274,39 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -144,10 +315,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -157,13 +328,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

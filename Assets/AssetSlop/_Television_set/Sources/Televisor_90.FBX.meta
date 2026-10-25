@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 0d2af790d2a3c244ba25944d1d5b70b6
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26193
+  packageName: TV Set
+  packageVersion: 1.0
+  assetPath: Assets/_Television_set/Sources/Televisor_90.FBX
+  uploadId: 43628
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable:
@@ -126,10 +133,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 26193
-  packageName: TV Set
-  packageVersion: 1.0
-  assetPath: Assets/_Television_set/Sources/Televisor_90.FBX
-  uploadId: 43628

@@ -1,7 +1,14 @@
 fileFormatVersion: 2
 guid: 9c07a97b75b5e0c4484a59844c506c5e
+AssetOrigin:
+  serializedVersion: 1
+  productId: 394832
+  packageName: Deadbody 3D Lite
+  packageVersion: 1.0
+  assetPath: Assets/DeadBody LITE/Meshes/Bdy.fbx
+  uploadId: 958374
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 1
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -348,6 +353,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -397,10 +405,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 394832
-  packageName: Deadbody 3D Lite
-  packageVersion: 1.0
-  assetPath: Assets/DeadBody LITE/Meshes/Bdy.fbx
-  uploadId: 958374

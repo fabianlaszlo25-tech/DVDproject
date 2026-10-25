@@ -1,7 +1,14 @@
 fileFormatVersion: 2
 guid: 0ec2f3fb50ec2af42a5ddb1dd29cf5d4
+AssetOrigin:
+  serializedVersion: 1
+  productId: 13234
+  packageName: Yughues Free Architectural Materials
+  packageVersion: 1.0
+  assetPath: Assets/YughuesFreeArchitecturalMaterials/Preview/sphere.obj
+  uploadId: 743317
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -58,6 +63,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -107,10 +115,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 13234
-  packageName: Yughues Free Architectural Materials
-  packageVersion: 1.0
-  assetPath: Assets/YughuesFreeArchitecturalMaterials/Preview/sphere.obj
-  uploadId: 743317

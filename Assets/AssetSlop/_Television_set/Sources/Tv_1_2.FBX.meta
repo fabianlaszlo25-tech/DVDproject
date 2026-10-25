@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 26476caddb5857c4690ed192867040ef
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26193
+  packageName: TV Set
+  packageVersion: 1.0
+  assetPath: Assets/_Television_set/Sources/Tv_1_2.FBX
+  uploadId: 43628
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable:
@@ -147,10 +154,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 26193
-  packageName: TV Set
-  packageVersion: 1.0
-  assetPath: Assets/_Television_set/Sources/Tv_1_2.FBX
-  uploadId: 43628

@@ -1,7 +1,15 @@
 fileFormatVersion: 2
 guid: 252f82e744152644e8b039e2987911ee
+AssetOrigin:
+  serializedVersion: 1
+  productId: 316725
+  packageName: Trash bag & Trash box
+  packageVersion: 1.3.0
+  assetPath: Assets/Hash Game studios/Trash Bag & Trash Box/Meshes/Trash bin 2/Trash
+    bin 2_Collider.fbx
+  uploadId: 752217
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -56,6 +64,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -105,11 +116,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 316725
-  packageName: Trash bag & Trash box
-  packageVersion: 1.3.0
-  assetPath: Assets/Hash Game studios/Trash Bag & Trash Box/Meshes/Trash bin 2/Trash
-    bin 2_Collider.fbx
-  uploadId: 752217
