@@ -28,10 +28,14 @@ public class SceneTransitionIn : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
+        // Snap camera immediately to the player target at the restored location
+        // BEFORE beginning the transition routine so the animation never renders at the wrong spawn point
+        SnapCameraImmediate();
+
         // Capture the camera's normal FOV from the scene, then immediately snap it to the zoomed-in state
         if (targetCamera != null)
         {
-            originalFOV = targetCamera.fieldOfView;
+            originalFOV = targetCamera.fieldOfView > startingZoomFOV + 1f ? targetCamera.fieldOfView : 65f;
             targetCamera.fieldOfView = startingZoomFOV;
         }
 
@@ -51,17 +55,42 @@ public class SceneTransitionIn : MonoBehaviour
         StartCoroutine(TransitionRoutine());
     }
 
+    private void SnapCameraImmediate()
+    {
+        if (targetCamera == null) targetCamera = Camera.main;
+        if (targetCamera != null)
+        {
+            SmoothCameraFollow camFollow = targetCamera.GetComponent<SmoothCameraFollow>();
+            if (camFollow == null) camFollow = FindObjectOfType<SmoothCameraFollow>();
+            if (camFollow != null)
+            {
+                camFollow.SnapToTargetImmediate();
+            }
+        }
+    }
+
     private IEnumerator TransitionRoutine()
     {
         ToggleInput(false);
         Color fadeColor = fadeImage != null ? fadeImage.color : Color.black;
+
+        // When returning from another scene (Bar / Dream) the freshly loaded scene restores saved state,
+        // spawns objects and starts videos, which causes big frame hitches on its first frames.
+        // Hold the black/zoomed state for a few settled frames so the animation is never skipped by those hitches,
+        // and continually ensure the camera remains snapped to the restored target.
+        for (int settleFrames = 0; settleFrames < 3; settleFrames++)
+        {
+            SnapCameraImmediate();
+            yield return null;
+        }
 
         float elapsedTime = 0f;
         float returnStartTime = zoomOutTime * (1f - scaleSpeedFraction);
 
         while (elapsedTime < zoomOutTime)
         {
-            elapsedTime += Time.deltaTime;
+            // Unscaled + clamped delta so a leftover timeScale or a load hitch can't swallow the animation.
+            elapsedTime += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
             float t = elapsedTime / zoomOutTime;
 
             if (targetCamera != null) targetCamera.fieldOfView = Mathf.Lerp(startingZoomFOV, originalFOV, t);
@@ -87,6 +116,7 @@ public class SceneTransitionIn : MonoBehaviour
 
         ToggleHiddenUI(true);
         ToggleInput(true);
+        SnapCameraImmediate();
     }
 
     private void ToggleInput(bool enable)

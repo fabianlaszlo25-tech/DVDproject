@@ -29,10 +29,18 @@ public class TrashManager : MonoBehaviour
     private readonly List<TrashItem> activeTrash = new List<TrashItem>();
 
     public int RemainingTrash => activeTrash.Count;
+    public IReadOnlyList<TrashItem> GetActiveTrashItems() => activeTrash;
 
     private void Start()
     {
-        if (spawnOnStart) StartDay();
+        if (spawnOnStart)
+        {
+            if (RunSaveManager.HasInstance && RunSaveManager.Instance.ShouldTrashManagerSkipInitialSpawn(this))
+            {
+                return;
+            }
+            StartDay();
+        }
     }
 
     /// <summary>Spawns this day's trash from the current dirtiness value. Call once per day start.</summary>
@@ -79,6 +87,61 @@ public class TrashManager : MonoBehaviour
 
         if (failed > 0)
             Debug.LogWarning($"TrashManager: {failed} trash item(s) found no free floor spot (room may be too full).", this);
+    }
+
+    public int FindPrefabIndexForInstance(TrashItem item)
+    {
+        if (item == null || trashPrefabs == null) return 0;
+        string rawName = item.gameObject.name;
+        if (rawName.EndsWith("(Clone)"))
+        {
+            rawName = rawName.Substring(0, rawName.Length - 7).Trim();
+        }
+
+        for (int i = 0; i < trashPrefabs.Count; i++)
+        {
+            if (trashPrefabs[i] != null && trashPrefabs[i].name == rawName)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void RestoreTrashFromSave(
+        List<RunSaveManager.SavedSpawnedTrashEntry> savedEntries,
+        HashSet<TrashItem> restoredItemsSet)
+    {
+        // Clear any currently spawned items first
+        for (int i = activeTrash.Count - 1; i >= 0; i--)
+        {
+            if (activeTrash[i] != null)
+            {
+                activeTrash[i].Cleared -= HandleTrashCleared;
+                Destroy(activeTrash[i].gameObject);
+            }
+        }
+        activeTrash.Clear();
+
+        if (savedEntries == null || trashPrefabs == null || trashPrefabs.Count == 0) return;
+
+        for (int i = 0; i < savedEntries.Count; i++)
+        {
+            RunSaveManager.SavedSpawnedTrashEntry entry = savedEntries[i];
+            if (entry == null) continue;
+
+            int idx = Mathf.Clamp(entry.prefabIndex, 0, trashPrefabs.Count - 1);
+            TrashItem prefab = trashPrefabs[idx];
+            if (prefab == null) continue;
+
+            TrashItem item = Instantiate(prefab, entry.position, entry.rotation);
+            item.Cleared += HandleTrashCleared;
+            activeTrash.Add(item);
+            if (restoredItemsSet != null)
+            {
+                restoredItemsSet.Add(item);
+            }
+        }
     }
 
     private void HandleTrashCleared(TrashItem item)

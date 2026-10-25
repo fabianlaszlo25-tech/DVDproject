@@ -25,18 +25,31 @@ public class SceneTransitionOut : MonoBehaviour
     public MonoBehaviour[] scriptsToDisable;
 
     private bool isTransitioning = false;
-    private float originalFOV;
+    private float originalFOV = 65f;
 
     private void Start()
     {
         if (targetCamera == null) targetCamera = Camera.main;
-        if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+        if (targetCamera != null && targetCamera.fieldOfView > zoomTargetFOV + 1f)
+        {
+            originalFOV = targetCamera.fieldOfView;
+        }
     }
 
     public void TransitionToScene()
     {
         if (!isTransitioning)
         {
+            if (targetCamera == null) targetCamera = Camera.main;
+            if (targetCamera != null && targetCamera.fieldOfView > zoomTargetFOV + 1f)
+            {
+                originalFOV = targetCamera.fieldOfView;
+            }
+            else if (originalFOV <= zoomTargetFOV + 1f)
+            {
+                originalFOV = 65f;
+            }
+
             StartCoroutine(TransitionRoutine());
         }
     }
@@ -58,7 +71,7 @@ public class SceneTransitionOut : MonoBehaviour
         float elapsedTime = 0f;
         while (elapsedTime < zoomInTime)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
             float t = elapsedTime / zoomInTime;
 
             if (targetCamera != null) targetCamera.fieldOfView = Mathf.Lerp(originalFOV, zoomTargetFOV, t);
@@ -76,6 +89,19 @@ public class SceneTransitionOut : MonoBehaviour
             }
 
             yield return null;
+        }
+
+        if (targetCamera != null) targetCamera.fieldOfView = zoomTargetFOV;
+        if (fadeImage != null)
+        {
+            fadeColor.a = 1f;
+            fadeImage.color = fadeColor;
+        }
+
+        // Capture cross-scene run state before loading the next scene
+        if (RunSaveManager.HasInstance)
+        {
+            RunSaveManager.Instance.OnBeforeSceneTransition(sceneToLoad);
         }
 
         // Load the next scene once the screen is fully black

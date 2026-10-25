@@ -60,6 +60,11 @@ public class GridCrawlerController : MonoBehaviour
         {
             transform.position = gridManager.GetClosestNodePosition(transform.position);
         }
+        if (cameraScript == null) cameraScript = FindObjectOfType<SmoothCameraFollow>();
+        if (cameraScript != null)
+        {
+            cameraScript.SnapToTargetImmediate();
+        }
     }
 
     void OnEnable() => moveAction.Enable();

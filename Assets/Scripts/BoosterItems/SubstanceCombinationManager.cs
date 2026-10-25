@@ -280,6 +280,39 @@ public class SubstanceCombinationManager : MonoBehaviour
     }
 
     // =========================================================================
+    // CROSS-SCENE SAVE & RESTORE HOOKS (RunSaveManager)
+    // =========================================================================
+
+    public ActiveSubstanceComboState GetRuntimeComboStateForSave(
+        out bool isLocked,
+        out float remainingTimer,
+        out float intensity)
+    {
+        isLocked = isTwoEffectComboLocked;
+        remainingTimer = comboRemainingTimer;
+        intensity = currentComboIntensity;
+        return currentComboState;
+    }
+
+    public void RevertComboBoostersForSceneTransition()
+    {
+        DeactivateAllComboBoosters();
+    }
+
+    public void RestoreTwoEffectComboFromSave(
+        ActiveSubstanceComboState savedState,
+        float remainingTimer,
+        float intensity)
+    {
+        if (savedState == ActiveSubstanceComboState.None || savedState == ActiveSubstanceComboState.SuperOverdose_ThreeEffects)
+            return;
+
+        comboRemainingTimer = Mathf.Max(0.5f, remainingTimer);
+        currentComboIntensity = Mathf.Clamp01(intensity);
+        isTwoEffectComboUnwinding = remainingTimer <= 0.01f;
+    }
+
+    // =========================================================================
     // REGISTRATION & COMBINATION LOCKING
     // =========================================================================
 

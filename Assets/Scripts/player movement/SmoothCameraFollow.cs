@@ -26,14 +26,42 @@ public class SmoothCameraFollow : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
+        SnapToTargetImmediate();
+    }
+
+    void OnEnable()
+    {
+        SnapToTargetImmediate();
     }
 
     void Start()
     {
+        SnapToTargetImmediate();
+    }
+
+    /// <summary>
+    /// Snaps the camera transform and rotation immediately to match the target and body rotation.
+    /// Resets mouse look deltas so no interpolation lag or sudden camera teleports occur.
+    /// </summary>
+    public void SnapToTargetImmediate()
+    {
+        if (target == null)
+        {
+            GridCrawlerController player = FindObjectOfType<GridCrawlerController>();
+            if (player != null)
+            {
+                target = player.transform;
+                if (controller == null) controller = player;
+            }
+        }
+
         if (target != null)
         {
             transform.position = target.position + offset;
             currentBodyRotation = target.rotation;
+            transform.rotation = target.rotation;
+            mouseX = 0f;
+            mouseY = 0f;
         }
     }
 

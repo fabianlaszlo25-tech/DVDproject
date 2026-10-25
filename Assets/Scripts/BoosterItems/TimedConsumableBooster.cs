@@ -65,6 +65,8 @@ public class TimedConsumableBooster : MonoBehaviour
     private Coroutine cycleRoutine;
     private float lastInternalIntensity;
     private bool isLockedByCombination;
+    private float currentRemainingHoldDuration;
+    private bool suppressAutoStartOnce;
 
     public bool IsLockedByCombination => isLockedByCombination;
 
@@ -82,6 +84,12 @@ public class TimedConsumableBooster : MonoBehaviour
     private void OnEnable()
     {
         isLockedByCombination = false;
+        if (suppressAutoStartOnce)
+        {
+            suppressAutoStartOnce = false;
+            return;
+        }
+
         if (startAutomaticallyOnEnable)
         {
             StartConsumableCycle();
@@ -102,6 +110,67 @@ public class TimedConsumableBooster : MonoBehaviour
         {
             SubstanceCombinationManager.Instance.UnregisterConsumable(this);
         }
+    }
+
+    public void EnsureReferencesForSave()
+    {
+        if (activeBoosterObject == null)
+        {
+            activeBoosterObject = GetComponent<BoosterObject>();
+        }
+        FindUnusedBuyablePropIfNeeded();
+    }
+
+    public float GetRemainingHoldDurationForSave()
+    {
+        return Mathf.Max(0.1f, currentRemainingHoldDuration);
+    }
+
+    /// <summary>
+    /// Restores an active consumable across scene transitions (<see cref="RunSaveManager"/>)
+    /// so the player keeps their remaining consumable duration and stat/visual effects when moving between Room and Bar.
+    /// </summary>
+    public void RestoreFromCrossSceneSave(float remainingHold, float restoredIntensity, bool hideUnusedBuyableInScene)
+    {
+        EnsureReferencesForSave();
+        EnsureEffectControllerExists();
+
+        if (unusedBuyableProp != null && gameObject.transform.IsChildOf(unusedBuyableProp.transform))
+        {
+            gameObject.transform.SetParent(unusedBuyableProp.transform.parent, true);
+        }
+
+        if (hideUnusedBuyableInScene && unusedBuyableProp != null)
+        {
+            unusedBuyableProp.gameObject.SetActive(false);
+        }
+
+        suppressAutoStartOnce = true;
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
+        suppressAutoStartOnce = false;
+
+        isLockedByCombination = false;
+
+        if (activeBoosterObject != null)
+        {
+            activeBoosterObject.ApplyBooster();
+        }
+
+        SubstanceCombinationManager.Instance.RegisterConsumable(this);
+
+        if (isLockedByCombination || SubstanceCombinationManager.Instance.IsOverdoseSequenceRunning)
+        {
+            return;
+        }
+
+        if (cycleRoutine != null)
+        {
+            StopCoroutine(cycleRoutine);
+        }
+        cycleRoutine = StartCoroutine(StandaloneLifecycleRoutine(remainingHold, Mathf.Clamp(restoredIntensity, 0.2f, peakIntensity)));
     }
 
     [ContextMenu("Start Consumable Cycle")]
@@ -127,7 +196,7 @@ public class TimedConsumableBooster : MonoBehaviour
         {
             StopCoroutine(cycleRoutine);
         }
-        cycleRoutine = StartCoroutine(StandaloneLifecycleRoutine());
+        cycleRoutine = StartCoroutine(StandaloneLifecycleRoutine(activeHoldDuration, 0f));
     }
 
     public void LockIntoCombinedCycle()
@@ -164,10 +233,11 @@ public class TimedConsumableBooster : MonoBehaviour
         return useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }
 
-    private IEnumerator StandaloneLifecycleRoutine()
+    private IEnumerator StandaloneLifecycleRoutine(float holdDurationToUse, float initialIntensity)
     {
         float spd = Mathf.Max(0.05f, fadeSpeed);
-        float current = 0f;
+        float current = Mathf.Clamp(initialIntensity, 0f, peakIntensity);
+        currentRemainingHoldDuration = Mathf.Max(0f, holdDurationToUse);
 
         // 1. Smoothly ramp IN using MoveTowards (same curve as SubstanceCombinationManager)
         while (current < peakIntensity - 0.001f)
@@ -179,16 +249,19 @@ public class TimedConsumableBooster : MonoBehaviour
         }
         SetEffectIntensityImmediate(peakIntensity);
 
-        // 2. Hold for activeHoldDuration
-        float hold = Mathf.Max(0f, activeHoldDuration);
+        // 2. Hold for holdDurationToUse
+        float hold = Mathf.Max(0f, holdDurationToUse);
         float holdElapsed = 0f;
         while (holdElapsed < hold)
         {
             if (isLockedByCombination) yield break;
-            holdElapsed += GetDeltaTime();
+            float dt = GetDeltaTime();
+            holdElapsed += dt;
+            currentRemainingHoldDuration = Mathf.Max(0f, hold - holdElapsed);
             SetEffectIntensityImmediate(peakIntensity);
             yield return null;
         }
+        currentRemainingHoldDuration = 0f;
 
         // 3. Smoothly unwind to 0 using MoveTowards (exact same ending feel as the combined effects!)
         while (current > 0.001f)

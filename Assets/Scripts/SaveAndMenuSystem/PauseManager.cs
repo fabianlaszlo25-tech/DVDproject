@@ -113,8 +113,38 @@ public class PauseManager : MonoBehaviour
 
     public bool IsPaused => isPaused;
 
+    private static PauseManager activeInstance;
+
+    /// <summary>
+    /// The real game speed (what Time.timeScale will be once unpaused). While paused, Time.timeScale is 0,
+    /// so the true speed is the value we are going to restore on Resume.
+    /// </summary>
+    public static float GetGameSpeed()
+    {
+        if (activeInstance != null && activeInstance.isPaused)
+        {
+            return activeInstance.timeScaleBeforePause;
+        }
+        return Time.timeScale;
+    }
+
+    /// <summary>
+    /// Sets the real game speed. While paused this updates the value restored on Resume instead of touching
+    /// Time.timeScale (which must stay 0), so game speed boosters that start/expire during a pause are never lost or made permanent.
+    /// </summary>
+    public static void SetGameSpeed(float speed)
+    {
+        if (activeInstance != null && activeInstance.isPaused)
+        {
+            activeInstance.timeScaleBeforePause = speed > 0.001f ? speed : 1.0f;
+            return;
+        }
+        Time.timeScale = speed;
+    }
+
     private void Awake()
     {
+        activeInstance = this;
         AutoFindReferences();
         EnsurePausedAudioSource();
         EnsureRuntimeFallbackUIIfMissing();
@@ -161,6 +191,7 @@ public class PauseManager : MonoBehaviour
     private void OnDestroy()
     {
         RestoreRuntimeStateOnExit();
+        if (activeInstance == this) activeInstance = null;
     }
 
     private void RestoreRuntimeStateOnExit()

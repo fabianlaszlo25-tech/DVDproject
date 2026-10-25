@@ -68,6 +68,8 @@ public class BuyableBoosterProp : MonoBehaviour
     private float returnElapsed;
     private Coroutine denyMessageRoutine;
 
+    public bool IsPurchased => state == State.Purchased;
+
     private void Awake()
     {
         interactable = GetComponent<InteractableObject>();
@@ -77,8 +79,8 @@ public class BuyableBoosterProp : MonoBehaviour
 
         if (economyBouncer == null) economyBouncer = FindObjectOfType<DVDLogoBouncer>();
 
-        // Ensure the replacement object starts hidden if assigned
-        if (unlockedPropObject != null && unlockedPropObject.activeSelf)
+        // Ensure the replacement object starts hidden if assigned (unless already restored by RunSaveManager)
+        if (unlockedPropObject != null && unlockedPropObject.activeSelf && state != State.Purchased)
         {
             unlockedPropObject.SetActive(false);
         }
@@ -120,6 +122,36 @@ public class BuyableBoosterProp : MonoBehaviour
         {
             interactable.hoverText = FormatHoverText();
         }
+    }
+
+    /// <summary>
+    /// Restores a permanent buyable prop as already purchased when returning to a scene via <see cref="RunSaveManager"/>.
+    /// </summary>
+    public void RestoreAsPurchasedFromSave(bool applyBoosterStats = false)
+    {
+        state = State.Purchased;
+        holdProgress = 0f;
+
+        if (unlockedPropObject != null)
+        {
+            if (unlockedPropObject.transform.IsChildOf(transform))
+            {
+                unlockedPropObject.transform.SetParent(transform.parent, true);
+            }
+
+            if (!applyBoosterStats)
+            {
+                BoosterObject booster = unlockedPropObject.GetComponent<BoosterObject>();
+                if (booster != null)
+                {
+                    booster.MarkAsAlreadyAppliedFromSave();
+                }
+            }
+
+            unlockedPropObject.SetActive(true);
+        }
+
+        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -305,6 +337,13 @@ public class BuyableBoosterProp : MonoBehaviour
             if (unlockedPropObject.transform.IsChildOf(transform))
             {
                 unlockedPropObject.transform.SetParent(transform.parent, true);
+            }
+
+            // Record substance consumed if this buyable prop is a consumable substance
+            TimedConsumableBooster consumable = unlockedPropObject.GetComponent<TimedConsumableBooster>();
+            if (consumable != null && RunSaveManager.HasInstance)
+            {
+                RunSaveManager.Instance.RecordSubstanceConsumed(consumable.effectType);
             }
 
             unlockedPropObject.SetActive(true);

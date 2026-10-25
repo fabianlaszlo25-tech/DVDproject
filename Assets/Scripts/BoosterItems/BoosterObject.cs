@@ -91,6 +91,15 @@ public class BoosterObject : MonoBehaviour
 
     private bool hasApplied = false;
 
+    /// <summary>
+    /// Marks this BoosterObject as already applied when restored from <see cref="RunSaveManager"/>
+    /// so its permanent stat modifiers are not applied a second time on top of saved BarManager/DVDLogoBouncer stats.
+    /// </summary>
+    public void MarkAsAlreadyAppliedFromSave()
+    {
+        hasApplied = true;
+    }
+
     private void OnEnable()
     {
         // Because the colored prop starts SetActive(false) and is enabled when bought,
@@ -212,7 +221,8 @@ public class BoosterObject : MonoBehaviour
 
             // --- Global Game Speed (Time.timeScale) ---
             case BoosterStat.GameSpeed:
-                Time.timeScale = Mathf.Clamp(CalculateFloat(Time.timeScale, mod), 0.05f, 10f);
+                // Uses PauseManager's real game speed so applying/reverting while paused (Time.timeScale == 0) works correctly
+                PauseManager.SetGameSpeed(Mathf.Clamp(CalculateFloat(PauseManager.GetGameSpeed(), mod), 0.05f, 10f));
                 break;
 
             // --- BarManager Fill Rates ---

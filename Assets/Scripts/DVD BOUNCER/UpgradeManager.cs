@@ -70,28 +70,52 @@ public class UpgradeManager : MonoBehaviour
 
     void Start()
     {
+        bool hasSavedUpgrades = RunSaveManager.HasInstance && RunSaveManager.Instance.HasSavedUpgrades;
+        if (hasSavedUpgrades)
+        {
+            RunSaveManager.Instance.ApplySavedUpgradesToManager(this);
+        }
+
         foreach (var path in upgradePaths)
         {
+            if (path == null || path.tiers == null || path.tiers.Count == 0) continue;
+
             if (!path.unlockedIndices.Contains(0)) path.unlockedIndices.Add(0);
 
-            path.equippedIndex = 0;
-            SnapWorldVisuals(path, 0);
+            if (!hasSavedUpgrades)
+            {
+                path.equippedIndex = 0;
+            }
+            else
+            {
+                path.equippedIndex = Mathf.Clamp(path.equippedIndex, 0, path.tiers.Count - 1);
+            }
+
+            int equippedIdx = path.equippedIndex;
+            SnapWorldVisuals(path, equippedIdx);
+
+            if (bouncer != null)
+            {
+                if (path.category == UpgradeCategory.MoneyMultiplier)
+                {
+                    bouncer.SetMoneyMultiplier(path.tiers[equippedIdx].multiplierValue);
+                }
+                else if (path.category == UpgradeCategory.SpeedMultiplier)
+                {
+                    bouncer.SetSpeedMultiplier(path.tiers[equippedIdx].multiplierValue);
+                }
+            }
 
             if (path.category == UpgradeCategory.MoneyMultiplier)
             {
-                if (path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.tiers[0].dvdVideoFileName))
+                if (path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.tiers[equippedIdx].dvdVideoFileName))
                 {
                     path.targetVideoPlayer.source = VideoSource.Url;
-                    path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[0].dvdVideoFileName);
+                    path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[equippedIdx].dvdVideoFileName);
                     path.targetVideoPlayer.Play();
                 }
 
-                if (path.audioSource != null && path.tiers[0].dvdMusic != null)
-                {
-                    path.audioSource.clip = path.tiers[0].dvdMusic;
-                    path.audioSource.loop = true;
-                    path.audioSource.Play();
-                }
+                PlayDvdMusicOnPathSources(path, path.tiers[equippedIdx].dvdMusic);
             }
         }
     }
@@ -191,10 +215,7 @@ public class UpgradeManager : MonoBehaviour
 
     private IEnumerator PlayVideoTransition(UpgradePath path, int targetIndex)
     {
-        if (path.audioSource != null)
-        {
-            path.audioSource.Stop();
-        }
+        StopDvdMusicOnPathSources(path);
 
         if (!string.IsNullOrEmpty(path.staticVideoFileName))
         {
@@ -217,11 +238,48 @@ public class UpgradeManager : MonoBehaviour
             path.targetVideoPlayer.Play();
         }
 
-        if (path.audioSource != null && path.tiers[targetIndex].dvdMusic != null)
+        PlayDvdMusicOnPathSources(path, path.tiers[targetIndex].dvdMusic);
+    }
+
+    private void StopDvdMusicOnPathSources(UpgradePath path)
+    {
+        if (path == null || path.audioSource == null) return;
+        path.audioSource.Stop();
+
+        if (path.audioSource.transform.parent != null)
         {
-            path.audioSource.clip = path.tiers[targetIndex].dvdMusic;
-            path.audioSource.loop = true;
-            path.audioSource.Play();
+            AudioSource[] siblingScreenSources = path.audioSource.transform.parent.GetComponentsInChildren<AudioSource>(true);
+            for (int i = 0; i < siblingScreenSources.Length; i++)
+            {
+                if (siblingScreenSources[i] != null)
+                {
+                    siblingScreenSources[i].Stop();
+                }
+            }
+        }
+    }
+
+    private void PlayDvdMusicOnPathSources(UpgradePath path, AudioClip clip)
+    {
+        if (path == null || path.audioSource == null || clip == null) return;
+
+        path.audioSource.clip = clip;
+        path.audioSource.loop = true;
+        path.audioSource.Play();
+
+        if (path.audioSource.transform.parent != null)
+        {
+            AudioSource[] siblingScreenSources = path.audioSource.transform.parent.GetComponentsInChildren<AudioSource>(true);
+            for (int i = 0; i < siblingScreenSources.Length; i++)
+            {
+                AudioSource src = siblingScreenSources[i];
+                if (src != null && src != path.audioSource)
+                {
+                    src.clip = clip;
+                    src.loop = true;
+                    src.Play();
+                }
+            }
         }
     }
 }

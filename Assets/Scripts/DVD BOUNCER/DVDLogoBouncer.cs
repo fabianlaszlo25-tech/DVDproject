@@ -82,7 +82,10 @@ public class DVDLogoBouncer : MonoBehaviour
             audioSource.playOnAwake = false;
         }
 
-        direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+        if (direction.sqrMagnitude < 0.01f)
+        {
+            direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+        }
         SyncCameraAndTextureAspect();
         UpdateMoneyUI();
     }
@@ -210,6 +213,7 @@ public class DVDLogoBouncer : MonoBehaviour
 
             decimal reward = cornerReward * (decimal)moneyMultiplier;
             currentMoney += reward;
+            if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(reward);
             SpawnHitEffect(cornerEffectTemplate);
             SpawnPopup(reward, false);
         }
@@ -220,6 +224,7 @@ public class DVDLogoBouncer : MonoBehaviour
 
             decimal reward = edgeReward * (decimal)moneyMultiplier;
             currentMoney += reward;
+            if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(reward);
             SpawnHitEffect(edgeEffectTemplate);
             SpawnPopup(reward, false);
         }
@@ -301,6 +306,24 @@ public class DVDLogoBouncer : MonoBehaviour
     private void UpdateMoneyUI()
     {
         if (totalMoneyText != null) totalMoneyText.text = $"${currentMoney:0.00}";
+    }
+
+    public void RefreshMoneyUIFromSave()
+    {
+        UpdateMoneyUI();
+    }
+
+    public Vector2 GetDirection()
+    {
+        return direction;
+    }
+
+    public void SetDirection(Vector2 newDirection)
+    {
+        if (newDirection.sqrMagnitude > 0.001f)
+        {
+            direction = newDirection.normalized;
+        }
     }
 
     public void TriggerRemoteBoost()

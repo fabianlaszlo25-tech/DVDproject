@@ -65,6 +65,18 @@ public class SurvivalAction : MonoBehaviour
     {
         if (isActing || barManager == null) return;
 
+        // If this is the Sleep action and a SceneTransitionOut component is present (e.g. Bed transitioning to dream sequence),
+        // let SceneTransitionOut drive the scene transition so two competing camera/fade routines don't fight each other!
+        if (actionType == ActionType.Sleep)
+        {
+            SceneTransitionOut sceneOut = GetComponent<SceneTransitionOut>();
+            if (sceneOut != null)
+            {
+                sceneOut.TransitionToScene();
+                return;
+            }
+        }
+
         // If this is the Eat action, verify the player actually has enough money BEFORE zooming in or playing audio!
         if (actionType == ActionType.Eat && !CanAffordFood())
         {
@@ -79,7 +91,10 @@ public class SurvivalAction : MonoBehaviour
             return;
         }
 
-        if (targetCamera != null) originalFOV = targetCamera.fieldOfView;
+        if (targetCamera != null)
+        {
+            originalFOV = targetCamera.fieldOfView > zoomTargetFOV + 1f ? targetCamera.fieldOfView : 65f;
+        }
 
         StartCoroutine(ActionRoutine());
     }

@@ -66,6 +66,8 @@ public class TrashItem : MonoBehaviour
     private Vector3 returnStart;
     private float returnElapsed;
 
+    public bool IsClearedOrPoofing => state == State.Poofing;
+
     private void Awake()
     {
         interactable = GetComponent<InteractableObject>();
@@ -220,7 +222,23 @@ public class TrashItem : MonoBehaviour
         state = State.Poofing;
         if (visualizer != null) visualizer.HideImmediate();
         shakeSource.Stop();
+
+        if (RunSaveManager.HasInstance)
+        {
+            RunSaveManager.Instance.RecordTrashCleaned();
+        }
+
+        bool hadSubscriber = Cleared != null;
         Cleared?.Invoke(this);
+
+        // If this is a pre-placed TrashItem in the scene (not managed by a TrashManager),
+        // also notify BarManager directly so cleaning it affects dirtiness/depression.
+        if (!hadSubscriber)
+        {
+            BarManager bm = FindObjectOfType<BarManager>();
+            if (bm != null) bm.CleanTrashItem();
+        }
+
         StartCoroutine(PoofRoutine());
     }
 
