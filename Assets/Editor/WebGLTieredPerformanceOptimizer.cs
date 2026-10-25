@@ -501,8 +501,9 @@ public class WebGLTieredPerformanceOptimizer : EditorWindow
                 {
                     changed |= SetIntProp(so, "m_DepthPrimingMode", 0);
                     changed |= SetIntProp(so, "m_CopyDepthMode", 0);
-                    changed |= SetIntProp(so, "m_DepthAttachmentFormat", 90); // Depth24_Stencil8
-                    changed |= SetIntProp(so, "m_DepthTextureFormat", 90);
+                    // Keep 32-bit float depth (93 = Depth32_Stencil8) to prevent z-fighting on close surfaces in WebGL
+                    changed |= SetIntProp(so, "m_DepthAttachmentFormat", 93);
+                    changed |= SetIntProp(so, "m_DepthTextureFormat", 93);
                     changed |= SetIntProp(so, "m_IntermediateTextureMode", 0); // Auto instead of Always
                 }
                 else if (obj.name.Contains("DecalRendererFeature") || obj.GetType().Name.Contains("DecalRendererFeature"))
@@ -533,11 +534,13 @@ public class WebGLTieredPerformanceOptimizer : EditorWindow
                     AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(b.assetPath);
                     bool isLongClip = clip == null || clip.length > 4.0f;
 
-                    ai.loadInBackground = true;
+                    // Keep short SFX synchronous & preloaded so PlayOneShot in WebGL never misses or delays
+                    ai.loadInBackground = isLongClip;
                     AudioImporterSampleSettings def = ai.defaultSampleSettings;
                     def.loadType = isLongClip ? AudioClipLoadType.CompressedInMemory : AudioClipLoadType.DecompressOnLoad;
-                    def.compressionFormat = AudioCompressionFormat.AAC;
+                    def.compressionFormat = AudioCompressionFormat.Vorbis;
                     def.quality = targetTier >= 2 ? 0.45f : 0.7f;
+                    def.preloadAudioData = true;
                     ai.defaultSampleSettings = def;
 
                     ai.SaveAndReimport();
@@ -561,9 +564,10 @@ public class WebGLTieredPerformanceOptimizer : EditorWindow
                         mi.meshOptimizationFlags = MeshOptimizationFlags.Everything;
                         changed = true;
                     }
-                    if (targetTier >= 2 && mi.meshCompression == ModelImporterMeshCompression.Off)
+                    // Keep meshCompression Off so vertex positions on close walls/props are never quantized (prevents z-fighting!)
+                    if (mi.meshCompression != ModelImporterMeshCompression.Off)
                     {
-                        mi.meshCompression = ModelImporterMeshCompression.Medium;
+                        mi.meshCompression = ModelImporterMeshCompression.Off;
                         changed = true;
                     }
 
@@ -885,6 +889,7 @@ public class WebGLTieredPerformanceOptimizer : EditorWindow
                         def.quality = b.defaultQuality;
                         def.sampleRateSetting = (AudioSampleRateSetting)b.defaultSampleRateSetting;
                         def.sampleRateOverride = b.defaultSampleRateOverride;
+                        def.preloadAudioData = true;
                         ai.defaultSampleSettings = def;
 
                         if (b.webglOverridden)

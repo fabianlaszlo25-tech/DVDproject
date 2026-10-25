@@ -105,6 +105,8 @@ public class SuperOverdoseComboSettings
 
     [Header("Hallucination Video & Blackout Timings")]
     public VideoClip hallucinationVideoClip;
+    [Tooltip("Video file name in Assets/StreamingAssets used for WebGL builds (e.g. 'Overdose.mp4').")]
+    public string streamingAssetsVideoFileName = "Overdose.mp4";
     [Range(0f, 1f)] public float maxVideoOpacity = 0.88f;
     public float smearAndVideoFadeInDuration = 3.5f;
     public float hallucinationPlayDuration = 8.0f;
@@ -507,14 +509,8 @@ public class SubstanceCombinationManager : MonoBehaviour
 
         ApplyComboStateAndBoosters(ActiveSubstanceComboState.SuperOverdose_ThreeEffects, keepIndividualBoosters: false, threeEffectOverdoseBooster);
 
-        VideoClip clipToPlay = superOverdoseSettings.hallucinationVideoClip;
-        if (videoPlayer != null && clipToPlay != null)
-        {
-            EnsureRTs(Screen.width, Screen.height);
-            videoPlayer.clip = clipToPlay;
-            videoPlayer.targetTexture = videoRT;
-            videoPlayer.Play();
-        }
+        EnsureRTs(Screen.width, Screen.height);
+        bool hasVideo = StartHallucinationVideoPlayback();
 
         float fadeInDur = Mathf.Max(0.1f, superOverdoseSettings.smearAndVideoFadeInDuration);
         float elapsed = 0f;
@@ -524,13 +520,13 @@ public class SubstanceCombinationManager : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / fadeInDur);
             currentComboIntensity = Mathf.SmoothStep(startIntensity, 1f, t);
-            currentVideoFade = (clipToPlay != null) ? Mathf.SmoothStep(0f, superOverdoseSettings.maxVideoOpacity, t) : 0f;
+            currentVideoFade = hasVideo ? Mathf.SmoothStep(0f, superOverdoseSettings.maxVideoOpacity, t) : 0f;
             currentBlackoutFade = 0f;
             yield return null;
         }
 
         currentComboIntensity = 1f;
-        currentVideoFade = (clipToPlay != null) ? superOverdoseSettings.maxVideoOpacity : 0f;
+        currentVideoFade = hasVideo ? superOverdoseSettings.maxVideoOpacity : 0f;
 
         float playDur = Mathf.Max(0.1f, superOverdoseSettings.hallucinationPlayDuration);
         elapsed = 0f;
@@ -683,9 +679,58 @@ public class SubstanceCombinationManager : MonoBehaviour
             videoPlayer = gameObject.AddComponent<VideoPlayer>();
             videoPlayer.playOnAwake = false;
             videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+            videoPlayer.aspectRatio = VideoAspectRatio.Stretch;
             videoPlayer.isLooping = true;
+            videoPlayer.skipOnDrop = true;
+            videoPlayer.waitForFirstFrame = false;
             videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
+            videoPlayer.controlledAudioTrackCount = 1;
+            videoPlayer.EnableAudioTrack(0, true);
+            videoPlayer.SetDirectAudioMute(0, false);
+            videoPlayer.SetDirectAudioVolume(0, 1f);
         }
+    }
+
+    private bool StartHallucinationVideoPlayback()
+    {
+        if (videoPlayer == null) return false;
+
+        videoPlayer.targetTexture = videoRT;
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
+        videoPlayer.controlledAudioTrackCount = 1;
+        videoPlayer.EnableAudioTrack(0, true);
+        videoPlayer.SetDirectAudioMute(0, false);
+        videoPlayer.SetDirectAudioVolume(0, 1f);
+
+        string fileName = string.IsNullOrEmpty(superOverdoseSettings.streamingAssetsVideoFileName)
+            ? "Overdose.mp4"
+            : superOverdoseSettings.streamingAssetsVideoFileName.Trim();
+
+        bool useStreamingUrl = Application.platform == RuntimePlatform.WebGLPlayer
+            || superOverdoseSettings.hallucinationVideoClip == null;
+
+#if !UNITY_EDITOR
+        useStreamingUrl = true;
+#endif
+
+        if (useStreamingUrl && !string.IsNullOrEmpty(fileName))
+        {
+            string baseUrl = Application.streamingAssetsPath.TrimEnd('/', '\\');
+            videoPlayer.source = VideoSource.Url;
+            videoPlayer.url = baseUrl + "/" + fileName;
+            videoPlayer.Play();
+            return true;
+        }
+
+        if (superOverdoseSettings.hallucinationVideoClip != null)
+        {
+            videoPlayer.source = VideoSource.VideoClip;
+            videoPlayer.clip = superOverdoseSettings.hallucinationVideoClip;
+            videoPlayer.Play();
+            return true;
+        }
+
+        return false;
     }
 
     private void EnsureRTs(int width, int height)
@@ -710,7 +755,7 @@ public class SubstanceCombinationManager : MonoBehaviour
 
         smearAccumRT_A = CreateRT(halfW, halfH, 0, "Combo_SmearAccum_A");
         smearAccumRT_B = CreateRT(halfW, halfH, 0, "Combo_SmearAccum_B");
-        videoRT = CreateRT(width, height, 0, "Combo_HallucinationVideoRT");
+        videoRT = CreateVideoRT(width, height, "Combo_HallucinationVideoRT");
 
         if (comboOverlayImage != null) comboOverlayImage.texture = screenCaptureRT;
         if (videoPlayer != null) videoPlayer.targetTexture = videoRT;
@@ -726,6 +771,23 @@ public class SubstanceCombinationManager : MonoBehaviour
             wrapMode = TextureWrapMode.Clamp
         };
         rt.Create();
+        return rt;
+    }
+
+    private RenderTexture CreateVideoRT(int w, int h, string rtName)
+    {
+        // Standard 8-bit RGBA (RenderTextureFormat.Default) is required for WebGL HTML5 video texture uploads
+        RenderTexture rt = new RenderTexture(w, h, 0, RenderTextureFormat.Default)
+        {
+            name = rtName,
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        rt.Create();
+        RenderTexture prev = RenderTexture.active;
+        RenderTexture.active = rt;
+        GL.Clear(false, true, Color.black);
+        RenderTexture.active = prev;
         return rt;
     }
 
@@ -780,14 +842,13 @@ public class SubstanceCombinationManager : MonoBehaviour
                 float target = (livePreviewComboDropdown != ActiveSubstanceComboState.None) ? 1f : 0f;
                 currentComboIntensity = Mathf.MoveTowards(currentComboIntensity, target, comboFadeSpeed * dt);
 
-                if (livePreviewComboDropdown == ActiveSubstanceComboState.SuperOverdose_ThreeEffects && superOverdoseSettings.hallucinationVideoClip != null)
+                if (livePreviewComboDropdown == ActiveSubstanceComboState.SuperOverdose_ThreeEffects &&
+                    (superOverdoseSettings.hallucinationVideoClip != null || !string.IsNullOrEmpty(superOverdoseSettings.streamingAssetsVideoFileName)))
                 {
                     EnsureRTs(Screen.width, Screen.height);
                     if (videoPlayer != null && !videoPlayer.isPlaying)
                     {
-                        videoPlayer.clip = superOverdoseSettings.hallucinationVideoClip;
-                        videoPlayer.targetTexture = videoRT;
-                        videoPlayer.Play();
+                        StartHallucinationVideoPlayback();
                     }
                     currentVideoFade = superOverdoseSettings.maxVideoOpacity * currentComboIntensity;
                 }
@@ -915,7 +976,17 @@ public class SubstanceCombinationManager : MonoBehaviour
         comboMaterial.SetTexture(EchoTex1Id, echoHistoryRTs[idx1]);
         comboMaterial.SetTexture(EchoTex2Id, echoHistoryRTs[idx2]);
         comboMaterial.SetTexture(EchoTex3Id, echoHistoryRTs[idx3]);
-        comboMaterial.SetTexture(VideoTexId, videoRT != null ? videoRT : Texture2D.blackTexture);
+
+        Texture activeVideoTex = Texture2D.blackTexture;
+        if (videoPlayer != null && videoPlayer.texture != null)
+        {
+            activeVideoTex = videoPlayer.texture;
+        }
+        else if (videoRT != null)
+        {
+            activeVideoTex = videoRT;
+        }
+        comboMaterial.SetTexture(VideoTexId, activeVideoTex);
 
         comboMaterial.SetFloat(IntensityId, currentComboIntensity);
         comboMaterial.SetInt(ComboModeId, shaderMode);

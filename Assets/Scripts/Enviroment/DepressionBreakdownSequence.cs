@@ -114,6 +114,20 @@ public class DepressionBreakdownSequence : MonoBehaviour
             endingPopupUI.SetActive(false);
         }
 
+        // Preload ending audio clips immediately so WebGL never has to decode them on-the-fly during the blackout sequence
+        if (gunCockingSound != null && gunCockingSound.loadState == AudioDataLoadState.Unloaded)
+        {
+            gunCockingSound.LoadAudioData();
+        }
+        if (gunshotSound != null && gunshotSound.loadState == AudioDataLoadState.Unloaded)
+        {
+            gunshotSound.LoadAudioData();
+        }
+        if (optionalHeartbeatLoop != null && optionalHeartbeatLoop.loadState == AudioDataLoadState.Unloaded)
+        {
+            optionalHeartbeatLoop.LoadAudioData();
+        }
+
         // Create the isolated audio rig (starts with its AudioListener disabled until the black cut)
         isolatedAudioObject = new GameObject("IsolatedEndingAudioRig");
         isolatedAudioObject.transform.SetParent(transform, false);
@@ -123,8 +137,9 @@ public class DepressionBreakdownSequence : MonoBehaviour
 
         isolatedEndingSfxSource = isolatedAudioObject.AddComponent<AudioSource>();
         isolatedEndingSfxSource.playOnAwake = false;
+        isolatedEndingSfxSource.loop = false;
         isolatedEndingSfxSource.spatialBlend = 0f;
-        // Crucial: allows this AudioSource to play while AudioListener.pause = true mutes 100% of the rest of the game!
+        isolatedEndingSfxSource.priority = 0;
         isolatedEndingSfxSource.ignoreListenerPause = true;
         isolatedEndingSfxSource.ignoreListenerVolume = true;
 
@@ -217,61 +232,119 @@ public class DepressionBreakdownSequence : MonoBehaviour
             yield return null;
         }
 
-        // 3. HARD CUT TO BLACK -> DISABLE PLAYER & SWAP TO ISOLATED AUDIO LISTENER!
+        // 3. HARD CUT TO BLACK -> DISABLE PLAYER & ISOLATE ENDING AUDIO!
         currentIntensity = 1f;
         currentBlackCut = 1f;
         isCutToBlack = true;
         RemoveCameraOffset();
+
+        if (breakdownMaterial != null)
+        {
+            breakdownMaterial.SetFloat(IntensityId, 1f);
+            breakdownMaterial.SetFloat(BlackCutId, 1f);
+        }
+        if (overlayImage != null)
+        {
+            overlayImage.material = breakdownMaterial;
+            overlayImage.color = Color.white;
+        }
+        if (overlayCanvas != null)
+        {
+            overlayCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            overlayCanvas.sortingOrder = 1000;
+        }
+        if (targetCamera != null)
+        {
+            targetCamera.clearFlags = CameraClearFlags.SolidColor;
+            targetCamera.backgroundColor = Color.black;
+            targetCamera.cullingMask = 0;
+        }
 
         SwitchToIsolatedBlackoutState();
 
         // 4. Dead silence in pitch black before the gun cock
         if (silenceBeforeGunCock > 0.01f)
         {
-            yield return new WaitForSecondsRealtime(silenceBeforeGunCock);
+            yield return WaitRealtimeSafe(silenceBeforeGunCock);
         }
 
         // 5. Play Gun Cocking Sound
-        float cockClipLength = 0f;
-        if (gunCockingSound != null && isolatedEndingSfxSource != null)
+        float cockClipLength = 0.6f;
+        if (gunCockingSound != null)
         {
-            isolatedEndingSfxSource.PlayOneShot(gunCockingSound, gunCockingVolume);
-            cockClipLength = gunCockingSound.length;
+            if (gunCockingSound.loadState == AudioDataLoadState.Unloaded)
+            {
+                gunCockingSound.LoadAudioData();
+            }
+            if (gunCockingSound.length > 0.05f && gunCockingSound.length < 15f && !float.IsNaN(gunCockingSound.length))
+            {
+                cockClipLength = gunCockingSound.length;
+            }
+            PlayEndingClipReliable(gunCockingSound, gunCockingVolume);
         }
 
         // Wait for the cocking sound to finish + the tasteful delay before the gunshot
-        float totalWaitBeforeShot = cockClipLength + Mathf.Max(0f, tastefulDelayAfterCockFinishes);
+        float totalWaitBeforeShot = Mathf.Clamp(cockClipLength + Mathf.Max(0f, tastefulDelayAfterCockFinishes), 0.1f, 20f);
         if (totalWaitBeforeShot > 0.01f)
         {
-            yield return new WaitForSecondsRealtime(totalWaitBeforeShot);
+            yield return WaitRealtimeSafe(totalWaitBeforeShot);
         }
 
         // 6. Play Gunshot Sound!
-        if (gunshotSound != null && isolatedEndingSfxSource != null)
+        if (gunshotSound != null)
         {
-            isolatedEndingSfxSource.PlayOneShot(gunshotSound, gunshotVolume);
+            if (gunshotSound.loadState == AudioDataLoadState.Unloaded)
+            {
+                gunshotSound.LoadAudioData();
+            }
+            PlayEndingClipReliable(gunshotSound, gunshotVolume);
         }
 
         if (delayAfterGunshotBeforeUI > 0.001f)
         {
-            yield return new WaitForSecondsRealtime(delayAfterGunshotBeforeUI);
+            yield return WaitRealtimeSafe(Mathf.Clamp(delayAfterGunshotBeforeUI, 0f, 10f));
         }
 
         // 7. Pop up the Ending UI!
+        if (raycastBlocker != null)
+        {
+            raycastBlocker.raycastTarget = false;
+            raycastBlocker.gameObject.SetActive(false);
+        }
+
         if (endingPopupUI != null)
         {
-            // Ensure the popup UI's Canvas renders above our black screen overlay (sortingOrder 32766)
+            // Ensure all parent GameObjects of endingPopupUI are active first
+            Transform parentTransform = endingPopupUI.transform.parent;
+            while (parentTransform != null)
+            {
+                if (!parentTransform.gameObject.activeSelf)
+                {
+                    parentTransform.gameObject.SetActive(true);
+                }
+                parentTransform = parentTransform.parent;
+            }
+
+            // Activate endingPopupUI FIRST before configuring Canvas sortingOrder (required in Unity Player/WebGL builds!)
+            endingPopupUI.SetActive(true);
+
             Canvas popupParentCanvas = endingPopupUI.GetComponentInParent<Canvas>(true);
             if (popupParentCanvas != null && popupParentCanvas != overlayCanvas)
             {
-                popupParentCanvas.overrideSorting = true;
-                if (popupParentCanvas.sortingOrder <= 32766)
+                if (!popupParentCanvas.gameObject.activeSelf)
                 {
-                    popupParentCanvas.sortingOrder = 32767;
+                    popupParentCanvas.gameObject.SetActive(true);
                 }
+                popupParentCanvas.enabled = true;
+                popupParentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+                bool hasParentCanvas = popupParentCanvas.transform.parent != null &&
+                                       popupParentCanvas.transform.parent.GetComponentInParent<Canvas>(true) != null;
+                popupParentCanvas.overrideSorting = hasParentCanvas;
+                popupParentCanvas.sortingOrder = 2000;
             }
 
-            endingPopupUI.SetActive(true);
+            Canvas.ForceUpdateCanvases();
         }
 
         if (EventSystem.current != null)
@@ -283,6 +356,88 @@ public class DepressionBreakdownSequence : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        // Wait 1 frame and re-enforce Canvas sortingOrder & rebuild for WebGL UI canvas registration
+        yield return null;
+        if (endingPopupUI != null)
+        {
+            Canvas popupParentCanvas = endingPopupUI.GetComponentInParent<Canvas>(true);
+            if (popupParentCanvas != null && popupParentCanvas != overlayCanvas)
+            {
+                popupParentCanvas.sortingOrder = 2000;
+            }
+            Canvas.ForceUpdateCanvases();
+        }
+    }
+
+    private IEnumerator WaitRealtimeSafe(float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float dt = Time.unscaledDeltaTime;
+            if (dt <= 0f || dt > 0.5f || float.IsNaN(dt))
+            {
+                dt = 0.016f;
+            }
+            elapsed += dt;
+            yield return null;
+        }
+    }
+
+    private void PlayEndingClipReliable(AudioClip clip, float volume)
+    {
+        if (clip == null || isolatedEndingSfxSource == null) return;
+
+        AudioListener.pause = false;
+        if (AudioListener.volume <= 0.01f)
+        {
+            AudioListener.volume = 1f;
+        }
+
+        EnsureActiveAudioListener();
+
+        if (!isolatedEndingObjectActive())
+        {
+            isolatedAudioObject.SetActive(true);
+        }
+        isolatedEndingSfxSource.enabled = true;
+        isolatedEndingSfxSource.mute = false;
+        isolatedEndingSfxSource.volume = Mathf.Clamp01(volume);
+        isolatedEndingSfxSource.pitch = 1f;
+        isolatedEndingSfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+    }
+
+    private bool isolatedEndingObjectActive()
+    {
+        return isolatedAudioObject != null && isolatedAudioObject.activeInHierarchy;
+    }
+
+    private void EnsureActiveAudioListener()
+    {
+        if (playerAudioListener != null && playerAudioListener.enabled && playerAudioListener.gameObject.activeInHierarchy)
+        {
+            if (isolatedEndingListener != null) isolatedEndingListener.enabled = false;
+            return;
+        }
+
+        AudioListener[] activeListeners = FindObjectsOfType<AudioListener>(false);
+        foreach (AudioListener listener in activeListeners)
+        {
+            if (listener != null && listener.enabled && listener.gameObject.activeInHierarchy)
+            {
+                if (listener != isolatedEndingListener && isolatedEndingListener != null)
+                {
+                    isolatedEndingListener.enabled = false;
+                }
+                return;
+            }
+        }
+
+        if (isolatedEndingListener != null)
+        {
+            isolatedEndingListener.enabled = true;
         }
     }
 
@@ -323,40 +478,55 @@ public class DepressionBreakdownSequence : MonoBehaviour
             heartbeatSource.Stop();
         }
 
-        // Stop and disable any existing AudioSources in the scene (except our isolated ending source)
-        AudioSource[] allSources = FindObjectsOfType<AudioSource>(false);
+        // Disable DynamicMusicManager so it does not restart background music tracks in Update()
+        DynamicMusicManager[] musicManagers = FindObjectsOfType<DynamicMusicManager>(true);
+        foreach (DynamicMusicManager dmm in musicManagers)
+        {
+            if (dmm != null) dmm.enabled = false;
+        }
+
+        // Disable any active substance screen effect overlays so their high sortingOrder canvases cannot cover the ending UI
+        CaffeineScreenEffect[] caffEffects = FindObjectsOfType<CaffeineScreenEffect>(true);
+        foreach (var e in caffEffects) { if (e != null) e.enabled = false; }
+        DrunkScreenEffect[] drunkEffects = FindObjectsOfType<DrunkScreenEffect>(true);
+        foreach (var e in drunkEffects) { if (e != null) e.enabled = false; }
+        HighScreenEffect[] highEffects = FindObjectsOfType<HighScreenEffect>(true);
+        foreach (var e in highEffects) { if (e != null) e.enabled = false; }
+        NicotineScreenEffect[] nicEffects = FindObjectsOfType<NicotineScreenEffect>(true);
+        foreach (var e in nicEffects) { if (e != null) e.enabled = false; }
+        SubstanceCombinationManager[] comboManagers = FindObjectsOfType<SubstanceCombinationManager>(true);
+        foreach (var cm in comboManagers) { if (cm != null) cm.enabled = false; }
+
+        // Stop, mute, and disable all other AudioSources in the scene (without setting AudioListener.pause = true, which suspends WebGL WebAudio!)
+        AudioListener.pause = false;
+        AudioSource[] allSources = FindObjectsOfType<AudioSource>(true);
         foreach (AudioSource src in allSources)
         {
             if (src != null && src != isolatedEndingSfxSource)
             {
                 src.Stop();
+                src.mute = true;
+                src.enabled = false;
             }
         }
 
-        // Pause global AudioListener state so no other script can play sounds anymore
-        AudioListener.pause = true;
-
-        // Disable all existing AudioListeners in the scene (including the player's)
-        if (playerAudioListener != null)
+        // Disable SmoothCameraFollow so the camera stays valid when the player is disabled
+        if (targetCamera != null)
         {
-            playerAudioListener.enabled = false;
-        }
-        AudioListener[] allListeners = FindObjectsOfType<AudioListener>(false);
-        foreach (AudioListener listener in allListeners)
-        {
-            if (listener != null && listener != isolatedEndingListener)
-            {
-                listener.enabled = false;
-            }
+            SmoothCameraFollow follow = targetCamera.GetComponent<SmoothCameraFollow>();
+            if (follow != null) follow.enabled = false;
         }
 
-        // Fully disable the Player GameObject (if this script isn't attached to a child of playerRootObject)
+        // Fully disable the Player GameObject (safely unparenting any shared objects first)
         if (playerRootObject != null)
         {
             if (transform.IsChildOf(playerRootObject.transform))
             {
-                // Safeguard: unparent this manager first so disabling playerRootObject doesn't kill this coroutine!
                 transform.SetParent(null, true);
+            }
+            if (targetCamera != null && targetCamera.transform.IsChildOf(playerRootObject.transform))
+            {
+                targetCamera.transform.SetParent(null, true);
             }
             if (endingPopupUI != null && endingPopupUI.transform.IsChildOf(playerRootObject.transform))
             {
@@ -365,16 +535,16 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 {
                     rootCanvas.transform.SetParent(null, true);
                 }
+                else
+                {
+                    endingPopupUI.transform.SetParent(null, true);
+                }
             }
 
             playerRootObject.SetActive(false);
         }
 
-        // Enable our replacement isolated AudioListener
-        if (isolatedEndingListener != null)
-        {
-            isolatedEndingListener.enabled = true;
-        }
+        EnsureActiveAudioListener();
     }
 
     // =========================================================================
