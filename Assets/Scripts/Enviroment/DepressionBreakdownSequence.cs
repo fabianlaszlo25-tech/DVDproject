@@ -41,6 +41,8 @@ public class DepressionBreakdownSequence : MonoBehaviour
     public GameObject endingPopupUI;
     [Tooltip("If true, unlocks and shows the mouse cursor when the UI pops up.")]
     public bool unlockCursorWhenUIPopsUp = true;
+    [Tooltip("If true, switches CRT to duringpaused.mat when ending popup UI appears. If false, uses duringgameplay.mat.")]
+    public bool usePausedCrtOnEnding = false;
 
     [Header("Ending Audio Clips")]
     [Tooltip("Played first in the pitch-black silence.")]
@@ -183,6 +185,10 @@ public class DepressionBreakdownSequence : MonoBehaviour
         if (hasTriggered) return;
         hasTriggered = true;
 
+        // Immediately terminate any active booster combinations or screen distortion effects
+        SubstanceCombinationManager.StopAndClearAllEffects();
+        TimedConsumableBooster.StopAllActiveBoosters();
+
         StartCoroutine(BreakdownRoutine());
     }
 
@@ -239,6 +245,10 @@ public class DepressionBreakdownSequence : MonoBehaviour
         isCutToBlack = true;
         RemoveCameraOffset();
 
+        // Ensure all combination and standalone booster effects are stopped
+        SubstanceCombinationManager.StopAndClearAllEffects();
+        TimedConsumableBooster.StopAllActiveBoosters();
+
         if (breakdownMaterial != null)
         {
             breakdownMaterial.SetFloat(IntensityId, 1f);
@@ -252,13 +262,14 @@ public class DepressionBreakdownSequence : MonoBehaviour
         if (overlayCanvas != null)
         {
             overlayCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            overlayCanvas.sortingOrder = 1000;
+            overlayCanvas.sortingOrder = 32766; // High priority above all boosters!
+            overlayCanvas.gameObject.SetActive(true);
         }
         if (targetCamera != null)
         {
             targetCamera.clearFlags = CameraClearFlags.SolidColor;
             targetCamera.backgroundColor = Color.black;
-            targetCamera.cullingMask = (1 << 5); // UI layer
+            targetCamera.cullingMask = (1 << 5); // UI layer only, completely culling 3D room
         }
 
         SwitchToIsolatedBlackoutState();
@@ -313,6 +324,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
             raycastBlocker.gameObject.SetActive(false);
         }
 
+        // Deactivate the fullscreen blackout overlay now that the ending popup UI is ready to show
         if (overlayCanvas != null)
         {
             overlayCanvas.gameObject.SetActive(false);
@@ -356,13 +368,13 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 bool hasParentCanvas = popupParentCanvas.transform.parent != null &&
                                        popupParentCanvas.transform.parent.GetComponentInParent<Canvas>(true) != null;
                 popupParentCanvas.overrideSorting = hasParentCanvas;
-                popupParentCanvas.sortingOrder = 2000;
+                popupParentCanvas.sortingOrder = 32767; // Above the blackout overlay!
             }
 
             Canvas.ForceUpdateCanvases();
         }
 
-        CrtPostProcessManager.SetPausedCrtActive(true);
+        CrtPostProcessManager.SetPausedCrtActive(usePausedCrtOnEnding);
 
         if (EventSystem.current != null)
         {
@@ -382,7 +394,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
             Canvas popupParentCanvas = endingPopupUI.GetComponentInParent<Canvas>(true);
             if (popupParentCanvas != null && popupParentCanvas != overlayCanvas)
             {
-                popupParentCanvas.sortingOrder = 2000;
+                popupParentCanvas.sortingOrder = 32767;
             }
             Canvas.ForceUpdateCanvases();
         }

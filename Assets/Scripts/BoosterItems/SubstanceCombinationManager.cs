@@ -279,6 +279,45 @@ public class SubstanceCombinationManager : MonoBehaviour
         if (comboCanvas != null) Destroy(comboCanvas.gameObject);
     }
 
+    /// <summary>
+    /// Forcibly shuts down all active combination screen effects, overlays, video playback, and camera shake.
+    /// Used when the player dies, when entering the breakdown cutscene, or on emergency reset.
+    /// </summary>
+    public static void StopAndClearAllEffects()
+    {
+        if (instance != null)
+        {
+            instance.StopAllEffectsInternal();
+        }
+    }
+
+    public void StopAllEffectsInternal()
+    {
+        StopAllCoroutines();
+        isTwoEffectComboLocked = false;
+        isTwoEffectComboUnwinding = false;
+        comboRemainingTimer = 0f;
+        isOverdoseSequenceRunning = false;
+        currentComboState = ActiveSubstanceComboState.None;
+        currentComboIntensity = 0f;
+        currentVideoFade = 0f;
+        currentBlackoutFade = 0f;
+
+        if (videoPlayer != null && videoPlayer.isPlaying)
+        {
+            videoPlayer.Stop();
+        }
+
+        if (comboCanvas != null)
+        {
+            comboCanvas.gameObject.SetActive(false);
+        }
+
+        RemoveCameraShake();
+        activeConsumables.Clear();
+        DeactivateAllComboBoosters();
+    }
+
     // =========================================================================
     // CROSS-SCENE SAVE & RESTORE HOOKS (RunSaveManager)
     // =========================================================================

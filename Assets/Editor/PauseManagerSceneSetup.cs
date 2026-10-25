@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-[InitializeOnLoad]
+// Manual setup utility for Pause Manager - only executes when manually clicked via Tools menu.
 public static class PauseManagerSceneSetup
 {
     private const string GameplayMatPath = "Assets/Shaders/duringgameplay.mat";
@@ -18,42 +18,6 @@ public static class PauseManagerSceneSetup
     private const string MainRendererPath = "Assets/Shaders/mainRenderer.asset";
     private const string DefaultPausedSoundPath = "Assets/Audio/static.mp3";
     private const string ProjectFontGuid = "6d795282a2f39f94ab1e799f42073e3f";
-
-    static PauseManagerSceneSetup()
-    {
-        EditorApplication.delayCall += TryAutoSetupInOpen01DayScene;
-    }
-
-    private static void TryAutoSetupInOpen01DayScene()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling)
-            return;
-
-        Scene activeScene = SceneManager.GetActiveScene();
-        if (!activeScene.IsValid() || !activeScene.isLoaded)
-            return;
-
-        if (activeScene.name != "01Day")
-            return;
-
-        // 1. Ensure DynamicMusicManager in 01Day has its track normalizations calculated
-        DynamicMusicManager musicMgr = UnityEngine.Object.FindObjectOfType<DynamicMusicManager>(true);
-        if (musicMgr != null && (musicMgr.trackNormalizations == null || musicMgr.trackNormalizations.Count == 0))
-        {
-            musicMgr.RecalculateTrackNormalizations();
-            EditorUtility.SetDirty(musicMgr);
-        }
-
-        // 2. If PauseManager already exists, upgrade its sortingOrder & auto-wire the HUD "pause" image under croper
-        PauseManager existing = UnityEngine.Object.FindObjectOfType<PauseManager>(true);
-        if (existing != null)
-        {
-            UpgradeExistingPauseManagerInScene(existing, musicMgr, activeScene);
-            return;
-        }
-
-        SetupPauseManagerInActiveScene();
-    }
 
     private static void UpgradeExistingPauseManagerInScene(PauseManager pauseMgr, DynamicMusicManager musicMgr, Scene activeScene)
     {

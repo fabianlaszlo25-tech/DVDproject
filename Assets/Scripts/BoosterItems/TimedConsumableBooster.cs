@@ -37,6 +37,34 @@ public class TimedConsumableBooster : MonoBehaviour
         return ActiveEffectIntensities.TryGetValue(type, out float val) ? val : 0f;
     }
 
+    /// <summary>
+    /// Forcibly stops and resets all active timed consumables and individual screen effects in the scene.
+    /// Called when the player dies / triggers the breakdown cutscene.
+    /// </summary>
+    public static void StopAllActiveBoosters()
+    {
+        TimedConsumableBooster[] all = FindObjectsOfType<TimedConsumableBooster>(true);
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i] != null)
+            {
+                all[i].ForceTerminateAndResetToUnused();
+            }
+        }
+
+        DrunkScreenEffect drunk = FindObjectOfType<DrunkScreenEffect>(true);
+        if (drunk != null) drunk.DisableDrunkEffect();
+
+        CaffeineScreenEffect caff = FindObjectOfType<CaffeineScreenEffect>(true);
+        if (caff != null) caff.DisableCaffeineEffect();
+
+        HighScreenEffect high = FindObjectOfType<HighScreenEffect>(true);
+        if (high != null) high.DisableHighEffect();
+
+        NicotineScreenEffect nic = FindObjectOfType<NicotineScreenEffect>(true);
+        if (nic != null) nic.DisableNicotineEffect();
+    }
+
     [Header("Effect Selection")]
     public ConsumableVisualEffectType effectType = ConsumableVisualEffectType.Drunk;
     [Range(0f, 1f)]

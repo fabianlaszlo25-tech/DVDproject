@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 19138039}
   - component: {fileID: 19138041}
   - component: {fileID: 19138040}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScoreDividerLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 37117725}
   - component: {fileID: 37117724}
   - component: {fileID: 37117723}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_2_DaysSurvived
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,6 +498,7 @@ MonoBehaviour:
   - {fileID: 2028949024}
   endingPopupUI: {fileID: 1054430141}
   unlockCursorWhenUIPopsUp: 1
+  usePausedCrtOnEnding: 0
   gunCockingSound: {fileID: 8300000, guid: 8f9e117d98feebb49ae6395f4aa2e961, type: 3}
   gunCockingVolume: 1
   gunshotSound: {fileID: 8300000, guid: c9cb496126a900b45890ce9afe1cc64d, type: 3}
@@ -1687,7 +1688,7 @@ GameObject:
   - component: {fileID: 117093361}
   - component: {fileID: 117093363}
   - component: {fileID: 117093362}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1837,7 +1838,7 @@ GameObject:
   - component: {fileID: 122837586}
   - component: {fileID: 122837585}
   - component: {fileID: 122837584}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1891,8 +1892,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -1974,7 +1975,7 @@ GameObject:
   - component: {fileID: 156688803}
   - component: {fileID: 156688802}
   - component: {fileID: 156688801}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2028,8 +2029,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -2540,7 +2541,7 @@ GameObject:
   - component: {fileID: 216864644}
   - component: {fileID: 216864643}
   - component: {fileID: 216864642}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2594,8 +2595,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -2779,7 +2780,7 @@ GameObject:
   - component: {fileID: 236207978}
   - component: {fileID: 236207980}
   - component: {fileID: 236207979}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TopAccentBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3364,7 +3365,7 @@ GameObject:
   - component: {fileID: 319462556}
   - component: {fileID: 319462555}
   - component: {fileID: 319462554}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3418,8 +3419,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -4815,6 +4816,9 @@ MonoBehaviour:
   scorePerGamblingDollarLost: 5
   scorePerTrashCleaned: 25
   scorePerStoryElement: 300
+  hasSavedAudioSettings: 0
+  savedMusicSliderVolume: 1
+  savedSfxListenerVolume: 1
   isReturningFromDream: 0
 --- !u!4 &480787903
 Transform:
@@ -4878,7 +4882,7 @@ GameObject:
   - component: {fileID: 492342615}
   - component: {fileID: 492342614}
   - component: {fileID: 492342613}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4932,8 +4936,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -5681,7 +5685,7 @@ GameObject:
   - component: {fileID: 644160631}
   - component: {fileID: 644160630}
   - component: {fileID: 644160629}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5735,8 +5739,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -5955,7 +5959,7 @@ GameObject:
   - component: {fileID: 646807422}
   - component: {fileID: 646807421}
   - component: {fileID: 646807420}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6009,8 +6013,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -6095,7 +6099,7 @@ GameObject:
   - component: {fileID: 653497197}
   - component: {fileID: 653497200}
   - component: {fileID: 653497196}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6255,7 +6259,7 @@ GameObject:
   - component: {fileID: 667949389}
   - component: {fileID: 667949388}
   - component: {fileID: 667949387}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SummaryBackdrop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6923,7 +6927,7 @@ GameObject:
   - component: {fileID: 681480831}
   - component: {fileID: 681480830}
   - component: {fileID: 681480829}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6977,8 +6981,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -7191,7 +7195,7 @@ GameObject:
   - component: {fileID: 702031188}
   - component: {fileID: 702031187}
   - component: {fileID: 702031186}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_7_StoryEncountered
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8552,7 +8556,7 @@ GameObject:
   - component: {fileID: 876059199}
   - component: {fileID: 876059198}
   - component: {fileID: 876059197}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderSubtitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8606,8 +8610,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -8675,7 +8679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 312}
+  m_AnchoredPosition: {x: 0, y: 305.5}
   m_SizeDelta: {x: 860, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &881063461
@@ -9375,7 +9379,7 @@ GameObject:
   - component: {fileID: 1004793739}
   - component: {fileID: 1004793738}
   - component: {fileID: 1004793737}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_3_SubstancesConsumed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9566,7 +9570,7 @@ GameObject:
   - component: {fileID: 1007103182}
   - component: {fileID: 1007103181}
   - component: {fileID: 1007103180}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9620,8 +9624,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -10467,7 +10471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1054430142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10556,6 +10560,7 @@ MonoBehaviour:
   scoreFinishClip: {fileID: 0}
   buttonClickClip: {fileID: 0}
   sfxVolume: 0.45
+  usePausedCrt: 0
 --- !u!114 &1054430143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10626,9 +10631,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1054430141}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -14.31457}
-  m_LocalScale: {x: 0.60991, y: 0.60991, z: 0.60991}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 667949386}
@@ -10637,8 +10642,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 592.79175, y: 317.16666}
-  m_SizeDelta: {x: 1993.7493, y: 1040.0507}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &1070580137
 GameObject:
@@ -10838,7 +10843,7 @@ GameObject:
   - component: {fileID: 1096212090}
   - component: {fileID: 1096212089}
   - component: {fileID: 1096212088}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10892,8 +10897,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -10975,7 +10980,7 @@ GameObject:
   - component: {fileID: 1139101614}
   - component: {fileID: 1139101613}
   - component: {fileID: 1139101612}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11029,8 +11034,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67
-  m_fontSizeBase: 67
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -12440,7 +12445,7 @@ GameObject:
   - component: {fileID: 1247910575}
   - component: {fileID: 1247910574}
   - component: {fileID: 1247910573}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12494,8 +12499,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -13253,7 +13258,7 @@ GameObject:
   - component: {fileID: 1388538037}
   - component: {fileID: 1388538036}
   - component: {fileID: 1388538035}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_8_FinalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13342,7 +13347,7 @@ GameObject:
   - component: {fileID: 1399474423}
   - component: {fileID: 1399474422}
   - component: {fileID: 1399474421}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13396,8 +13401,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -14475,7 +14480,7 @@ GameObject:
   - component: {fileID: 1505339029}
   - component: {fileID: 1505339028}
   - component: {fileID: 1505339027}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14529,8 +14534,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -14663,7 +14668,7 @@ GameObject:
   - component: {fileID: 1535323700}
   - component: {fileID: 1535323699}
   - component: {fileID: 1535323698}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14717,8 +14722,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -15198,7 +15203,7 @@ GameObject:
   - component: {fileID: 1566734420}
   - component: {fileID: 1566734419}
   - component: {fileID: 1566734418}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_5_GamblingLost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15424,7 +15429,7 @@ GameObject:
   - component: {fileID: 1612144163}
   - component: {fileID: 1612144162}
   - component: {fileID: 1612144161}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15478,8 +15483,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -15562,7 +15567,7 @@ GameObject:
   - component: {fileID: 1632416376}
   - component: {fileID: 1632416375}
   - component: {fileID: 1632416374}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_6_TrashCleaned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15859,7 +15864,7 @@ GameObject:
   - component: {fileID: 1681735488}
   - component: {fileID: 1681735487}
   - component: {fileID: 1681735486}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15913,8 +15918,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -16245,7 +16250,7 @@ GameObject:
   - component: {fileID: 1727061510}
   - component: {fileID: 1727061509}
   - component: {fileID: 1727061508}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_4_GamblingEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16335,7 +16340,7 @@ GameObject:
   - component: {fileID: 1734713627}
   - component: {fileID: 1734713626}
   - component: {fileID: 1734713625}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TerminalSummaryCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16387,8 +16392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.85, g: 0.25, b: 0.22, a: 0.45}
-  m_EffectDistance: {x: 2, y: -2}
+  m_EffectColor: {r: 0.85, g: 0.25, b: 0.22, a: 1}
+  m_EffectDistance: {x: 13.16, y: -6.79}
   m_UseGraphicAlpha: 1
 --- !u!114 &1734713626
 MonoBehaviour:
@@ -16403,7 +16408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.055, g: 0.06, b: 0.075, a: 0.98}
+  m_Color: {r: 0.14901961, g: 0.16078432, b: 0.19607843, a: 0.98}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -16439,7 +16444,7 @@ GameObject:
   - component: {fileID: 1742473191}
   - component: {fileID: 1742473190}
   - component: {fileID: 1742473189}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16493,8 +16498,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -17653,7 +17658,7 @@ GameObject:
   - component: {fileID: 1865343623}
   - component: {fileID: 1865343622}
   - component: {fileID: 1865343621}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScreenTransitionFade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17926,7 +17931,7 @@ GameObject:
   - component: {fileID: 1906868698}
   - component: {fileID: 1906868697}
   - component: {fileID: 1906868696}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_1_MoneyEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}

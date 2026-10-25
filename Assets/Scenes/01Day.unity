@@ -4275,7 +4275,7 @@ GameObject:
   - component: {fileID: 130203617}
   - component: {fileID: 130203616}
   - component: {fileID: 130203615}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_7_StoryEncountered
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4295,7 +4295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4672,7 +4672,7 @@ GameObject:
   - component: {fileID: 137675538}
   - component: {fileID: 137675537}
   - component: {fileID: 137675536}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11956,7 +11956,7 @@ GameObject:
   - component: {fileID: 439471698}
   - component: {fileID: 439471697}
   - component: {fileID: 439471696}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SummaryBackdrop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12360,7 +12360,7 @@ GameObject:
   - component: {fileID: 451600942}
   - component: {fileID: 451600941}
   - component: {fileID: 451600940}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12497,7 +12497,7 @@ GameObject:
   - component: {fileID: 453496027}
   - component: {fileID: 453496029}
   - component: {fileID: 453496028}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TopAccentBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12572,7 +12572,7 @@ GameObject:
   - component: {fileID: 456208738}
   - component: {fileID: 456208737}
   - component: {fileID: 456208736}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13074,7 +13074,7 @@ GameObject:
   - component: {fileID: 465026975}
   - component: {fileID: 465026974}
   - component: {fileID: 465026973}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_5_GamblingLost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13094,7 +13094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14916,7 +14916,7 @@ GameObject:
   - component: {fileID: 519009607}
   - component: {fileID: 519009606}
   - component: {fileID: 519009605}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderSubtitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19311,7 +19311,7 @@ GameObject:
   - component: {fileID: 687088530}
   - component: {fileID: 687088529}
   - component: {fileID: 687088528}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26579,7 +26579,7 @@ GameObject:
   - component: {fileID: 963174701}
   - component: {fileID: 963174700}
   - component: {fileID: 963174699}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29191,7 +29191,7 @@ GameObject:
   - component: {fileID: 1086471615}
   - component: {fileID: 1086471614}
   - component: {fileID: 1086471613}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30162,7 +30162,7 @@ GameObject:
   - component: {fileID: 1119817325}
   - component: {fileID: 1119817324}
   - component: {fileID: 1119817323}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33473,7 +33473,7 @@ GameObject:
   - component: {fileID: 1250281393}
   - component: {fileID: 1250281392}
   - component: {fileID: 1250281391}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34289,7 +34289,7 @@ GameObject:
   - component: {fileID: 1297429756}
   - component: {fileID: 1297429758}
   - component: {fileID: 1297429757}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScoreDividerLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34917,7 +34917,7 @@ GameObject:
   - component: {fileID: 1325077336}
   - component: {fileID: 1325077335}
   - component: {fileID: 1325077334}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_4_GamblingEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34937,7 +34937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -36311,7 +36311,7 @@ GameObject:
   - component: {fileID: 1343318012}
   - component: {fileID: 1343318011}
   - component: {fileID: 1343318010}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_6_TrashCleaned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36331,7 +36331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38726,7 +38726,7 @@ GameObject:
   - component: {fileID: 1458300429}
   - component: {fileID: 1458300428}
   - component: {fileID: 1458300427}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_2_DaysSurvived
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38746,7 +38746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38815,7 +38815,7 @@ GameObject:
   - component: {fileID: 1460114754}
   - component: {fileID: 1460114753}
   - component: {fileID: 1460114752}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39431,7 +39431,7 @@ GameObject:
   - component: {fileID: 1475845271}
   - component: {fileID: 1475845270}
   - component: {fileID: 1475845269}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_8_FinalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39451,7 +39451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4528302, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.4528302, g: 0, b: 0, a: 0.5764706}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -41026,7 +41026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1541403255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41115,6 +41115,7 @@ MonoBehaviour:
   scoreFinishClip: {fileID: 0}
   buttonClickClip: {fileID: 0}
   sfxVolume: 0.45
+  usePausedCrt: 0
 --- !u!114 &1541403256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42572,6 +42573,7 @@ MonoBehaviour:
   - {fileID: 1513593850}
   endingPopupUI: {fileID: 1541403254}
   unlockCursorWhenUIPopsUp: 1
+  usePausedCrtOnEnding: 0
   gunCockingSound: {fileID: 8300000, guid: 8f9e117d98feebb49ae6395f4aa2e961, type: 3}
   gunCockingVolume: 1
   gunshotSound: {fileID: 8300000, guid: c9cb496126a900b45890ce9afe1cc64d, type: 3}
@@ -46497,7 +46499,7 @@ GameObject:
   - component: {fileID: 1723812275}
   - component: {fileID: 1723812274}
   - component: {fileID: 1723812273}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_3_SubstancesConsumed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46517,7 +46519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -46856,7 +46858,7 @@ GameObject:
   - component: {fileID: 1746280012}
   - component: {fileID: 1746280011}
   - component: {fileID: 1746280010}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49876,7 +49878,7 @@ GameObject:
   - component: {fileID: 1815773329}
   - component: {fileID: 1815773328}
   - component: {fileID: 1815773327}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51844,7 +51846,7 @@ GameObject:
   - component: {fileID: 1883380972}
   - component: {fileID: 1883380971}
   - component: {fileID: 1883380970}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TerminalSummaryCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51896,8 +51898,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.85, g: 0.25, b: 0.22, a: 0.45}
-  m_EffectDistance: {x: 2, y: -2}
+  m_EffectColor: {r: 0.85, g: 0.25, b: 0.22, a: 1}
+  m_EffectDistance: {x: 13.16, y: -6.79}
   m_UseGraphicAlpha: 1
 --- !u!114 &1883380971
 MonoBehaviour:
@@ -51912,7 +51914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.055, g: 0.06, b: 0.075, a: 0.98}
+  m_Color: {r: 0.14901961, g: 0.16078432, b: 0.19607843, a: 0.98}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -51948,7 +51950,7 @@ GameObject:
   - component: {fileID: 1886158660}
   - component: {fileID: 1886158659}
   - component: {fileID: 1886158658}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52304,7 +52306,7 @@ GameObject:
   - component: {fileID: 1892196236}
   - component: {fileID: 1892196235}
   - component: {fileID: 1892196234}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54241,7 +54243,7 @@ GameObject:
   - component: {fileID: 1939840214}
   - component: {fileID: 1939840217}
   - component: {fileID: 1939840213}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56287,7 +56289,7 @@ GameObject:
   - component: {fileID: 2003079591}
   - component: {fileID: 2003079590}
   - component: {fileID: 2003079589}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_1_MoneyEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56307,7 +56309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23270428, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.23270428, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -57373,7 +57375,7 @@ GameObject:
   - component: {fileID: 2050607174}
   - component: {fileID: 2050607173}
   - component: {fileID: 2050607172}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57711,7 +57713,7 @@ GameObject:
   - component: {fileID: 2058659731}
   - component: {fileID: 2058659730}
   - component: {fileID: 2058659729}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59434,7 +59436,7 @@ GameObject:
   - component: {fileID: 2117530359}
   - component: {fileID: 2117530358}
   - component: {fileID: 2117530357}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59787,7 +59789,7 @@ GameObject:
   - component: {fileID: 2122657187}
   - component: {fileID: 2122657186}
   - component: {fileID: 2122657185}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59924,7 +59926,7 @@ GameObject:
   - component: {fileID: 2123628450}
   - component: {fileID: 2123628449}
   - component: {fileID: 2123628448}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60061,7 +60063,7 @@ GameObject:
   - component: {fileID: 2124927776}
   - component: {fileID: 2124927778}
   - component: {fileID: 2124927777}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60516,7 +60518,7 @@ GameObject:
   - component: {fileID: 2137419163}
   - component: {fileID: 2137419162}
   - component: {fileID: 2137419161}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScreenTransitionFade
   m_TagString: Untagged
   m_Icon: {fileID: 0}

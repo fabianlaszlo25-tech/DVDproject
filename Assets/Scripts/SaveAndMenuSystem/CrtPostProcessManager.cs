@@ -53,6 +53,14 @@ public static class CrtPostProcessManager
     /// <summary>
     /// Activates or deactivates the duringpaused CRT effect (with scanlines, curvature, and vignette).
     /// </summary>
+    /// <summary>
+    /// Explicitly sets the CRT post-process to duringgameplay.mat.
+    /// </summary>
+    public static void SetGameplayCrtActive()
+    {
+        SetPausedCrtActive(false);
+    }
+
     public static void SetPausedCrtActive(bool active)
     {
         EnsureReferences();

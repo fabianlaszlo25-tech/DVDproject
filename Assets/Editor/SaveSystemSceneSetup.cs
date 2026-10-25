@@ -10,48 +10,18 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 
-[InitializeOnLoad]
+// Manual setup utility for Save System - only executes when manually clicked via Tools menu.
 public static class SaveSystemSceneSetup
 {
     private const string RoomScenePath = "Assets/Scenes/01Day.unity";
     private const string BarScenePath = "Assets/Barni/BarGameBarni.unity";
     private const string DreamScenePath = "Assets/Kristof/KristofDreamGames.unity";
     private const string ProjectFontGuid = "6d795282a2f39f94ab1e799f42073e3f";
-    private const string AutoSetupSessionKey = "DVDProject_SaveSystemSceneSetup_Completed_v1";
 
     private static AudioClip cachedGunCockSound;
     private static AudioClip cachedGunshotSound;
     private static AudioClip cachedHeartbeatLoop;
     private static Shader cachedBreakdownShader;
-
-    static SaveSystemSceneSetup()
-    {
-        EditorApplication.delayCall += TryAutoSetupAllScenesOnce;
-    }
-
-    private static void TryAutoSetupAllScenesOnce()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling)
-            return;
-
-        if (SessionState.GetBool(AutoSetupSessionKey, false))
-        {
-            // Still ensure active scene has RunSaveManager if missing
-            Scene active = SceneManager.GetActiveScene();
-            if (active.IsValid() && active.isLoaded &&
-                (active.name == "01Day" || active.name == "BarGameBarni" || active.name == "KristofDreamGames"))
-            {
-                if (UnityEngine.Object.FindObjectOfType<RunSaveManager>(true) == null)
-                {
-                    SetupAllScenes();
-                }
-            }
-            return;
-        }
-
-        SessionState.SetBool(AutoSetupSessionKey, true);
-        SetupAllScenes();
-    }
 
     [MenuItem("Tools/Setup Run Save & Summary System Across All Scenes")]
     public static void SetupAllScenes()
@@ -343,8 +313,13 @@ public static class SaveSystemSceneSetup
         }
 
         summaryUI.mode = mode;
-        summaryUI.customFont = fontAsset;
-        summaryUI.RebuildSummaryUIHierarchy();
+        if (summaryUI.customFont == null) summaryUI.customFont = fontAsset;
+
+        // NEVER rebuild or destroy existing hierarchy if canvas already has children!
+        if (canvasObj.transform.childCount == 0)
+        {
+            summaryUI.RebuildSummaryUIHierarchy();
+        }
 
         if (summaryUI.actionButton != null)
         {

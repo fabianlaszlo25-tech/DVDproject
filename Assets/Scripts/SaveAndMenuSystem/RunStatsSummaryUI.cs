@@ -72,6 +72,10 @@ public class RunStatsSummaryUI : MonoBehaviour
     public AudioClip buttonClickClip;
     [Range(0f, 1f)] public float sfxVolume = 0.45f;
 
+    [Header("CRT Post-Processing")]
+    [Tooltip("If true, switches CRT to duringpaused.mat. If false, uses duringgameplay.mat for the stats summary.")]
+    public bool usePausedCrt = false;
+
     private Coroutine animationRoutine;
     private bool isButtonInteractive;
     private bool hasTriggeredAction;
@@ -84,7 +88,7 @@ public class RunStatsSummaryUI : MonoBehaviour
         if (targetCanvas == null) targetCanvas = GetComponentInParent<Canvas>(true);
 
         EnsureProceduralAudioClips();
-        EnsureUIBuilt();
+        EnsureUIBound();
         BindButtonEvents();
     }
 
@@ -95,7 +99,7 @@ public class RunStatsSummaryUI : MonoBehaviour
         speedMultiplier = 1f;
 
         EnsureProceduralAudioClips();
-        EnsureUIBuilt();
+        EnsureUIBound();
         ConfigureCanvasAndCursor();
 
         if (animationRoutine != null)
@@ -261,12 +265,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             if (row.labelText != null) row.labelText.text = string.Empty;
             if (row.valueText != null) row.valueText.text = string.Empty;
             if (row.rowRoot != null) row.rowRoot.localScale = Vector3.one;
-            if (row.rowHighlightBar != null)
-            {
-                Color c = row.rowHighlightBar.color;
-                c.a = 0f;
-                row.rowHighlightBar.color = c;
-            }
+            // Keep rowHighlightBar color and alpha preserved from the scene design!
         }
 
         if (actionButton != null)
@@ -321,7 +320,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             }
 
             if (row.rowCanvasGroup != null) row.rowCanvasGroup.alpha = 1f;
-            if (row.valueText != null) row.valueText.color = data.valueColor;
+            // Value text color preserved from scene hierarchy rather than clobbering
 
             // 2a. Typewriter label animation
             string fullLabel = data.label;
@@ -371,8 +370,39 @@ public class RunStatsSummaryUI : MonoBehaviour
                 row.valueText.text = FormatMetricValue(data.numericValue, data.isCurrency);
             }
 
-            // 2c. Impact lock-in pulse
+            // 2c. Impact lock-in pulse & brightness flash
             PlaySoundClip(data.isFinalScore ? scoreFinishClip : rowLockClip, data.isFinalScore ? 0.85f : 0.55f, 1f);
+
+            // Cache original configured colors before the flash
+            Color baseBarColor = row.rowHighlightBar != null ? row.rowHighlightBar.color : Color.clear;
+            Color baseValColor = row.valueText != null ? row.valueText.color : Color.white;
+            Color baseLblColor = row.labelText != null ? row.labelText.color : Color.white;
+
+            // Compute bright flash colors
+            Color flashBarColor;
+            if (baseBarColor.a > 0.4f)
+            {
+                // For opaque/colored bars (e.g. dark red in death screen)
+                flashBarColor = new Color(
+                    Mathf.Clamp01(baseBarColor.r * 2.8f + 0.35f),
+                    Mathf.Clamp01(baseBarColor.g * 2.8f + 0.35f),
+                    Mathf.Clamp01(baseBarColor.b * 2.8f + 0.35f),
+                    baseBarColor.a
+                );
+            }
+            else
+            {
+                // For subtle translucent bars (e.g. dream sequence where alpha is ~0.03-0.07)
+                flashBarColor = new Color(
+                    Mathf.Clamp01(baseBarColor.r + 0.25f),
+                    Mathf.Clamp01(baseBarColor.g + 0.25f),
+                    Mathf.Clamp01(baseBarColor.b + 0.25f),
+                    data.isFinalScore ? 0.42f : 0.32f
+                );
+            }
+
+            Color flashValColor = Color.white;
+            Color flashLblColor = Color.Lerp(baseLblColor, Color.white, 0.75f);
 
             float pulseDur = data.isFinalScore ? 0.22f : 0.14f;
             float pulsePeak = data.isFinalScore ? 1.08f : 1.035f;
@@ -383,15 +413,29 @@ public class RunStatsSummaryUI : MonoBehaviour
                 float pt = Mathf.Clamp01(pulseElapsed / pulseDur);
                 float scale = Mathf.Lerp(pulsePeak, 1f, pt);
                 if (row.rowRoot != null) row.rowRoot.localScale = new Vector3(scale, scale, 1f);
+
+                // Brightness flash relaxes smoothly back to original configured colors
                 if (row.rowHighlightBar != null)
                 {
-                    Color hc = row.rowHighlightBar.color;
-                    hc.a = Mathf.Lerp(0.28f, 0.05f, pt);
-                    row.rowHighlightBar.color = hc;
+                    row.rowHighlightBar.color = Color.Lerp(flashBarColor, baseBarColor, pt);
                 }
+                if (row.valueText != null)
+                {
+                    row.valueText.color = Color.Lerp(flashValColor, baseValColor, pt);
+                }
+                if (row.labelText != null)
+                {
+                    row.labelText.color = Color.Lerp(flashLblColor, baseLblColor, pt);
+                }
+
                 yield return null;
             }
+
+            // Guarantee exact original colors and scale are restored
             if (row.rowRoot != null) row.rowRoot.localScale = Vector3.one;
+            if (row.rowHighlightBar != null) row.rowHighlightBar.color = baseBarColor;
+            if (row.valueText != null) row.valueText.color = baseValColor;
+            if (row.labelText != null) row.labelText.color = baseLblColor;
 
             yield return WaitScaledUnscaled(delayBetweenRows);
         }
@@ -617,14 +661,14 @@ public class RunStatsSummaryUI : MonoBehaviour
                 targetCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                 targetCanvas.worldCamera = cam;
                 targetCanvas.planeDistance = 0.5f;
-                targetCanvas.sortingOrder = 2500;
+                targetCanvas.sortingOrder = 32767;
 
                 cam.cullingMask |= (1 << targetCanvas.gameObject.layer) | (1 << 5);
             }
             else
             {
                 targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                targetCanvas.sortingOrder = 2500;
+                targetCanvas.sortingOrder = 32767;
             }
 
             if (targetCanvas.GetComponent<GraphicRaycaster>() == null)
@@ -633,7 +677,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             }
         }
 
-        CrtPostProcessManager.SetPausedCrtActive(true);
+        CrtPostProcessManager.SetPausedCrtActive(usePausedCrt);
 
         EnsureEventSystemActive();
         Cursor.lockState = CursorLockMode.None;
@@ -949,9 +993,96 @@ public class RunStatsSummaryUI : MonoBehaviour
         BindButtonEvents();
     }
 
-    private void EnsureUIBuilt()
+    private void EnsureUIBound()
     {
-        if (statRows == null || statRows.Count < 8 || actionButton == null || statRows[0].labelText == null)
+        if (targetCanvas == null) targetCanvas = GetComponent<Canvas>();
+        if (targetCanvas == null) targetCanvas = GetComponentInParent<Canvas>(true);
+        if (targetCanvas == null) return;
+
+        // If targetCanvas has children, bind references dynamically rather than destroying them
+        if (rootCanvasGroup == null)
+        {
+            Transform backdrop = targetCanvas.transform.Find("SummaryBackdrop");
+            if (backdrop != null) rootCanvasGroup = backdrop.GetComponent<CanvasGroup>();
+        }
+
+        Transform card = targetCanvas.transform.Find("SummaryBackdrop/TerminalSummaryCard");
+        if (card != null)
+        {
+            if (cardRect == null) cardRect = card.GetComponent<RectTransform>();
+            if (headerTitleText == null)
+            {
+                Transform t = card.Find("HeaderTitle");
+                if (t != null) headerTitleText = t.GetComponent<TMP_Text>();
+            }
+            if (headerSubtitleText == null)
+            {
+                Transform t = card.Find("HeaderSubtitle");
+                if (t != null) headerSubtitleText = t.GetComponent<TMP_Text>();
+            }
+            if (dividerLineRect == null)
+            {
+                Transform t = card.Find("ScoreDividerLine");
+                if (t != null) dividerLineRect = t.GetComponent<RectTransform>();
+            }
+            if (actionButton == null)
+            {
+                Transform t = card.Find("ActionButton");
+                if (t != null)
+                {
+                    actionButton = t.GetComponent<Button>();
+                    actionButtonRect = t.GetComponent<RectTransform>();
+                    actionButtonCanvasGroup = t.GetComponent<CanvasGroup>();
+                    Transform lbl = t.Find("ButtonLabel");
+                    if (lbl == null) lbl = t.Find("Text (TMP)");
+                    if (lbl != null) actionButtonText = lbl.GetComponent<TMP_Text>();
+                }
+            }
+
+            if (statRows == null || statRows.Count < 8 || statRows[0].labelText == null)
+            {
+                statRows = new List<StatRowReferences>();
+                string[] rowKeys = new string[]
+                {
+                    "MoneyEarned",
+                    "DaysSurvived",
+                    "SubstancesConsumed",
+                    "GamblingEarned",
+                    "GamblingLost",
+                    "TrashCleaned",
+                    "StoryEncountered",
+                    "FinalScore"
+                };
+
+                for (int i = 0; i < rowKeys.Length; i++)
+                {
+                    Transform rowTrans = card.Find($"Row_{i + 1}_{rowKeys[i]}");
+                    if (rowTrans != null)
+                    {
+                        Transform lbl = rowTrans.Find("Label");
+                        Transform val = rowTrans.Find("Value");
+                        statRows.Add(new StatRowReferences
+                        {
+                            statKey = rowKeys[i],
+                            rowRoot = rowTrans.GetComponent<RectTransform>(),
+                            rowCanvasGroup = rowTrans.GetComponent<CanvasGroup>(),
+                            labelText = lbl != null ? lbl.GetComponent<TMP_Text>() : null,
+                            valueText = val != null ? val.GetComponent<TMP_Text>() : null,
+                            rowHighlightBar = rowTrans.GetComponent<Image>()
+                        });
+                    }
+                }
+            }
+        }
+
+        if (screenFadeOverlay == null)
+        {
+            Transform fade = targetCanvas.transform.Find("ScreenTransitionFade");
+            if (fade != null) screenFadeOverlay = fade.GetComponent<Image>();
+        }
+
+        // Only build from scratch if canvas is completely empty!
+        if (targetCanvas.transform.childCount == 0)
         {
             RebuildSummaryUIHierarchy();
         }
