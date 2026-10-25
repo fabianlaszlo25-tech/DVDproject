@@ -141,7 +141,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
         isolatedEndingSfxSource.spatialBlend = 0f;
         isolatedEndingSfxSource.priority = 0;
         isolatedEndingSfxSource.ignoreListenerPause = true;
-        isolatedEndingSfxSource.ignoreListenerVolume = true;
+        isolatedEndingSfxSource.ignoreListenerVolume = false;
 
         heartbeatSource = gameObject.AddComponent<AudioSource>();
         heartbeatSource.playOnAwake = false;
@@ -155,6 +155,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
     {
         // Make sure global audio pause is restored if the scene reloads or exits Play Mode
         AudioListener.pause = false;
+        CrtPostProcessManager.SetPausedCrtActive(false);
 
         RemoveCameraOffset();
         ReleaseRTs();
@@ -257,7 +258,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
         {
             targetCamera.clearFlags = CameraClearFlags.SolidColor;
             targetCamera.backgroundColor = Color.black;
-            targetCamera.cullingMask = 0;
+            targetCamera.cullingMask = (1 << 5); // UI layer
         }
 
         SwitchToIsolatedBlackoutState();
@@ -312,6 +313,11 @@ public class DepressionBreakdownSequence : MonoBehaviour
             raycastBlocker.gameObject.SetActive(false);
         }
 
+        if (overlayCanvas != null)
+        {
+            overlayCanvas.gameObject.SetActive(false);
+        }
+
         if (endingPopupUI != null)
         {
             // Ensure all parent GameObjects of endingPopupUI are active first
@@ -336,7 +342,16 @@ public class DepressionBreakdownSequence : MonoBehaviour
                     popupParentCanvas.gameObject.SetActive(true);
                 }
                 popupParentCanvas.enabled = true;
-                popupParentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                if (targetCamera != null)
+                {
+                    popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    popupParentCanvas.worldCamera = targetCamera;
+                    popupParentCanvas.planeDistance = 0.5f;
+                }
+                else
+                {
+                    popupParentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                }
 
                 bool hasParentCanvas = popupParentCanvas.transform.parent != null &&
                                        popupParentCanvas.transform.parent.GetComponentInParent<Canvas>(true) != null;
@@ -346,6 +361,8 @@ public class DepressionBreakdownSequence : MonoBehaviour
 
             Canvas.ForceUpdateCanvases();
         }
+
+        CrtPostProcessManager.SetPausedCrtActive(true);
 
         if (EventSystem.current != null)
         {
@@ -391,10 +408,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
         if (clip == null || isolatedEndingSfxSource == null) return;
 
         AudioListener.pause = false;
-        if (AudioListener.volume <= 0.01f)
-        {
-            AudioListener.volume = 1f;
-        }
+        AudioListener.volume = GlobalAudioSettings.SfxVolume;
 
         EnsureActiveAudioListener();
 

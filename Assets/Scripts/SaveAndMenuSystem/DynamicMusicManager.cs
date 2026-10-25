@@ -141,7 +141,10 @@ public class DynamicMusicManager : MonoBehaviour
     {
         if (barManager == null) barManager = FindObjectOfType<BarManager>();
 
-        currentSfxListenerVolume = Mathf.Clamp01(AudioListener.volume);
+        GlobalAudioSettings.ApplyLoadedSettings();
+        musicSliderVolume = GlobalAudioSettings.MusicVolume;
+        currentSfxListenerVolume = GlobalAudioSettings.SfxVolume;
+
         UpdateSfxOffsetBoostFactor();
         SyncOrCalculateTrackNormalizations(false);
 

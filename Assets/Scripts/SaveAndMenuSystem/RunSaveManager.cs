@@ -183,9 +183,9 @@ public class RunSaveManager : MonoBehaviour
     private float savedComboIntensity;
 
     // Audio settings state
-    private bool hasSavedAudioSettings;
-    private float savedMusicSliderVolume = 1f;
-    private float savedSfxListenerVolume = 1f;
+    public bool hasSavedAudioSettings;
+    public float savedMusicSliderVolume = 1f;
+    public float savedSfxListenerVolume = 1f;
 
     // Per-scene state (01Day, BarGameBarni)
     private readonly Dictionary<string, SceneSpecificSavedState> sceneStates = new Dictionary<string, SceneSpecificSavedState>();
@@ -922,6 +922,7 @@ public class RunSaveManager : MonoBehaviour
             RestoreActiveConsumablesAndCombos(sceneName, sceneState);
 
             // 8. Restore Audio Settings
+            GlobalAudioSettings.ApplyLoadedSettings();
             if (hasSavedAudioSettings)
             {
                 AudioListener.volume = Mathf.Clamp01(savedSfxListenerVolume);

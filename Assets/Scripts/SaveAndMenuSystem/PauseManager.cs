@@ -152,6 +152,7 @@ public class PauseManager : MonoBehaviour
         BindUIEvents();
 
         // Ensure game starts unpaused with the gameplay CRT material active
+        CrtPostProcessManager.RegisterMaterials(duringGameplayMaterial, duringPausedMaterial, crtRendererFeature);
         SetCrtMaterial(duringGameplayMaterial);
 
         if (pauseCanvas != null)
@@ -173,14 +174,10 @@ public class PauseManager : MonoBehaviour
         AutoFindReferences();
         ConfigurePauseCanvasForClicking();
 
-        if (musicManager != null)
-        {
-            initialMusicVolume = Mathf.Clamp01(musicManager.musicSliderVolume);
-        }
-        initialSfxVolume = Mathf.Clamp01(AudioListener.volume);
-
+        initialMusicVolume = GlobalAudioSettings.MusicVolume;
+        initialSfxVolume = GlobalAudioSettings.SfxVolume;
+        GlobalAudioSettings.ApplyLoadedSettings();
         SyncSlidersToCurrentVolumes();
-        ApplyAudioSettings(initialMusicVolume, initialSfxVolume);
     }
 
     private void OnDisable()
@@ -661,12 +658,7 @@ public class PauseManager : MonoBehaviour
 
         float clamped = Mathf.Clamp01(value);
         initialMusicVolume = clamped;
-
-        if (musicManager == null) musicManager = FindObjectOfType<DynamicMusicManager>();
-        if (musicManager != null)
-        {
-            musicManager.SetMusicSliderVolume(clamped);
-        }
+        GlobalAudioSettings.SetMusicVolume(clamped);
     }
 
     public void OnSfxVolumeChanged(float value)
@@ -675,16 +667,7 @@ public class PauseManager : MonoBehaviour
 
         float clamped = Mathf.Clamp01(value);
         initialSfxVolume = clamped;
-
-        // Edit the AudioListener volume in the game for all SFX
-        AudioListener.volume = clamped;
-
-        // Secretly boost music on DynamicMusicManager to offset the AudioListener change
-        if (musicManager == null) musicManager = FindObjectOfType<DynamicMusicManager>();
-        if (musicManager != null)
-        {
-            musicManager.SetSfxListenerVolume(clamped);
-        }
+        GlobalAudioSettings.SetSfxVolume(clamped);
     }
 
     private void ApplyAudioSettings(float musicVol, float sfxVol)
@@ -703,8 +686,8 @@ public class PauseManager : MonoBehaviour
     {
         isUpdatingSlidersInternally = true;
 
-        float currentMusic = musicManager != null ? musicManager.musicSliderVolume : initialMusicVolume;
-        float currentSfx = AudioListener.volume;
+        float currentMusic = GlobalAudioSettings.MusicVolume;
+        float currentSfx = GlobalAudioSettings.SfxVolume;
 
         if (musicVolumeSlider != null)
         {

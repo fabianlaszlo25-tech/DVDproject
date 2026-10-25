@@ -107,11 +107,17 @@ public class RunStatsSummaryUI : MonoBehaviour
 
     private void OnDisable()
     {
+        CrtPostProcessManager.SetPausedCrtActive(false);
         if (animationRoutine != null)
         {
             StopCoroutine(animationRoutine);
             animationRoutine = null;
         }
+    }
+
+    private void OnDestroy()
+    {
+        CrtPostProcessManager.SetPausedCrtActive(false);
     }
 
     private void Update()
@@ -487,6 +493,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.15f);
         }
 
+        CrtPostProcessManager.SetPausedCrtActive(false);
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
@@ -602,13 +609,31 @@ public class RunStatsSummaryUI : MonoBehaviour
     {
         if (targetCanvas != null)
         {
-            targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            targetCanvas.sortingOrder = 2500;
+            Camera cam = targetCanvas.worldCamera != null ? targetCanvas.worldCamera : Camera.main;
+            if (cam == null) cam = FindObjectOfType<Camera>();
+
+            if (cam != null)
+            {
+                targetCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                targetCanvas.worldCamera = cam;
+                targetCanvas.planeDistance = 0.5f;
+                targetCanvas.sortingOrder = 2500;
+
+                cam.cullingMask |= (1 << targetCanvas.gameObject.layer) | (1 << 5);
+            }
+            else
+            {
+                targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                targetCanvas.sortingOrder = 2500;
+            }
+
             if (targetCanvas.GetComponent<GraphicRaycaster>() == null)
             {
                 targetCanvas.gameObject.AddComponent<GraphicRaycaster>();
             }
         }
+
+        CrtPostProcessManager.SetPausedCrtActive(true);
 
         EnsureEventSystemActive();
         Cursor.lockState = CursorLockMode.None;
