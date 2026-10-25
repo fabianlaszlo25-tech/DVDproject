@@ -58,6 +58,35 @@ public static class GlobalAudioSettings
             musicMgr.SetMusicSliderVolume(cachedMusicVolume);
         }
 
+        // Apply music volume to pause menu audio
+        PauseManager pauseMgr = Object.FindObjectOfType<PauseManager>();
+        if (pauseMgr != null && pauseMgr.pausedAudioSource != null)
+        {
+            pauseMgr.pausedAudioSource.ignoreListenerVolume = true;
+            pauseMgr.pausedAudioSource.volume = pauseMgr.pausedSoundVolume * cachedMusicVolume;
+        }
+
+        // Apply music volume to main menu music
+        MainMenuController menuCtrl = Object.FindObjectOfType<MainMenuController>();
+        if (menuCtrl != null && menuCtrl.mainMenuMusicSource != null)
+        {
+            menuCtrl.mainMenuMusicSource.ignoreListenerVolume = true;
+            menuCtrl.mainMenuMusicSource.volume = cachedMusicVolume;
+        }
+        else
+        {
+            GameObject menuMusicObj = GameObject.Find("mainmenumusic");
+            if (menuMusicObj != null)
+            {
+                AudioSource src = menuMusicObj.GetComponent<AudioSource>();
+                if (src != null)
+                {
+                    src.ignoreListenerVolume = true;
+                    src.volume = cachedMusicVolume;
+                }
+            }
+        }
+
         if (RunSaveManager.HasInstance)
         {
             RunSaveManager.Instance.savedMusicSliderVolume = cachedMusicVolume;
@@ -98,6 +127,35 @@ public static class GlobalAudioSettings
         {
             musicMgr.SetMusicSliderVolume(music);
             musicMgr.SetSfxListenerVolume(sfx);
+        }
+
+        // Apply music volume to pause menu audio
+        PauseManager pauseMgr = Object.FindObjectOfType<PauseManager>();
+        if (pauseMgr != null && pauseMgr.pausedAudioSource != null)
+        {
+            pauseMgr.pausedAudioSource.ignoreListenerVolume = true;
+            pauseMgr.pausedAudioSource.volume = pauseMgr.pausedSoundVolume * music;
+        }
+
+        // Apply music volume to main menu music
+        MainMenuController menuCtrl = Object.FindObjectOfType<MainMenuController>();
+        if (menuCtrl != null && menuCtrl.mainMenuMusicSource != null)
+        {
+            menuCtrl.mainMenuMusicSource.ignoreListenerVolume = true;
+            menuCtrl.mainMenuMusicSource.volume = music;
+        }
+        else
+        {
+            GameObject menuMusicObj = GameObject.Find("mainmenumusic");
+            if (menuMusicObj != null)
+            {
+                AudioSource src = menuMusicObj.GetComponent<AudioSource>();
+                if (src != null)
+                {
+                    src.ignoreListenerVolume = true;
+                    src.volume = music;
+                }
+            }
         }
     }
 }

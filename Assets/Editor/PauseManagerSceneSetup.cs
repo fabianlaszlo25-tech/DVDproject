@@ -100,7 +100,7 @@ public static class PauseManagerSceneSetup
         pauseAudio.loop = true;
         pauseAudio.spatialBlend = 0f;
         pauseAudio.ignoreListenerPause = true;
-        pauseAudio.ignoreListenerVolume = false;
+        pauseAudio.ignoreListenerVolume = true;
 
         pauseMgr = rootObj.AddComponent<PauseManager>();
         pauseMgr.pausedAudioSource = pauseAudio;

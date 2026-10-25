@@ -51,6 +51,10 @@ public class MainMenuController : MonoBehaviour
     public AudioClip buttonClickSound;
     [Range(0f, 1f)] public float buttonClickVolume = 0.85f;
 
+    [Header("Menu Music")]
+    [Tooltip("AudioSource for the main menu background music (e.g. on GameObject 'mainmenumusic'). Governed by Music Volume setting.")]
+    public AudioSource mainMenuMusicSource;
+
     private CanvasGroup mainButtonsCanvasGroup;
     private CanvasGroup settingsCanvasGroup;
     private Coroutine transitionRoutine;
@@ -72,8 +76,27 @@ public class MainMenuController : MonoBehaviour
     private void Start()
     {
         EnsureCursorUnlocked();
+        EnsureMainMenuMusic();
         GlobalAudioSettings.ApplyLoadedSettings();
         SyncSlidersToGlobalAudio();
+    }
+
+    public void EnsureMainMenuMusic()
+    {
+        if (mainMenuMusicSource == null)
+        {
+            GameObject go = GameObject.Find("mainmenumusic");
+            if (go != null)
+            {
+                mainMenuMusicSource = go.GetComponent<AudioSource>();
+            }
+        }
+
+        if (mainMenuMusicSource != null)
+        {
+            mainMenuMusicSource.ignoreListenerVolume = true;
+            mainMenuMusicSource.volume = GlobalAudioSettings.MusicVolume;
+        }
     }
 
     private void OnEnable()
@@ -295,6 +318,11 @@ public class MainMenuController : MonoBehaviour
 
         float clamped = Mathf.Clamp01(value);
         GlobalAudioSettings.SetMusicVolume(clamped);
+        if (mainMenuMusicSource != null)
+        {
+            mainMenuMusicSource.ignoreListenerVolume = true;
+            mainMenuMusicSource.volume = clamped;
+        }
         UpdateSliderLabels();
     }
 

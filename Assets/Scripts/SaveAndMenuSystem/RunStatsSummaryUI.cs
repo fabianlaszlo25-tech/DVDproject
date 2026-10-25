@@ -378,15 +378,15 @@ public class RunStatsSummaryUI : MonoBehaviour
             Color baseValColor = row.valueText != null ? row.valueText.color : Color.white;
             Color baseLblColor = row.labelText != null ? row.labelText.color : Color.white;
 
-            // Compute bright flash colors
+            // Compute gentle bright flash colors (tasteful, not overpowering)
             Color flashBarColor;
             if (baseBarColor.a > 0.4f)
             {
                 // For opaque/colored bars (e.g. dark red in death screen)
                 flashBarColor = new Color(
-                    Mathf.Clamp01(baseBarColor.r * 2.8f + 0.35f),
-                    Mathf.Clamp01(baseBarColor.g * 2.8f + 0.35f),
-                    Mathf.Clamp01(baseBarColor.b * 2.8f + 0.35f),
+                    Mathf.Clamp01(baseBarColor.r * 1.45f + 0.10f),
+                    Mathf.Clamp01(baseBarColor.g * 1.45f + 0.10f),
+                    Mathf.Clamp01(baseBarColor.b * 1.45f + 0.10f),
                     baseBarColor.a
                 );
             }
@@ -394,15 +394,15 @@ public class RunStatsSummaryUI : MonoBehaviour
             {
                 // For subtle translucent bars (e.g. dream sequence where alpha is ~0.03-0.07)
                 flashBarColor = new Color(
-                    Mathf.Clamp01(baseBarColor.r + 0.25f),
-                    Mathf.Clamp01(baseBarColor.g + 0.25f),
-                    Mathf.Clamp01(baseBarColor.b + 0.25f),
-                    data.isFinalScore ? 0.42f : 0.32f
+                    Mathf.Clamp01(baseBarColor.r + 0.12f),
+                    Mathf.Clamp01(baseBarColor.g + 0.12f),
+                    Mathf.Clamp01(baseBarColor.b + 0.12f),
+                    data.isFinalScore ? 0.18f : 0.11f
                 );
             }
 
-            Color flashValColor = Color.white;
-            Color flashLblColor = Color.Lerp(baseLblColor, Color.white, 0.75f);
+            Color flashValColor = Color.Lerp(baseValColor, Color.white, 0.40f);
+            Color flashLblColor = Color.Lerp(baseLblColor, Color.white, 0.28f);
 
             float pulseDur = data.isFinalScore ? 0.22f : 0.14f;
             float pulsePeak = data.isFinalScore ? 1.08f : 1.035f;

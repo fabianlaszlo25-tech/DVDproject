@@ -237,7 +237,8 @@ public class PauseManager : MonoBehaviour
 
             if (pausedAudioSource != null)
             {
-                pausedAudioSource.volume = pausedSoundVolume;
+                pausedAudioSource.ignoreListenerVolume = true;
+                pausedAudioSource.volume = pausedSoundVolume * GlobalAudioSettings.MusicVolume;
             }
 
             // Direct regular-cursor hover, button click, and slider drag handling
@@ -659,6 +660,12 @@ public class PauseManager : MonoBehaviour
         float clamped = Mathf.Clamp01(value);
         initialMusicVolume = clamped;
         GlobalAudioSettings.SetMusicVolume(clamped);
+
+        if (pausedAudioSource != null)
+        {
+            pausedAudioSource.ignoreListenerVolume = true;
+            pausedAudioSource.volume = pausedSoundVolume * clamped;
+        }
     }
 
     public void OnSfxVolumeChanged(float value)
@@ -720,8 +727,9 @@ public class PauseManager : MonoBehaviour
         pausedAudioSource.spatialBlend = 0f;
         pausedAudioSource.loop = loopPausedSound;
         pausedAudioSource.ignoreListenerPause = true;
-        // Keep ignoreListenerVolume = false so adjusting the SFX (AudioListener) slider in Settings can be heard on the pause sound
-        pausedAudioSource.ignoreListenerVolume = false;
+        // Governed by Music Volume, so ignore AudioListener.volume (which controls SFX)
+        pausedAudioSource.ignoreListenerVolume = true;
+        pausedAudioSource.volume = pausedSoundVolume * GlobalAudioSettings.MusicVolume;
 
         if (pausedSound != null && pausedSound.loadState == AudioDataLoadState.Unloaded)
         {
@@ -762,7 +770,8 @@ public class PauseManager : MonoBehaviour
         {
             pausedAudioSource.clip = pausedSound;
             pausedAudioSource.loop = loopPausedSound;
-            pausedAudioSource.volume = pausedSoundVolume;
+            pausedAudioSource.ignoreListenerVolume = true;
+            pausedAudioSource.volume = pausedSoundVolume * GlobalAudioSettings.MusicVolume;
             pausedAudioSource.mute = false;
             pausedAudioSource.Play();
         }
