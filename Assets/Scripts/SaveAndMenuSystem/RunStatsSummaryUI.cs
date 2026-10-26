@@ -622,14 +622,14 @@ public class RunStatsSummaryUI : MonoBehaviour
         if (headerTitleText != null)
         {
             headerTitleText.text = mode == SummaryMode.DreamWakeUp
-                ? "DREAM SEQUENCE // NIGHT REPORT"
+                ? "DREAM SEQUENCE"
                 : "RUN OVER!";
         }
 
         if (headerSubtitleText != null)
         {
             headerSubtitleText.text = mode == SummaryMode.DreamWakeUp
-                ? "SLEEP CYCLE DATA LOGGED — DEPRESSION CLEARED TO 0%"
+                ? "STATS SO FAR"
                 : "FINAL STATS REPORT";
         }
 
@@ -665,7 +665,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             {
                 targetCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                 targetCanvas.worldCamera = cam;
-                targetCanvas.planeDistance = cam.nearClipPlane + 0.03f;
+                targetCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
                 targetCanvas.sortingOrder = 32767;
 
                 int canvasLayer = targetCanvas.gameObject.layer;

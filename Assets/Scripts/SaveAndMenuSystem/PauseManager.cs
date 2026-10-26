@@ -978,9 +978,9 @@ public class PauseManager : MonoBehaviour
                 pauseCanvas.worldCamera = Camera.main != null ? Camera.main : FindObjectOfType<Camera>(false);
             }
 
-            if (pauseCanvas.worldCamera != null && pauseCanvas.planeDistance < pauseCanvas.worldCamera.nearClipPlane + 0.02f)
+            if (pauseCanvas.worldCamera != null && pauseCanvas.planeDistance < pauseCanvas.worldCamera.nearClipPlane + 0.05f)
             {
-                pauseCanvas.planeDistance = pauseCanvas.worldCamera.nearClipPlane + 0.03f;
+                pauseCanvas.planeDistance = Mathf.Max(0.5f, pauseCanvas.worldCamera.nearClipPlane + 0.25f);
             }
         }
 

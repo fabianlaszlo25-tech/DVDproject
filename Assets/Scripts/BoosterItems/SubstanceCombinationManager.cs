@@ -689,6 +689,22 @@ public class SubstanceCombinationManager : MonoBehaviour
     // MULTI-BUFFER RENDERING & UPDATE LOOP
     // =========================================================================
 
+    public void UpdateVideoAudioSettings()
+    {
+        if (videoPlayer == null) return;
+        try
+        {
+            float musicVol = GlobalAudioSettings.MusicVolume;
+            bool shouldMute = musicVol <= 0.001f;
+            videoPlayer.SetDirectAudioMute(0, shouldMute);
+            videoPlayer.SetDirectAudioVolume(0, shouldMute ? 0f : musicVol);
+        }
+        catch
+        {
+            // Direct audio track might not be initialized yet on some platforms
+        }
+    }
+
     private void EnsureOverlayInitialized()
     {
         if (targetCamera == null) targetCamera = Camera.main;
@@ -758,8 +774,7 @@ public class SubstanceCombinationManager : MonoBehaviour
             videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
             videoPlayer.controlledAudioTrackCount = 1;
             videoPlayer.EnableAudioTrack(0, true);
-            videoPlayer.SetDirectAudioMute(0, false);
-            videoPlayer.SetDirectAudioVolume(0, 1f);
+            UpdateVideoAudioSettings();
         }
     }
 
@@ -771,8 +786,7 @@ public class SubstanceCombinationManager : MonoBehaviour
         videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
         videoPlayer.controlledAudioTrackCount = 1;
         videoPlayer.EnableAudioTrack(0, true);
-        videoPlayer.SetDirectAudioMute(0, false);
-        videoPlayer.SetDirectAudioVolume(0, 1f);
+        UpdateVideoAudioSettings();
 
         string fileName = string.IsNullOrEmpty(superOverdoseSettings.streamingAssetsVideoFileName)
             ? "Overdose.mp4"
@@ -878,6 +892,10 @@ public class SubstanceCombinationManager : MonoBehaviour
     private void Update()
     {
         if (targetCamera == null) targetCamera = Camera.main;
+        if (videoPlayer != null && videoPlayer.isPlaying)
+        {
+            UpdateVideoAudioSettings();
+        }
 
         if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
         {

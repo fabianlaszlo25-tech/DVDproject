@@ -87,6 +87,13 @@ public static class GlobalAudioSettings
             }
         }
 
+                // Apply music volume to 3-effect overdose hallucination video
+        SubstanceCombinationManager comboMgr = Object.FindObjectOfType<SubstanceCombinationManager>();
+        if (comboMgr != null)
+        {
+            comboMgr.UpdateVideoAudioSettings();
+        }
+
         if (RunSaveManager.HasInstance)
         {
             RunSaveManager.Instance.savedMusicSliderVolume = cachedMusicVolume;
@@ -156,6 +163,13 @@ public static class GlobalAudioSettings
                     src.volume = music;
                 }
             }
+        }
+
+        // Apply music volume to 3-effect overdose hallucination video
+        SubstanceCombinationManager comboMgr = Object.FindObjectOfType<SubstanceCombinationManager>();
+        if (comboMgr != null)
+        {
+            comboMgr.UpdateVideoAudioSettings();
         }
     }
 }

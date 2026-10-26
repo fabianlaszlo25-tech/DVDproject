@@ -233,7 +233,8 @@ public class DepressionBreakdownSequence : MonoBehaviour
 
             if (optionalHeartbeatLoop != null && heartbeatSource != null)
             {
-                heartbeatSource.volume = Mathf.Lerp(0.2f, heartbeatVolume, norm);
+                heartbeatSource.volume = Mathf.Lerp(0.2f, heartbeatVolume, norm) * GlobalAudioSettings.SfxVolume;
+                heartbeatSource.mute = GlobalAudioSettings.SfxVolume <= 0.001f;
                 heartbeatSource.pitch = Mathf.Lerp(0.9f, 1.45f, norm * norm);
             }
 
@@ -376,7 +377,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                     popupParentCanvas.worldCamera = cam;
-                    popupParentCanvas.planeDistance = cam.nearClipPlane + 0.03f;
+                    popupParentCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
                     cam.cullingMask |= (1 << uiLayer) | (1 << popupParentCanvas.gameObject.layer);
 
                     UniversalAdditionalCameraData camData = cam.GetComponent<UniversalAdditionalCameraData>();
@@ -443,7 +444,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                     popupParentCanvas.worldCamera = cam;
-                    popupParentCanvas.planeDistance = cam.nearClipPlane + 0.03f;
+                    popupParentCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
                 }
                 popupParentCanvas.sortingOrder = 32767;
                 popupParentCanvas.transform.localScale = Vector3.one;
@@ -481,10 +482,10 @@ public class DepressionBreakdownSequence : MonoBehaviour
             isolatedAudioObject.SetActive(true);
         }
         isolatedEndingSfxSource.enabled = true;
-        isolatedEndingSfxSource.mute = false;
-        isolatedEndingSfxSource.volume = Mathf.Clamp01(volume);
+        isolatedEndingSfxSource.mute = GlobalAudioSettings.SfxVolume <= 0.001f;
+        isolatedEndingSfxSource.volume = Mathf.Clamp01(volume) * GlobalAudioSettings.SfxVolume;
         isolatedEndingSfxSource.pitch = 1f;
-        isolatedEndingSfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+        isolatedEndingSfxSource.PlayOneShot(clip, Mathf.Clamp01(volume) * GlobalAudioSettings.SfxVolume);
     }
 
     private bool isolatedEndingObjectActive()
