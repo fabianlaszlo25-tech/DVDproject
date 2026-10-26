@@ -163,17 +163,32 @@ public class BarManager : MonoBehaviour
         return currentFoodCost;
     }
 
+    public float CurrentInflationMultiplier => currentInflationMultiplier;
+
+    public decimal GetFoodCost(float basePrice)
+    {
+        return (decimal)(basePrice * currentInflationMultiplier);
+    }
+
     // --- INTERACTION METHODS ---
+
+    public bool TryEatFood(decimal cost, float hungerReduction, float needsIncrease, float dirtinessIncrease, float depressionReduction)
+    {
+        if (economyBouncer != null && !economyBouncer.TrySpendMoney(cost))
+        {
+            return false;
+        }
+
+        currentHunger = Mathf.Clamp(currentHunger - hungerReduction, 0, maxHunger);
+        currentNeeds = Mathf.Clamp(currentNeeds + needsIncrease, 0, maxNeeds);
+        currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease, 0, maxDirtiness);
+        currentDepression = Mathf.Clamp(currentDepression - depressionReduction, 0, maxDepression);
+        return true;
+    }
 
     public void TryEatFood()
     {
-        if (economyBouncer.TrySpendMoney(currentFoodCost))
-        {
-            currentHunger = Mathf.Clamp(currentHunger - foodHungerReduction, 0, maxHunger);
-            currentNeeds = Mathf.Clamp(currentNeeds + foodNeedsIncrease, 0, maxNeeds);
-            currentDirtiness = Mathf.Clamp(currentDirtiness + eatDirtinessIncrease, 0, maxDirtiness);
-            currentDepression = Mathf.Clamp(currentDepression - eatDepressionReduction, 0, maxDepression);
-        }
+        TryEatFood(currentFoodCost, foodHungerReduction, foodNeedsIncrease, eatDirtinessIncrease, eatDepressionReduction);
     }
 
     public void UseToilet()

@@ -379,6 +379,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1030985297, guid: abc00000000009509011127978353573, type: 3}
       insertIndex: -1
       addedObject: {fileID: 702624642}
+    - targetCorrespondingSourceObject: {fileID: 1030985297, guid: abc00000000009509011127978353573, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 702624643}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000009509011127978353573, type: 3}
 --- !u!4 &22330613 stripped
 Transform:
@@ -6173,6 +6176,8 @@ Transform:
   - {fileID: 597446302}
   - {fileID: 1944640891}
   - {fileID: 574705727}
+  - {fileID: 1661533262}
+  - {fileID: 1767898207}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &212229464
@@ -7482,7 +7487,7 @@ Transform:
   m_GameObject: {fileID: 279298068}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000029504295}
-  m_LocalPosition: {x: 4.9133, y: 0.261, z: -0.12422645}
+  m_LocalPosition: {x: 4.9133, y: 0.261, z: 0.478}
   m_LocalScale: {x: 0.870782, y: 1.2689519, z: 0.22141114}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14208,7 +14213,7 @@ Transform:
   m_GameObject: {fileID: 526848495}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.1509, y: 1.5906, z: 0.023173451}
+  m_LocalPosition: {x: 7.1509, y: 1.5906, z: 0.6253998}
   m_LocalScale: {x: 0.75867903, y: 3.9281354, z: 0.47343177}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15774,6 +15779,21 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   foodPriceDisplay: {fileID: 0}
   actionType: 3
+  foodName: Snack
+  baseFoodCost: 5
+  hungerReduction: 25
+  needsIncrease: 15
+  dirtinessIncrease: 5
+  depressionReduction: 3
+  useVisualizerForEat: 1
+  holdDuration: 1
+  levitateHeight: 0
+  shakeIntensity: 0.03
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 0}
+  shakeVolume: 0.8
+  visualizer: {fileID: 0}
   zoomInTime: 0.25
   holdTime: 4
   zoomOutTime: 0.25
@@ -17548,7 +17568,7 @@ Transform:
   m_GameObject: {fileID: 686971689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.0607, y: 1.5906, z: 0.023173451}
+  m_LocalPosition: {x: 5.0607, y: 1.5906, z: 0.6253998}
   m_LocalScale: {x: -0.79080683, y: 3.9281354, z: 0.47343177}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18015,6 +18035,21 @@ MonoBehaviour:
   economyBouncer: {fileID: 854348182134054070}
   foodPriceDisplay: {fileID: 702624638}
   actionType: 0
+  foodName: Snack
+  baseFoodCost: 5
+  hungerReduction: 25
+  needsIncrease: 15
+  dirtinessIncrease: 5
+  depressionReduction: 3
+  useVisualizerForEat: 1
+  holdDuration: 1.5
+  levitateHeight: 0
+  shakeIntensity: 0.02
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  visualizer: {fileID: 702624643}
   zoomInTime: 0.25
   holdTime: 4
   zoomOutTime: 0.25
@@ -18047,6 +18082,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodPriceDisplay
   barManager: {fileID: 1003284028}
+  foodName: Snack
+  basePrice: 5
+  holdPrompt: Hold to Eat
   notEnoughMoneyMessage: Not enough money!
 --- !u!114 &702624639
 MonoBehaviour:
@@ -18174,6 +18212,35 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &702624643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702624634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 1, g: 0.82, b: 0.25, a: 1}
+  thickness: 0.02
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 2
+  periodicDuration: 1.6
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}
 --- !u!1001 &724024602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23409,8 +23476,8 @@ Transform:
   m_GameObject: {fileID: 935184702}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710576, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 4.6184, y: 1.5656, z: 0.8243}
-  m_LocalScale: {x: 2.073667, y: 3.9281354, z: 0.24483208}
+  m_LocalPosition: {x: 4.6184, y: 1.5656, z: 1.134}
+  m_LocalScale: {x: 1.5017498, y: 3.9281354, z: 0.24483208}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1095381595}
@@ -29695,8 +29762,8 @@ Transform:
   m_GameObject: {fileID: 1210247572}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710576, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 4.5892, y: 0.2501, z: 0.818}
-  m_LocalScale: {x: 2.0859716, y: 1.2971226, z: 0.22141114}
+  m_LocalPosition: {x: 4.5892, y: 0.2501, z: 1.1293998}
+  m_LocalScale: {x: 1.5106606, y: 1.2971226, z: 0.22141114}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1095381595}
@@ -31773,7 +31840,6 @@ Transform:
   - {fileID: 1412208726}
   - {fileID: 1125172976}
   - {fileID: 1867526053}
-  - {fileID: 1661533262}
   - {fileID: 1652172651}
   - {fileID: 1114488874}
   - {fileID: 794150093}
@@ -31800,7 +31866,6 @@ Transform:
   - {fileID: 1701071028}
   - {fileID: 1933659169}
   - {fileID: 613614045}
-  - {fileID: 1767898207}
   - {fileID: 194077676}
   - {fileID: 219218421}
   - {fileID: 1186615280}
@@ -34661,7 +34726,7 @@ Transform:
   m_GameObject: {fileID: 1427412766}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.0449, y: 3.1555, z: 0.023173451}
+  m_LocalPosition: {x: 6.0449, y: 3.1555, z: 0.6253998}
   m_LocalScale: {x: 2.7387757, y: 0.79806125, z: 0.47343177}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40685,7 +40750,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1331995801}
+    m_TransformParent: {fileID: 201337191}
     m_Modifications:
     - target: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_Name
@@ -40709,31 +40774,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.793
+      value: 3.7795634
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.566
+      value: 0.5075496
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.005
+      value: 0.82539105
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.94845915
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0876806
+      value: -0.0000000037252903
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.30323517
+      value: 0.7071067
       objectReference: {fileID: 0}
     - target: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.028031854
+      value: -0.0000000018626451
       objectReference: {fileID: 0}
     - target: {fileID: 1030985023, guid: abc00000000012271504524579068113, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -40754,13 +40819,255 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661533271}
+    - targetCorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661533272}
+    - targetCorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661533273}
+    - targetCorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661533274}
+    - targetCorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661533275}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000012271504524579068113, type: 3}
 --- !u!4 &1661533262 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030985018, guid: abc00000000012271504524579068113, type: 3}
   m_PrefabInstance: {fileID: 1661533261}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1661533270 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030985017, guid: abc00000000012271504524579068113, type: 3}
+  m_PrefabInstance: {fileID: 1661533261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1661533271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661533270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bf465ab3e0c20f47adfe58e7f21fe86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
+  barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 854348182134054070}
+  foodPriceDisplay: {fileID: 1661533272}
+  actionType: 0
+  foodName: Cooked Feast
+  baseFoodCost: 35
+  hungerReduction: 100
+  needsIncrease: 45
+  dirtinessIncrease: 20
+  depressionReduction: 20
+  useVisualizerForEat: 1
+  holdDuration: 1.5
+  levitateHeight: 0
+  shakeIntensity: 0.04
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  visualizer: {fileID: 1661533275}
+  zoomInTime: 0.25
+  holdTime: 4
+  zoomOutTime: 0.25
+  targetCamera: {fileID: 1564629741}
+  fadeImage: {fileID: 153976231}
+  zoomTargetFOV: 20
+  uiToScale:
+  - {fileID: 1843909383}
+  scaleSpeedFraction: 0.9
+  uiExitScale: 3
+  uiToHide:
+  - {fileID: 1529998231}
+  audioSource: {fileID: 1661533274}
+  actionSound: {fileID: 8300000, guid: 73781874a5259234d8252fb8d155667a, type: 3}
+  cantAffordSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  scriptsToDisable:
+  - {fileID: 398708319}
+  - {fileID: 1564629742}
+  - {fileID: 1513593850}
+--- !u!114 &1661533272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661533270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 307d6682d6d5d5b488189f831694895a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FoodPriceDisplay
+  barManager: {fileID: 1003284028}
+  foodName: Cooked Feast
+  basePrice: 35
+  holdPrompt: Hold to Eat
+  notEnoughMoneyMessage: Not enough money!
+--- !u!114 &1661533273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661533270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: 
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1661533271}
+        m_TargetAssemblyTypeName: SurvivalAction, Assembly-CSharp
+        m_MethodName: PerformAction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  hideHoverText: 0
+--- !u!82 &1661533274
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661533270}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &1661533275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661533270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 1, g: 0.82, b: 0.25, a: 1}
+  thickness: 0.02
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 2
+  periodicDuration: 1.6
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}
 --- !u!1 &1662325297
 GameObject:
   m_ObjectHideFlags: 0
@@ -43701,7 +44008,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1331995801}
+    m_TransformParent: {fileID: 201337191}
     m_Modifications:
     - target: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_Name
@@ -43713,7 +44020,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.1052201
+      value: 1.1052198
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalScale.y
@@ -43721,35 +44028,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.1052201
+      value: 1.1052197
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.962
+      value: 0.35437775
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.288
+      value: 1.020815
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.696
+      value: -1.8534117
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.416856
+      value: -0.9990315
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.038536087
+      value: -0.000000016763808
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.90429944
+      value: 0.044001017
       objectReference: {fileID: 0}
     - target: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.08359725
+      value: 0.0000009946526
       objectReference: {fileID: 0}
     - target: {fileID: 1030990996, guid: abc00000000014355039370504025333, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -43770,13 +44077,255 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767898211}
+    - targetCorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767898212}
+    - targetCorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767898213}
+    - targetCorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767898214}
+    - targetCorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767898215}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014355039370504025333, type: 3}
 --- !u!4 &1767898207 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030990991, guid: abc00000000014355039370504025333, type: 3}
   m_PrefabInstance: {fileID: 1767898206}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1767898210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030990990, guid: abc00000000014355039370504025333, type: 3}
+  m_PrefabInstance: {fileID: 1767898206}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1767898211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767898210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bf465ab3e0c20f47adfe58e7f21fe86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SurvivalAction
+  barManager: {fileID: 1003284028}
+  economyBouncer: {fileID: 854348182134054070}
+  foodPriceDisplay: {fileID: 1767898212}
+  actionType: 0
+  foodName: Microwave Meal
+  baseFoodCost: 15
+  hungerReduction: 55
+  needsIncrease: 30
+  dirtinessIncrease: 10
+  depressionReduction: 8
+  useVisualizerForEat: 1
+  holdDuration: 1.5
+  levitateHeight: 0
+  shakeIntensity: 0.03
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  visualizer: {fileID: 1767898215}
+  zoomInTime: 0.25
+  holdTime: 4
+  zoomOutTime: 0.25
+  targetCamera: {fileID: 1564629741}
+  fadeImage: {fileID: 153976231}
+  zoomTargetFOV: 20
+  uiToScale:
+  - {fileID: 1843909383}
+  scaleSpeedFraction: 0.9
+  uiExitScale: 3
+  uiToHide:
+  - {fileID: 1529998231}
+  audioSource: {fileID: 1767898214}
+  actionSound: {fileID: 8300000, guid: 73781874a5259234d8252fb8d155667a, type: 3}
+  cantAffordSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  scriptsToDisable:
+  - {fileID: 398708319}
+  - {fileID: 1564629742}
+  - {fileID: 1513593850}
+--- !u!114 &1767898212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767898210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 307d6682d6d5d5b488189f831694895a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FoodPriceDisplay
+  barManager: {fileID: 1003284028}
+  foodName: Microwave Meal
+  basePrice: 15
+  holdPrompt: Hold to Eat
+  notEnoughMoneyMessage: Not enough money!
+--- !u!114 &1767898213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767898210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: 
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1767898211}
+        m_TargetAssemblyTypeName: SurvivalAction, Assembly-CSharp
+        m_MethodName: PerformAction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  hideHoverText: 0
+--- !u!82 &1767898214
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767898210}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &1767898215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767898210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 1, g: 0.82, b: 0.25, a: 1}
+  thickness: 0.02
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 2
+  periodicDuration: 1.6
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 4800000, guid: ef8745dad0672a1468c5489a4b317cf8, type: 3}
 --- !u!1 &1769022787
 GameObject:
   m_ObjectHideFlags: 0
@@ -45234,7 +45783,7 @@ Transform:
   m_GameObject: {fileID: 1838191041}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000029504295}
-  m_LocalPosition: {x: 7.1465, y: 0.261, z: -0.12422645}
+  m_LocalPosition: {x: 7.1465, y: 0.261, z: 0.47799993}
   m_LocalScale: {x: 0.74811846, y: 1.2689519, z: 0.22141114}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -49166,6 +49715,21 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   foodPriceDisplay: {fileID: 0}
   actionType: 1
+  foodName: Snack
+  baseFoodCost: 5
+  hungerReduction: 25
+  needsIncrease: 15
+  dirtinessIncrease: 5
+  depressionReduction: 3
+  useVisualizerForEat: 1
+  holdDuration: 1
+  levitateHeight: 0
+  shakeIntensity: 0.03
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 0}
+  shakeVolume: 0.8
+  visualizer: {fileID: 0}
   zoomInTime: 0.25
   holdTime: 4
   zoomOutTime: 0.25
@@ -55475,7 +56039,7 @@ Transform:
   m_GameObject: {fileID: 1579687047716109}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.000005990267, z: -0, w: -1}
-  m_LocalPosition: {x: 6.0536733, y: 1.3820158, z: -0.149}
+  m_LocalPosition: {x: 6.0536733, y: 1.3820158, z: 0.4532264}
   m_LocalScale: {x: 1.3418, y: 1.3418, z: 1.3418}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57204,6 +57768,21 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   foodPriceDisplay: {fileID: 0}
   actionType: 2
+  foodName: Snack
+  baseFoodCost: 5
+  hungerReduction: 25
+  needsIncrease: 15
+  dirtinessIncrease: 5
+  depressionReduction: 3
+  useVisualizerForEat: 1
+  holdDuration: 1
+  levitateHeight: 0
+  shakeIntensity: 0.03
+  shakeSpeed: 35
+  returnDuration: 0.2
+  shakeSound: {fileID: 0}
+  shakeVolume: 0.8
+  visualizer: {fileID: 0}
   zoomInTime: 0.25
   holdTime: 5
   zoomOutTime: 0.25
