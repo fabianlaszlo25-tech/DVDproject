@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 /// <summary>
@@ -265,11 +266,14 @@ public class DepressionBreakdownSequence : MonoBehaviour
             overlayCanvas.sortingOrder = 32766; // High priority above all boosters!
             overlayCanvas.gameObject.SetActive(true);
         }
+        int uiLayer = LayerMask.NameToLayer("UI");
+        if (uiLayer < 0) uiLayer = 5;
+
         if (targetCamera != null)
         {
             targetCamera.clearFlags = CameraClearFlags.SolidColor;
             targetCamera.backgroundColor = Color.black;
-            targetCamera.cullingMask = (1 << 5); // UI layer only, completely culling 3D room
+            targetCamera.cullingMask = (1 << uiLayer); // UI layer only, completely culling 3D room
         }
 
         SwitchToIsolatedBlackoutState();
@@ -324,6 +328,10 @@ public class DepressionBreakdownSequence : MonoBehaviour
             raycastBlocker.gameObject.SetActive(false);
         }
 
+        // Stop the breakdown shader rendering/blitting loop now that the blackout sequence has concluded
+        isRenderingActive = false;
+        ReleaseRTs();
+
         // Deactivate the fullscreen blackout overlay now that the ending popup UI is ready to show
         if (overlayCanvas != null)
         {
@@ -343,6 +351,9 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 parentTransform = parentTransform.parent;
             }
 
+            // Guarantee root transform scale is Vector3.one
+            endingPopupUI.transform.localScale = Vector3.one;
+
             // Activate endingPopupUI FIRST before configuring Canvas sortingOrder (required in Unity Player/WebGL builds!)
             endingPopupUI.SetActive(true);
 
@@ -354,21 +365,49 @@ public class DepressionBreakdownSequence : MonoBehaviour
                     popupParentCanvas.gameObject.SetActive(true);
                 }
                 popupParentCanvas.enabled = true;
-                if (targetCamera != null)
+
+                Camera cam = targetCamera != null && targetCamera.gameObject.activeInHierarchy
+                    ? targetCamera
+                    : (popupParentCanvas.worldCamera != null && popupParentCanvas.worldCamera.gameObject.activeInHierarchy
+                        ? popupParentCanvas.worldCamera
+                        : (Camera.main != null ? Camera.main : FindObjectOfType<Camera>(false)));
+
+                if (cam != null)
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    popupParentCanvas.worldCamera = targetCamera;
-                    popupParentCanvas.planeDistance = 0.5f;
+                    popupParentCanvas.worldCamera = cam;
+                    popupParentCanvas.planeDistance = cam.nearClipPlane + 0.03f;
+                    cam.cullingMask |= (1 << uiLayer) | (1 << popupParentCanvas.gameObject.layer);
+
+                    UniversalAdditionalCameraData camData = cam.GetComponent<UniversalAdditionalCameraData>();
+                    if (camData == null)
+                    {
+                        camData = cam.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                    }
+                    if (camData != null)
+                    {
+                        camData.renderPostProcessing = true;
+                    }
                 }
                 else
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
                 }
 
+                popupParentCanvas.transform.localScale = Vector3.one;
+
                 bool hasParentCanvas = popupParentCanvas.transform.parent != null &&
                                        popupParentCanvas.transform.parent.GetComponentInParent<Canvas>(true) != null;
                 popupParentCanvas.overrideSorting = hasParentCanvas;
-                popupParentCanvas.sortingOrder = 32767; // Above the blackout overlay!
+                popupParentCanvas.sortingOrder = 32767;
+            }
+
+            // Ensure the UI AudioSource on RunStatsSummaryUI is unmuted and enabled
+            RunStatsSummaryUI summaryUI = endingPopupUI.GetComponentInChildren<RunStatsSummaryUI>(true);
+            if (summaryUI != null && summaryUI.uiAudioSource != null)
+            {
+                summaryUI.uiAudioSource.enabled = true;
+                summaryUI.uiAudioSource.mute = false;
             }
 
             Canvas.ForceUpdateCanvases();
@@ -394,7 +433,20 @@ public class DepressionBreakdownSequence : MonoBehaviour
             Canvas popupParentCanvas = endingPopupUI.GetComponentInParent<Canvas>(true);
             if (popupParentCanvas != null && popupParentCanvas != overlayCanvas)
             {
+                Camera cam = targetCamera != null && targetCamera.gameObject.activeInHierarchy
+                    ? targetCamera
+                    : (popupParentCanvas.worldCamera != null && popupParentCanvas.worldCamera.gameObject.activeInHierarchy
+                        ? popupParentCanvas.worldCamera
+                        : (Camera.main != null ? Camera.main : FindObjectOfType<Camera>(false)));
+
+                if (cam != null)
+                {
+                    popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    popupParentCanvas.worldCamera = cam;
+                    popupParentCanvas.planeDistance = cam.nearClipPlane + 0.03f;
+                }
                 popupParentCanvas.sortingOrder = 32767;
+                popupParentCanvas.transform.localScale = Vector3.one;
             }
             Canvas.ForceUpdateCanvases();
         }
@@ -676,7 +728,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!isRenderingActive || breakdownMaterial == null) return;
+        if (!isRenderingActive || breakdownMaterial == null || isCutToBlack) return;
 
         // While ramping up (before the hard cut to black), render the camera & apply heart-attack camera motion.
         // Once cut to black (and player/camera is disabled), the shader outputs pure black without needing targetCamera!

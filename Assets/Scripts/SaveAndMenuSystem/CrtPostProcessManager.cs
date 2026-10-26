@@ -104,14 +104,24 @@ public static class CrtPostProcessManager
                 Material m = allMats[i];
                 if (m == null) continue;
                 string name = m.name.ToLowerInvariant();
-                if (duringGameplayMaterial == null && name.Equals("duringgameplay"))
+                if (duringGameplayMaterial == null && name.Contains("duringgameplay"))
                 {
                     duringGameplayMaterial = m;
                 }
-                else if (duringPausedMaterial == null && name.Equals("duringpaused"))
+                else if (duringPausedMaterial == null && name.Contains("duringpaused"))
                 {
                     duringPausedMaterial = m;
                 }
+            }
+        }
+
+        // 3. Fallback to cached feature's current pass material if matching
+        if (duringGameplayMaterial == null && cachedCrtFeature != null && cachedCrtFeature.passMaterial != null)
+        {
+            string pName = cachedCrtFeature.passMaterial.name.ToLowerInvariant();
+            if (pName.Contains("duringgameplay"))
+            {
+                duringGameplayMaterial = cachedCrtFeature.passMaterial;
             }
         }
     }

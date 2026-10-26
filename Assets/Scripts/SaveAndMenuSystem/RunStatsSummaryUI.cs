@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -651,19 +652,36 @@ public class RunStatsSummaryUI : MonoBehaviour
 
     private void ConfigureCanvasAndCursor()
     {
+        if (targetCanvas == null) targetCanvas = GetComponent<Canvas>();
+        if (targetCanvas == null) targetCanvas = GetComponentInParent<Canvas>(true);
+
         if (targetCanvas != null)
         {
-            Camera cam = targetCanvas.worldCamera != null ? targetCanvas.worldCamera : Camera.main;
-            if (cam == null) cam = FindObjectOfType<Camera>();
+            Camera cam = targetCanvas.worldCamera != null && targetCanvas.worldCamera.gameObject.activeInHierarchy
+                ? targetCanvas.worldCamera
+                : (Camera.main != null ? Camera.main : FindObjectOfType<Camera>(false));
 
             if (cam != null)
             {
                 targetCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                 targetCanvas.worldCamera = cam;
-                targetCanvas.planeDistance = 0.5f;
+                targetCanvas.planeDistance = cam.nearClipPlane + 0.03f;
                 targetCanvas.sortingOrder = 32767;
 
-                cam.cullingMask |= (1 << targetCanvas.gameObject.layer) | (1 << 5);
+                int canvasLayer = targetCanvas.gameObject.layer;
+                int uiLayer = LayerMask.NameToLayer("UI");
+                if (uiLayer < 0) uiLayer = 5;
+                cam.cullingMask |= (1 << canvasLayer) | (1 << uiLayer);
+
+                UniversalAdditionalCameraData camData = cam.GetComponent<UniversalAdditionalCameraData>();
+                if (camData == null)
+                {
+                    camData = cam.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                }
+                if (camData != null)
+                {
+                    camData.renderPostProcessing = true;
+                }
             }
             else
             {
@@ -671,10 +689,28 @@ public class RunStatsSummaryUI : MonoBehaviour
                 targetCanvas.sortingOrder = 32767;
             }
 
-            if (targetCanvas.GetComponent<GraphicRaycaster>() == null)
+            targetCanvas.transform.localScale = Vector3.one;
+
+            EnsureHierarchyValid(targetCanvas.transform, targetCanvas.gameObject.layer);
+
+            GraphicRaycaster raycaster = targetCanvas.GetComponent<GraphicRaycaster>();
+            if (raycaster == null)
             {
-                targetCanvas.gameObject.AddComponent<GraphicRaycaster>();
+                raycaster = targetCanvas.gameObject.AddComponent<GraphicRaycaster>();
             }
+            raycaster.enabled = true;
+            raycaster.blockingObjects = GraphicRaycaster.BlockingObjects.None;
+        }
+
+        if (rootCanvasGroup != null)
+        {
+            rootCanvasGroup.transform.localScale = Vector3.one;
+            rootCanvasGroup.alpha = 1f;
+        }
+
+        if (cardRect != null)
+        {
+            cardRect.localScale = Vector3.one;
         }
 
         CrtPostProcessManager.SetPausedCrtActive(usePausedCrt);
@@ -682,6 +718,20 @@ public class RunStatsSummaryUI : MonoBehaviour
         EnsureEventSystemActive();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    private void EnsureHierarchyValid(Transform root, int layer)
+    {
+        if (root == null) return;
+        if (root.localScale == Vector3.zero)
+        {
+            root.localScale = Vector3.one;
+        }
+        root.gameObject.layer = layer;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            EnsureHierarchyValid(root.GetChild(i), layer);
+        }
     }
 
     private void EnsureEventSystemActive()
@@ -796,7 +846,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             cardObj.transform,
             new Vector2(0f, 355f),
             new Vector2(860f, 54f),
-            36f,
+            80f,
             TextAlignmentOptions.Center,
             new Color(0.96f, 0.94f, 0.88f, 1f));
         headerTitleText.fontStyle = FontStyles.Bold;
@@ -807,7 +857,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             cardObj.transform,
             new Vector2(0f, 312f),
             new Vector2(860f, 32f),
-            18f,
+            24f,
             TextAlignmentOptions.Center,
             new Color(0.62f, 0.66f, 0.72f, 0.9f));
 
@@ -884,7 +934,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             rowBg.color = new Color(1f, 1f, 1f, isFinalScore ? 0.07f : 0.03f);
             rowBg.raycastTarget = false;
 
-            float fontSize = isFinalScore ? 32f : 23f;
+            float fontSize = isFinalScore ? 55f : 36f;
 
             TMP_Text lbl = CreateTMPText(
                 "Label",
@@ -965,7 +1015,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             btnObj.transform,
             Vector2.zero,
             new Vector2(360f, 60f),
-            28f,
+            45f,
             TextAlignmentOptions.Center,
             new Color(0.98f, 0.96f, 0.92f, 1f));
         actionButtonText.fontStyle = FontStyles.Bold;
@@ -1135,6 +1185,8 @@ public class RunStatsSummaryUI : MonoBehaviour
             }
         }
 
+        uiAudioSource.enabled = true;
+        uiAudioSource.mute = false;
         uiAudioSource.playOnAwake = false;
         uiAudioSource.loop = false;
         uiAudioSource.spatialBlend = 0f;

@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 11038142}
   - component: {fileID: 11038141}
   - component: {fileID: 11038140}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_1_MoneyEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 16465553}
   - component: {fileID: 16465552}
   - component: {fileID: 16465551}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,8 +274,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 192190660}
   - component: {fileID: 192190659}
   - component: {fileID: 192190658}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,8 +411,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 339821860}
   - component: {fileID: 339821862}
   - component: {fileID: 339821861}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScoreDividerLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -569,6 +569,7 @@ GameObject:
   - component: {fileID: 383466069}
   - component: {fileID: 383466068}
   - component: {fileID: 383466067}
+  - component: {fileID: 383466070}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -661,7 +662,7 @@ GameObject:
   - component: {fileID: 441303230}
   - component: {fileID: 441303229}
   - component: {fileID: 441303228}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -715,8 +716,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -798,7 +799,7 @@ GameObject:
   - component: {fileID: 505420060}
   - component: {fileID: 505420059}
   - component: {fileID: 505420058}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -852,8 +853,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -935,7 +936,7 @@ GameObject:
   - component: {fileID: 567043720}
   - component: {fileID: 567043719}
   - component: {fileID: 567043718}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -989,8 +990,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1072,7 +1073,7 @@ GameObject:
   - component: {fileID: 622362938}
   - component: {fileID: 622362937}
   - component: {fileID: 622362936}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1126,8 +1127,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1209,7 +1210,7 @@ GameObject:
   - component: {fileID: 633078327}
   - component: {fileID: 633078326}
   - component: {fileID: 633078325}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1263,8 +1264,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1346,7 +1347,7 @@ GameObject:
   - component: {fileID: 701672494}
   - component: {fileID: 701672496}
   - component: {fileID: 701672495}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1501,7 +1502,7 @@ GameObject:
   - component: {fileID: 797850269}
   - component: {fileID: 797850268}
   - component: {fileID: 797850267}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_6_TrashCleaned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1591,7 +1592,7 @@ GameObject:
   - component: {fileID: 821667094}
   - component: {fileID: 821667093}
   - component: {fileID: 821667092}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_7_StoryEncountered
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1680,7 +1681,7 @@ GameObject:
   - component: {fileID: 825132991}
   - component: {fileID: 825132990}
   - component: {fileID: 825132989}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1734,8 +1735,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1817,7 +1818,7 @@ GameObject:
   - component: {fileID: 870557511}
   - component: {fileID: 870557510}
   - component: {fileID: 870557509}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1871,8 +1872,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2082,7 +2083,7 @@ GameObject:
   - component: {fileID: 925147067}
   - component: {fileID: 925147066}
   - component: {fileID: 925147065}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SummaryBackdrop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2296,9 +2297,9 @@ Canvas:
   m_GameObject: {fileID: 997921298}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 383466068}
+  m_PlaneDistance: 0.33
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -2407,7 +2408,7 @@ RectTransform:
   m_GameObject: {fileID: 997921298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 925147064}
@@ -2431,7 +2432,7 @@ GameObject:
   - component: {fileID: 1032911692}
   - component: {fileID: 1032911691}
   - component: {fileID: 1032911690}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TerminalSummaryCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2535,7 +2536,7 @@ GameObject:
   - component: {fileID: 1170242200}
   - component: {fileID: 1170242199}
   - component: {fileID: 1170242198}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2589,8 +2590,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2672,7 +2673,7 @@ GameObject:
   - component: {fileID: 1204178110}
   - component: {fileID: 1204178112}
   - component: {fileID: 1204178111}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TopAccentBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2748,7 +2749,7 @@ GameObject:
   - component: {fileID: 1244467192}
   - component: {fileID: 1244467191}
   - component: {fileID: 1244467190}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_4_GamblingEarned
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2949,7 +2950,7 @@ GameObject:
   - component: {fileID: 1378014024}
   - component: {fileID: 1378014023}
   - component: {fileID: 1378014022}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3003,8 +3004,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3086,7 +3087,7 @@ GameObject:
   - component: {fileID: 1385400633}
   - component: {fileID: 1385400632}
   - component: {fileID: 1385400631}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3140,8 +3141,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3224,7 +3225,7 @@ GameObject:
   - component: {fileID: 1441929405}
   - component: {fileID: 1441929404}
   - component: {fileID: 1441929403}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_3_SubstancesConsumed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3313,7 +3314,7 @@ GameObject:
   - component: {fileID: 1469834467}
   - component: {fileID: 1469834466}
   - component: {fileID: 1469834465}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScreenTransitionFade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3388,7 +3389,7 @@ GameObject:
   - component: {fileID: 1472669608}
   - component: {fileID: 1472669607}
   - component: {fileID: 1472669606}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderSubtitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3442,8 +3443,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3526,7 +3527,7 @@ GameObject:
   - component: {fileID: 1625977435}
   - component: {fileID: 1625977434}
   - component: {fileID: 1625977433}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_2_DaysSurvived
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3615,7 +3616,7 @@ GameObject:
   - component: {fileID: 1656685163}
   - component: {fileID: 1656685162}
   - component: {fileID: 1656685161}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3669,8 +3670,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3752,7 +3753,7 @@ GameObject:
   - component: {fileID: 1697657093}
   - component: {fileID: 1697657092}
   - component: {fileID: 1697657091}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3806,8 +3807,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3890,7 +3891,7 @@ GameObject:
   - component: {fileID: 1787516736}
   - component: {fileID: 1787516735}
   - component: {fileID: 1787516734}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_8_FinalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3982,7 +3983,7 @@ GameObject:
   - component: {fileID: 1827930383}
   - component: {fileID: 1827930386}
   - component: {fileID: 1827930382}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4141,7 +4142,7 @@ GameObject:
   - component: {fileID: 1930702616}
   - component: {fileID: 1930702615}
   - component: {fileID: 1930702614}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4195,8 +4196,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4278,7 +4279,7 @@ GameObject:
   - component: {fileID: 2005067609}
   - component: {fileID: 2005067608}
   - component: {fileID: 2005067607}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4332,8 +4333,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23
-  m_fontSizeBase: 23
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4415,7 +4416,7 @@ GameObject:
   - component: {fileID: 2033214369}
   - component: {fileID: 2033214368}
   - component: {fileID: 2033214367}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HeaderTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4469,8 +4470,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4552,7 +4553,7 @@ GameObject:
   - component: {fileID: 2085169146}
   - component: {fileID: 2085169145}
   - component: {fileID: 2085169144}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4606,8 +4607,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4690,7 +4691,7 @@ GameObject:
   - component: {fileID: 2143865103}
   - component: {fileID: 2143865102}
   - component: {fileID: 2143865101}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row_5_GamblingLost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4778,3 +4779,40 @@ SceneRoots:
   - {fileID: 982412953}
   - {fileID: 732327082}
   - {fileID: 997921303}
+--- !u!114 &383466070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383466066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
