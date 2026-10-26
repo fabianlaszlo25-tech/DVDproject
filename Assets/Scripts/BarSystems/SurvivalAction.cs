@@ -50,6 +50,12 @@ public class SurvivalAction : MonoBehaviour
     [Range(0f, 1f)] public float shakeVolume = 0.8f;
     public InteractVisualizer visualizer;
 
+    [Header("Glow & Max Hunger Alert")]
+    [Tooltip("Color of the periodic & hold outline under normal hunger.")]
+    public Color normalGlowColor = new Color(1f, 0.82f, 0.25f, 1f);
+    [Tooltip("Color of the periodic & hold outline when player hunger is at maximum (starving).")]
+    public Color maxHungerGlowColor = Color.red;
+
     [Header("Camera Zoom Timings (Toilet, Sleep, Clean)")]
     public float zoomInTime = 1.0f;
     public float holdTime = 1.5f;
@@ -119,6 +125,15 @@ public class SurvivalAction : MonoBehaviour
             if (visualizer == null) visualizer = GetComponent<InteractVisualizer>();
             if (visualizer == null && useVisualizerForEat) visualizer = gameObject.AddComponent<InteractVisualizer>();
 
+            if (visualizer != null)
+            {
+                visualizer.enablePeriodicGlow = true;
+                if (visualizer.glowColor != Color.clear && visualizer.glowColor != Color.black && normalGlowColor == new Color(1f, 0.82f, 0.25f, 1f))
+                {
+                    normalGlowColor = visualizer.glowColor;
+                }
+            }
+
             if (foodPriceDisplay != null)
             {
                 foodPriceDisplay.foodName = foodName;
@@ -147,7 +162,7 @@ public class SurvivalAction : MonoBehaviour
         if (isHolding || isReturning)
         {
             transform.position = shakeAnchor;
-            if (visualizer != null) visualizer.HideImmediate();
+            if (visualizer != null) visualizer.ResetGlow(keepPeriodicGlow: true);
             if (shakeSource != null) shakeSource.Stop();
         }
         if (interactable != null)
@@ -265,7 +280,16 @@ public class SurvivalAction : MonoBehaviour
 
     private void Update()
     {
-        if (actionType != ActionType.Eat || !useVisualizerForEat) return;
+        if (actionType != ActionType.Eat) return;
+
+        // Periodic highlight & hold glow: switch to red if the player is at maximum hunger!
+        if (visualizer != null)
+        {
+            bool isMaxHunger = barManager != null && barManager.currentHunger >= barManager.maxHunger - 0.01f;
+            visualizer.glowColor = isMaxHunger ? maxHungerGlowColor : normalGlowColor;
+        }
+
+        if (!useVisualizerForEat) return;
 
         if (isHolding)
         {

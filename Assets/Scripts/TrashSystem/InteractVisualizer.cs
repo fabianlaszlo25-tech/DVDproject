@@ -131,15 +131,28 @@ public class InteractVisualizer : MonoBehaviour
         targetIntensity = clamped;
     }
 
-    /// <summary>Turns the glow off instantly (e.g. right before the object is destroyed).</summary>
-    public void HideImmediate()
+    /// <summary>Resets the hold glow back to 0. If keepPeriodicGlow is true, periodic idle glow continues to pulse.</summary>
+    public void ResetGlow(bool keepPeriodicGlow = true)
     {
         targetIntensity = 0f;
         currentIntensity = 0f;
         periodicIntensity = 0f;
         periodicTimer = 0f;
-        enablePeriodicGlow = false;
-        SetVisible(false);
+        if (!keepPeriodicGlow)
+        {
+            enablePeriodicGlow = false;
+            SetVisible(false);
+        }
+        else
+        {
+            enablePeriodicGlow = true;
+        }
+    }
+
+    /// <summary>Turns the glow off instantly (e.g. right before the object is destroyed).</summary>
+    public void HideImmediate()
+    {
+        ResetGlow(keepPeriodicGlow: false);
     }
 
     private void Awake()

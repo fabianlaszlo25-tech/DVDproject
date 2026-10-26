@@ -50,6 +50,65 @@ public class RunSaveManager : MonoBehaviour
     public int storyElementsEncountered;
     public List<string> encounteredStoryElementIds = new List<string>();
 
+    [Header("Daily Trash Spawn Calculation Settings")]
+    [Tooltip("Day 1 base trash count: exactly this amount of trash spawns on the very first day when a run starts.")]
+    public int baseTrashCount = 25;
+
+    [Tooltip("Subsequent days base trash count: Day 2 and each following day starts with this separate number instead of the Day 1 base, then adds dirtiness/depression and subtracts cleaned trash.")]
+    public int subsequentDaysBaseTrash = 5;
+
+    [Tooltip("Additional trash per point of bedtime dirtiness (e.g. 0.08 = +8 trash at 100 dirtiness).")]
+    public float dirtinessTrashMultiplier = 0.08f;
+
+    [Tooltip("Additional trash per point of bedtime depression (e.g. 0.06 = +6 trash at 100 depression).")]
+    public float depressionTrashMultiplier = 0.06f;
+
+    [Tooltip("Trash spawn reduction per piece of trash cleaned yesterday (e.g. 0.5 = 2 cleaned trash reduces spawn by 1).")]
+    public float cleanedTrashReductionFactor = 0.5f;
+
+    [Tooltip("Minimum trash items that can spawn in a morning.")]
+    public int minTrashSpawn = 2;
+
+    [Tooltip("Maximum trash items that can spawn in a morning.")]
+    public int maxTrashSpawn = 25;
+
+    [Header("Morning Depression Calculation Settings")]
+    [Tooltip("Base morning depression when waking up.")]
+    public float baseMorningDepression = 0f;
+
+    [Tooltip("Fraction of bedtime depression carried over into the morning (e.g. 0.35 = 35% carryover).")]
+    public float depressionSleepCarryoverFactor = 0.35f;
+
+    [Tooltip("Morning depression increase per point of bedtime dirtiness (e.g. 0.15 = +15 depression at 100 dirtiness).")]
+    public float dirtinessMorningDepressionFactor = 0.15f;
+
+    [Tooltip("Morning depression increase per trash item spawned in the morning (e.g. 1.2 = +12 depression for 10 trash items).")]
+    public float trashMorningDepressionFactor = 1.2f;
+
+    [Tooltip("Hangover depression penalty per drug/substance consumed yesterday.")]
+    public float drugMorningDepressionPenalty = 6f;
+
+    [Tooltip("Depression reduction per story interaction experienced yesterday.")]
+    public float storyInteractionDepressionReduction = 12f;
+
+    [Tooltip("Minimum morning depression (clamped).")]
+    public float minMorningDepression = 0f;
+
+    [Tooltip("Maximum morning depression (clamped, recommended < 100 to avoid instant morning breakdown).")]
+    public float maxMorningDepression = 85f;
+
+    [Header("Daily Tracking State (Yesterday & Today)")]
+    [SerializeField] private int trashCleanedThisDay;
+    [SerializeField] private int trashCleanedYesterday;
+    [SerializeField] private int substancesConsumedThisDay;
+    [SerializeField] private int substancesConsumedYesterday;
+    [SerializeField] private int storyElementsThisDay;
+    [SerializeField] private int storyElementsYesterday;
+    [SerializeField] private float bedtimeDirtiness;
+    [SerializeField] private float bedtimeDepression;
+    [SerializeField] private int pendingMorningTrashCount = 5;
+    [SerializeField] private float pendingMorningDepression = 0f;
+
     [Header("Per-Substance Breakdown (For Future Dream World Generation)")]
     public int drunkConsumedCount;
     public int caffeinatedConsumedCount;
@@ -236,6 +295,19 @@ public class RunSaveManager : MonoBehaviour
 
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        if (daysSurvived == 0)
+        {
+            pendingMorningTrashCount = baseTrashCount;
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (daysSurvived == 0)
+        {
+            pendingMorningTrashCount = baseTrashCount;
+        }
     }
 
     private void OnDestroy()
@@ -272,6 +344,7 @@ public class RunSaveManager : MonoBehaviour
     public void RecordSubstanceConsumed(ConsumableVisualEffectType effectType)
     {
         substancesConsumed++;
+        substancesConsumedThisDay++;
         switch (effectType)
         {
             case ConsumableVisualEffectType.Drunk:
@@ -348,6 +421,7 @@ public class RunSaveManager : MonoBehaviour
     public void RecordTrashCleaned()
     {
         trashCleaned++;
+        trashCleanedThisDay++;
     }
 
     public void RecordStoryElementEncountered(string storyElementId = "")
@@ -362,6 +436,7 @@ public class RunSaveManager : MonoBehaviour
         }
 
         storyElementsEncountered++;
+        storyElementsThisDay++;
     }
 
     public int GetSubstanceCount(ConsumableVisualEffectType effectType)
@@ -412,13 +487,40 @@ public class RunSaveManager : MonoBehaviour
         {
             RecordDaySurvived();
 
-            // Waking up after the dream will reset trash and set depression to 0
+            // Capture bedtime stats before resetting bars
+            BarManager barManager = FindObjectOfType<BarManager>();
+            if (barManager != null)
+            {
+                bedtimeDirtiness = barManager.currentDirtiness;
+                bedtimeDepression = barManager.currentDepression;
+            }
+            else if (hasSavedPlayerBars)
+            {
+                bedtimeDirtiness = savedDirtiness;
+                bedtimeDepression = savedDepression;
+            }
+
+            // Snapshot daily metrics to yesterday counters and reset today's counters
+            trashCleanedYesterday = trashCleanedThisDay;
+            trashCleanedThisDay = 0;
+
+            substancesConsumedYesterday = substancesConsumedThisDay;
+            substancesConsumedThisDay = 0;
+
+            storyElementsYesterday = storyElementsThisDay;
+            storyElementsThisDay = 0;
+
+            // Calculate morning trash count and morning depression
+            pendingMorningTrashCount = CalculateMorningTrashCount();
+            pendingMorningDepression = CalculateMorningDepression(pendingMorningTrashCount);
+
+            // Waking up after the dream will reset trash and restore the calculated morning depression
             resetTrashOnNextRoomLoad = true;
             if (hasSavedPlayerBars)
             {
                 savedSleep = 0f;
-                savedDepression = 0f;
-                savedDirtiness = Mathf.Clamp(savedDirtiness + savedSleepDirtinessIncrease, 0f, savedMaxDirtiness);
+                savedDepression = pendingMorningDepression;
+                savedDirtiness = Mathf.Clamp(bedtimeDirtiness + savedSleepDirtinessIncrease, 0f, savedMaxDirtiness);
             }
 
             // Clear temporary substance effects when sleeping through the night
@@ -451,7 +553,7 @@ public class RunSaveManager : MonoBehaviour
 
         if (hasSavedPlayerBars)
         {
-            savedDepression = 0f;
+            savedDepression = pendingMorningDepression;
             savedSleep = 0f;
         }
 
@@ -492,6 +594,17 @@ public class RunSaveManager : MonoBehaviour
         storyElementsEncountered = 0;
         encounteredStoryElementIds.Clear();
 
+        trashCleanedThisDay = 0;
+        trashCleanedYesterday = 0;
+        substancesConsumedThisDay = 0;
+        substancesConsumedYesterday = 0;
+        storyElementsThisDay = 0;
+        storyElementsYesterday = 0;
+        bedtimeDirtiness = 0f;
+        bedtimeDepression = 0f;
+        pendingMorningTrashCount = baseTrashCount;
+        pendingMorningDepression = baseMorningDepression;
+
         drunkConsumedCount = 0;
         caffeinatedConsumedCount = 0;
         highConsumedCount = 0;
@@ -519,6 +632,86 @@ public class RunSaveManager : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         SceneManager.LoadScene(menuSceneName);
+    }
+
+
+    // =========================================================================
+    // DAILY TRASH & MORNING DEPRESSION CALCULATIONS
+    // =========================================================================
+
+    /// <summary>
+    /// Calculates the number of trash items that will spawn for Day 2 and subsequent days.
+    /// Uses subsequentDaysBaseTrash (a separate tunable number), plus bedtime dirtiness and depression,
+    /// minus trash cleaned yesterday.
+    /// </summary>
+    public int CalculateMorningTrashCount()
+    {
+        float rawTrash = subsequentDaysBaseTrash
+            + (bedtimeDirtiness * dirtinessTrashMultiplier)
+            + (bedtimeDepression * depressionTrashMultiplier)
+            - (trashCleanedYesterday * cleanedTrashReductionFactor);
+
+        return Mathf.Clamp(Mathf.RoundToInt(rawTrash), minTrashSpawn, maxTrashSpawn);
+    }
+
+    /// <summary>
+    /// Calculates starting depression for the morning after sleep.
+    /// Based on:
+    /// - baseMorningDepression
+    /// - Bedtime depression carryover (+)
+    /// - Bedtime dirtiness (+)
+    /// - Morning trash count (+)
+    /// - Yesterday drugs/substances consumed (+)
+    /// - Yesterday story interactions (-)
+    /// </summary>
+    public float CalculateMorningDepression(int trashCount)
+    {
+        float rawDepression = baseMorningDepression
+            + (bedtimeDepression * depressionSleepCarryoverFactor)
+            + (bedtimeDirtiness * dirtinessMorningDepressionFactor)
+            + (trashCount * trashMorningDepressionFactor)
+            + (substancesConsumedYesterday * drugMorningDepressionPenalty)
+            - (storyElementsYesterday * storyInteractionDepressionReduction);
+
+        return Mathf.Clamp(rawDepression, minMorningDepression, maxMorningDepression);
+    }
+
+    /// <summary>
+    /// Distributes this morning's trash quota to a requesting TrashManager.
+    /// On Day 1 (run start), returns Day 1 base trash count directly.
+    /// On Day 2+, distributes pendingMorningTrashCount across active managers.
+    /// </summary>
+    public int GetMorningTrashCountForManager(TrashManager manager)
+    {
+        // On Day 1 (first day of a run), spawn the Day 1 base trash count directly
+        if (daysSurvived == 0)
+        {
+            int count = baseTrashCount;
+            if (manager != null && manager.firstDayTrashCount > 0 && manager.firstDayTrashCount != count)
+            {
+                count = manager.firstDayTrashCount;
+                baseTrashCount = count;
+            }
+            pendingMorningTrashCount = count;
+            return count;
+        }
+
+        TrashManager[] managers = FindObjectsOfType<TrashManager>(false);
+        int mgrCount = managers != null && managers.Length > 0 ? managers.Length : 1;
+
+        if (mgrCount <= 1)
+        {
+            return pendingMorningTrashCount;
+        }
+
+        int share = pendingMorningTrashCount / mgrCount;
+        int remainder = pendingMorningTrashCount % mgrCount;
+        int index = Array.IndexOf(managers, manager);
+        if (index >= 0 && index < remainder)
+        {
+            share += 1;
+        }
+        return Mathf.Max(1, share);
     }
 
     private bool IsGameplayScene(string sceneName)
