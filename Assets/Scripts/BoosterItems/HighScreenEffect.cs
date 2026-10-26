@@ -212,6 +212,13 @@ public class HighScreenEffect : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            // Hide the frozen full-screen overlay so the pause menu is never covered
+            if (overlayCanvas != null && overlayCanvas.gameObject.activeSelf) overlayCanvas.gameObject.SetActive(false);
+            return;
+        }
+
         if (!isExternallyDriven)
         {
             if (isEffectActive && remainingTimer > 0f)
@@ -248,6 +255,11 @@ public class HighScreenEffect : MonoBehaviour
         if (currentIntensity <= 0.001f || targetCamera == null || highMaterial == null) return;
 
         RemoveCameraDrift();
+
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            return;
+        }
 
         if (floatyCameraDegrees > 0.001f)
         {

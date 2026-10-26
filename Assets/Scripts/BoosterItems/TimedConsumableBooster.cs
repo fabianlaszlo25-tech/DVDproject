@@ -134,6 +134,11 @@ public class TimedConsumableBooster : MonoBehaviour
         isLockedByCombination = false;
         SetEffectIntensityImmediate(0f);
 
+        if (activeBoosterObject != null)
+        {
+            activeBoosterObject.RevertBooster();
+        }
+
         if (SubstanceCombinationManager.HasInstance)
         {
             SubstanceCombinationManager.Instance.UnregisterConsumable(this);
@@ -258,6 +263,10 @@ public class TimedConsumableBooster : MonoBehaviour
 
     private float GetDeltaTime()
     {
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            return 0f;
+        }
         return useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }
 
@@ -271,8 +280,12 @@ public class TimedConsumableBooster : MonoBehaviour
         while (current < peakIntensity - 0.001f)
         {
             if (isLockedByCombination) yield break;
-            current = Mathf.MoveTowards(current, peakIntensity, spd * GetDeltaTime());
-            SetEffectIntensityImmediate(current);
+            float dt = GetDeltaTime();
+            if (dt > 0f)
+            {
+                current = Mathf.MoveTowards(current, peakIntensity, spd * dt);
+                SetEffectIntensityImmediate(current);
+            }
             yield return null;
         }
         SetEffectIntensityImmediate(peakIntensity);
@@ -284,9 +297,12 @@ public class TimedConsumableBooster : MonoBehaviour
         {
             if (isLockedByCombination) yield break;
             float dt = GetDeltaTime();
-            holdElapsed += dt;
-            currentRemainingHoldDuration = Mathf.Max(0f, hold - holdElapsed);
-            SetEffectIntensityImmediate(peakIntensity);
+            if (dt > 0f)
+            {
+                holdElapsed += dt;
+                currentRemainingHoldDuration = Mathf.Max(0f, hold - holdElapsed);
+                SetEffectIntensityImmediate(peakIntensity);
+            }
             yield return null;
         }
         currentRemainingHoldDuration = 0f;
@@ -295,8 +311,12 @@ public class TimedConsumableBooster : MonoBehaviour
         while (current > 0.001f)
         {
             if (isLockedByCombination) yield break;
-            current = Mathf.MoveTowards(current, 0f, spd * GetDeltaTime());
-            SetEffectIntensityImmediate(current);
+            float dt = GetDeltaTime();
+            if (dt > 0f)
+            {
+                current = Mathf.MoveTowards(current, 0f, spd * dt);
+                SetEffectIntensityImmediate(current);
+            }
             yield return null;
         }
 

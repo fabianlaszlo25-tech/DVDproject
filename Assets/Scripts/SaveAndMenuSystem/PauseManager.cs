@@ -115,17 +115,30 @@ public class PauseManager : MonoBehaviour
 
     private static PauseManager activeInstance;
 
+    public static bool HasInstance => EnsureInstance() != null;
+    public static bool IsGamePaused => EnsureInstance() != null && EnsureInstance().isPaused;
+
+    private static PauseManager EnsureInstance()
+    {
+        if (activeInstance == null)
+        {
+            activeInstance = UnityEngine.Object.FindObjectOfType<PauseManager>(true);
+        }
+        return activeInstance;
+    }
+
     /// <summary>
     /// The real game speed (what Time.timeScale will be once unpaused). While paused, Time.timeScale is 0,
     /// so the true speed is the value we are going to restore on Resume.
     /// </summary>
     public static float GetGameSpeed()
     {
-        if (activeInstance != null && activeInstance.isPaused)
+        PauseManager pm = EnsureInstance();
+        if (pm != null && pm.isPaused)
         {
-            return activeInstance.timeScaleBeforePause;
+            return pm.timeScaleBeforePause > 0.001f ? pm.timeScaleBeforePause : 1.0f;
         }
-        return Time.timeScale;
+        return Time.timeScale > 0.001f ? Time.timeScale : 1.0f;
     }
 
     /// <summary>
@@ -134,12 +147,15 @@ public class PauseManager : MonoBehaviour
     /// </summary>
     public static void SetGameSpeed(float speed)
     {
-        if (activeInstance != null && activeInstance.isPaused)
+        float validSpeed = Mathf.Max(0.05f, speed);
+        PauseManager pm = EnsureInstance();
+        if (pm != null && pm.isPaused)
         {
-            activeInstance.timeScaleBeforePause = speed > 0.001f ? speed : 1.0f;
+            pm.timeScaleBeforePause = validSpeed;
+            Time.timeScale = 0f;
             return;
         }
-        Time.timeScale = speed;
+        Time.timeScale = validSpeed;
     }
 
     private void Awake()
@@ -229,6 +245,11 @@ public class PauseManager : MonoBehaviour
 
         if (isPaused)
         {
+            if (Time.timeScale != 0f)
+            {
+                Time.timeScale = 0f;
+            }
+
             // Keep the regular OS/WebGL cursor unlocked and visible while paused
             if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None;
             if (!Cursor.visible) Cursor.visible = true;
@@ -249,11 +270,19 @@ public class PauseManager : MonoBehaviour
 
     private bool WasEscapePressedThisFrame()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current != null)
         {
-            return true;
+            return Keyboard.current.escapeKey.wasPressedThisFrame;
         }
-        return Input.GetKeyDown(KeyCode.Escape);
+
+        try
+        {
+            return Input.GetKeyDown(KeyCode.Escape);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private bool CanTogglePause()
@@ -283,7 +312,14 @@ public class PauseManager : MonoBehaviour
         ConfigurePauseCanvasForClicking();
 
         isPaused = true;
-        timeScaleBeforePause = Time.timeScale > 0.001f ? Time.timeScale : 1.0f;
+        if (Time.timeScale > 0.001f)
+        {
+            timeScaleBeforePause = Time.timeScale;
+        }
+        else if (timeScaleBeforePause <= 0.001f)
+        {
+            timeScaleBeforePause = 1.0f;
+        }
         Time.timeScale = 0f;
 
         // 1. Switch Full Screen CRT effect material from duringgameplay to duringpaused
@@ -300,8 +336,17 @@ public class PauseManager : MonoBehaviour
         {
             pauseCanvas.gameObject.SetActive(true);
             ConfigurePauseCanvasForClicking();
+            Transform blocker = pauseCanvas.transform.Find("PauseBackground_RaycastBlocker");
+            if (blocker != null) blocker.gameObject.SetActive(true);
         }
-        if (mainButtonsPanel != null) mainButtonsPanel.SetActive(true);
+        if (mainButtonsPanel != null)
+        {
+            mainButtonsPanel.SetActive(true);
+            if (mainButtonsPanel.transform.localScale == Vector3.zero)
+            {
+                mainButtonsPanel.transform.localScale = Vector3.one;
+            }
+        }
         if (settingsPanel != null) settingsPanel.SetActive(false);
 
         ResetButtonHoverScales();
@@ -628,25 +673,49 @@ public class PauseManager : MonoBehaviour
         {
             return Mouse.current.position.ReadValue();
         }
-        return Input.mousePosition;
+
+        try
+        {
+            return Input.mousePosition;
+        }
+        catch
+        {
+            return Vector2.zero;
+        }
     }
 
     private static bool WasLeftMousePressedThisFrame()
     {
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current != null)
         {
-            return true;
+            return Mouse.current.leftButton.wasPressedThisFrame;
         }
-        return Input.GetMouseButtonDown(0);
+
+        try
+        {
+            return Input.GetMouseButtonDown(0);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static bool IsLeftMousePressed()
     {
-        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+        if (Mouse.current != null)
         {
-            return true;
+            return Mouse.current.leftButton.isPressed;
         }
-        return Input.GetMouseButton(0);
+
+        try
+        {
+            return Input.GetMouseButton(0);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     // =========================================================================
@@ -902,9 +971,30 @@ public class PauseManager : MonoBehaviour
     {
         if (pauseCanvas == null) return;
 
-        if (pauseCanvas.renderMode == RenderMode.ScreenSpaceCamera && pauseCanvas.worldCamera == null)
+        if (pauseCanvas.renderMode == RenderMode.ScreenSpaceCamera)
         {
-            pauseCanvas.worldCamera = Camera.main;
+            if (pauseCanvas.worldCamera == null || !pauseCanvas.worldCamera.gameObject.activeInHierarchy)
+            {
+                pauseCanvas.worldCamera = Camera.main != null ? Camera.main : FindObjectOfType<Camera>(false);
+            }
+
+            if (pauseCanvas.worldCamera != null && pauseCanvas.planeDistance < pauseCanvas.worldCamera.nearClipPlane + 0.02f)
+            {
+                pauseCanvas.planeDistance = pauseCanvas.worldCamera.nearClipPlane + 0.03f;
+            }
+        }
+
+        if (pauseCanvas.transform.localScale == Vector3.zero)
+        {
+            pauseCanvas.transform.localScale = Vector3.one;
+        }
+        if (mainButtonsPanel != null && mainButtonsPanel.transform.localScale == Vector3.zero)
+        {
+            mainButtonsPanel.transform.localScale = Vector3.one;
+        }
+        if (settingsPanel != null && settingsPanel.transform.localScale == Vector3.zero)
+        {
+            settingsPanel.transform.localScale = Vector3.one;
         }
 
         // Ensure sortingOrder is above fader (999) and endingPopupUI (2000) so nothing blocks clicks
@@ -1038,6 +1128,57 @@ public class PauseManager : MonoBehaviour
         if (playerController == null) playerController = FindObjectOfType<GridCrawlerController>(true);
         if (cameraFollow == null) cameraFollow = FindObjectOfType<SmoothCameraFollow>(true);
         if (crtRendererFeature == null) FindCrtRendererFeature();
+
+        if (pauseCanvas == null)
+        {
+            Canvas[] allCanvases = FindObjectsOfType<Canvas>(true);
+            for (int i = 0; i < allCanvases.Length; i++)
+            {
+                if (allCanvases[i] != null && allCanvases[i].name.IndexOf("pause", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    pauseCanvas = allCanvases[i];
+                    break;
+                }
+            }
+        }
+
+        if (pauseCanvas != null)
+        {
+            if (mainButtonsPanel == null)
+            {
+                Transform t = pauseCanvas.transform.Find("PauseMainMenuPanel");
+                if (t != null) mainButtonsPanel = t.gameObject;
+            }
+            if (settingsPanel == null)
+            {
+                Transform t = pauseCanvas.transform.Find("SettingsPanel");
+                if (t != null) settingsPanel = t.gameObject;
+            }
+
+            if (resumeButton == null || settingsButton == null || endRunButton == null || backFromSettingsButton == null)
+            {
+                Button[] btns = pauseCanvas.GetComponentsInChildren<Button>(true);
+                for (int i = 0; i < btns.Length; i++)
+                {
+                    string n = btns[i].name.ToLowerInvariant();
+                    if (resumeButton == null && n.Contains("resume")) resumeButton = btns[i];
+                    else if (settingsButton == null && n.Contains("settings")) settingsButton = btns[i];
+                    else if (endRunButton == null && (n.Contains("end") || n.Contains("run"))) endRunButton = btns[i];
+                    else if (backFromSettingsButton == null && n.Contains("back")) backFromSettingsButton = btns[i];
+                }
+            }
+
+            if (musicVolumeSlider == null || sfxVolumeSlider == null)
+            {
+                Slider[] sliders = pauseCanvas.GetComponentsInChildren<Slider>(true);
+                for (int i = 0; i < sliders.Length; i++)
+                {
+                    string n = sliders[i].name.ToLowerInvariant();
+                    if (musicVolumeSlider == null && n.Contains("music")) musicVolumeSlider = sliders[i];
+                    else if (sfxVolumeSlider == null && (n.Contains("sfx") || n.Contains("sound"))) sfxVolumeSlider = sliders[i];
+                }
+            }
+        }
 
         EnsureHudPauseButtonSetup();
     }

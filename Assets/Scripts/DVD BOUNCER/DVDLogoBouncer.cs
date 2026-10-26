@@ -92,6 +92,11 @@ public class DVDLogoBouncer : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            return;
+        }
+
         SyncCameraAndTextureAspect();
         MoveLogo();
     }
@@ -165,26 +170,26 @@ public class DVDLogoBouncer : MonoBehaviour
         bool hitY = false;
         Vector3 correction = Vector3.zero;
 
-        if (bounds.max.x >= camMaxX)
+        if (bounds.max.x >= camMaxX && direction.x > 0f)
         {
             correction.x = camMaxX - bounds.max.x;
             direction.x = -Mathf.Abs(direction.x);
             hitX = true;
         }
-        else if (bounds.min.x <= camMinX)
+        else if (bounds.min.x <= camMinX && direction.x < 0f)
         {
             correction.x = camMinX - bounds.min.x;
             direction.x = Mathf.Abs(direction.x);
             hitX = true;
         }
 
-        if (bounds.max.y >= camMaxY)
+        if (bounds.max.y >= camMaxY && direction.y > 0f)
         {
             correction.y = camMaxY - bounds.max.y;
             direction.y = -Mathf.Abs(direction.y);
             hitY = true;
         }
-        else if (bounds.min.y <= camMinY)
+        else if (bounds.min.y <= camMinY && direction.y < 0f)
         {
             correction.y = camMinY - bounds.min.y;
             direction.y = Mathf.Abs(direction.y);
@@ -247,6 +252,11 @@ public class DVDLogoBouncer : MonoBehaviour
         float time = 0;
         while (time < halfDuration)
         {
+            if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+            {
+                yield return null;
+                continue;
+            }
             targetTransform.localScale = Vector3.Lerp(originalScale, peakScale, time / halfDuration);
             time += Time.deltaTime;
             yield return null;
@@ -255,6 +265,11 @@ public class DVDLogoBouncer : MonoBehaviour
         time = 0;
         while (time < halfDuration)
         {
+            if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+            {
+                yield return null;
+                continue;
+            }
             targetTransform.localScale = Vector3.Lerp(peakScale, originalScale, time / halfDuration);
             time += Time.deltaTime;
             yield return null;

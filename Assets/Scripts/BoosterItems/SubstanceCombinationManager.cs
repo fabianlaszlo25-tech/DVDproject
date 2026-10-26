@@ -879,6 +879,13 @@ public class SubstanceCombinationManager : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            // Hide the frozen overlay (and its raycast blocker) so the pause menu is never covered
+            if (comboCanvas != null && comboCanvas.gameObject.activeSelf) comboCanvas.gameObject.SetActive(false);
+            return;
+        }
+
         float dt = Time.unscaledDeltaTime;
 
         if (!isOverdoseSequenceRunning)
@@ -995,6 +1002,12 @@ public class SubstanceCombinationManager : MonoBehaviour
     {
         bool shouldShowCanvas = currentComboIntensity > 0.001f || currentBlackoutFade > 0.001f || isOverdoseSequenceRunning;
         if (!shouldShowCanvas || targetCamera == null || comboMaterial == null) return;
+
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        {
+            RemoveCameraShake();
+            return;
+        }
 
         ActiveSubstanceComboState activeState = CurrentComboState;
 

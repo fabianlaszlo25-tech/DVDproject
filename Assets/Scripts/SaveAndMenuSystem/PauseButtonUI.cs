@@ -131,9 +131,22 @@ public class PauseButtonUI : MonoBehaviour
 
     private Vector2 GetCurrentVirtualMousePos()
     {
-        Vector2 rawMouse = Mouse.current != null
-            ? Mouse.current.position.ReadValue()
-            : (Vector2)Input.mousePosition;
+        Vector2 rawMouse = Vector2.zero;
+        if (Mouse.current != null)
+        {
+            rawMouse = Mouse.current.position.ReadValue();
+        }
+        else
+        {
+            try
+            {
+                rawMouse = Input.mousePosition;
+            }
+            catch
+            {
+                rawMouse = Vector2.zero;
+            }
+        }
 
         if (controller != null && controller.cropPanel != null)
         {
@@ -165,11 +178,19 @@ public class PauseButtonUI : MonoBehaviour
 
     private static bool WasLeftMousePressedThisFrame()
     {
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current != null)
         {
-            return true;
+            return Mouse.current.leftButton.wasPressedThisFrame;
         }
-        return Input.GetMouseButtonDown(0);
+
+        try
+        {
+            return Input.GetMouseButtonDown(0);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void SetAlpha(float alpha)
