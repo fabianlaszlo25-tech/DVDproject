@@ -78,6 +78,8 @@ public class PauseManager : MonoBehaviour
     public Slider musicVolumeSlider;
     [Tooltip("Controls every other sound via AudioListener.volume while secretly boosting music to offset it.")]
     public Slider sfxVolumeSlider;
+    [Tooltip("Controls mouse sensitivity for crosshair and camera look.")]
+    public Slider sensitivitySlider;
 
     [Header("Paused Audio (Only Sound Playing While Paused)")]
     [Tooltip("Dedicated AudioSource on PauseManager that plays the paused sound while everything else is muted.")]
@@ -92,6 +94,7 @@ public class PauseManager : MonoBehaviour
     [Header("Default Slider Values")]
     [Range(0f, 1f)] public float initialMusicVolume = 1.0f;
     [Range(0f, 1f)] public float initialSfxVolume = 1.0f;
+    [Range(0.1f, 3f)] public float initialSensitivity = 1.0f;
 
     private readonly List<PausedAudioSourceState> pausedAudioSources = new List<PausedAudioSourceState>();
     private readonly List<DisabledBehaviourState> disabledBehavioursWhilePaused = new List<DisabledBehaviourState>();
@@ -192,6 +195,7 @@ public class PauseManager : MonoBehaviour
 
         initialMusicVolume = GlobalAudioSettings.MusicVolume;
         initialSfxVolume = GlobalAudioSettings.SfxVolume;
+        initialSensitivity = GlobalAudioSettings.MouseSensitivity;
         GlobalAudioSettings.ApplyLoadedSettings();
         SyncSlidersToCurrentVolumes();
     }
@@ -524,6 +528,10 @@ public class PauseManager : MonoBehaviour
                 {
                     activeDraggedSlider = sfxVolumeSlider;
                 }
+                else if (IsScreenPointNearSlider(sensitivitySlider, mouseScreenPos, uiCam, 24f))
+                {
+                    activeDraggedSlider = sensitivitySlider;
+                }
             }
 
             if (activeDraggedSlider != null)
@@ -658,6 +666,10 @@ public class PauseManager : MonoBehaviour
         {
             OnSfxVolumeChanged(newValue);
         }
+        else if (slider == sensitivitySlider)
+        {
+            OnSensitivityChanged(newValue);
+        }
     }
 
     private Camera GetPauseCanvasEventCamera()
@@ -746,6 +758,15 @@ public class PauseManager : MonoBehaviour
         GlobalAudioSettings.SetSfxVolume(clamped);
     }
 
+    public void OnSensitivityChanged(float value)
+    {
+        if (isUpdatingSlidersInternally) return;
+
+        float clamped = Mathf.Clamp(value, GlobalAudioSettings.MinMouseSensitivity, GlobalAudioSettings.MaxMouseSensitivity);
+        initialSensitivity = clamped;
+        GlobalAudioSettings.SetMouseSensitivity(clamped);
+    }
+
     private void ApplyAudioSettings(float musicVol, float sfxVol)
     {
         AudioListener.volume = Mathf.Clamp01(sfxVol);
@@ -764,6 +785,7 @@ public class PauseManager : MonoBehaviour
 
         float currentMusic = GlobalAudioSettings.MusicVolume;
         float currentSfx = GlobalAudioSettings.SfxVolume;
+        float currentSens = GlobalAudioSettings.MouseSensitivity;
 
         if (musicVolumeSlider != null)
         {
@@ -772,6 +794,12 @@ public class PauseManager : MonoBehaviour
         if (sfxVolumeSlider != null)
         {
             sfxVolumeSlider.SetValueWithoutNotify(Mathf.Clamp01(currentSfx));
+        }
+        if (sensitivitySlider != null)
+        {
+            sensitivitySlider.minValue = GlobalAudioSettings.MinMouseSensitivity;
+            sensitivitySlider.maxValue = GlobalAudioSettings.MaxMouseSensitivity;
+            sensitivitySlider.SetValueWithoutNotify(Mathf.Clamp(currentSens, GlobalAudioSettings.MinMouseSensitivity, GlobalAudioSettings.MaxMouseSensitivity));
         }
 
         isUpdatingSlidersInternally = false;
@@ -1168,13 +1196,14 @@ public class PauseManager : MonoBehaviour
                 }
             }
 
-            if (musicVolumeSlider == null || sfxVolumeSlider == null)
+            if (musicVolumeSlider == null || sfxVolumeSlider == null || sensitivitySlider == null)
             {
                 Slider[] sliders = pauseCanvas.GetComponentsInChildren<Slider>(true);
                 for (int i = 0; i < sliders.Length; i++)
                 {
                     string n = sliders[i].name.ToLowerInvariant();
-                    if (musicVolumeSlider == null && n.Contains("music")) musicVolumeSlider = sliders[i];
+                    if (sensitivitySlider == null && (n.Contains("sens") || n.Contains("mouse"))) sensitivitySlider = sliders[i];
+                    else if (musicVolumeSlider == null && n.Contains("music")) musicVolumeSlider = sliders[i];
                     else if (sfxVolumeSlider == null && (n.Contains("sfx") || n.Contains("sound"))) sfxVolumeSlider = sliders[i];
                 }
             }
@@ -1318,6 +1347,13 @@ public class PauseManager : MonoBehaviour
             sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
             sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
         }
+        if (sensitivitySlider != null)
+        {
+            sensitivitySlider.minValue = GlobalAudioSettings.MinMouseSensitivity;
+            sensitivitySlider.maxValue = GlobalAudioSettings.MaxMouseSensitivity;
+            sensitivitySlider.onValueChanged.RemoveListener(OnSensitivityChanged);
+            sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
+        }
     }
 
     private void EnsureRuntimeFallbackUIIfMissing()
@@ -1392,14 +1428,19 @@ public class PauseManager : MonoBehaviour
         Image settingsBg = settingsPanel.AddComponent<Image>();
         settingsBg.color = new Color(0.08f, 0.08f, 0.10f, 0.92f);
 
-        CreateRuntimeText("SettingsTitle", settingsPanel.transform, "SETTINGS", fontAsset, 50f, new Vector2(0f, 190f), new Vector2(500f, 75f), Color.white);
-        CreateRuntimeText("MusicLabel", settingsPanel.transform, "MUSIC", fontAsset, 30f, new Vector2(0f, 100f), new Vector2(460f, 45f), Color.white);
-        musicVolumeSlider = CreateRuntimeSlider("MusicVolumeSlider", settingsPanel.transform, new Vector2(0f, 50f), new Vector2(440f, 36f));
+        CreateRuntimeText("SettingsTitle", settingsPanel.transform, "SETTINGS", fontAsset, 50f, new Vector2(0f, 205f), new Vector2(500f, 75f), Color.white);
+        CreateRuntimeText("MusicLabel", settingsPanel.transform, "MUSIC", fontAsset, 30f, new Vector2(0f, 145f), new Vector2(460f, 40f), Color.white);
+        musicVolumeSlider = CreateRuntimeSlider("MusicVolumeSlider", settingsPanel.transform, new Vector2(0f, 105f), new Vector2(440f, 34f));
 
-        CreateRuntimeText("SfxLabel", settingsPanel.transform, "SFX / OTHER SOUNDS", fontAsset, 30f, new Vector2(0f, -25f), new Vector2(460f, 45f), Color.white);
-        sfxVolumeSlider = CreateRuntimeSlider("SfxVolumeSlider", settingsPanel.transform, new Vector2(0f, -75f), new Vector2(440f, 36f));
+        CreateRuntimeText("SfxLabel", settingsPanel.transform, "SFX / OTHER SOUNDS", fontAsset, 30f, new Vector2(0f, 50f), new Vector2(460f, 40f), Color.white);
+        sfxVolumeSlider = CreateRuntimeSlider("SfxVolumeSlider", settingsPanel.transform, new Vector2(0f, 10f), new Vector2(440f, 34f));
 
-        backFromSettingsButton = CreateRuntimeButton("BackButton", settingsPanel.transform, "BACK", fontAsset, new Vector2(0f, -180f), new Vector2(280f, 62f), new Color(0.92f, 0.92f, 0.92f, 1f));
+        CreateRuntimeText("SensitivityLabel", settingsPanel.transform, "MOUSE SENSITIVITY", fontAsset, 30f, new Vector2(0f, -45f), new Vector2(460f, 40f), Color.white);
+        sensitivitySlider = CreateRuntimeSlider("SensitivitySlider", settingsPanel.transform, new Vector2(0f, -85f), new Vector2(440f, 34f));
+        sensitivitySlider.minValue = GlobalAudioSettings.MinMouseSensitivity;
+        sensitivitySlider.maxValue = GlobalAudioSettings.MaxMouseSensitivity;
+
+        backFromSettingsButton = CreateRuntimeButton("BackButton", settingsPanel.transform, "BACK", fontAsset, new Vector2(0f, -185f), new Vector2(280f, 62f), new Color(0.92f, 0.92f, 0.92f, 1f));
     }
 
     private static TextMeshProUGUI CreateRuntimeText(string name, Transform parent, string text, TMP_FontAsset font, float size, Vector2 pos, Vector2 sizeDelta, Color color)

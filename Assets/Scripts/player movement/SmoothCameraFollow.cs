@@ -16,6 +16,10 @@ public class SmoothCameraFollow : MonoBehaviour
     public float maxVerticalLook = 20f;
     public float recenterSpeed = 25f;
 
+    [Header("Mouse Sensitivity")]
+    [Tooltip("Mouse sensitivity multiplier for camera rotation (governed globally by settings).")]
+    public float mouseSensitivity = 1.0f;
+
     [HideInInspector] public bool isAutoCentering = false;
 
     private float mouseX = 0f;
@@ -24,18 +28,20 @@ public class SmoothCameraFollow : MonoBehaviour
 
     void Awake()
     {
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SnapToTargetImmediate();
     }
 
     void OnEnable()
     {
+        mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
         SnapToTargetImmediate();
     }
 
     void Start()
     {
+        mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
         SnapToTargetImmediate();
     }
 
@@ -89,8 +95,9 @@ public class SmoothCameraFollow : MonoBehaviour
             float targetX = screenX * maxHorizontalLook;
             float targetY = screenY * maxVerticalLook;
 
-            mouseX = Mathf.Lerp(mouseX, targetX, Time.deltaTime * 10f);
-            mouseY = Mathf.Lerp(mouseY, targetY, Time.deltaTime * 10f);
+            float lerpSpeed = 10f * Mathf.Clamp(mouseSensitivity, 0.2f, 3.0f);
+            mouseX = Mathf.Lerp(mouseX, targetX, Time.deltaTime * lerpSpeed);
+            mouseY = Mathf.Lerp(mouseY, targetY, Time.deltaTime * lerpSpeed);
         }
 
         // 3. Combine body rotation with mapped local look

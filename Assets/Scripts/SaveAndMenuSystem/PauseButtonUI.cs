@@ -25,7 +25,15 @@ public class PauseButtonUI : MonoBehaviour
     [Tooltip("Shifts the center of the clickable area if it feels offset.")]
     public Vector2 hitboxOffset = Vector2.zero;
 
-    public RectTransform Rect { get; private set; }
+    private RectTransform _rect;
+    public RectTransform Rect
+    {
+        get
+        {
+            if (_rect == null) _rect = GetComponent<RectTransform>();
+            return _rect;
+        }
+    }
     private Image img;
     private Vector3 targetScale = Vector3.one;
     private float targetAlpha;
@@ -33,7 +41,7 @@ public class PauseButtonUI : MonoBehaviour
 
     private void Awake()
     {
-        Rect = GetComponent<RectTransform>();
+        _rect = GetComponent<RectTransform>();
         img = GetComponent<Image>();
 
         if (controller == null) controller = FindObjectOfType<GridCrawlerController>(true);
@@ -45,28 +53,38 @@ public class PauseButtonUI : MonoBehaviour
 
     private void Update()
     {
-        if (Rect == null) Rect = GetComponent<RectTransform>();
         if (img == null) img = GetComponent<Image>();
         if (controller == null) controller = FindObjectOfType<GridCrawlerController>(true);
         if (pauseManager == null) pauseManager = FindObjectOfType<PauseManager>(true);
 
-        isCurrentlyHovered = false;
-
-        if ((pauseManager == null || !pauseManager.IsPaused) && controller != null && controller.enabled)
+        // If controller is missing or disabled, provide fallback hit-testing
+        if (controller == null || !controller.enabled)
         {
-            Vector2 virtualCursorPos = GetCurrentVirtualMousePos();
-            Camera uiCam = GetUICamera();
+            isCurrentlyHovered = false;
 
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(Rect, virtualCursorPos, uiCam, out Vector2 localPoint))
+            if ((pauseManager == null || !pauseManager.IsPaused))
             {
-                if (CheckHitbox(localPoint))
+                Vector2 virtualCursorPos = GetCurrentVirtualMousePos();
+                Camera uiCam = GetUICamera();
+
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(Rect, virtualCursorPos, uiCam, out Vector2 localPoint))
                 {
-                    isCurrentlyHovered = true;
+                    if (CheckHitbox(localPoint))
+                    {
+                        isCurrentlyHovered = true;
+                    }
                 }
             }
-        }
 
-        SetHoverState(isCurrentlyHovered);
+            SetHoverState(isCurrentlyHovered);
+
+            if (isCurrentlyHovered && WasLeftMousePressedThisFrame())
+            {
+                isCurrentlyHovered = false;
+                SetHoverState(false);
+                TriggerAction();
+            }
+        }
 
         // Exact same hover scale & alpha lerp animation as MovementArrowUI
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 12f);
@@ -76,13 +94,6 @@ public class PauseButtonUI : MonoBehaviour
             Color c = img.color;
             c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * 12f);
             img.color = c;
-        }
-
-        if (isCurrentlyHovered && WasLeftMousePressedThisFrame())
-        {
-            isCurrentlyHovered = false;
-            SetHoverState(false);
-            TriggerAction();
         }
     }
 
@@ -101,7 +112,6 @@ public class PauseButtonUI : MonoBehaviour
     // Custom mathematical hitbox that applies padding and offsets (identical to MovementArrowUI)
     public bool CheckHitbox(Vector2 localPoint)
     {
-        if (Rect == null) Rect = GetComponent<RectTransform>();
         Rect r = Rect.rect;
 
         r.position += hitboxOffset;
@@ -116,6 +126,7 @@ public class PauseButtonUI : MonoBehaviour
 
     public void SetHoverState(bool isHovering)
     {
+        isCurrentlyHovered = isHovering;
         targetScale = isHovering ? Vector3.one * hoverScale : Vector3.one;
         targetAlpha = isHovering ? hoverAlpha : defaultAlpha;
     }
@@ -131,6 +142,11 @@ public class PauseButtonUI : MonoBehaviour
 
     private Vector2 GetCurrentVirtualMousePos()
     {
+        if (controller != null && controller.virtualMousePos != Vector2.zero)
+        {
+            return controller.virtualMousePos;
+        }
+
         Vector2 rawMouse = Vector2.zero;
         if (Mouse.current != null)
         {
@@ -148,22 +164,7 @@ public class PauseButtonUI : MonoBehaviour
             }
         }
 
-        if (controller != null && controller.cropPanel != null)
-        {
-            Canvas cropCanvas = controller.cropPanel.GetComponentInParent<Canvas>();
-            Camera uiCam = cropCanvas != null ? cropCanvas.worldCamera : null;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(controller.cropPanel, rawMouse, uiCam, out Vector2 localPoint);
-
-            Rect rect = controller.cropPanel.rect;
-            localPoint.x = Mathf.Clamp(localPoint.x, rect.xMin, rect.xMax);
-            localPoint.y = Mathf.Clamp(localPoint.y, rect.yMin, rect.yMax);
-
-            Vector3 clampedWorld = controller.cropPanel.TransformPoint(localPoint);
-            return RectTransformUtility.WorldToScreenPoint(uiCam, clampedWorld);
-        }
-
-        return controller != null ? controller.virtualMousePos : rawMouse;
+        return rawMouse;
     }
 
     private Camera GetUICamera()

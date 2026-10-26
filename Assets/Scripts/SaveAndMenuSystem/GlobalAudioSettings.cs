@@ -1,20 +1,25 @@
 using UnityEngine;
 
 /// <summary>
-/// Global manager for player audio preferences (Music and SFX volume).
-/// Automatically persists settings in PlayerPrefs, keeps AudioListener and DynamicMusicManager
-/// in sync, and provides a single source of truth across all scenes and runs.
+/// Global manager for player audio and control preferences (Music, SFX volume, and Mouse Sensitivity).
+/// Automatically persists settings in PlayerPrefs, keeps AudioListener, DynamicMusicManager,
+/// GridCrawlerController, and SmoothCameraFollow in sync, and provides a single source of truth across all scenes and runs.
 /// </summary>
 public static class GlobalAudioSettings
 {
     public const string MusicPrefKey = "Settings_MusicVolume";
     public const string SfxPrefKey = "Settings_SfxVolume";
+    public const string MouseSensitivityPrefKey = "Settings_MouseSensitivity";
 
     public const float DefaultMusicVolume = 0.8f;
     public const float DefaultSfxVolume = 1.0f;
+    public const float DefaultMouseSensitivity = 1.0f;
+    public const float MinMouseSensitivity = 0.1f;
+    public const float MaxMouseSensitivity = 3.0f;
 
     private static float cachedMusicVolume = -1f;
     private static float cachedSfxVolume = -1f;
+    private static float cachedMouseSensitivity = -1f;
 
     public static float MusicVolume
     {
@@ -37,6 +42,18 @@ public static class GlobalAudioSettings
                 cachedSfxVolume = PlayerPrefs.GetFloat(SfxPrefKey, DefaultSfxVolume);
             }
             return cachedSfxVolume;
+        }
+    }
+
+    public static float MouseSensitivity
+    {
+        get
+        {
+            if (cachedMouseSensitivity < 0f)
+            {
+                cachedMouseSensitivity = PlayerPrefs.GetFloat(MouseSensitivityPrefKey, DefaultMouseSensitivity);
+            }
+            return cachedMouseSensitivity;
         }
     }
 
@@ -87,7 +104,7 @@ public static class GlobalAudioSettings
             }
         }
 
-                // Apply music volume to 3-effect overdose hallucination video
+        // Apply music volume to 3-effect overdose hallucination video
         SubstanceCombinationManager comboMgr = Object.FindObjectOfType<SubstanceCombinationManager>();
         if (comboMgr != null)
         {
@@ -122,10 +139,30 @@ public static class GlobalAudioSettings
         }
     }
 
+    public static void SetMouseSensitivity(float sensitivity)
+    {
+        cachedMouseSensitivity = Mathf.Clamp(sensitivity, MinMouseSensitivity, MaxMouseSensitivity);
+        PlayerPrefs.SetFloat(MouseSensitivityPrefKey, cachedMouseSensitivity);
+        PlayerPrefs.Save();
+
+        GridCrawlerController player = Object.FindObjectOfType<GridCrawlerController>();
+        if (player != null)
+        {
+            player.mouseSensitivity = cachedMouseSensitivity;
+        }
+
+        SmoothCameraFollow cam = Object.FindObjectOfType<SmoothCameraFollow>();
+        if (cam != null)
+        {
+            cam.mouseSensitivity = cachedMouseSensitivity;
+        }
+    }
+
     public static void ApplyLoadedSettings()
     {
         float music = MusicVolume;
         float sfx = SfxVolume;
+        float sens = MouseSensitivity;
 
         AudioListener.volume = sfx;
 
@@ -171,5 +208,8 @@ public static class GlobalAudioSettings
         {
             comboMgr.UpdateVideoAudioSettings();
         }
+
+        // Apply mouse sensitivity
+        SetMouseSensitivity(sens);
     }
 }

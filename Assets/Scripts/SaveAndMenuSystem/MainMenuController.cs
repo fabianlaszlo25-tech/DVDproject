@@ -37,8 +37,10 @@ public class MainMenuController : MonoBehaviour
     [Header("Settings Panel UI")]
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
+    public Slider sensitivitySlider;
     public TextMeshProUGUI musicValueText;
     public TextMeshProUGUI sfxValueText;
+    public TextMeshProUGUI sensitivityValueText;
     public Button backFromSettingsButton;
 
     [Header("Visual & Transition Settings")]
@@ -335,6 +337,15 @@ public class MainMenuController : MonoBehaviour
         UpdateSliderLabels();
     }
 
+    public void OnSensitivitySliderChanged(float value)
+    {
+        if (isUpdatingSlidersInternally) return;
+
+        float clamped = Mathf.Clamp(value, GlobalAudioSettings.MinMouseSensitivity, GlobalAudioSettings.MaxMouseSensitivity);
+        GlobalAudioSettings.SetMouseSensitivity(clamped);
+        UpdateSliderLabels();
+    }
+
     private void SyncSlidersToGlobalAudio()
     {
         isUpdatingSlidersInternally = true;
@@ -347,6 +358,12 @@ public class MainMenuController : MonoBehaviour
             if (sfxVolumeSlider != null)
             {
                 sfxVolumeSlider.SetValueWithoutNotify(GlobalAudioSettings.SfxVolume);
+            }
+            if (sensitivitySlider != null)
+            {
+                sensitivitySlider.minValue = GlobalAudioSettings.MinMouseSensitivity;
+                sensitivitySlider.maxValue = GlobalAudioSettings.MaxMouseSensitivity;
+                sensitivitySlider.SetValueWithoutNotify(GlobalAudioSettings.MouseSensitivity);
             }
             UpdateSliderLabels();
         }
@@ -365,6 +382,10 @@ public class MainMenuController : MonoBehaviour
         if (sfxValueText != null && sfxVolumeSlider != null)
         {
             sfxValueText.text = Mathf.RoundToInt(sfxVolumeSlider.value * 100f) + "%";
+        }
+        if (sensitivityValueText != null && sensitivitySlider != null)
+        {
+            sensitivityValueText.text = Mathf.RoundToInt(sensitivitySlider.value * 100f) + "%";
         }
     }
 
@@ -471,6 +492,21 @@ public class MainMenuController : MonoBehaviour
                 if (sfxVolumeSlider == null && sliders.Length > 1) sfxVolumeSlider = sliders[1];
             }
 
+            if (sensitivitySlider == null)
+            {
+                Slider[] sliders = settingsPanel.GetComponentsInChildren<Slider>(true);
+                foreach (Slider s in sliders)
+                {
+                    if (s.name.IndexOf("Sens", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        s.name.IndexOf("Mouse", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sensitivitySlider = s;
+                        break;
+                    }
+                }
+                if (sensitivitySlider == null && sliders.Length > 2) sensitivitySlider = sliders[2];
+            }
+
             if (backFromSettingsButton == null)
             {
                 Button[] buttons = settingsPanel.GetComponentsInChildren<Button>(true);
@@ -506,6 +542,20 @@ public class MainMenuController : MonoBehaviour
                     if (t.name.IndexOf("SfxValue", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         sfxValueText = t;
+                        break;
+                    }
+                }
+            }
+
+            if (sensitivityValueText == null)
+            {
+                TextMeshProUGUI[] tmps = settingsPanel.GetComponentsInChildren<TextMeshProUGUI>(true);
+                foreach (TextMeshProUGUI t in tmps)
+                {
+                    if (t.name.IndexOf("SensValue", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        t.name.IndexOf("SensitivityValue", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        sensitivityValueText = t;
                         break;
                     }
                 }
@@ -596,6 +646,13 @@ public class MainMenuController : MonoBehaviour
             sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxSliderChanged);
             sfxVolumeSlider.onValueChanged.AddListener(OnSfxSliderChanged);
         }
+        if (sensitivitySlider != null)
+        {
+            sensitivitySlider.minValue = GlobalAudioSettings.MinMouseSensitivity;
+            sensitivitySlider.maxValue = GlobalAudioSettings.MaxMouseSensitivity;
+            sensitivitySlider.onValueChanged.RemoveListener(OnSensitivitySliderChanged);
+            sensitivitySlider.onValueChanged.AddListener(OnSensitivitySliderChanged);
+        }
     }
 
     // =========================================================================
@@ -626,6 +683,10 @@ public class MainMenuController : MonoBehaviour
                 else if (IsScreenPointNearSlider(sfxVolumeSlider, mouseScreenPos, uiCam, 16f))
                 {
                     activeDraggedSlider = sfxVolumeSlider;
+                }
+                else if (IsScreenPointNearSlider(sensitivitySlider, mouseScreenPos, uiCam, 16f))
+                {
+                    activeDraggedSlider = sensitivitySlider;
                 }
                 else if (IsScreenPointOverButton(backFromSettingsButton, mouseScreenPos, uiCam, 6f))
                 {

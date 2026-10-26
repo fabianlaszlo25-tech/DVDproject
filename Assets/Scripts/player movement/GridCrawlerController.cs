@@ -30,12 +30,23 @@ public class GridCrawlerController : MonoBehaviour
     public TextMeshProUGUI interactTextUI;
     public float interactReach = 3f;
 
+    [Header("HUD Pause Button")]
+    [Tooltip("The pause button in the HUD overlay (auto-found if not assigned).")]
+    public PauseButtonUI hudPauseButton;
+
+    [Header("Mouse Sensitivity")]
+    [Tooltip("Mouse sensitivity multiplier for cursor movement (governed globally by settings).")]
+    public float mouseSensitivity = 1.0f;
+
     [HideInInspector] public Vector2 virtualMousePos;
 
     private bool isActing = false;
     private InputAction moveAction;
     private Vector3 textTargetScale = Vector3.zero;
     private MovementArrowUI[] allArrows;
+
+    private Vector2 virtualCursorLocalPos;
+    private bool hasInitializedVirtualMouse = false;
 
     private enum CrosshairMode { Default, Interact, Hidden }
 
@@ -52,10 +63,13 @@ public class GridCrawlerController : MonoBehaviour
         SetCrosshairState(CrosshairMode.Default);
 
         allArrows = FindObjectsOfType<MovementArrowUI>();
+        if (hudPauseButton == null) hudPauseButton = FindObjectOfType<PauseButtonUI>(true);
     }
 
     void Start()
     {
+        mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
+
         if (gridManager != null)
         {
             transform.position = gridManager.GetClosestNodePosition(transform.position);
@@ -67,7 +81,12 @@ public class GridCrawlerController : MonoBehaviour
         }
     }
 
-    void OnEnable() => moveAction.Enable();
+    void OnEnable()
+    {
+        moveAction.Enable();
+        mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
+    }
+
     void OnDisable() => moveAction.Disable();
 
     void Update()
@@ -81,24 +100,43 @@ public class GridCrawlerController : MonoBehaviour
 
     private void CalculateVirtualMousePosition()
     {
-        Vector2 rawMouse = Mouse.current.position.ReadValue();
+        if (PauseManager.IsGamePaused) return;
 
         if (cropPanel != null)
         {
             Camera uiCam = cropPanel.GetComponentInParent<Canvas>().worldCamera;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(cropPanel, rawMouse, uiCam, out Vector2 localPoint);
-
             Rect rect = cropPanel.rect;
-            localPoint.x = Mathf.Clamp(localPoint.x, rect.xMin, rect.xMax);
-            localPoint.y = Mathf.Clamp(localPoint.y, rect.yMin, rect.yMax);
 
-            Vector3 clampedWorld = cropPanel.TransformPoint(localPoint);
+            if (!hasInitializedVirtualMouse)
+            {
+                Vector2 initialMouse = Mouse.current != null ? Mouse.current.position.ReadValue() : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(cropPanel, initialMouse, uiCam, out virtualCursorLocalPos);
+                virtualCursorLocalPos.x = Mathf.Clamp(virtualCursorLocalPos.x, rect.xMin, rect.xMax);
+                virtualCursorLocalPos.y = Mathf.Clamp(virtualCursorLocalPos.y, rect.yMin, rect.yMax);
+                hasInitializedVirtualMouse = true;
+            }
+
+            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
+            virtualCursorLocalPos += delta * mouseSensitivity;
+
+            virtualCursorLocalPos.x = Mathf.Clamp(virtualCursorLocalPos.x, rect.xMin, rect.xMax);
+            virtualCursorLocalPos.y = Mathf.Clamp(virtualCursorLocalPos.y, rect.yMin, rect.yMax);
+
+            Vector3 clampedWorld = cropPanel.TransformPoint(virtualCursorLocalPos);
             virtualMousePos = RectTransformUtility.WorldToScreenPoint(uiCam, clampedWorld);
         }
         else
         {
-            virtualMousePos = rawMouse;
+            if (!hasInitializedVirtualMouse)
+            {
+                virtualMousePos = Mouse.current != null ? Mouse.current.position.ReadValue() : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                hasInitializedVirtualMouse = true;
+            }
+
+            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
+            virtualMousePos += delta * mouseSensitivity;
+            virtualMousePos.x = Mathf.Clamp(virtualMousePos.x, 0f, Screen.width);
+            virtualMousePos.y = Mathf.Clamp(virtualMousePos.y, 0f, Screen.height);
         }
     }
 
@@ -125,6 +163,29 @@ public class GridCrawlerController : MonoBehaviour
 
         ResetAllArrows();
 
+        if (hudPauseButton == null) hudPauseButton = FindObjectOfType<PauseButtonUI>(true);
+
+        if (hudPauseButton != null && hudPauseButton.gameObject.activeInHierarchy)
+        {
+            RectTransform pauseRect = hudPauseButton.Rect;
+            if (pauseRect != null && RectTransformUtility.ScreenPointToLocalPointInRectangle(pauseRect, virtualMousePos, uiCam, out Vector2 pauseLocalPoint))
+            {
+                if (hudPauseButton.CheckHitbox(pauseLocalPoint))
+                {
+                    textTargetScale = Vector3.zero;
+                    SetCrosshairModeState(CrosshairMode.Hidden); // Hide entirely while on pause button
+                    hudPauseButton.SetHoverState(true);
+
+                    if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                    {
+                        hudPauseButton.TriggerAction();
+                    }
+                    return;
+                }
+            }
+            hudPauseButton.SetHoverState(false);
+        }
+
         MovementArrowUI hoveredArrow = null;
         foreach (var arrow in allArrows)
         {
@@ -143,10 +204,10 @@ public class GridCrawlerController : MonoBehaviour
         if (hoveredArrow != null)
         {
             textTargetScale = Vector3.zero;
-            SetCrosshairState(CrosshairMode.Hidden); // Hide entirely while on arrows
+            SetCrosshairModeState(CrosshairMode.Hidden); // Hide entirely while on arrows
             hoveredArrow.SetHoverState(true);
 
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 hoveredArrow.TriggerAction();
             }
@@ -160,7 +221,7 @@ public class GridCrawlerController : MonoBehaviour
             InteractableObject interactObj = hit.collider.GetComponent<InteractableObject>();
             if (interactObj != null)
             {
-                SetCrosshairState(CrosshairMode.Interact); // Show interact sprite for 3D objects
+                SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
 
                 if (interactTextUI != null)
                 {
@@ -168,7 +229,7 @@ public class GridCrawlerController : MonoBehaviour
                     textTargetScale = interactObj.hideHoverText ? Vector3.zero : Vector3.one;
                 }
 
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                 {
                     interactObj.onClick.Invoke();
                 }
@@ -176,11 +237,16 @@ public class GridCrawlerController : MonoBehaviour
             }
         }
 
-        SetCrosshairState(CrosshairMode.Default); // Revert to standard dot
+        SetCrosshairModeState(CrosshairMode.Default); // Revert to standard dot
         textTargetScale = Vector3.zero;
     }
 
     private void SetCrosshairState(CrosshairMode mode)
+    {
+        SetCrosshairModeState(mode);
+    }
+
+    private void SetCrosshairModeState(CrosshairMode mode)
     {
         if (defaultCrosshairImg != null) defaultCrosshairImg.enabled = (mode == CrosshairMode.Default);
         if (interactCrosshairImg != null) interactCrosshairImg.enabled = (mode == CrosshairMode.Interact);
@@ -198,7 +264,7 @@ public class GridCrawlerController : MonoBehaviour
     private void HandleMovementInputs()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        float scroll = Mouse.current.scroll.ReadValue().y;
+        float scroll = Mouse.current != null ? Mouse.current.scroll.ReadValue().y : 0f;
 
         if (input.sqrMagnitude > 0 || Mathf.Abs(scroll) > 0.01f)
         {
@@ -209,7 +275,7 @@ public class GridCrawlerController : MonoBehaviour
         }
     }
 
-    public void Action_MoveForward() { if (!isActing) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
+    public void Action_MoveForward() { if (!isActing && gridManager != null) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
     public void Action_TurnAround() { if (!isActing) StartCoroutine(PerformTurn(180f)); }
     public void UI_TurnRight() { if (!isActing) StartCoroutine(PerformTurn(90f)); }
     public void UI_TurnLeft() { if (!isActing) StartCoroutine(PerformTurn(-90f)); }
