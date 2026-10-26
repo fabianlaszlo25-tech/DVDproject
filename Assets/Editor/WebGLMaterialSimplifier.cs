@@ -256,33 +256,24 @@ public class WebGLMaterialSimplifier : EditorWindow
         Dictionary<string, Material> simplifiedMatCache = new Dictionary<string, Material>(StringComparer.OrdinalIgnoreCase);
         Dictionary<Texture, Color32[]> texturePixelsCache = new Dictionary<Texture, Color32[]>();
 
-        List<Renderer> sceneRenderers = CollectAllSceneRenderers();
         List<string> prefabPaths = CollectAllPrefabPaths();
 
-        HashSet<Scene> dirtyScenes = new HashSet<Scene>();
         int modifiedSceneRenderers = 0;
         int modifiedPrefabRenderers = 0;
         int modifiedPrefabsCount = 0;
         int skippedSpecialCount = 0;
 
-        if (sceneRenderers.Count > 0)
+        // STEP 1: Process EVERY scene in the build list (enabled or not) so prefab instances record
+        // their original materials before prefabs are modified. Each scene is opened, simplified and saved.
+        List<string> scenePaths = GetAllScenePathsToProcess(backupDb, false);
+        int processedScenes = ForEachScene(scenePaths, "Simplifying Scene Materials", scene =>
         {
-            Undo.RecordObjects(sceneRenderers.ToArray(), "Simplify Scene Materials for WebGL");
-        }
-
-        AssetDatabase.StartAssetEditing();
-        try
-        {
-            // STEP 1: Process Scene Renderers first so prefab instances record their original materials before prefabs are modified
+            List<Renderer> sceneRenderers = CollectRenderersInScene(scene);
+            bool sceneChanged = false;
             for (int rIdx = 0; rIdx < sceneRenderers.Count; rIdx++)
             {
                 Renderer renderer = sceneRenderers[rIdx];
                 if (renderer == null) continue;
-
-                EditorUtility.DisplayProgressBar(
-                    "Simplifying Scene Materials",
-                    $"Scene: {renderer.gameObject.name} ({rIdx + 1}/{sceneRenderers.Count})",
-                    (float)(rIdx + 1) / Mathf.Max(1, sceneRenderers.Count));
 
                 RendererBackupEntry backupEntry = GetOrCreateSceneBackupEntry(renderer, existingEntryMap, backupDb);
                 bool changed = ProcessRendererSlots(
@@ -300,14 +291,20 @@ public class WebGLMaterialSimplifier : EditorWindow
                 if (changed)
                 {
                     EditorUtility.SetDirty(renderer);
-                    if (renderer.gameObject.scene.IsValid())
-                    {
-                        dirtyScenes.Add(renderer.gameObject.scene);
-                    }
+                    sceneChanged = true;
                     modifiedSceneRenderers++;
                 }
             }
 
+            // Persist the backup after every scene so nothing is lost if a later scene fails
+            SaveBackupDatabase(backupDb);
+            SaveOverridesDatabase(overridesDb);
+            return sceneChanged;
+        });
+
+        AssetDatabase.StartAssetEditing();
+        try
+        {
             // STEP 2: Process all Prefab Assets across Assets/
             for (int pIdx = 0; pIdx < prefabPaths.Count; pIdx++)
             {
@@ -374,15 +371,11 @@ public class WebGLMaterialSimplifier : EditorWindow
         SaveBackupDatabase(backupDb);
         SaveOverridesDatabase(overridesDb);
 
-        foreach (Scene scene in dirtyScenes)
-        {
-            EditorSceneManager.MarkSceneDirty(scene);
-        }
-
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         Debug.Log($"[WebGLMaterialSimplifier] Simplification complete! " +
+                  $"Processed {processedScenes} scenes. " +
                   $"Updated {modifiedSceneRenderers} Scene Renderers and {modifiedPrefabRenderers} Prefab Renderers across {modifiedPrefabsCount} Prefabs " +
                   $"({simplifiedMatCache.Count} per-mesh Simple Lit materials active). " +
                   $"Skipped/preserved {skippedSpecialCount} Particle System / RenderTexture slots.");
@@ -611,111 +604,114 @@ public class WebGLMaterialSimplifier : EditorWindow
 
         Dictionary<string, GeneratedMaterialLink> linkBySimplifiedPath = BuildSimplifiedLinkMap(backupDb);
 
-        List<Renderer> allSceneRenderers = CollectAllSceneRenderers();
-        if (allSceneRenderers.Count > 0)
-        {
-            Undo.RecordObjects(allSceneRenderers.ToArray(), "Restore Original Scene Materials");
-        }
-
-        Dictionary<string, Renderer> byRendererGlobalId = new Dictionary<string, Renderer>();
-        Dictionary<string, Renderer> byGoGlobalIdAndCompIndex = new Dictionary<string, Renderer>();
-        Dictionary<string, Renderer> byIndexedPath = new Dictionary<string, Renderer>();
-        Dictionary<string, List<Renderer>> byHierarchyPath = new Dictionary<string, List<Renderer>>();
-
-        foreach (Renderer r in allSceneRenderers)
-        {
-            if (r == null) continue;
-
-            string rGlobalId = GetGlobalObjectIdString(r);
-            if (!string.IsNullOrEmpty(rGlobalId) && !byRendererGlobalId.ContainsKey(rGlobalId))
-            {
-                byRendererGlobalId[rGlobalId] = r;
-            }
-
-            string goGlobalId = GetGlobalObjectIdString(r.gameObject);
-            int compIdx = GetRendererComponentIndex(r);
-            string goKey = $"{goGlobalId}|{compIdx}";
-            if (!string.IsNullOrEmpty(goGlobalId) && !byGoGlobalIdAndCompIndex.ContainsKey(goKey))
-            {
-                byGoGlobalIdAndCompIndex[goKey] = r;
-            }
-
-            string scenePrefix = r.gameObject.scene.path ?? r.gameObject.scene.name;
-            string idxPathKey = $"{scenePrefix}|{GetIndexedHierarchyPath(r.transform)}|{compIdx}";
-            if (!byIndexedPath.ContainsKey(idxPathKey))
-            {
-                byIndexedPath[idxPathKey] = r;
-            }
-
-            string plainPathKey = $"{scenePrefix}|{GetHierarchyPath(r.transform)}|{r.GetType().FullName}";
-            if (!byHierarchyPath.TryGetValue(plainPathKey, out List<Renderer> list))
-            {
-                list = new List<Renderer>();
-                byHierarchyPath[plainPathKey] = list;
-            }
-            list.Add(r);
-        }
-
-        HashSet<Scene> dirtyScenes = new HashSet<Scene>();
-        HashSet<GameObject> dirtyPrefabRoots = new HashSet<GameObject>();
         int restoredSceneRenderers = 0;
         int restoredPrefabRenderers = 0;
+        HashSet<GameObject> dirtyPrefabRoots = new HashSet<GameObject>();
 
+        // STEP 1: Restore every scene (build list + any scene recorded in the backup).
+        // Each scene is restored ONLY from its own backup entries so scenes can never cross-contaminate.
+        List<string> scenePaths = GetAllScenePathsToProcess(backupDb, true);
+        int processedScenes = ForEachScene(scenePaths, "Restoring Original Scene Materials", scene =>
+        {
+            string scenePath = NormalizePath(scene.path);
+            List<Renderer> sceneRenderers = CollectRenderersInScene(scene);
+
+            Dictionary<string, Renderer> byRendererGlobalId = new Dictionary<string, Renderer>();
+            Dictionary<string, Renderer> byGoGlobalIdAndCompIndex = new Dictionary<string, Renderer>();
+            Dictionary<string, Renderer> byIndexedPath = new Dictionary<string, Renderer>();
+            Dictionary<string, List<Renderer>> byHierarchyPath = new Dictionary<string, List<Renderer>>();
+
+            foreach (Renderer r in sceneRenderers)
+            {
+                if (r == null) continue;
+
+                string rGlobalId = GetGlobalObjectIdString(r);
+                if (IsUsableGlobalId(rGlobalId) && !byRendererGlobalId.ContainsKey(rGlobalId))
+                    byRendererGlobalId[rGlobalId] = r;
+
+                string goGlobalId = GetGlobalObjectIdString(r.gameObject);
+                int compIdx = GetRendererComponentIndex(r);
+                string goKey = $"{goGlobalId}|{compIdx}";
+                if (IsUsableGlobalId(goGlobalId) && !byGoGlobalIdAndCompIndex.ContainsKey(goKey))
+                    byGoGlobalIdAndCompIndex[goKey] = r;
+
+                string idxPathKey = $"{scenePath}|{GetIndexedHierarchyPath(r.transform)}|{compIdx}";
+                if (!byIndexedPath.ContainsKey(idxPathKey))
+                    byIndexedPath[idxPathKey] = r;
+
+                string plainPathKey = $"{scenePath}|{GetHierarchyPath(r.transform)}|{r.GetType().FullName}";
+                if (!byHierarchyPath.TryGetValue(plainPathKey, out List<Renderer> list))
+                {
+                    list = new List<Renderer>();
+                    byHierarchyPath[plainPathKey] = list;
+                }
+                list.Add(r);
+            }
+
+            bool sceneChanged = false;
+            HashSet<Renderer> alreadyRestored = new HashSet<Renderer>();
+
+            foreach (RendererBackupEntry entry in backupDb.entries)
+            {
+                if (entry.isPrefabAsset) continue;
+                if (!string.Equals(NormalizePath(entry.scenePath), scenePath, StringComparison.OrdinalIgnoreCase)) continue;
+
+                Renderer sceneRenderer = FindMatchingSceneRenderer(
+                    entry,
+                    scenePath,
+                    byRendererGlobalId,
+                    byGoGlobalIdAndCompIndex,
+                    byIndexedPath,
+                    byHierarchyPath);
+
+                if (sceneRenderer == null || !alreadyRestored.Add(sceneRenderer)) continue;
+
+                if (RestoreRendererFromEntry(sceneRenderer, entry, linkBySimplifiedPath))
+                {
+                    EditorUtility.SetDirty(sceneRenderer);
+                    sceneChanged = true;
+                    restoredSceneRenderers++;
+                }
+            }
+
+            // Safety pass: restore any remaining generated materials via the global link table
+            foreach (Renderer r in sceneRenderers)
+            {
+                if (r != null && RestoreAnyRemainingSimplifiedMaterials(r, linkBySimplifiedPath))
+                {
+                    EditorUtility.SetDirty(r);
+                    sceneChanged = true;
+                    restoredSceneRenderers++;
+                }
+            }
+
+            return sceneChanged;
+        });
+
+        // STEP 2: Restore prefab assets
         AssetDatabase.StartAssetEditing();
         try
         {
             for (int i = 0; i < backupDb.entries.Count; i++)
             {
                 RendererBackupEntry entry = backupDb.entries[i];
+                if (!entry.isPrefabAsset) continue;
+
                 EditorUtility.DisplayProgressBar(
                     "Restoring Original Materials",
                     $"Restoring {entry.hierarchyPath} ({i + 1}/{backupDb.entries.Count})",
                     (float)(i + 1) / backupDb.entries.Count);
 
-                if (entry.isPrefabAsset)
+                Renderer prefabRenderer = FindMatchingPrefabRenderer(entry, out GameObject prefabRoot);
+                if (prefabRenderer != null && RestoreRendererFromEntry(prefabRenderer, entry, linkBySimplifiedPath))
                 {
-                    Renderer prefabRenderer = FindMatchingPrefabRenderer(entry, out GameObject prefabRoot);
-                    if (prefabRenderer != null && RestoreRendererFromEntry(prefabRenderer, entry, linkBySimplifiedPath))
+                    EditorUtility.SetDirty(prefabRenderer);
+                    if (prefabRoot != null)
                     {
-                        EditorUtility.SetDirty(prefabRenderer);
-                        if (prefabRoot != null)
-                        {
-                            EditorUtility.SetDirty(prefabRoot);
-                            dirtyPrefabRoots.Add(prefabRoot);
-                        }
-                        restoredPrefabRenderers++;
+                        EditorUtility.SetDirty(prefabRoot);
+                        dirtyPrefabRoots.Add(prefabRoot);
                     }
-                }
-                else
-                {
-                    Renderer sceneRenderer = FindMatchingSceneRenderer(
-                        entry,
-                        byRendererGlobalId,
-                        byGoGlobalIdAndCompIndex,
-                        byIndexedPath,
-                        byHierarchyPath);
-
-                    if (sceneRenderer != null && RestoreRendererFromEntry(sceneRenderer, entry, linkBySimplifiedPath))
-                    {
-                        EditorUtility.SetDirty(sceneRenderer);
-                        if (sceneRenderer.gameObject.scene.IsValid())
-                        {
-                            dirtyScenes.Add(sceneRenderer.gameObject.scene);
-                        }
-                        restoredSceneRenderers++;
-                    }
-                }
-            }
-
-            // Safety pass: restore any remaining generated materials via the global link table
-            foreach (Renderer r in allSceneRenderers)
-            {
-                if (r != null && RestoreAnyRemainingSimplifiedMaterials(r, linkBySimplifiedPath))
-                {
-                    EditorUtility.SetDirty(r);
-                    if (r.gameObject.scene.IsValid())
-                        dirtyScenes.Add(r.gameObject.scene);
-                    restoredSceneRenderers++;
+                    restoredPrefabRenderers++;
                 }
             }
 
@@ -749,15 +745,125 @@ public class WebGLMaterialSimplifier : EditorWindow
             EditorUtility.ClearProgressBar();
         }
 
-        foreach (Scene scene in dirtyScenes)
-        {
-            EditorSceneManager.MarkSceneDirty(scene);
-        }
-
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log($"[WebGLMaterialSimplifier] Restored {restoredSceneRenderers} Scene Renderers and {restoredPrefabRenderers} Prefab Renderers ({dirtyPrefabRoots.Count} Prefabs) to their original materials.");
+        Debug.Log($"[WebGLMaterialSimplifier] Restored {restoredSceneRenderers} Scene Renderers across {processedScenes} scenes and {restoredPrefabRenderers} Prefab Renderers ({dirtyPrefabRoots.Count} Prefabs) to their original materials.");
+    }
+
+    private static bool IsUsableGlobalId(string gid)
+    {
+        return !string.IsNullOrEmpty(gid) && gid != "GlobalObjectId_V1-0-00000000000000000000000000000000-0-0";
+    }
+
+    /// <summary>
+    /// Returns every scene in the Build Settings list (enabled OR disabled), plus, when requested,
+    /// any additional scene paths recorded in the backup database that still exist on disk.
+    /// Falls back to the currently open scenes if the build list is empty.
+    /// </summary>
+    private static List<string> GetAllScenePathsToProcess(SceneMaterialBackupDatabase backupDb, bool includeBackupScenes)
+    {
+        List<string> result = new List<string>();
+        HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void AddPath(string p)
+        {
+            p = NormalizePath(p);
+            if (string.IsNullOrEmpty(p) || !p.EndsWith(".unity", StringComparison.OrdinalIgnoreCase)) return;
+            if (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID(p))) return;
+            if (seen.Add(p)) result.Add(p);
+        }
+
+        foreach (EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+            AddPath(s.path);
+
+        if (includeBackupScenes && backupDb != null && backupDb.entries != null)
+        {
+            foreach (RendererBackupEntry e in backupDb.entries)
+            {
+                if (!e.isPrefabAsset) AddPath(e.scenePath);
+            }
+        }
+
+        if (result.Count == 0)
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                AddPath(SceneManager.GetSceneAt(i).path);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Opens each scene in turn, runs the action (which returns true if the scene was modified),
+    /// saves modified scenes, and finally restores the user's original open-scene layout.
+    /// Returns the number of scenes processed.
+    /// </summary>
+    private static int ForEachScene(List<string> scenePaths, string progressTitle, Func<Scene, bool> action)
+    {
+        if (scenePaths == null || scenePaths.Count == 0)
+            return 0;
+
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return 0;
+
+        SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
+        int processed = 0;
+
+        try
+        {
+            for (int i = 0; i < scenePaths.Count; i++)
+            {
+                string path = scenePaths[i];
+                EditorUtility.DisplayProgressBar(progressTitle, $"{Path.GetFileName(path)} ({i + 1}/{scenePaths.Count})", (float)(i + 1) / scenePaths.Count);
+
+                Scene scene;
+                try
+                {
+                    scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[WebGLMaterialSimplifier] Could not open scene '{path}': {ex.Message}");
+                    continue;
+                }
+
+                if (!scene.IsValid() || !scene.isLoaded) continue;
+
+                bool changed = action(scene);
+                if (changed)
+                {
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    EditorSceneManager.SaveScene(scene);
+                }
+                processed++;
+            }
+        }
+        finally
+        {
+            EditorUtility.ClearProgressBar();
+            if (originalSetup != null && originalSetup.Length > 0)
+                EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
+        }
+
+        return processed;
+    }
+
+    private static List<Renderer> CollectRenderersInScene(Scene scene)
+    {
+        List<Renderer> result = new List<Renderer>();
+        if (!scene.IsValid() || !scene.isLoaded)
+            return result;
+
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (r != null && !EditorUtility.IsPersistent(r))
+                    result.Add(r);
+            }
+        }
+        return result;
     }
 
     private static bool RestoreRendererFromEntry(
@@ -2020,34 +2126,27 @@ public class WebGLMaterialSimplifier : EditorWindow
 
     private static Renderer FindMatchingSceneRenderer(
         RendererBackupEntry entry,
+        string loadedScenePath,
         Dictionary<string, Renderer> byRendererGlobalId,
         Dictionary<string, Renderer> byGoGlobalIdAndCompIndex,
         Dictionary<string, Renderer> byIndexedPath,
         Dictionary<string, List<Renderer>> byHierarchyPath)
     {
-        if (!string.IsNullOrEmpty(entry.rendererGlobalObjectId) &&
+        if (IsUsableGlobalId(entry.rendererGlobalObjectId) &&
             byRendererGlobalId.TryGetValue(entry.rendererGlobalObjectId, out Renderer rByGid) &&
             rByGid != null)
         {
             return rByGid;
         }
 
-        if (!string.IsNullOrEmpty(entry.rendererGlobalObjectId) &&
-            GlobalObjectId.TryParse(entry.rendererGlobalObjectId, out GlobalObjectId parsedGid))
-        {
-            Renderer resolved = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(parsedGid) as Renderer;
-            if (resolved != null && !EditorUtility.IsPersistent(resolved))
-                return resolved;
-        }
-
-        if (!string.IsNullOrEmpty(entry.gameObjectGlobalObjectId))
+        if (IsUsableGlobalId(entry.gameObjectGlobalObjectId))
         {
             string goKey = $"{entry.gameObjectGlobalObjectId}|{entry.rendererComponentIndex}";
             if (byGoGlobalIdAndCompIndex.TryGetValue(goKey, out Renderer rByGoGid) && rByGoGid != null)
                 return rByGoGid;
         }
 
-        string scenePrefix = !string.IsNullOrEmpty(entry.scenePath) ? entry.scenePath : entry.sceneName;
+        string scenePrefix = !string.IsNullOrEmpty(loadedScenePath) ? loadedScenePath : (!string.IsNullOrEmpty(entry.scenePath) ? entry.scenePath : entry.sceneName);
         string idxKey = $"{scenePrefix}|{entry.indexedHierarchyPath}|{entry.rendererComponentIndex}";
         if (byIndexedPath.TryGetValue(idxKey, out Renderer rByIdxPath) && rByIdxPath != null)
             return rByIdxPath;

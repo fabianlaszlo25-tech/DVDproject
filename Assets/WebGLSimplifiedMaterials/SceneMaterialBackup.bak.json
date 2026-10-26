@@ -1,5 +1,5 @@
 {
-    "lastUpdatedTimestamp": "2026-10-25 00:39:52",
+    "lastUpdatedTimestamp": "2026-10-26 13:59:09",
     "entries": [
         {
             "isPrefabAsset": false,
@@ -63918,6 +63918,2693 @@
                     "wasNull": false
                 }
             ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10260342704737214854-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10010250181007812508-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/BackSide_0",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/BackSide_0[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_4",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10557927154453206857-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6017816157921277026-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/BackSide_1",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/BackSide_1[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_67",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14531233241255969000-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7205475105698747368-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_0",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_0[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10483733541105477959-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10694994511664576276-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_1",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_1[3]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_1",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2136241368754117540-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9494992222309832612-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_2",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_2[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_10",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7916174940041367635-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14729251817005233949-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_3",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_3[5]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_11",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4592457642004674057-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8419707055665506375-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_4",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_4[6]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_12",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-12939229181806703328-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3138320909498665069-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_5",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_5[7]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_13",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6171192724053993448-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16583642092156614291-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_6",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_6[8]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_14",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1613264198424661293-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11066558009694977273-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_7",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_7[9]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_15",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7419001315587223380-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4339992753878066730-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_8",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_8[10]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_16",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-15886625649873197889-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7376079656630615533-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_9",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_9[11]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_17",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7884476780085656903-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5127633842651963790-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_10",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_10[12]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_18",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14141306109187782483-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5404718560739524610-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_11",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_11[13]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_19",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-15218720000249603536-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17821824115540650374-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_13",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_13[14]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_20",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-284653335670179685-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7331773760007386404-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_14",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_14[15]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_21",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10349109310878068997-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9220317581524330341-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_15",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_15[16]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_22",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7319748289447772117-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17747959753401748253-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_16",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_16[17]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_23",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-15098780612346791471-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9435969958073394568-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_17",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_17[18]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_24",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2051834833038938845-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14048341679455310372-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_18",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_18[19]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_25",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1306434127676198433-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1793560294962767581-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_19",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_19[20]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_26",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4612540760083928613-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11447980039013276929-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_20",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_20[21]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_27",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7922843204054100161-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3593564604275601198-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_21",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_21[22]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_28",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3816184927016402556-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-12964234418036891932-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_22",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_22[23]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_29",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2310170736940738453-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16654916609293321405-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_23",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_23[24]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_3",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11742014288079722380-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8944051899185850313-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_24",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_24[25]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_30",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13019306556438250961-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16485216232667945787-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_25",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_25[26]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_31",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4838389936207004216-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10090633945721083792-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_26",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_26[27]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_32",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-821021575724332131-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6040580749177069248-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_28",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_28[28]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_34",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11161632177691264695-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11938992079323765256-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_30",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_30[29]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_36",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5048454968618951466-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2980954637147884307-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_32",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_32[30]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_38",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9100082153796678995-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4190916651779184968-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_33",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_33[31]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_39",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9435226722716638473-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7054696306058165095-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_34",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_34[32]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_4",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17124198275318941966-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-15370011003280280838-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_35",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_35[33]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_40",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4717660549091735697-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8199722158081339222-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_36",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_36[34]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_41",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13373279016005536412-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-12527051352969988274-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_38",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_38[35]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_43",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10777628739765850598-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13481807962744245636-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_39",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_39[36]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_44",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7065295029302964546-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8103803447822800320-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_40",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_40[37]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_45",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9944650694333323077-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2897195190934805027-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_42",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_42[38]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_47",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16458814375789291207-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1371665576065049424-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_43",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_43[39]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_48",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-116383354266108641-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14459368741213190540-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_44",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_44[40]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_49",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4252359381982102595-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7132651261041810994-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_46",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_46[41]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_50",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16667172324926534042-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17847014085627589177-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_48",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_48[42]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_52",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14623796489706044368-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-18302540381145161755-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_49",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_49[43]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_53",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13747731539989321604-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17436033883627589853-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_50",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_50[44]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_54",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13024278589395304126-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14073499947048776813-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_52",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_52[45]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_56",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6520597722779159959-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16560420597437765237-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_53",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_53[46]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_57",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2419164178783726008-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-13631980727250939423-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_54",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_54[47]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_58",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3340848905842748088-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7678280615583704406-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_55",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_55[48]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_59",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10586835402386428527-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6715056248726416574-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_56",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_56[49]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_6",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-10552712898235434915-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8364422375273017905-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_57",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_57[50]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_60",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4261173539632400744-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5290385157091132102-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_58",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_58[51]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_61",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16508549217375528383-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-16861882606563089130-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_59",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_59[52]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_62",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2558917799312953861-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-6858516893094475944-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_61",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_61[53]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_64",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7557329348870951725-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-14414057061295155371-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_62",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_62[54]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_65",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4910051080414113496-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-17085057496026195293-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_63",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_63[55]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_66",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11266055476406429845-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7771835372945562443-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_64",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_64[56]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_7",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-11326147847320519308-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8016629977932807090-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_65",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_65[57]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_8",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-7865569357183752160-677787162",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2919632136246731693-677787162",
+            "hierarchyPath": "bar2/USDRoot/model/Geom/skp6F87__USDInstance_1/FrontSide_66",
+            "indexedHierarchyPath": "bar2[0]/USDRoot[0]/model[0]/Geom[0]/skp6F87__USDInstance_1[0]/FrontSide_66[58]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "73a69738bdc2341418ef1f32a7595c83",
+                    "materialAssetPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+                    "materialName": "TextureMaterial_9",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-571716881-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-571716879-0",
+            "hierarchyPath": "DVDSetup/Camera/DVDLogo/dvd",
+            "indexedHierarchyPath": "DVDSetup[1]/Camera[0]/DVDLogo[0]/dvd[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "13646b1af6e3fde4d9b7f03bdd8ec051",
+                    "materialAssetPath": "Assets/materials/EMMISSIVES 1.mat",
+                    "materialName": "EMMISSIVES 1_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1764662381-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1764662379-0",
+            "hierarchyPath": "DVDSetup/Camera/DVDLogo/dvd/Torus",
+            "indexedHierarchyPath": "DVDSetup[1]/Camera[0]/DVDLogo[0]/dvd[0]/Torus[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "4545216d9d744594183d7e786985be10",
+                    "materialAssetPath": "Assets/materials/EMMISSIVES.mat",
+                    "materialName": "EMMISSIVES_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-617764266-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-617764264-0",
+            "hierarchyPath": "DVDSetup/Camera/DVDLogo/edge",
+            "indexedHierarchyPath": "DVDSetup[1]/Camera[0]/DVDLogo[0]/edge[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "0fcc102379b758b488e0ef3ee56d9553",
+                    "materialAssetPath": "Assets/materials/EMMISSIVES 2.mat",
+                    "materialName": "EMMISSIVES 2",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-100860458-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-100860456-0",
+            "hierarchyPath": "DVDSetup/Camera/DVDLogo/corner",
+            "indexedHierarchyPath": "DVDSetup[1]/Camera[0]/DVDLogo[0]/corner[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "8a303e05ecb9bcd46900f0b26e3d5a22",
+                    "materialAssetPath": "Assets/materials/EMMISSIVES 3.mat",
+                    "materialName": "EMMISSIVES 3",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2040945159-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2040945155-0",
+            "hierarchyPath": "DVDSetup/Camera/bgvideo",
+            "indexedHierarchyPath": "DVDSetup[1]/Camera[0]/bgvideo[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "42202f1c444098b44b4aad8373ff445a",
+                    "materialAssetPath": "Assets/videos/videomat.mat",
+                    "materialName": "videomat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-671277280-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-671277278-0",
+            "hierarchyPath": "DVDSetup/Televisor_80",
+            "indexedHierarchyPath": "DVDSetup[1]/Televisor_80[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "a0a346d6d6d1ac541b8e861eb83d16ae",
+                    "materialAssetPath": "Assets/AssetSlop/_Television_set/Sources/Materials/tv.mat",
+                    "materialName": "tv_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "a0a346d6d6d1ac541b8e861eb83d16ae",
+                    "materialAssetPath": "Assets/AssetSlop/_Television_set/Sources/Materials/tv.mat",
+                    "materialName": "tv_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1809295923-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1809295920-0",
+            "hierarchyPath": "DVDSetup/Televisor_80/screen",
+            "indexedHierarchyPath": "DVDSetup[1]/Televisor_80[1]/screen[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "fb54e752f6588174cad1788b251dfbb6",
+                    "materialAssetPath": "Assets/Scripts/DVD BOUNCER/SCREENMAT.mat",
+                    "materialName": "SCREENMAT_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-394691823-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-394691820-0",
+            "hierarchyPath": "DVDSetup/Televisor_80/screen (1)",
+            "indexedHierarchyPath": "DVDSetup[1]/Televisor_80[1]/screen (1)[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "fb54e752f6588174cad1788b251dfbb6",
+                    "materialAssetPath": "Assets/Scripts/DVD BOUNCER/SCREENMAT.mat",
+                    "materialName": "SCREENMAT_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-819558268-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-819558265-0",
+            "hierarchyPath": "DVDSetup/Televisor_80/screen (2)",
+            "indexedHierarchyPath": "DVDSetup[1]/Televisor_80[1]/screen (2)[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "fb54e752f6588174cad1788b251dfbb6",
+                    "materialAssetPath": "Assets/Scripts/DVD BOUNCER/SCREENMAT.mat",
+                    "materialName": "SCREENMAT_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-181832731-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-181832729-0",
+            "hierarchyPath": "DVDSetup/Televisor_80/crt",
+            "indexedHierarchyPath": "DVDSetup[1]/Televisor_80[1]/crt[3]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "795a5e937bbd85748ae042e22050c999",
+                    "materialAssetPath": "Assets/Shaders/crt2.mat",
+                    "materialName": "crt2",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3514123872764295516-2028949021",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3153735228233242761-2028949021",
+            "hierarchyPath": "Player",
+            "indexedHierarchyPath": "Player[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "9bd4dacb7281bb74cb573b1048655f53",
+                    "materialAssetPath": "Assets/AssetSlop/AK Studio Art/WhellChair/Materials/WhellChair.mat",
+                    "materialName": "WhellChair",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2978243140760853327-2028949021",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-9033706703351619583-2028949021",
+            "hierarchyPath": "Player/Left_Wheel",
+            "indexedHierarchyPath": "Player[4]/Left_Wheel[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "9bd4dacb7281bb74cb573b1048655f53",
+                    "materialAssetPath": "Assets/AssetSlop/AK Studio Art/WhellChair/Materials/WhellChair.mat",
+                    "materialName": "WhellChair",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-2117862787899067868-2028949021",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-8662941202865153870-2028949021",
+            "hierarchyPath": "Player/Right_Wheel",
+            "indexedHierarchyPath": "Player[4]/Right_Wheel[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "9bd4dacb7281bb74cb573b1048655f53",
+                    "materialAssetPath": "Assets/AssetSlop/AK Studio Art/WhellChair/Materials/WhellChair.mat",
+                    "materialName": "WhellChair",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000011791007362-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010922764834-103581008",
+            "hierarchyPath": "Player/Winston/CC_Base_Body",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/CC_Base_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "efa800d59fc3d2641ad43149a3078979",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Skin_Body_Diffuse.mat",
+                    "materialName": "Skin_Body_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "8968d908a4ac44d45b35c91a3ebf5a52",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Skin_Head_Diffuse.mat",
+                    "materialName": "Skin_Head_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 2,
+                    "materialGuid": "94d9f8201d439e744a9d30da955e4d2e",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Eyelash_Diffuse.mat",
+                    "materialName": "Eyelash_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 3,
+                    "materialGuid": "fec259d45a2217640840704f652999e2",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Fingernail_Diffuse.mat",
+                    "materialName": "Fingernail_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 4,
+                    "materialGuid": "40f2a8256f67df54f838814bc3213cd3",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Toenail_Diffuse.mat",
+                    "materialName": "Toenail_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000012219923126-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013202627486-103581008",
+            "hierarchyPath": "Player/Winston/CC_Base_Eye",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/CC_Base_Eye[2]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "93eccb7563d1f2f468ad3a8c3268ff3e",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Eye_Diffuse.mat",
+                    "materialName": "Eye_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "19b1faa80ce669f488121b1bf0ad0c2f",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Cornea_Diffuse.mat",
+                    "materialName": "Cornea_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013522576120-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000011012096696-103581008",
+            "hierarchyPath": "Player/Winston/CC_Base_Teeth",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/CC_Base_Teeth[3]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "cb1f382a2f1fc4246ac8b0b403a871ae",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Upper_Teeth_Diffuse.mat",
+                    "materialName": "Upper_Teeth_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "df38a83a3ea85ca4491eec5d02e6e2bc",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Lower_Teeth_Diffuse.mat",
+                    "materialName": "Lower_Teeth_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000012160469588-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013503389710-103581008",
+            "hierarchyPath": "Player/Winston/CC_Base_Tongue",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/CC_Base_Tongue[4]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "6e88f436d6cdac545bfdfcc7f92fd667",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Tongue_Diffuse.mat",
+                    "materialName": "Tongue_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013924255666-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010441200588-103581008",
+            "hierarchyPath": "Player/Winston/Classic Shorts",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Classic Shorts[5]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "27ab3928f9baac643b73ca236a49aaea",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Classic Shorts_Diffuse.mat",
+                    "materialName": "Classic Shorts_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000011200665718-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000011563586098-103581008",
+            "hierarchyPath": "Player/Winston/Dummy",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Dummy[6]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "4f8d6bbfdd912d1408e7d07ec6342057",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Dummy.mat",
+                    "materialName": "Dummy_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013249861746-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010960074772-103581008",
+            "hierarchyPath": "Player/Winston/Dummy_Transform",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Dummy_Transform[7]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "eefc7f574f8f7ba45b4d12fc83f064ed",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Standard_7.mat",
+                    "materialName": "Standard_7_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013483166942-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013945468404-103581008",
+            "hierarchyPath": "Player/Winston/Flip-flops",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Flip-flops[8]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f83b545639561e54c8531f6f84f492b5",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Flip-flops_Diffuse.mat",
+                    "materialName": "Flip-flops_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000010907697414-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013442284102-103581008",
+            "hierarchyPath": "Player/Winston/Hair_M01",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Hair_M01[9]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "4daf983e2d082f54b8db5c240f8b7589",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/RL_Hair_Diffuse.mat",
+                    "materialName": "RL_Hair_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013258991868-103581008",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000012698052558-103581008",
+            "hierarchyPath": "Player/Winston/Tank top",
+            "indexedHierarchyPath": "Player[4]/Winston[3]/Tank top[10]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f1ea59796cf0136448d2c4e8481ef42a",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Tank top_Diffuse.mat",
+                    "materialName": "Tank top_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000011791007362-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010922764834-1424527999",
+            "hierarchyPath": "Player/forAnims/CC_Base_Body",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/CC_Base_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "efa800d59fc3d2641ad43149a3078979",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Skin_Body_Diffuse.mat",
+                    "materialName": "Skin_Body_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "8968d908a4ac44d45b35c91a3ebf5a52",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Skin_Head_Diffuse.mat",
+                    "materialName": "Skin_Head_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 2,
+                    "materialGuid": "94d9f8201d439e744a9d30da955e4d2e",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Eyelash_Diffuse.mat",
+                    "materialName": "Eyelash_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 3,
+                    "materialGuid": "fec259d45a2217640840704f652999e2",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Fingernail_Diffuse.mat",
+                    "materialName": "Fingernail_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 4,
+                    "materialGuid": "40f2a8256f67df54f838814bc3213cd3",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Toenail_Diffuse.mat",
+                    "materialName": "Toenail_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000012219923126-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013202627486-1424527999",
+            "hierarchyPath": "Player/forAnims/CC_Base_Eye",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/CC_Base_Eye[2]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "93eccb7563d1f2f468ad3a8c3268ff3e",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Eye_Diffuse.mat",
+                    "materialName": "Eye_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "19b1faa80ce669f488121b1bf0ad0c2f",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Cornea_Diffuse.mat",
+                    "materialName": "Cornea_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013522576120-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000011012096696-1424527999",
+            "hierarchyPath": "Player/forAnims/CC_Base_Teeth",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/CC_Base_Teeth[3]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "cb1f382a2f1fc4246ac8b0b403a871ae",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Upper_Teeth_Diffuse.mat",
+                    "materialName": "Upper_Teeth_Diffuse_backup",
+                    "wasNull": false
+                },
+                {
+                    "slotIndex": 1,
+                    "materialGuid": "df38a83a3ea85ca4491eec5d02e6e2bc",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Lower_Teeth_Diffuse.mat",
+                    "materialName": "Lower_Teeth_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000012160469588-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013503389710-1424527999",
+            "hierarchyPath": "Player/forAnims/CC_Base_Tongue",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/CC_Base_Tongue[4]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "6e88f436d6cdac545bfdfcc7f92fd667",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Tongue_Diffuse.mat",
+                    "materialName": "Tongue_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013924255666-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010441200588-1424527999",
+            "hierarchyPath": "Player/forAnims/Classic Shorts",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Classic Shorts[5]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "27ab3928f9baac643b73ca236a49aaea",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Classic Shorts_Diffuse.mat",
+                    "materialName": "Classic Shorts_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000011200665718-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000011563586098-1424527999",
+            "hierarchyPath": "Player/forAnims/Dummy",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Dummy[6]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "4f8d6bbfdd912d1408e7d07ec6342057",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Dummy.mat",
+                    "materialName": "Dummy_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013249861746-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000010960074772-1424527999",
+            "hierarchyPath": "Player/forAnims/Dummy_Transform",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Dummy_Transform[7]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "eefc7f574f8f7ba45b4d12fc83f064ed",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Standard_7.mat",
+                    "materialName": "Standard_7_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013483166942-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013945468404-1424527999",
+            "hierarchyPath": "Player/forAnims/Flip-flops",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Flip-flops[8]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f83b545639561e54c8531f6f84f492b5",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Flip-flops_Diffuse.mat",
+                    "materialName": "Flip-flops_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000010907697414-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000013442284102-1424527999",
+            "hierarchyPath": "Player/forAnims/Hair_M01",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Hair_M01[9]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "4daf983e2d082f54b8db5c240f8b7589",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/RL_Hair_Diffuse.mat",
+                    "materialName": "RL_Hair_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-137000013258991868-1424527999",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1000012698052558-1424527999",
+            "hierarchyPath": "Player/forAnims/Tank top",
+            "indexedHierarchyPath": "Player[4]/forAnims[4]/Tank top[10]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f1ea59796cf0136448d2c4e8481ef42a",
+                    "materialAssetPath": "Assets/AssetSlop/Winston/Materials/Tank top_Diffuse.mat",
+                    "materialName": "Tank top_Diffuse_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4535342659812024158-673266955",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5949321586149183240-673266955",
+            "hierarchyPath": "BoosterObjects/energyINACTIVE/Soda can_LOD0",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyINACTIVE[0]/Soda can_LOD0[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1127762282191404000-673266955",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3044540938731113636-673266955",
+            "hierarchyPath": "BoosterObjects/energyINACTIVE/Soda can_LOD1",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyINACTIVE[0]/Soda can_LOD1[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4727725115694866810-673266955",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4253207982381224358-673266955",
+            "hierarchyPath": "BoosterObjects/energyINACTIVE/Soda can_LOD2",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyINACTIVE[0]/Soda can_LOD2[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4535342659812024158-2078175243",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5949321586149183240-2078175243",
+            "hierarchyPath": "BoosterObjects/energyACTIVE/Soda can_LOD0",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyACTIVE[1]/Soda can_LOD0[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f32dbcb94073f3c43b1c702f0b66329f",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Cannon/Soda can 1/Soda can 1 orange dirt mat.mat",
+                    "materialName": "Soda can 1 orange dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1127762282191404000-2078175243",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-3044540938731113636-2078175243",
+            "hierarchyPath": "BoosterObjects/energyACTIVE/Soda can_LOD1",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyACTIVE[1]/Soda can_LOD1[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f32dbcb94073f3c43b1c702f0b66329f",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Cannon/Soda can 1/Soda can 1 orange dirt mat.mat",
+                    "materialName": "Soda can 1 orange dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4727725115694866810-2078175243",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4253207982381224358-2078175243",
+            "hierarchyPath": "BoosterObjects/energyACTIVE/Soda can_LOD2",
+            "indexedHierarchyPath": "BoosterObjects[6]/energyACTIVE[1]/Soda can_LOD2[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "f32dbcb94073f3c43b1c702f0b66329f",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Cannon/Soda can 1/Soda can 1 orange dirt mat.mat",
+                    "materialName": "Soda can 1 orange dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4410403928748777660-1004613804",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-726288047108224267-1004613804",
+            "hierarchyPath": "BoosterObjects/beerInactive/Bottle_LOD0",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerInactive[2]/Bottle_LOD0[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1572826505485436226-1004613804",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5667556202163266008-1004613804",
+            "hierarchyPath": "BoosterObjects/beerInactive/Bottle_LOD1",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerInactive[2]/Bottle_LOD1[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-753221398420190497-1004613804",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4517626890866877804-1004613804",
+            "hierarchyPath": "BoosterObjects/beerInactive/Bottle_LOD2",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerInactive[2]/Bottle_LOD2[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4410403928748777660-323618299",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-726288047108224267-323618299",
+            "hierarchyPath": "BoosterObjects/beerActive/Bottle_LOD0",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerActive[3]/Bottle_LOD0[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "46272233633b3ff4db32b079b5469d15",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Bottle/Bottle 1/Bottle 1 green glass dirt mat.mat",
+                    "materialName": "Bottle 1 green glass dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1572826505485436226-323618299",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-5667556202163266008-323618299",
+            "hierarchyPath": "BoosterObjects/beerActive/Bottle_LOD1",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerActive[3]/Bottle_LOD1[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "46272233633b3ff4db32b079b5469d15",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Bottle/Bottle 1/Bottle 1 green glass dirt mat.mat",
+                    "materialName": "Bottle 1 green glass dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-753221398420190497-323618299",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-4517626890866877804-323618299",
+            "hierarchyPath": "BoosterObjects/beerActive/Bottle_LOD2",
+            "indexedHierarchyPath": "BoosterObjects[6]/beerActive[3]/Bottle_LOD2[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "46272233633b3ff4db32b079b5469d15",
+                    "materialAssetPath": "Assets/AssetSlop/Hash Game studios/Trash Bag & Trash Box/Materials/Garbage/Bottle/Bottle 1/Bottle 1 green glass dirt mat.mat",
+                    "materialName": "Bottle 1 green glass dirt mat_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-881063466-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-881063461-0",
+            "hierarchyPath": "BoosterObjects/HighInactive",
+            "indexedHierarchyPath": "BoosterObjects[6]/HighInactive[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-756178809-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-756178803-0",
+            "hierarchyPath": "BoosterObjects/HighActive",
+            "indexedHierarchyPath": "BoosterObjects[6]/HighActive[5]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "31321ba15b8f8eb4c954353edc038b1d",
+                    "materialAssetPath": "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat",
+                    "materialName": "Lit",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1021047449-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1021047444-0",
+            "hierarchyPath": "BoosterObjects/NicotineInactive",
+            "indexedHierarchyPath": "BoosterObjects[6]/NicotineInactive[6]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "63438efaab646ce48ab64b23dabd68c3",
+                    "materialAssetPath": "Assets/Scripts/BoosterItems/grayblob.mat",
+                    "materialName": "grayblob",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1858074312-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1858074306-0",
+            "hierarchyPath": "BoosterObjects/NicotineActive",
+            "indexedHierarchyPath": "BoosterObjects[6]/NicotineActive[7]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "31321ba15b8f8eb4c954353edc038b1d",
+                    "materialAssetPath": "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat",
+                    "materialName": "Lit",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1070580140-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1070580137-0",
+            "hierarchyPath": "GridManager/Cube (4)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (4)[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-706870895-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-706870892-0",
+            "hierarchyPath": "GridManager/Cube (5)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (5)[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1352389728-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1352389725-0",
+            "hierarchyPath": "GridManager/Cube (6)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (6)[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1172511967-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1172511964-0",
+            "hierarchyPath": "GridManager/Cube (7)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (7)[3]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-768747781-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-768747778-0",
+            "hierarchyPath": "GridManager/Cube (11)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (11)[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-114390805-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-114390802-0",
+            "hierarchyPath": "GridManager/Cube (12)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (12)[5]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1981773351-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1981773348-0",
+            "hierarchyPath": "GridManager/Cube (8)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (8)[6]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1833099349-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-1833099346-0",
+            "hierarchyPath": "GridManager/Cube (9)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (9)[7]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-411155843-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-411155840-0",
+            "hierarchyPath": "GridManager/Cube (10)",
+            "indexedHierarchyPath": "GridManager[7]/Cube (10)[8]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c6724b08ad7c1aa45b872dba1ffd4490",
+                    "materialAssetPath": "Assets/materials/gridred.mat",
+                    "materialName": "gridred",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Barni/BarGameBarni.unity",
+            "sceneName": "BarGameBarni",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-318176458-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-87139a2d43af4d8489a2e173386c5062-318176454-0",
+            "hierarchyPath": "jj_door_4_dark",
+            "indexedHierarchyPath": "jj_door_4_dark[8]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "3b0d2ceccf5d1804fb726d141e80fb44",
+                    "materialAssetPath": "Assets/AssetSlop/JJ_InteriorDoorPack_V1/Materials/Frames/mat_intDoor_metalFrame_black.mat",
+                    "materialName": "mat_intDoor_metalFrame_black_backup",
+                    "wasNull": false
+                }
+            ]
         }
     ],
     "materialLinks": [
@@ -71352,6 +74039,478 @@
             "originalMaterialGuid": "5032243262c471445be39af30cb7f224",
             "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base 3.mat",
             "originalMaterialName": "Base 3"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/BackSide_0__TextureMaterial_4_794a0304_SimpleLit.mat",
+            "simplifiedMaterialGuid": "24e61cd3d3fc7ac489b871dbb1361b43",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|BackSide_0|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_4"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/BackSide_1__TextureMaterial_67_664f19bf_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d8ed82084bf0ee84489a282b501e95d4",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|BackSide_1|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_67"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_0__TextureMaterial_c2bd76e0_SimpleLit.mat",
+            "simplifiedMaterialGuid": "1e909710ad570da47a25a273ed4afa5d",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_0|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_1__TextureMaterial_1_b3560a2b_SimpleLit.mat",
+            "simplifiedMaterialGuid": "7aa6d1e012c44b04e8a02ca430639989",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_1|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_1"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_2__TextureMaterial_10_98b84c8e_SimpleLit.mat",
+            "simplifiedMaterialGuid": "307e1db68adb27146a9cf55cd85e4b8d",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_2|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_10"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_3__TextureMaterial_11_e35da011_SimpleLit.mat",
+            "simplifiedMaterialGuid": "8ec2040ff339d52449e745066ba80cff",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_3|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_11"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_4__TextureMaterial_12_05ac238c_SimpleLit.mat",
+            "simplifiedMaterialGuid": "1514a253091cfe64e87f6a98c6a3fcc7",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_4|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_12"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_5__TextureMaterial_13_a670a427_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d7045701ef8637747bb1e811dd176d5c",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_5|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_13"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_6__TextureMaterial_14_bedbac8a_SimpleLit.mat",
+            "simplifiedMaterialGuid": "6fee7d65b548fa7408b04cb6675563e6",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_6|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_14"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_7__TextureMaterial_15_10adfd9d_SimpleLit.mat",
+            "simplifiedMaterialGuid": "8aae791e5bb491744869e98f7792d9f2",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_7|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_15"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_8__TextureMaterial_16_9303a5f8_SimpleLit.mat",
+            "simplifiedMaterialGuid": "1f9cb765a04154f45abf4bfe52e9c5e6",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_8|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_16"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_9__TextureMaterial_17_0fd40723_SimpleLit.mat",
+            "simplifiedMaterialGuid": "369d1a315f8b4684fbe2fdd81b05d831",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_9|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_17"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_10__TextureMaterial_18_5e4a7a27_SimpleLit.mat",
+            "simplifiedMaterialGuid": "b740acd09d64c0e4a9714ad6d219365a",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_10|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_18"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_11__TextureMaterial_19_bd85f98c_SimpleLit.mat",
+            "simplifiedMaterialGuid": "7e91d966bc2161c4aa64c36191f90140",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_11|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_19"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_13__TextureMaterial_20_76b5828a_SimpleLit.mat",
+            "simplifiedMaterialGuid": "dc2f02333cc18f04ea1aec9a8b61a461",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_13|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_20"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_14__TextureMaterial_21_6b2fe02b_SimpleLit.mat",
+            "simplifiedMaterialGuid": "214ce2ef54852b449b6c7a4f913fd780",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_14|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_21"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_15__TextureMaterial_22_7a974ce0_SimpleLit.mat",
+            "simplifiedMaterialGuid": "146edd41175ebda4fb1cb8dba9d910ac",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_15|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_22"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_16__TextureMaterial_23_9b377611_SimpleLit.mat",
+            "simplifiedMaterialGuid": "c95062ea1cc75a94bac541ece7e18624",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_16|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_23"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_17__TextureMaterial_24_5092228e_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d1e440074dfd3c340b5160709eb21c04",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_17|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_24"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_18__TextureMaterial_25_46f6273f_SimpleLit.mat",
+            "simplifiedMaterialGuid": "f4059729224e21e46931b86a42586cb8",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_18|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_25"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_19__TextureMaterial_26_59f11084_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a9c191c9fc0ed58419f3e3084030193f",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_19|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_26"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_20__TextureMaterial_27_87cf2cf0_SimpleLit.mat",
+            "simplifiedMaterialGuid": "701496555f651494aac7de82df50b84f",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_20|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_27"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_21__TextureMaterial_28_117bfbbb_SimpleLit.mat",
+            "simplifiedMaterialGuid": "2835dbe54ee7b774eb40b5a3640866f7",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_21|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_28"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_22__TextureMaterial_29_e051f71e_SimpleLit.mat",
+            "simplifiedMaterialGuid": "2ff3e5946e1ae0b48ae86c280e7de983",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_22|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_29"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_23__TextureMaterial_3_5f5172e1_SimpleLit.mat",
+            "simplifiedMaterialGuid": "7722b498b5ad6f24fbe3f66410b0d59a",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_23|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_3"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_24__TextureMaterial_30_efc014dc_SimpleLit.mat",
+            "simplifiedMaterialGuid": "60dfe8280bf1aa344a86cbb0f99b633e",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_24|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_30"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_25__TextureMaterial_31_27004db7_SimpleLit.mat",
+            "simplifiedMaterialGuid": "882713050c7691843b36fe6bb5def0c9",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_25|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_31"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_26__TextureMaterial_32_bf0d9c9a_SimpleLit.mat",
+            "simplifiedMaterialGuid": "0dc4574b2ba6a8747a166b2813d369cf",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_26|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_32"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_28__TextureMaterial_34_420bf8c8_SimpleLit.mat",
+            "simplifiedMaterialGuid": "73b7fe75b05a2ba4f8ed48ce1a43fdd5",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_28|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_34"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_30__TextureMaterial_36_f04b0331_SimpleLit.mat",
+            "simplifiedMaterialGuid": "ed31ad608bd14d24b9d4822a8cab8106",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_30|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_36"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_32__TextureMaterial_38_33f03bcb_SimpleLit.mat",
+            "simplifiedMaterialGuid": "32fa0efb99e1b0344b6820a981f3ed51",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_32|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_38"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_33__TextureMaterial_39_0b114c00_SimpleLit.mat",
+            "simplifiedMaterialGuid": "8d30525e8cfda6b4690075363b005764",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_33|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_39"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_34__TextureMaterial_4_b76c223d_SimpleLit.mat",
+            "simplifiedMaterialGuid": "c49263f3b76c29b4d91577428e4542c8",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_34|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_4"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_35__TextureMaterial_40_291f2caa_SimpleLit.mat",
+            "simplifiedMaterialGuid": "8a4b55690810eb34eb1ce2c35fcb346d",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_35|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_40"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_36__TextureMaterial_41_3f3fbfc7_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d01b8a34a94a44e4c9e1827e752728e9",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_36|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_41"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_38__TextureMaterial_43_1f2f5b29_SimpleLit.mat",
+            "simplifiedMaterialGuid": "0423003a3ca85d14397eecb8dce224b4",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_38|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_43"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_39__TextureMaterial_44_b9780d26_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d3d9a6d99e6f1a94a9d9180543e9da85",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_39|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_44"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_40__TextureMaterial_45_e0790daa_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d9ce4d1c6291d4b49a71e091f66cd07a",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_40|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_45"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_42__TextureMaterial_47_aa388eac_SimpleLit.mat",
+            "simplifiedMaterialGuid": "345512837001d974ebb431739d85fa47",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_42|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_47"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_43__TextureMaterial_48_f699a0c7_SimpleLit.mat",
+            "simplifiedMaterialGuid": "2a58105f714617645875c577227ea372",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_43|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_48"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_44__TextureMaterial_49_faf5502e_SimpleLit.mat",
+            "simplifiedMaterialGuid": "96f9fd6e602d97c49a60d0442bf122ec",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_44|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_49"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_46__TextureMaterial_50_c26b2d00_SimpleLit.mat",
+            "simplifiedMaterialGuid": "da6ff5d1c1141e84bb526470bf34a701",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_46|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_50"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_48__TextureMaterial_52_974fdb42_SimpleLit.mat",
+            "simplifiedMaterialGuid": "84258e53199aad84ab90ee0f25c83ba7",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_48|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_52"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_49__TextureMaterial_53_96a1e9d5_SimpleLit.mat",
+            "simplifiedMaterialGuid": "81384a795b708cc41846ad49e61a0695",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_49|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_53"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_50__TextureMaterial_54_f5854d5b_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a18550513293ac14aba969bffd3459cc",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_50|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_54"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_52__TextureMaterial_56_28570501_SimpleLit.mat",
+            "simplifiedMaterialGuid": "715de39bdc79af84083a7dbdf23ab7f9",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_52|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_56"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_53__TextureMaterial_57_19106cbe_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d9d7131399d418b40b3673c3a4ff6b59",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_53|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_57"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_54__TextureMaterial_58_3380f0d7_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a3586d9d15e251e4996fc3e0ac385130",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_54|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_58"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_55__TextureMaterial_59_1057227c_SimpleLit.mat",
+            "simplifiedMaterialGuid": "97b021f41a30140469d4bfe7a54e9fc6",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_55|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_59"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_56__TextureMaterial_6_3ae59d0d_SimpleLit.mat",
+            "simplifiedMaterialGuid": "eafdc64db0e1b844380ebc8cf9d9ea13",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_56|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_6"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_57__TextureMaterial_60_807243ba_SimpleLit.mat",
+            "simplifiedMaterialGuid": "f58b4549aed5c2b4786bc674b3ab38d4",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_57|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_60"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_58__TextureMaterial_61_bf11d453_SimpleLit.mat",
+            "simplifiedMaterialGuid": "8593825fd9534854481b9099ac2ad167",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_58|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_61"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_59__TextureMaterial_62_627773e8_SimpleLit.mat",
+            "simplifiedMaterialGuid": "3fa8b2871c8450d44a90af7f18d99f89",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_59|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_62"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_61__TextureMaterial_64_a6023a7f_SimpleLit.mat",
+            "simplifiedMaterialGuid": "383a5fede0865fa4faed64d32bc11475",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_61|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_64"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_62__TextureMaterial_65_a9622c62_SimpleLit.mat",
+            "simplifiedMaterialGuid": "eca281b9e4af30d44b665b5e0e2080f8",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_62|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_65"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_63__TextureMaterial_66_3dab9875_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d9cee81630cadb24cb3c5580a4cd18eb",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_63|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_66"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_64__TextureMaterial_7_e086eb38_SimpleLit.mat",
+            "simplifiedMaterialGuid": "06cc59c50fd81a74ca6f17a5ae45da6b",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_64|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_7"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_65__TextureMaterial_8_234aaa63_SimpleLit.mat",
+            "simplifiedMaterialGuid": "1da45423df3dba548afb5aea22d53c22",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_65|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_8"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_66__TextureMaterial_9_53ba8dc6_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d45d5dffbb269a94baf957ad8c63baed",
+            "meshKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_66|S0|73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
+            "originalMaterialName": "TextureMaterial_9"
         }
     ]
 }
