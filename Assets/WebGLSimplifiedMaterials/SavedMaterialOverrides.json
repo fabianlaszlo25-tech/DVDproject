@@ -1,5 +1,5 @@
 {
-    "lastSavedTimestamp": "2026-10-27 12:36:22",
+    "lastSavedTimestamp": "2026-10-27 22:48:43",
     "overrides": [
         {
             "meshAndMaterialKey": "",
@@ -31665,6 +31665,1798 @@
                 "r": 0.6566646695137024,
                 "g": 0.6408535838127136,
                 "b": 0.5740057826042175,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|BackSide_0|S0|0388be32ed81f26657a31f935006a92a",
+            "originalMaterialGuid": "0388be32ed81f26657a31f935006a92a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_4.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/BackSide_0__TextureMaterial_4_16b1ad50_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5469141006469727,
+                "g": 0.34132447838783266,
+                "b": 0.32342568039894106,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_0|S0|86da4d4fa905b184231c34271ac0e8f7",
+            "originalMaterialGuid": "86da4d4fa905b184231c34271ac0e8f7",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_0__TextureMaterial_9c31c7ef_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.7230129837989807,
+                "g": 0.7100861072540283,
+                "b": 0.6508232951164246,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_1|S0|8ed493a8570d32300d308c210aac2ace",
+            "originalMaterialGuid": "8ed493a8570d32300d308c210aac2ace",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_1.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_1__TextureMaterial_1_6be3cd22_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5933201909065247,
+                "g": 0.6031633615493774,
+                "b": 0.6059784889221191,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_2|S0|f9b6d7ca412db7f4ce758f92d00dc3b8",
+            "originalMaterialGuid": "f9b6d7ca412db7f4ce758f92d00dc3b8",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_10.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_2__TextureMaterial_10_a5218b93_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.41465815901756289,
+                "g": 0.38308292627334597,
+                "b": 0.3359043300151825,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_3|S0|59933aba508a26764738832c79ce553a",
+            "originalMaterialGuid": "59933aba508a26764738832c79ce553a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_11.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_3__TextureMaterial_11_604d4bc7_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8348235487937927,
+                "g": 0.8305647373199463,
+                "b": 0.8117949366569519,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_4|S0|09fd715c8ea2788de896dc7197d49462",
+            "originalMaterialGuid": "09fd715c8ea2788de896dc7197d49462",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_12.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_4__TextureMaterial_12_659c8810_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5258201360702515,
+                "g": 0.4263732433319092,
+                "b": 0.3623018264770508,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_5|S0|d19ad8bffe0aaf4e13045dd8fdceed94",
+            "originalMaterialGuid": "d19ad8bffe0aaf4e13045dd8fdceed94",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_13.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_5__TextureMaterial_13_f53f5ce7_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4178158640861511,
+                "g": 0.2525803744792938,
+                "b": 0.22683773934841157,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_6|S0|6ddb8bf8830fbf6bcf23e414898e0f4e",
+            "originalMaterialGuid": "6ddb8bf8830fbf6bcf23e414898e0f4e",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_14.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_6__TextureMaterial_14_62a33676_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6484025120735169,
+                "g": 0.6442277431488037,
+                "b": 0.6371396780014038,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_7|S0|bf6538f3b5a782dd9327310b99c68230",
+            "originalMaterialGuid": "bf6538f3b5a782dd9327310b99c68230",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_15.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_7__TextureMaterial_15_6c97df60_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.1289484053850174,
+                "g": 0.1385415494441986,
+                "b": 0.1438741236925125,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_8|S0|cdf213220e76686e0c93d90442ed1e41",
+            "originalMaterialGuid": "cdf213220e76686e0c93d90442ed1e41",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_16.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_8__TextureMaterial_16_0707d992_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.7710277438163757,
+                "g": 0.6354828476905823,
+                "b": 0.3287148177623749,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_9|S0|75aef5c4eb41e58e4db9ef8a7e0719ef",
+            "originalMaterialGuid": "75aef5c4eb41e58e4db9ef8a7e0719ef",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_17.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_9__TextureMaterial_17_fbec196b_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4220157265663147,
+                "g": 0.288465291261673,
+                "b": 0.24194872379302979,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_10|S0|607912cf9d142e7090cad4e4d2e65e41",
+            "originalMaterialGuid": "607912cf9d142e7090cad4e4d2e65e41",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_18.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_10__TextureMaterial_18_d6188c81_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.48701125383377077,
+                "g": 0.3026212751865387,
+                "b": 0.17034325003623963,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_11|S0|b954018c740b881085f0629893fa6ffd",
+            "originalMaterialGuid": "b954018c740b881085f0629893fa6ffd",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_19.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_11__TextureMaterial_19_64b13b75_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4465790390968323,
+                "g": 0.2305321991443634,
+                "b": 0.13515940308570863,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_13|S0|69196368d7690e93eed15712d561e7d1",
+            "originalMaterialGuid": "69196368d7690e93eed15712d561e7d1",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_20.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_13__TextureMaterial_20_a9ddc918_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3542519211769104,
+                "g": 0.20004181563854218,
+                "b": 0.15263129770755769,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_14|S0|9f07983c426df9f788954d70ade59169",
+            "originalMaterialGuid": "9f07983c426df9f788954d70ade59169",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_21.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_14__TextureMaterial_21_ce60dd99_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.45177942514419558,
+                "g": 0.43464067578315737,
+                "b": 0.4004589319229126,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_15|S0|da5c5d1395b105e492930e3584f86424",
+            "originalMaterialGuid": "da5c5d1395b105e492930e3584f86424",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_22.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_15__TextureMaterial_22_8bc817a1_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3958829343318939,
+                "g": 0.23365555703639985,
+                "b": 0.13266515731811524,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_16|S0|baa63b30396c64c0e55bf82db7fbca56",
+            "originalMaterialGuid": "baa63b30396c64c0e55bf82db7fbca56",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_23.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_16__TextureMaterial_23_b69b05aa_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.591533899307251,
+                "g": 0.3804531693458557,
+                "b": 0.2532021999359131,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_18|S0|9d79314844416d43a62e63743d59778b",
+            "originalMaterialGuid": "9d79314844416d43a62e63743d59778b",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_25.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_18__TextureMaterial_25_00bb20b9_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.476714551448822,
+                "g": 0.43052375316619875,
+                "b": 0.2743639647960663,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_19|S0|233e2f5eb79e812bb7e643f8e938feb5",
+            "originalMaterialGuid": "233e2f5eb79e812bb7e643f8e938feb5",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_26.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_19__TextureMaterial_26_4061b8c1_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5352329015731812,
+                "g": 0.4271027743816376,
+                "b": 0.24407531321048737,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_20|S0|353656df03e6f21646ad9374eec24fbe",
+            "originalMaterialGuid": "353656df03e6f21646ad9374eec24fbe",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_27.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_20__TextureMaterial_27_f68c0d31_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8587605953216553,
+                "g": 0.5787414312362671,
+                "b": 0.2610366642475128,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_21|S0|67ddeced5274090aa6ad32fa504a7466",
+            "originalMaterialGuid": "67ddeced5274090aa6ad32fa504a7466",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_28.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_21__TextureMaterial_28_0c680a8a_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3049916625022888,
+                "g": 0.2764127850532532,
+                "b": 0.26989826560020449,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_22|S0|1f37fe5c8a2903330c054d1cb4a8ed0e",
+            "originalMaterialGuid": "1f37fe5c8a2903330c054d1cb4a8ed0e",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_29.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_22__TextureMaterial_29_7da8ba78_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.33900192379951479,
+                "g": 0.3408661484718323,
+                "b": 0.33900192379951479,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_23|S0|fcc4718373e7a19a1293db23b6e1fcad",
+            "originalMaterialGuid": "fcc4718373e7a19a1293db23b6e1fcad",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_3.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_23__TextureMaterial_3_2e4f63b0_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.007987480610609055,
+                "g": 0.13161644339561463,
+                "b": 0.07407393306493759,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_24|S0|5b271726850e1c4ed6d3f8e07f0e219d",
+            "originalMaterialGuid": "5b271726850e1c4ed6d3f8e07f0e219d",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_30.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_24__TextureMaterial_30_74391b8d_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3007952570915222,
+                "g": 0.14235445857048036,
+                "b": 0.09781644493341446,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_25|S0|39fc3140a4328c8795a0e7e7fe46b683",
+            "originalMaterialGuid": "39fc3140a4328c8795a0e7e7fe46b683",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_31.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_25__TextureMaterial_31_2ba3d671_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3462879955768585,
+                "g": 0.296610951423645,
+                "b": 0.22633524239063264,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_26|S0|7aa0dbbcc71775dbe544eb2aae66296d",
+            "originalMaterialGuid": "7aa0dbbcc71775dbe544eb2aae66296d",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_32.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_26__TextureMaterial_32_df38bb6f_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5027799010276794,
+                "g": 0.1639431267976761,
+                "b": 0.2909807562828064,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_28|S0|80e7126590d73ef8c055a7f6e9eed497",
+            "originalMaterialGuid": "80e7126590d73ef8c055a7f6e9eed497",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_34.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_28__TextureMaterial_34_a2c28731_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.36964505910873415,
+                "g": 0.2821739614009857,
+                "b": 0.22132326662540437,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_30|S0|c959291b6f4961a323de69accac21feb",
+            "originalMaterialGuid": "c959291b6f4961a323de69accac21feb",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_36.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_30__TextureMaterial_36_2d544feb_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.21825283765792848,
+                "g": 0.14921671152114869,
+                "b": 0.11166126281023026,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_32|S0|f9c39e2a9a3c37318c9d201fca7460e8",
+            "originalMaterialGuid": "f9c39e2a9a3c37318c9d201fca7460e8",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_38.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_32__TextureMaterial_38_1b63d944_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5484201908111572,
+                "g": 0.3392702043056488,
+                "b": 0.2740120589733124,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_33|S0|a25cbf31848ff4beb2878d626c491ba4",
+            "originalMaterialGuid": "a25cbf31848ff4beb2878d626c491ba4",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_39.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_33__TextureMaterial_39_e1ee1789_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4663551449775696,
+                "g": 0.4135117530822754,
+                "b": 0.35597461462020876,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_34|S0|0388be32ed81f26657a31f935006a92a",
+            "originalMaterialGuid": "0388be32ed81f26657a31f935006a92a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_4.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_34__TextureMaterial_4_114bfd3d_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5709309577941895,
+                "g": 0.30868372321128847,
+                "b": 0.2418076992034912,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_35|S0|729ea9cee5741c8bc2eff82b2e2a20a5",
+            "originalMaterialGuid": "729ea9cee5741c8bc2eff82b2e2a20a5",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_40.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_35__TextureMaterial_40_da1a224c_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3010619282722473,
+                "g": 0.24153345823287965,
+                "b": 0.194745734333992,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_36|S0|df006ad71cecf4199271011935f0c01e",
+            "originalMaterialGuid": "df006ad71cecf4199271011935f0c01e",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_41.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_36__TextureMaterial_41_6a06871c_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4620260000228882,
+                "g": 0.49676841497421267,
+                "b": 0.5341501235961914,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_38|S0|06a0b320207f0363d16fa75b9afd039c",
+            "originalMaterialGuid": "06a0b320207f0363d16fa75b9afd039c",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_43.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_38__TextureMaterial_43_e61a2147_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4255326986312866,
+                "g": 0.4426442086696625,
+                "b": 0.37766778469085696,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_40|S0|570b85ada14f27541c8ff13dc978fa70",
+            "originalMaterialGuid": "570b85ada14f27541c8ff13dc978fa70",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_45.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_40__TextureMaterial_45_f0e01f69_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.021968046203255655,
+                "g": 0.25114119052886965,
+                "b": 0.13337482511997224,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_42|S0|84ce622404267bccb4b8f8636fc509b8",
+            "originalMaterialGuid": "84ce622404267bccb4b8f8636fc509b8",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_47.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_42__TextureMaterial_47_dec29fe5_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4910215139389038,
+                "g": 0.2910407781600952,
+                "b": 0.1957559883594513,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_43|S0|c600bc7800e978cb07cc77231618005a",
+            "originalMaterialGuid": "c600bc7800e978cb07cc77231618005a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_48.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_43__TextureMaterial_48_ff11dfb8_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4409763216972351,
+                "g": 0.32620757818222048,
+                "b": 0.26522836089134219,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_44|S0|11f7cd0d4cd4e3e5e8d1e50bf08bd819",
+            "originalMaterialGuid": "11f7cd0d4cd4e3e5e8d1e50bf08bd819",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_49.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_44__TextureMaterial_49_7a874757_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4989432990550995,
+                "g": 0.5156720876693726,
+                "b": 0.5118035674095154,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_46|S0|9d63562e9d19145dd8c3a08af73a800a",
+            "originalMaterialGuid": "9d63562e9d19145dd8c3a08af73a800a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_50.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_46__TextureMaterial_50_d1a72c7f_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.26420897245407107,
+                "g": 0.22442775964736939,
+                "b": 0.20937469601631165,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_48|S0|341fbe47723e4a4557c0c97bffc60648",
+            "originalMaterialGuid": "341fbe47723e4a4557c0c97bffc60648",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_52.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_48__TextureMaterial_52_78e33c36_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.31489816308021548,
+                "g": 0.32033178210258486,
+                "b": 0.3207232654094696,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_49|S0|24b472544d4ddd9ae25b772e574a767c",
+            "originalMaterialGuid": "24b472544d4ddd9ae25b772e574a767c",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_53.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_49__TextureMaterial_53_941d0fa8_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.0798942819237709,
+                "g": 0.06567154824733734,
+                "b": 0.030734620988368989,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_50|S0|963a2a02f3a89f82477c95cc34adba1c",
+            "originalMaterialGuid": "963a2a02f3a89f82477c95cc34adba1c",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_54.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_50__TextureMaterial_54_5d547128_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.42342814803123476,
+                "g": 0.3199025094509125,
+                "b": 0.297416627407074,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_52|S0|523f727539194691c0f087f3dd2b1c02",
+            "originalMaterialGuid": "523f727539194691c0f087f3dd2b1c02",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_56.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_52__TextureMaterial_56_448c2535_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.0,
+                "g": 0.125490203499794,
+                "b": 0.0313725508749485,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_53|S0|9fc1bbaae56eb4f246344342af31c83a",
+            "originalMaterialGuid": "9fc1bbaae56eb4f246344342af31c83a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_57.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_53__TextureMaterial_57_0f338718_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.3582266569137573,
+                "g": 0.316019743680954,
+                "b": 0.26995837688446047,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_54|S0|197a4a212a6ad5549c23ca0c56a87878",
+            "originalMaterialGuid": "197a4a212a6ad5549c23ca0c56a87878",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_58.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_54__TextureMaterial_58_042961b9_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.14099086821079255,
+                "g": 0.12243474274873734,
+                "b": 0.08420202136039734,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_55|S0|90aa474c52bdb338b54a47750926e10a",
+            "originalMaterialGuid": "90aa474c52bdb338b54a47750926e10a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_59.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_55__TextureMaterial_59_bda32a1b_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.557877779006958,
+                "g": 0.5946585536003113,
+                "b": 0.6266961097717285,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_56|S0|1403804dcb1c42eb3ee74b24b43c6b4c",
+            "originalMaterialGuid": "1403804dcb1c42eb3ee74b24b43c6b4c",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_6.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_56__TextureMaterial_6_80535d84_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.7232958674430847,
+                "g": 0.713385820388794,
+                "b": 0.6551207900047302,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_57|S0|34dcc30128354c809d516622e08c43b8",
+            "originalMaterialGuid": "34dcc30128354c809d516622e08c43b8",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_60.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_57__TextureMaterial_60_480b6e02_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5080280900001526,
+                "g": 0.532383143901825,
+                "b": 0.5316459536552429,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_58|S0|e931502a8754ceb79dbfbbcad2b3c24d",
+            "originalMaterialGuid": "e931502a8754ceb79dbfbbcad2b3c24d",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_61.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_58__TextureMaterial_61_c2ac81fb_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.9067822098731995,
+                "g": 0.8557023406028748,
+                "b": 0.8432198762893677,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_59|S0|9406114e66d6dfc03e4359cdd3dbbb23",
+            "originalMaterialGuid": "9406114e66d6dfc03e4359cdd3dbbb23",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_62.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_59__TextureMaterial_62_20e7061d_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.580571711063385,
+                "g": 0.6016830801963806,
+                "b": 0.4023478329181671,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_61|S0|18f6477af9cf684bcb928c415e1c17da",
+            "originalMaterialGuid": "18f6477af9cf684bcb928c415e1c17da",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_64.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_61__TextureMaterial_64_d94afd56_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4361635744571686,
+                "g": 0.3986811637878418,
+                "b": 0.4094501733779907,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_62|S0|b47fd17c4886afc173a9facbe5235c38",
+            "originalMaterialGuid": "b47fd17c4886afc173a9facbe5235c38",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_65.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_62__TextureMaterial_65_a65219db_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8625229597091675,
+                "g": 0.7959141731262207,
+                "b": 0.6705977916717529,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_63|S0|fb9dbb084044d57ca6bfaccaaf899fd2",
+            "originalMaterialGuid": "fb9dbb084044d57ca6bfaccaaf899fd2",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_66.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_63__TextureMaterial_66_9d911253_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.04853599891066551,
+                "g": 0.16679838299751283,
+                "b": 0.013394301757216454,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_64|S0|123acda84b438741649b6b118f3ffda8",
+            "originalMaterialGuid": "123acda84b438741649b6b118f3ffda8",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_7.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_64__TextureMaterial_7_e1bd7c6f_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.2550792992115021,
+                "g": 0.349341481924057,
+                "b": 0.2407337725162506,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_65|S0|d9f64b07224b6ac5c205c65d1781e271",
+            "originalMaterialGuid": "d9f64b07224b6ac5c205c65d1781e271",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_8.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_65__TextureMaterial_8_7061d97e_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.4288325309753418,
+                "g": 0.2844223976135254,
+                "b": 0.14798548817634583,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_66|S0|801c0391a031f2c33e1de61a52697f2a",
+            "originalMaterialGuid": "801c0391a031f2c33e1de61a52697f2a",
+            "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/Materials/TextureMaterial_9.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_66__TextureMaterial_9_21a1cc88_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.46895280480384829,
+                "g": 0.44122403860092165,
+                "b": 0.4128710925579071,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
