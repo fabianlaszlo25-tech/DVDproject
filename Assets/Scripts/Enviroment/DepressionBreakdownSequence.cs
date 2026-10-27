@@ -431,9 +431,13 @@ public class DepressionBreakdownSequence : MonoBehaviour
             CrtPostProcessManager.SetGameplayCrtActive();
         }
 
-        if (EventSystem.current != null)
+        EventSystem es = EventSystem.current ?? FindObjectOfType<EventSystem>(true);
+        if (es != null)
         {
-            EventSystem.current.enabled = true;
+            if (!es.gameObject.activeSelf) es.gameObject.SetActive(true);
+            es.enabled = true;
+            BaseInputModule module = es.GetComponent<BaseInputModule>();
+            if (module != null && !module.enabled) module.enabled = true;
         }
 
         if (unlockCursorWhenUIPopsUp)

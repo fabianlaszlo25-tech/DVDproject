@@ -537,7 +537,16 @@ public class RunSaveManager : MonoBehaviour
         }
         else if (string.Equals(targetSceneName, menuSceneName, StringComparison.OrdinalIgnoreCase))
         {
+            try
+        {
             ResetRunForNewGame();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[RunSaveManager] Error in ResetRunForNewGame during death return: {ex}");
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         }
     }
 
@@ -628,7 +637,16 @@ public class RunSaveManager : MonoBehaviour
 
     public void ReturnToMainMenuFromDeath()
     {
-        ResetRunForNewGame();
+        try
+        {
+            ResetRunForNewGame();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[RunSaveManager] Error in ResetRunForNewGame during death return: {ex}");
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Time.timeScale = 1f;
         AudioListener.pause = false;
         SceneManager.LoadScene(menuSceneName);
@@ -999,7 +1017,16 @@ public class RunSaveManager : MonoBehaviour
     {
         if (string.Equals(scene.name, menuSceneName, StringComparison.OrdinalIgnoreCase))
         {
+            try
+        {
             ResetRunForNewGame();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[RunSaveManager] Error in ResetRunForNewGame during death return: {ex}");
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
             return;
         }
 
