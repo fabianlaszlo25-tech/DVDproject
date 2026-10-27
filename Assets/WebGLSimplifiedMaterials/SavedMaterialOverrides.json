@@ -1,5 +1,5 @@
 {
-    "lastSavedTimestamp": "2026-10-26 13:59:09",
+    "lastSavedTimestamp": "2026-10-27 12:36:22",
     "overrides": [
         {
             "meshAndMaterialKey": "",
@@ -10732,11 +10732,11 @@
                 "b": 0.857318639755249,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.46536916494369509,
+                "g": 0.8176100254058838,
+                "b": 0.8176100254058838,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -11436,11 +11436,11 @@
                 "b": 0.7347555756568909,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.40251559019088747,
+                "g": 0.40251559019088747,
+                "b": 0.40251559019088747,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -11662,8 +11662,8 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.3841816782951355,
-                "g": 0.4372963309288025,
+                "r": 0.3841816186904907,
+                "g": 0.4372962713241577,
                 "b": 0.6603773832321167,
                 "a": 1.0
             },
@@ -11724,11 +11724,11 @@
                 "b": 0.8444833159446716,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5283018946647644,
+                "g": 0.4681618809700012,
+                "b": 0.22760164737701417,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12174,9 +12174,9 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.2835131287574768,
-                "g": 0.383647620677948,
-                "b": 0.2835131287574768,
+                "r": 0.28351306915283205,
+                "g": 0.3836475610733032,
+                "b": 0.28351306915283205,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12396,11 +12396,11 @@
                 "b": 0.8341779708862305,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4402514100074768,
+                "g": 0.4402514100074768,
+                "b": 0.4402514100074768,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12428,11 +12428,11 @@
                 "b": 0.8577289581298828,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7295596599578857,
+                "g": 0.7295596599578857,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12652,11 +12652,11 @@
                 "b": 0.3572681248188019,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.3081759512424469,
+                "g": 0.3081759512424469,
+                "b": 0.3081759512424469,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12750,9 +12750,9 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.8417737483978272,
-                "g": 0.8986150622367859,
-                "b": 0.8663045167922974,
+                "r": 0.3160475194454193,
+                "g": 0.4276728630065918,
+                "b": 0.3638869524002075,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12780,11 +12780,11 @@
                 "b": 0.8422152996063232,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5408803224563599,
+                "g": 0.13522005081176759,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12844,11 +12844,11 @@
                 "b": 0.8782881498336792,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.46540874242782595,
+                "g": 0.46540874242782595,
+                "b": 0.46540874242782595,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -12972,11 +12972,11 @@
                 "b": 0.8513331413269043,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.35129615664482119,
+                "g": 0.6855344772338867,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -13260,11 +13260,11 @@
                 "b": 0.8595872521400452,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5031445026397705,
+                "g": 0.23978188633918763,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -13358,9 +13358,9 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.28553450107574465,
-                "g": 0.33333325386047366,
-                "b": 0.2735848128795624,
+                "r": 0.28553444147109988,
+                "g": 0.33333319425582888,
+                "b": 0.2735847532749176,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -13614,9 +13614,9 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.42054855823516848,
+                "r": 0.4205484986305237,
                 "g": 0.5220125317573547,
-                "b": 0.31353574991226199,
+                "b": 0.3135356903076172,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -13868,11 +13868,11 @@
                 "b": 0.8483859300613403,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6228525042533875,
+                "g": 0.6289306879043579,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -13964,11 +13964,11 @@
                 "b": 0.7641509771347046,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.32704392075538638,
+                "g": 0.32704392075538638,
+                "b": 0.32704392075538638,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -14188,11 +14188,11 @@
                 "b": 0.6778781414031982,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.40588995814323428,
+                "g": 0.39620646834373476,
+                "b": 0.42138350009918215,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -14348,11 +14348,11 @@
                 "b": 0.8399401307106018,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5723268389701843,
+                "g": 0.26096659898757937,
+                "b": 0.3054467439651489,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -14380,11 +14380,11 @@
                 "b": 0.6776745319366455,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.33333325386047366,
+                "g": 0.33333325386047366,
+                "b": 0.33333325386047366,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -14700,11 +14700,11 @@
                 "b": 0.8612033724784851,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.0,
+                "g": 0.5723268389701843,
+                "b": 0.2698507010936737,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -14988,11 +14988,11 @@
                 "b": 0.3083927631378174,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7169811725616455,
+                "g": 0.3104074001312256,
+                "b": 0.1826271414756775,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -15020,11 +15020,11 @@
                 "b": 0.29705968499183657,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7610061764717102,
+                "g": 0.4697955846786499,
+                "b": 0.3374271094799042,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -15308,11 +15308,11 @@
                 "b": 1.0,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
                 "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "g": 0.1677861213684082,
+                "b": 0.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -15323,9 +15323,9 @@
                 "a": 0.5
             },
             "customEmissionColor": {
-                "r": 0.0,
+                "r": 1.0,
                 "g": 0.0,
-                "b": 0.0,
+                "b": 0.0983271598815918,
                 "a": 1.0
             }
         },
@@ -15343,8 +15343,8 @@
             "hasCustomOverride": true,
             "customColor": {
                 "r": 0.47798722982406618,
-                "g": 0.3088292181491852,
-                "b": 0.15481966733932496,
+                "g": 0.3088291585445404,
+                "b": 0.15481960773468018,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -15790,9 +15790,9 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.38993698358535769,
-                "g": 0.29377779364585879,
-                "b": 0.1606343686580658,
+                "r": 0.3899369239807129,
+                "g": 0.2937777042388916,
+                "b": 0.16063430905342103,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -16430,8 +16430,8 @@
             },
             "hasCustomOverride": true,
             "customColor": {
-                "r": 0.358490526676178,
-                "g": 0.26670005917549136,
+                "r": 0.3584904670715332,
+                "g": 0.26669999957084658,
                 "b": 0.019164565950632097,
                 "a": 1.0
             },
@@ -16812,11 +16812,11 @@
                 "b": 0.42010292410850527,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.2327042520046234,
+                "g": 0.2327042520046234,
+                "b": 0.2327042520046234,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -17036,11 +17036,11 @@
                 "b": 0.571940541267395,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.1635218858718872,
+                "g": 0.1635218858718872,
+                "b": 0.1635218858718872,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -18092,11 +18092,11 @@
                 "b": 0.9063317179679871,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.358490526676178,
+                "g": 0.358490526676178,
+                "b": 0.358490526676178,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -26631,9 +26631,9 @@
             "originalMaterialPath": "Assets/AssetSlop/StylArts/StylizedHouseInterior/HDRP/Art/Materials/M_Walls_Tile.mat",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/SM_House_Walls__M_Walls_Tile_506aca2c_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4123013913631439,
-                "g": 0.8026902079582214,
-                "b": 0.751074492931366,
+                "r": 0.3926330804824829,
+                "g": 0.8007055521011353,
+                "b": 0.7493340969085693,
                 "a": 1.0
             },
             "hasCustomOverride": false,
@@ -29797,18 +29797,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|BackSide_0|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/BackSide_0__TextureMaterial_4_794a0304_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/BackSide_0__TextureMaterial_794a0304_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5469141006469727,
-                "g": 0.34132447838783266,
-                "b": 0.32342568039894106,
+                "r": 0.5770989060401917,
+                "g": 0.5592705607414246,
+                "b": 0.49119871854782107,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5770988464355469,
+                "g": 0.5592705011367798,
+                "b": 0.49119865894317629,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -29893,18 +29893,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_1|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_1__TextureMaterial_1_b3560a2b_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_1__TextureMaterial_b3560a2b_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5933201909065247,
-                "g": 0.6031633615493774,
-                "b": 0.6059784889221191,
+                "r": 0.6484111547470093,
+                "g": 0.6327970623970032,
+                "b": 0.5620871782302856,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6484110951423645,
+                "g": 0.6327970623970032,
+                "b": 0.5620871782302856,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -29925,18 +29925,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_2|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_2__TextureMaterial_10_98b84c8e_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_2__TextureMaterial_98b84c8e_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.41465815901756289,
-                "g": 0.38308292627334597,
-                "b": 0.3359043300151825,
+                "r": 0.6278021931648254,
+                "g": 0.6110650897026062,
+                "b": 0.5406034588813782,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6278021931648254,
+                "g": 0.6110650897026062,
+                "b": 0.5406034588813782,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -29957,18 +29957,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_3|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_3__TextureMaterial_11_e35da011_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_3__TextureMaterial_e35da011_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.8348235487937927,
-                "g": 0.8305647373199463,
-                "b": 0.8117949366569519,
+                "r": 0.5872650742530823,
+                "g": 0.5741679072380066,
+                "b": 0.5141788721084595,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5872650742530823,
+                "g": 0.5741679072380066,
+                "b": 0.5141788125038147,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -29991,16 +29991,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_4__TextureMaterial_12_05ac238c_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5258201360702515,
-                "g": 0.4263732433319092,
-                "b": 0.3623018264770508,
+                "r": 0.7023348212242127,
+                "g": 0.6911665201187134,
+                "b": 0.6343340277671814,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5258200764656067,
+                "g": 0.4263732135295868,
+                "b": 0.3623017966747284,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30021,18 +30021,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_5|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_5__TextureMaterial_13_a670a427_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_5__TextureMaterial_a670a427_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4178158640861511,
-                "g": 0.2525803744792938,
-                "b": 0.22683773934841157,
+                "r": 0.6972350478172302,
+                "g": 0.6831333637237549,
+                "b": 0.617706835269928,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6972350478172302,
+                "g": 0.6831333637237549,
+                "b": 0.617706835269928,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30053,18 +30053,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_6|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_6__TextureMaterial_14_bedbac8a_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_6__TextureMaterial_bedbac8a_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.6484025120735169,
-                "g": 0.6442277431488037,
-                "b": 0.6371396780014038,
+                "r": 0.6356222629547119,
+                "g": 0.6227836012840271,
+                "b": 0.5571454763412476,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6356222629547119,
+                "g": 0.6227836012840271,
+                "b": 0.5571454763412476,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30087,16 +30087,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_7__TextureMaterial_15_10adfd9d_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.1289484053850174,
-                "g": 0.1385415494441986,
-                "b": 0.1438741236925125,
+                "r": 0.67696613073349,
+                "g": 0.662150502204895,
+                "b": 0.5930293202400208,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.1289483606815338,
+                "g": 0.13854151964187623,
+                "b": 0.14387407898902894,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30117,18 +30117,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_8|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_8__TextureMaterial_16_9303a5f8_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_8__TextureMaterial_9303a5f8_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.7710277438163757,
-                "g": 0.6354828476905823,
-                "b": 0.3287148177623749,
+                "r": 0.6187661290168762,
+                "g": 0.6050854325294495,
+                "b": 0.5376433730125427,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6187660694122315,
+                "g": 0.6050854325294495,
+                "b": 0.5376433730125427,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30151,16 +30151,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_9__TextureMaterial_17_0fd40723_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4220157265663147,
-                "g": 0.288465291261673,
-                "b": 0.24194872379302979,
+                "r": 0.6952230334281921,
+                "g": 0.678877055644989,
+                "b": 0.6072902083396912,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4220156967639923,
+                "g": 0.2884652316570282,
+                "b": 0.2419486939907074,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30183,16 +30183,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_10__TextureMaterial_18_5e4a7a27_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.48701125383377077,
-                "g": 0.3026212751865387,
-                "b": 0.17034325003623963,
+                "r": 0.6370378732681274,
+                "g": 0.6177281141281128,
+                "b": 0.5398578643798828,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.487011194229126,
+                "g": 0.3026212453842163,
+                "b": 0.17034322023391725,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30213,18 +30213,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_11|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_11__TextureMaterial_19_bd85f98c_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_11__TextureMaterial_bd85f98c_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4465790390968323,
-                "g": 0.2305321991443634,
-                "b": 0.13515940308570863,
+                "r": 0.6163663268089294,
+                "g": 0.6037459969520569,
+                "b": 0.5385513305664063,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6163662672042847,
+                "g": 0.6037459969520569,
+                "b": 0.5385513305664063,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30245,18 +30245,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_13|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_13__TextureMaterial_20_76b5828a_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_13__TextureMaterial_76b5828a_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3542519211769104,
-                "g": 0.20004181563854218,
-                "b": 0.15263129770755769,
+                "r": 0.6605101227760315,
+                "g": 0.6502650380134583,
+                "b": 0.5887086987495422,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6605101227760315,
+                "g": 0.6502650380134583,
+                "b": 0.5887086391448975,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30279,16 +30279,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_14__TextureMaterial_21_6b2fe02b_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.45177942514419558,
-                "g": 0.43464067578315737,
-                "b": 0.4004589319229126,
+                "r": 0.6593915820121765,
+                "g": 0.6411313414573669,
+                "b": 0.570324182510376,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4517793655395508,
+                "g": 0.43464064598083498,
+                "b": 0.4004589021205902,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30311,16 +30311,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_15__TextureMaterial_22_7a974ce0_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3958829343318939,
-                "g": 0.23365555703639985,
-                "b": 0.13266515731811524,
+                "r": 0.7435848712921143,
+                "g": 0.7302494645118713,
+                "b": 0.6690254807472229,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.39588290452957156,
+                "g": 0.23365551233291627,
+                "b": 0.13266512751579286,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30343,16 +30343,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_16__TextureMaterial_23_9b377611_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.591533899307251,
-                "g": 0.3804531693458557,
-                "b": 0.2532021999359131,
+                "r": 0.6225128769874573,
+                "g": 0.6090704798698425,
+                "b": 0.5390660762786865,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.591533899307251,
+                "g": 0.3804531395435333,
+                "b": 0.2532021701335907,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30373,18 +30373,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_17|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_17__TextureMaterial_24_5092228e_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_17__TextureMaterial_5092228e_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.6548451781272888,
-                "g": 0.4352598190307617,
-                "b": 0.40794607996940615,
+                "r": 0.6268342137336731,
+                "g": 0.6157263517379761,
+                "b": 0.5535361766815186,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6268342137336731,
+                "g": 0.6157262921333313,
+                "b": 0.5535361766815186,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30405,18 +30405,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_18|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_18__TextureMaterial_25_46f6273f_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_18__TextureMaterial_46f6273f_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.476714551448822,
-                "g": 0.43052375316619875,
-                "b": 0.2743639647960663,
+                "r": 0.694257915019989,
+                "g": 0.6816409230232239,
+                "b": 0.6246101260185242,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6942577958106995,
+                "g": 0.6816409230232239,
+                "b": 0.6246100664138794,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30437,18 +30437,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_19|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_19__TextureMaterial_26_59f11084_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_19__TextureMaterial_59f11084_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5352329015731812,
-                "g": 0.4271027743816376,
-                "b": 0.24407531321048737,
+                "r": 0.6572421193122864,
+                "g": 0.6404628157615662,
+                "b": 0.5658845901489258,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6572421193122864,
+                "g": 0.6404628157615662,
+                "b": 0.565884530544281,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30469,18 +30469,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_20|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_20__TextureMaterial_27_87cf2cf0_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_20__TextureMaterial_87cf2cf0_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.8587605953216553,
-                "g": 0.5787414312362671,
-                "b": 0.2610366642475128,
+                "r": 0.5925757884979248,
+                "g": 0.5782700181007385,
+                "b": 0.4970846176147461,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.59257572889328,
+                "g": 0.5782700181007385,
+                "b": 0.4970846176147461,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30501,18 +30501,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_21|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_21__TextureMaterial_28_117bfbbb_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_21__TextureMaterial_117bfbbb_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3049916625022888,
-                "g": 0.2764127850532532,
-                "b": 0.26989826560020449,
+                "r": 0.7247499823570252,
+                "g": 0.7129579782485962,
+                "b": 0.6475875377655029,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7247499823570252,
+                "g": 0.7129579782485962,
+                "b": 0.6475875377655029,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30533,18 +30533,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_22|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_22__TextureMaterial_29_e051f71e_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_22__TextureMaterial_e051f71e_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.33900192379951479,
-                "g": 0.3408661484718323,
-                "b": 0.33900192379951479,
+                "r": 0.5530349016189575,
+                "g": 0.5445643067359924,
+                "b": 0.4813101291656494,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5530348420143127,
+                "g": 0.5445643067359924,
+                "b": 0.48131006956100466,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30565,18 +30565,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_23|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_23__TextureMaterial_3_5f5172e1_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_23__TextureMaterial_5f5172e1_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.007987480610609055,
-                "g": 0.13161644339561463,
-                "b": 0.07407393306493759,
+                "r": 0.710746705532074,
+                "g": 0.6982175707817078,
+                "b": 0.6366506218910217,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7107466459274292,
+                "g": 0.6982175707817078,
+                "b": 0.6366506218910217,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30597,18 +30597,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_24|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_24__TextureMaterial_30_efc014dc_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_24__TextureMaterial_efc014dc_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3007952570915222,
-                "g": 0.14235445857048036,
-                "b": 0.09781644493341446,
+                "r": 0.7369412183761597,
+                "g": 0.725304126739502,
+                "b": 0.6648202538490295,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7369412183761597,
+                "g": 0.725304126739502,
+                "b": 0.6648201942443848,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30629,18 +30629,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_25|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_25__TextureMaterial_31_27004db7_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_25__TextureMaterial_27004db7_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3462879955768585,
-                "g": 0.296610951423645,
-                "b": 0.22633524239063264,
+                "r": 0.5683387517929077,
+                "g": 0.5594315528869629,
+                "b": 0.4900122284889221,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5683386325836182,
+                "g": 0.5594314932823181,
+                "b": 0.49001216888427737,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30661,18 +30661,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_26|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_26__TextureMaterial_32_bf0d9c9a_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_26__TextureMaterial_bf0d9c9a_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5027799010276794,
-                "g": 0.1639431267976761,
-                "b": 0.2909807562828064,
+                "r": 0.6910986304283142,
+                "g": 0.6814932823181152,
+                "b": 0.6287693977355957,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6910985708236694,
+                "g": 0.6814932823181152,
+                "b": 0.6287693977355957,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30693,18 +30693,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_28|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_28__TextureMaterial_34_420bf8c8_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_28__TextureMaterial_420bf8c8_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.36964505910873415,
-                "g": 0.2821739614009857,
-                "b": 0.22132326662540437,
+                "r": 0.7496297955513,
+                "g": 0.7372327446937561,
+                "b": 0.6752369403839111,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7496297955513,
+                "g": 0.7372327446937561,
+                "b": 0.6752369403839111,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30725,18 +30725,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_30|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_30__TextureMaterial_36_f04b0331_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_30__TextureMaterial_f04b0331_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.21825283765792848,
-                "g": 0.14921671152114869,
-                "b": 0.11166126281023026,
+                "r": 0.6723002195358276,
+                "g": 0.6585585474967957,
+                "b": 0.5938527584075928,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6723002195358276,
+                "g": 0.6585585474967957,
+                "b": 0.593852698802948,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30759,16 +30759,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_32__TextureMaterial_38_33f03bcb_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5484201908111572,
-                "g": 0.3392702043056488,
-                "b": 0.2740120589733124,
+                "r": 0.7550787925720215,
+                "g": 0.7435712218284607,
+                "b": 0.6792178750038147,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5484201908111572,
+                "g": 0.3392701745033264,
+                "b": 0.27401202917099,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30791,16 +30791,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_33__TextureMaterial_39_0b114c00_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4663551449775696,
-                "g": 0.4135117530822754,
-                "b": 0.35597461462020876,
+                "r": 0.7058800458908081,
+                "g": 0.6928435564041138,
+                "b": 0.6270679831504822,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4663550853729248,
+                "g": 0.413511723279953,
+                "b": 0.35597458481788638,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30821,18 +30821,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_34|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_34__TextureMaterial_4_b76c223d_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_34__TextureMaterial_b76c223d_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5709309577941895,
-                "g": 0.30868372321128847,
-                "b": 0.2418076992034912,
+                "r": 0.625295877456665,
+                "g": 0.6104512214660645,
+                "b": 0.5428156852722168,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.625295877456665,
+                "g": 0.6104512214660645,
+                "b": 0.542815625667572,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30853,18 +30853,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_35|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_35__TextureMaterial_40_291f2caa_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_35__TextureMaterial_291f2caa_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3010619282722473,
-                "g": 0.24153345823287965,
-                "b": 0.194745734333992,
+                "r": 0.6993280053138733,
+                "g": 0.6799700260162354,
+                "b": 0.6097886562347412,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6993280053138733,
+                "g": 0.6799700260162354,
+                "b": 0.6097886562347412,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30887,16 +30887,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_36__TextureMaterial_41_3f3fbfc7_SimpleLit.mat",
             "lastAutoColor": {
+                "r": 0.7194685935974121,
+                "g": 0.7059999108314514,
+                "b": 0.6451236009597778,
+                "a": 1.0
+            },
+            "hasCustomOverride": true,
+            "customColor": {
                 "r": 0.4620260000228882,
                 "g": 0.49676841497421267,
                 "b": 0.5341501235961914,
-                "a": 1.0
-            },
-            "hasCustomOverride": false,
-            "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30919,16 +30919,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_38__TextureMaterial_43_1f2f5b29_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4255326986312866,
-                "g": 0.4426442086696625,
-                "b": 0.37766778469085696,
+                "r": 0.762692928314209,
+                "g": 0.7512332201004028,
+                "b": 0.6908234357833862,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.42553266882896426,
+                "g": 0.4426441788673401,
+                "b": 0.37766775488853457,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -30981,18 +30981,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_40|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_40__TextureMaterial_45_e0790daa_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_40__TextureMaterial_e0790daa_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.021968046203255655,
-                "g": 0.25114119052886965,
-                "b": 0.13337482511997224,
+                "r": 0.681617259979248,
+                "g": 0.6775711178779602,
+                "b": 0.6106849312782288,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6816171407699585,
+                "g": 0.6775711178779602,
+                "b": 0.6106849312782288,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31013,18 +31013,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_42|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_42__TextureMaterial_47_aa388eac_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_42__TextureMaterial_aa388eac_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4910215139389038,
-                "g": 0.2910407781600952,
-                "b": 0.1957559883594513,
+                "r": 0.6945105195045471,
+                "g": 0.6815134286880493,
+                "b": 0.6178123950958252,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6945105791091919,
+                "g": 0.6815134286880493,
+                "b": 0.6178123950958252,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31045,18 +31045,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_43|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_43__TextureMaterial_48_f699a0c7_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_43__TextureMaterial_f699a0c7_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4409763216972351,
-                "g": 0.32620757818222048,
-                "b": 0.26522836089134219,
+                "r": 0.6219471096992493,
+                "g": 0.6080659627914429,
+                "b": 0.5432912707328796,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6219471096992493,
+                "g": 0.6080658435821533,
+                "b": 0.5432912111282349,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31077,18 +31077,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_44|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_44__TextureMaterial_49_faf5502e_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_44__TextureMaterial_faf5502e_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4989432990550995,
-                "g": 0.5156720876693726,
-                "b": 0.5118035674095154,
+                "r": 0.6112169027328491,
+                "g": 0.6024917960166931,
+                "b": 0.5439902544021606,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6112169623374939,
+                "g": 0.6024917960166931,
+                "b": 0.5439902544021606,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31109,18 +31109,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_46|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_46__TextureMaterial_50_c26b2d00_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_46__TextureMaterial_c26b2d00_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.26420897245407107,
-                "g": 0.22442775964736939,
-                "b": 0.20937469601631165,
+                "r": 0.8218305706977844,
+                "g": 0.8088986873626709,
+                "b": 0.7616727352142334,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.8218305706977844,
+                "g": 0.8088986873626709,
+                "b": 0.7616727352142334,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31141,18 +31141,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_48|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_48__TextureMaterial_52_974fdb42_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_48__TextureMaterial_974fdb42_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.31489816308021548,
-                "g": 0.32033178210258486,
-                "b": 0.3207232654094696,
+                "r": 0.7157064080238342,
+                "g": 0.7039743065834045,
+                "b": 0.6397719979286194,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7157064080238342,
+                "g": 0.7039743065834045,
+                "b": 0.6397719979286194,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31173,18 +31173,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_49|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_49__TextureMaterial_53_96a1e9d5_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_49__TextureMaterial_96a1e9d5_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.0798942819237709,
-                "g": 0.06567154824733734,
-                "b": 0.030734620988368989,
+                "r": 0.6735405921936035,
+                "g": 0.6580926775932312,
+                "b": 0.5883284211158752,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6735405921936035,
+                "g": 0.6580926775932312,
+                "b": 0.5883284211158752,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31205,18 +31205,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_50|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_50__TextureMaterial_54_f5854d5b_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_50__TextureMaterial_f5854d5b_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.42342814803123476,
-                "g": 0.3199025094509125,
-                "b": 0.297416627407074,
+                "r": 0.6405298709869385,
+                "g": 0.6307513117790222,
+                "b": 0.5674514770507813,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6405298709869385,
+                "g": 0.6307513117790222,
+                "b": 0.5674514770507813,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31237,18 +31237,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_52|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_52__TextureMaterial_56_28570501_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_52__TextureMaterial_28570501_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.0,
-                "g": 0.125490203499794,
-                "b": 0.0313725508749485,
+                "r": 0.5122849345207214,
+                "g": 0.51092928647995,
+                "b": 0.4612964689731598,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5122848153114319,
+                "g": 0.51092928647995,
+                "b": 0.4612963795661926,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31269,18 +31269,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_53|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_53__TextureMaterial_57_19106cbe_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_53__TextureMaterial_19106cbe_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.3582266569137573,
-                "g": 0.316019743680954,
-                "b": 0.26995837688446047,
+                "r": 0.7454888224601746,
+                "g": 0.7321318984031677,
+                "b": 0.6761770248413086,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7454888224601746,
+                "g": 0.7321318984031677,
+                "b": 0.6761770248413086,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31301,18 +31301,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_54|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_54__TextureMaterial_58_3380f0d7_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_54__TextureMaterial_3380f0d7_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.14099086821079255,
-                "g": 0.12243474274873734,
-                "b": 0.08420202136039734,
+                "r": 0.3953055739402771,
+                "g": 0.39318665862083437,
+                "b": 0.33860501646995547,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.3953055441379547,
+                "g": 0.39318662881851199,
+                "b": 0.33860498666763308,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31333,18 +31333,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_55|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_55__TextureMaterial_59_1057227c_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_55__TextureMaterial_1057227c_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.557877779006958,
-                "g": 0.5946585536003113,
-                "b": 0.6266961097717285,
+                "r": 0.4793570935726166,
+                "g": 0.4700092375278473,
+                "b": 0.4136670231819153,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.47935712337493899,
+                "g": 0.4700091481208801,
+                "b": 0.4136669933795929,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31397,18 +31397,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_57|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_57__TextureMaterial_60_807243ba_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_57__TextureMaterial_807243ba_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.5080280900001526,
-                "g": 0.532383143901825,
-                "b": 0.5316459536552429,
+                "r": 0.6336655020713806,
+                "g": 0.6224672794342041,
+                "b": 0.5596431493759155,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6336655020713806,
+                "g": 0.6224672794342041,
+                "b": 0.5596431493759155,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31429,18 +31429,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_58|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_58__TextureMaterial_61_bf11d453_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_58__TextureMaterial_bf11d453_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.9067822098731995,
-                "g": 0.8557023406028748,
-                "b": 0.8432198762893677,
+                "r": 0.4431544840335846,
+                "g": 0.43294599652290347,
+                "b": 0.3787410259246826,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4431544542312622,
+                "g": 0.43294596672058108,
+                "b": 0.37874099612236025,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31461,18 +31461,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_59|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_59__TextureMaterial_62_627773e8_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_59__TextureMaterial_627773e8_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.580571711063385,
-                "g": 0.6016830801963806,
-                "b": 0.4023478329181671,
+                "r": 0.5648815035820007,
+                "g": 0.5576089024543762,
+                "b": 0.4961937665939331,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.5648815035820007,
+                "g": 0.5576088428497315,
+                "b": 0.4961937665939331,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31493,18 +31493,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_61|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_61__TextureMaterial_64_a6023a7f_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_61__TextureMaterial_a6023a7f_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4361635744571686,
-                "g": 0.3986811637878418,
-                "b": 0.4094501733779907,
+                "r": 0.4270903468132019,
+                "g": 0.41507217288017275,
+                "b": 0.3587196469306946,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.4270903170108795,
+                "g": 0.41507214307785036,
+                "b": 0.3587196171283722,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31525,18 +31525,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_62|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_62__TextureMaterial_65_a9622c62_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_62__TextureMaterial_a9622c62_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.8625229597091675,
-                "g": 0.7959141731262207,
-                "b": 0.6705977916717529,
+                "r": 0.7301333546638489,
+                "g": 0.7188886404037476,
+                "b": 0.6528823971748352,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7301333546638489,
+                "g": 0.7188886404037476,
+                "b": 0.6528823971748352,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31559,16 +31559,16 @@
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_63__TextureMaterial_66_3dab9875_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.04853599891066551,
-                "g": 0.16679838299751283,
-                "b": 0.013394301757216454,
+                "r": 0.4099386930465698,
+                "g": 0.40659472346305849,
+                "b": 0.35607030987739565,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.04853597283363342,
+                "g": 0.16679835319519044,
+                "b": 0.013394301757216454,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31589,18 +31589,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_64|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_64__TextureMaterial_7_e086eb38_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_64__TextureMaterial_e086eb38_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.2550792992115021,
-                "g": 0.349341481924057,
-                "b": 0.2407337725162506,
+                "r": 0.7283262610435486,
+                "g": 0.7130350470542908,
+                "b": 0.6462070941925049,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7283262610435486,
+                "g": 0.7130350470542908,
+                "b": 0.6462070941925049,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31621,18 +31621,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_65|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_65__TextureMaterial_8_234aaa63_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_65__TextureMaterial_234aaa63_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.4288325309753418,
-                "g": 0.2844223976135254,
-                "b": 0.14798548817634583,
+                "r": 0.7218846082687378,
+                "g": 0.7025980949401856,
+                "b": 0.6237550377845764,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.7218846082687378,
+                "g": 0.7025980949401856,
+                "b": 0.6237550377845764,
                 "a": 1.0
             },
             "customSmoothness": 0.5,
@@ -31653,18 +31653,18 @@
             "meshAndMaterialKey": "MESH:73a69738bdc2341418ef1f32a7595c83|FrontSide_66|S0|73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialGuid": "73a69738bdc2341418ef1f32a7595c83",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar2.fbx",
-            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_66__TextureMaterial_9_53ba8dc6_SimpleLit.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/FrontSide_66__TextureMaterial_53ba8dc6_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.46895280480384829,
-                "g": 0.44122403860092165,
-                "b": 0.4128710925579071,
+                "r": 0.6566646695137024,
+                "g": 0.6408535838127136,
+                "b": 0.5740057826042175,
                 "a": 1.0
             },
-            "hasCustomOverride": false,
+            "hasCustomOverride": true,
             "customColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
+                "r": 0.6566646695137024,
+                "g": 0.6408535838127136,
+                "b": 0.5740057826042175,
                 "a": 1.0
             },
             "customSmoothness": 0.5,

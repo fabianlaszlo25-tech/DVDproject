@@ -665,7 +665,7 @@ public class RunStatsSummaryUI : MonoBehaviour
             {
                 targetCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                 targetCanvas.worldCamera = cam;
-                targetCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
+                targetCanvas.planeDistance = Mathf.Clamp(cam.nearClipPlane + 0.15f, 0.2f, 0.5f);
                 targetCanvas.sortingOrder = 32767;
 
                 int canvasLayer = targetCanvas.gameObject.layer;
@@ -689,7 +689,7 @@ public class RunStatsSummaryUI : MonoBehaviour
                 targetCanvas.sortingOrder = 32767;
             }
 
-            targetCanvas.transform.localScale = Vector3.one;
+            // Leave targetCanvas.transform.localScale to CanvasScaler
 
             EnsureHierarchyValid(targetCanvas.transform, targetCanvas.gameObject.layer);
 
@@ -713,7 +713,14 @@ public class RunStatsSummaryUI : MonoBehaviour
             cardRect.localScale = Vector3.one;
         }
 
-        CrtPostProcessManager.SetPausedCrtActive(usePausedCrt);
+        if (usePausedCrt)
+        {
+            CrtPostProcessManager.SetPausedCrtActive(true);
+        }
+        else
+        {
+            CrtPostProcessManager.SetGameplayCrtActive();
+        }
 
         EnsureEventSystemActive();
         Cursor.lockState = CursorLockMode.None;
@@ -1191,7 +1198,7 @@ public class RunStatsSummaryUI : MonoBehaviour
         uiAudioSource.loop = false;
         uiAudioSource.spatialBlend = 0f;
         uiAudioSource.ignoreListenerPause = true;
-        uiAudioSource.ignoreListenerVolume = false;
+        uiAudioSource.ignoreListenerVolume = true;
 
         if (typeTickClip == null)
         {

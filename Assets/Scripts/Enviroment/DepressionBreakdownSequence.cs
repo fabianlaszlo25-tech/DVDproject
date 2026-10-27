@@ -352,8 +352,11 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 parentTransform = parentTransform.parent;
             }
 
-            // Guarantee root transform scale is Vector3.one
-            endingPopupUI.transform.localScale = Vector3.one;
+            // Only enforce scale Vector3.one on non-canvas roots so CanvasScaler is not broken
+            if (endingPopupUI.GetComponent<Canvas>() == null)
+            {
+                endingPopupUI.transform.localScale = Vector3.one;
+            }
 
             // Activate endingPopupUI FIRST before configuring Canvas sortingOrder (required in Unity Player/WebGL builds!)
             endingPopupUI.SetActive(true);
@@ -377,7 +380,7 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                     popupParentCanvas.worldCamera = cam;
-                    popupParentCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
+                    popupParentCanvas.planeDistance = Mathf.Clamp(cam.nearClipPlane + 0.15f, 0.2f, 0.5f);
                     cam.cullingMask |= (1 << uiLayer) | (1 << popupParentCanvas.gameObject.layer);
 
                     UniversalAdditionalCameraData camData = cam.GetComponent<UniversalAdditionalCameraData>();
@@ -395,7 +398,8 @@ public class DepressionBreakdownSequence : MonoBehaviour
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
                 }
 
-                popupParentCanvas.transform.localScale = Vector3.one;
+                // DO NOT overwrite popupParentCanvas.transform.localScale = Vector3.one!
+                // CanvasScaler dynamically calculates the localScale for ScreenSpaceCamera.
 
                 bool hasParentCanvas = popupParentCanvas.transform.parent != null &&
                                        popupParentCanvas.transform.parent.GetComponentInParent<Canvas>(true) != null;
@@ -409,12 +413,23 @@ public class DepressionBreakdownSequence : MonoBehaviour
             {
                 summaryUI.uiAudioSource.enabled = true;
                 summaryUI.uiAudioSource.mute = false;
+                summaryUI.uiAudioSource.spatialBlend = 0f;
+                summaryUI.uiAudioSource.ignoreListenerVolume = true;
+                summaryUI.uiAudioSource.ignoreListenerPause = true;
+                summaryUI.uiAudioSource.volume = GlobalAudioSettings.SfxVolume;
             }
 
             Canvas.ForceUpdateCanvases();
         }
 
-        CrtPostProcessManager.SetPausedCrtActive(usePausedCrtOnEnding);
+        if (usePausedCrtOnEnding)
+        {
+            CrtPostProcessManager.SetPausedCrtActive(true);
+        }
+        else
+        {
+            CrtPostProcessManager.SetGameplayCrtActive();
+        }
 
         if (EventSystem.current != null)
         {
@@ -444,10 +459,9 @@ public class DepressionBreakdownSequence : MonoBehaviour
                 {
                     popupParentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                     popupParentCanvas.worldCamera = cam;
-                    popupParentCanvas.planeDistance = Mathf.Max(0.5f, cam.nearClipPlane + 0.25f);
+                    popupParentCanvas.planeDistance = Mathf.Clamp(cam.nearClipPlane + 0.15f, 0.2f, 0.5f);
                 }
                 popupParentCanvas.sortingOrder = 32767;
-                popupParentCanvas.transform.localScale = Vector3.one;
             }
             Canvas.ForceUpdateCanvases();
         }
@@ -578,10 +592,11 @@ public class DepressionBreakdownSequence : MonoBehaviour
 
         // Stop, mute, and disable all other AudioSources in the scene (without setting AudioListener.pause = true, which suspends WebGL WebAudio!)
         AudioListener.pause = false;
+        AudioSource summaryAudio = (endingPopupUI != null) ? endingPopupUI.GetComponentInChildren<AudioSource>(true) : null;
         AudioSource[] allSources = FindObjectsOfType<AudioSource>(true);
         foreach (AudioSource src in allSources)
         {
-            if (src != null && src != isolatedEndingSfxSource)
+            if (src != null && src != isolatedEndingSfxSource && src != summaryAudio)
             {
                 src.Stop();
                 src.mute = true;

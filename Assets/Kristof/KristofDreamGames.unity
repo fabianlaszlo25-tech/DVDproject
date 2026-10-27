@@ -2245,6 +2245,31 @@ MonoBehaviour:
   trashCleaned: 0
   storyElementsEncountered: 0
   encounteredStoryElementIds: []
+  baseTrashCount: 25
+  subsequentDaysBaseTrash: 5
+  dirtinessTrashMultiplier: 0.08
+  depressionTrashMultiplier: 0.06
+  cleanedTrashReductionFactor: 0.5
+  minTrashSpawn: 2
+  maxTrashSpawn: 25
+  baseMorningDepression: 0
+  depressionSleepCarryoverFactor: 0.35
+  dirtinessMorningDepressionFactor: 0.15
+  trashMorningDepressionFactor: 1.2
+  drugMorningDepressionPenalty: 6
+  storyInteractionDepressionReduction: 12
+  minMorningDepression: 0
+  maxMorningDepression: 85
+  trashCleanedThisDay: 0
+  trashCleanedYesterday: 0
+  substancesConsumedThisDay: 0
+  substancesConsumedYesterday: 0
+  storyElementsThisDay: 0
+  storyElementsYesterday: 0
+  bedtimeDirtiness: 0
+  bedtimeDepression: 0
+  pendingMorningTrashCount: 25
+  pendingMorningDepression: 0
   drunkConsumedCount: 0
   caffeinatedConsumedCount: 0
   highConsumedCount: 0
