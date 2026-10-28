@@ -125,11 +125,18 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
+    public decimal GetTierCost(UpgradeTier tier)
+    {
+        if (tier == null) return 0m;
+        float mult = BarManager.Instance != null ? BarManager.Instance.CurrentInflationMultiplier : 1f;
+        return (decimal)(tier.cost * mult);
+    }
+
     public bool TryPurchaseUpgrade(UpgradePath path, int targetIndex)
     {
         if (path.unlockedIndices.Contains(targetIndex)) return true;
 
-        decimal cost = (decimal)path.tiers[targetIndex].cost;
+        decimal cost = GetTierCost(path.tiers[targetIndex]);
         if (bouncer.TrySpendMoney(cost))
         {
             path.unlockedIndices.Add(targetIndex);

@@ -61,7 +61,10 @@ public static class SetupDvdAndBoosters
         // 4. Setup Permanent Boosters on Shelves
         SetupPermanentBoosters();
 
-        // 5. Mark Scene Dirty and Save
+        // 5. Setup Player Movement Speed
+        SetupPlayerMovementSpeed();
+
+        // 6. Mark Scene Dirty and Save
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         AssetDatabase.SaveAssets();
@@ -254,13 +257,13 @@ public static class SetupDvdAndBoosters
 
         // Attach negative boosters to Players after the 3rd one (index 3 to 9)
         BoosterObject[] playerBoosters = new BoosterObject[10];
-        playerBoosters[3] = AddOrUpdateModifier(worldPlayers[3], BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 25f);
-        playerBoosters[4] = AddOrUpdateModifier(worldPlayers[4], BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 30f);
-        playerBoosters[5] = AddOrUpdateModifier(worldPlayers[5], BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 35f);
-        playerBoosters[6] = AddOrUpdateModifier(worldPlayers[6], BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 40f);
-        playerBoosters[7] = AddOrUpdateModifier(worldPlayers[7], BoosterStat.EatDirtinessIncrease, ModifierMode.PercentageChange, 35f);
-        playerBoosters[8] = AddOrUpdateModifier(worldPlayers[8], BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 40f);
-        playerBoosters[9] = AddOrUpdateModifier(worldPlayers[9], BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 50f);
+        playerBoosters[3] = AddOrUpdateModifier(worldPlayers[3], BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 45f);
+        playerBoosters[4] = AddOrUpdateModifier(worldPlayers[4], BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 55f);
+        playerBoosters[5] = AddOrUpdateModifier(worldPlayers[5], BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 60f);
+        playerBoosters[6] = AddOrUpdateModifier(worldPlayers[6], BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 70f);
+        playerBoosters[7] = AddOrUpdateModifier(worldPlayers[7], BoosterStat.EatDirtinessIncrease, ModifierMode.PercentageChange, 65f);
+        playerBoosters[8] = AddOrUpdateModifier(worldPlayers[8], BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 80f);
+        playerBoosters[9] = AddOrUpdateModifier(worldPlayers[9], BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 100f);
 
         // --- Setup DVD Boosters under DVDSetup ---
         Transform dvdBoostersParent = dvdSetup.Find("DVDBoosters");
@@ -272,13 +275,13 @@ public static class SetupDvdAndBoosters
         }
 
         BoosterObject[] dvdBoosters = new BoosterObject[10];
-        dvdBoosters[3] = CreateChildBooster(dvdBoostersParent, "DVDBooster_3", BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 25f);
-        dvdBoosters[4] = CreateChildBooster(dvdBoostersParent, "DVDBooster_4", BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 30f);
-        dvdBoosters[5] = CreateChildBooster(dvdBoostersParent, "DVDBooster_5", BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 35f);
-        dvdBoosters[6] = CreateChildBooster(dvdBoostersParent, "DVDBooster_6", BoosterStat.TrashDirtinessIncrease, ModifierMode.PercentageChange, 40f);
-        dvdBoosters[7] = CreateChildBooster(dvdBoostersParent, "DVDBooster_7", BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 35f);
-        dvdBoosters[8] = CreateChildBooster(dvdBoostersParent, "DVDBooster_8", BoosterStat.SleepReduction, ModifierMode.PercentageChange, -30f);
-        dvdBoosters[9] = CreateChildBooster(dvdBoostersParent, "DVDBooster_9", BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 50f);
+        dvdBoosters[3] = CreateChildBooster(dvdBoostersParent, "DVDBooster_3", BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 45f);
+        dvdBoosters[4] = CreateChildBooster(dvdBoostersParent, "DVDBooster_4", BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 55f);
+        dvdBoosters[5] = CreateChildBooster(dvdBoostersParent, "DVDBooster_5", BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 65f);
+        dvdBoosters[6] = CreateChildBooster(dvdBoostersParent, "DVDBooster_6", BoosterStat.TrashDirtinessIncrease, ModifierMode.PercentageChange, 75f);
+        dvdBoosters[7] = CreateChildBooster(dvdBoostersParent, "DVDBooster_7", BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 60f);
+        dvdBoosters[8] = CreateChildBooster(dvdBoostersParent, "DVDBooster_8", BoosterStat.SleepReduction, ModifierMode.PercentageChange, -50f);
+        dvdBoosters[9] = CreateChildBooster(dvdBoostersParent, "DVDBooster_9", BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 100f);
 
         // --- Populate UpgradeManager Player Path (Index 0) ---
         UpgradePath playerPath = manager.upgradePaths[0];
@@ -287,19 +290,19 @@ public static class SetupDvdAndBoosters
 
         string[] playerNames = new string[]
         {
-            "Classic Chassis",
-            "Ruby Runner",
-            "Cobalt Cruiser",
-            "Ravenous Sprinter",
-            "Drowsy Overclocker",
-            "Somber Velocity",
-            "Sloppy Turbine",
-            "Stained Hyperdrive",
-            "Lavish Afterburner",
-            "Reckless Singularity"
+            "Curb-Find Sanyo (Missing Remote)",
+            "Dusty Pawnshop Apex",
+            "Taped-Together Magnavox",
+            "Overclocked 3AM Insomniac Deck",
+            "Eviction Auction Trinitron Companion",
+            "Smoking Circuitboard Turbo-Box",
+            "Bribe-To-The-Landlord Hi-Fi",
+            "Gold-Plated Repo'd Panasonic",
+            "Unlicensed Croatian LaserDisc Monolith",
+            "Industrial Doom Accelerator 9000"
         };
         float[] playerCosts = new float[] { 0f, 25f, 75f, 180f, 380f, 750f, 1400f, 2500f, 4500f, 8000f };
-        float[] playerMults = new float[] { 1.00f, 1.25f, 1.55f, 1.90f, 2.30f, 2.75f, 3.25f, 3.80f, 4.40f, 5.00f };
+        float[] playerMults = new float[] { 1.00f, 1.40f, 1.90f, 2.60f, 3.50f, 4.70f, 6.20f, 8.00f, 10.50f, 14.00f };
 
         while (playerPath.tiers.Count < 10) playerPath.tiers.Add(new UpgradeTier());
         while (playerPath.tiers.Count > 10) playerPath.tiers.RemoveAt(playerPath.tiers.Count - 1);
@@ -326,19 +329,19 @@ public static class SetupDvdAndBoosters
 
         string[] dvdNames = new string[]
         {
-            "Silver Disc",
-            "Crimson Tape",
-            "Azure Broadcast",
-            "Sleepless Static",
-            "Starving Signal",
-            "Melancholic Frequency",
-            "Cluttered Footage",
-            "Costly Archive",
-            "Shallow Reverie",
-            "Ominous Master"
+            "Blank Memorex CD-R (Sharpie Scribbles)",
+            "Bargain Bin Kung Fu IV (Polish Dub)",
+            "Subprime Mortgage Seminar 2006",
+            "Late-Night Psychic Hotline Archives",
+            "Caught Cheating on Dashcam Vol. 7",
+            "Bass Fishing & Deep Personal Regret",
+            "Banned Energy Drink Commercials '03",
+            "Foreclosed McMansion ASMR Tour",
+            "Underground Warehouse Rave Bootleg",
+            "Corporate Executive Severance Leak"
         };
         float[] dvdCosts = new float[] { 0f, 30f, 90f, 220f, 450f, 900f, 1700f, 3200f, 5800f, 10000f };
-        float[] dvdMults = new float[] { 1.00f, 1.30f, 1.70f, 2.20f, 2.80f, 3.50f, 4.30f, 5.20f, 6.30f, 7.50f };
+        float[] dvdMults = new float[] { 1f, 5f, 15f, 40f, 100f, 250f, 600f, 1500f, 3500f, 10000f };
 
         while (dvdPath.tiers.Count < 10) dvdPath.tiers.Add(new UpgradeTier());
         while (dvdPath.tiers.Count > 10) dvdPath.tiers.RemoveAt(dvdPath.tiers.Count - 1);
@@ -405,135 +408,135 @@ public static class SetupDvdAndBoosters
         AudioClip buyClip = AssetDatabase.LoadAssetAtPath<AudioClip>(BuySoundPath);
         AudioClip cantAffordClip = AssetDatabase.LoadAssetAtPath<AudioClip>(CantAffordSoundPath);
 
-        // 1. Setup the 5 existing scene objects (Renamed to grounded, atmospheric names)
-        SetupExistingPermanentItem(pbo, "SM_Book01", "Leather Ledger", 50f,
-            "+30% Money per Edge Bounce\n+15% Hunger Fill Rate",
-            BoosterStat.MoneyPerEdgeBounce, ModifierMode.PercentageChange, 30f,
-            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 15f,
+        // 1. Setup the 5 existing scene objects (Rebalanced and renamed for dark bachelor depression vibes)
+        SetupExistingPermanentItem(pbo, "SM_Book01", "Overdue Final Tax Notices", 50f,
+            "+80% Money per Edge Bounce\n+45% Depression Fill Rate",
+            BoosterStat.MoneyPerEdgeBounce, ModifierMode.PercentageChange, 80f,
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 45f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
-        SetupExistingPermanentItem(pbo, "SM_Book02", "Worn Journal", 110f,
-            "+35% Money per Corner Bounce\n+20% Sleep Fill Rate",
-            BoosterStat.MoneyPerCornerBounce, ModifierMode.PercentageChange, 35f,
-            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 20f,
+        SetupExistingPermanentItem(pbo, "SM_Book02", "Ex's Left-Behind Diary", 110f,
+            "+120% Money per Corner Bounce\n+60% Sleep Fill Rate",
+            BoosterStat.MoneyPerCornerBounce, ModifierMode.PercentageChange, 120f,
+            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 60f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
-        SetupExistingPermanentItem(pbo, "SM_Book03", "Philosopher's Tract", 150f,
-            "-30% Depression Fill Rate\n+20% Base Food Cost",
-            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -30f,
-            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 20f,
+        SetupExistingPermanentItem(pbo, "SM_Book03", "Self-Help Book (Still in Shrinkwrap)", 150f,
+            "-50% Depression Fill Rate\n+50% Base Food Cost",
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -50f,
+            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 50f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
-        SetupExistingPermanentItem(pbo, "SM_Book04", "Study Guide", 200f,
-            "+25% Bounce Speed\n+25% Toilet Dirtiness",
-            BoosterStat.BounceSpeed, ModifierMode.PercentageChange, 25f,
-            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 25f,
+        SetupExistingPermanentItem(pbo, "SM_Book04", "Gross Anatomy Textbook", 200f,
+            "+60% Bounce Speed\n+75% Toilet Dirtiness",
+            BoosterStat.BounceSpeed, ModifierMode.PercentageChange, 60f,
+            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 75f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
-        SetupExistingPermanentItem(pbo, "LanternV1", "Kerosene Lantern", 180f,
-            "-25% Sleep Fill Rate\n+20% Sleep Dirtiness",
-            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, -25f,
-            BoosterStat.SleepDirtinessIncrease, ModifierMode.PercentageChange, 20f,
+        SetupExistingPermanentItem(pbo, "LanternV1", "Stale Scented Mood Candle", 180f,
+            "-50% Sleep Fill Rate\n+60% Sleep Dirtiness",
+            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, -50f,
+            BoosterStat.SleepDirtinessIncrease, ModifierMode.PercentageChange, 60f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
-        // 2. Setup Existing 5 Cubes (Renamed to grounded atmospheric items)
+        // 2. Setup Existing 5 Cubes
         SetupCubePermanentItem(pbo, "Cube_Shelf_Lower_1", new Vector3(-0.42f, 1.322f, -3.87f),
-            "Pocket Compass", 250f,
-            "+40% Sleep Depression Reduction\n+20% Hunger Fill Rate",
-            BoosterStat.SleepDepressionReduction, ModifierMode.PercentageChange, 40f,
-            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 20f,
+            "Half-Empty Anti-Depressant Bottle", 250f,
+            "+120% Sleep Depression Reduction\n+50% Hunger Fill Rate",
+            BoosterStat.SleepDepressionReduction, ModifierMode.PercentageChange, 120f,
+            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 50f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_Upper_1", new Vector3(-0.22f, 1.322f, -3.87f),
-            "Stopwatch", 320f,
-            "+20% Money on All Bounces\n+30% Inflation Rate",
-            BoosterStat.MoneyAllBounces, ModifierMode.PercentageChange, 20f,
-            BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 30f,
+            "Crusty Gas Station Scratch-Off", 320f,
+            "+70% Money on All Bounces\n+80% Inflation Rate",
+            BoosterStat.MoneyAllBounces, ModifierMode.PercentageChange, 70f,
+            BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 80f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_Upper_2", new Vector3(-0.42f, 1.95f, -3.87f),
-            "Brass Bell", 380f,
-            "+45% Food Hunger Reduction\n+25% Depression Fill Rate",
-            BoosterStat.FoodHungerReduction, ModifierMode.PercentageChange, 45f,
-            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 25f,
+            "Emotional Support Bong", 380f,
+            "+120% Food Hunger Reduction\n+50% Depression Fill Rate",
+            BoosterStat.FoodHungerReduction, ModifierMode.PercentageChange, 120f,
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 50f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_Upper_3", new Vector3(-0.22f, 1.95f, -3.87f),
-            "Cedar Box", 440f,
-            "+45% Cleaning Dirt Reduction\n+25% Sleep Fill Rate",
-            BoosterStat.CleanDirtinessReduction, ModifierMode.PercentageChange, 45f,
-            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 25f,
+            "Moldy Takeout Styrofoam", 440f,
+            "+100% Cleaning Dirt Reduction\n+50% Sleep Fill Rate",
+            BoosterStat.CleanDirtinessReduction, ModifierMode.PercentageChange, 100f,
+            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 50f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_Upper_4", new Vector3(-0.02f, 1.95f, -3.87f),
-            "Copper Flask", 520f,
-            "+45% Money per Corner Bounce\n+30% Penalty Multiplier",
-            BoosterStat.MoneyPerCornerBounce, ModifierMode.PercentageChange, 45f,
-            BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 30f,
+            "Flask of Warm Cooking Wine", 520f,
+            "+150% Money per Corner Bounce\n+75% Penalty Multiplier",
+            BoosterStat.MoneyPerCornerBounce, ModifierMode.PercentageChange, 150f,
+            BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 75f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         // 3. Setup New 9 Cubes (Items 11 through 19)
         SetupCubePermanentItem(pbo, "Cube_Shelf_11", new Vector3(-0.02f, 1.322f, -3.87f),
-            "Iron Key", 220f,
-            "-25% Depression Fill Rate\n+20% Toilet Dirtiness",
-            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -25f,
-            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 20f,
+            "Expired Xanax in a Pez Dispenser", 220f,
+            "-60% Depression Fill Rate\n+70% Toilet Dirtiness",
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -60f,
+            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, 70f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_12", new Vector3(0.18f, 1.322f, -3.87f),
-            "Matchbox", 270f,
-            "+20% Bounce Speed\n+15% Depression Fill Rate",
-            BoosterStat.BounceSpeed, ModifierMode.PercentageChange, 20f,
-            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 15f,
+            "Shoddy Lithium Battery Charger", 270f,
+            "+50% Bounce Speed\n+40% Depression Fill Rate",
+            BoosterStat.BounceSpeed, ModifierMode.PercentageChange, 50f,
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 40f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_13", new Vector3(0.34f, 1.322f, -3.87f),
-            "Porcelain Ashtray", 340f,
-            "-35% Toilet Dirtiness\n+20% Hunger Fill Rate",
-            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, -35f,
-            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 20f,
+            "Overflowing Ceramic Ashtray", 340f,
+            "-70% Toilet Dirtiness\n+60% Hunger Fill Rate",
+            BoosterStat.ToiletDirtinessIncrease, ModifierMode.PercentageChange, -70f,
+            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 60f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_14", new Vector3(0.18f, 1.95f, -3.87f),
-            "Magnifying Glass", 390f,
-            "+40% Money per Edge Bounce\n+25% Base Food Cost",
-            BoosterStat.MoneyPerEdgeBounce, ModifierMode.PercentageChange, 40f,
-            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 25f,
+            "Sticky Magnifying Glass", 390f,
+            "+100% Money per Edge Bounce\n+60% Base Food Cost",
+            BoosterStat.MoneyPerEdgeBounce, ModifierMode.PercentageChange, 100f,
+            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 60f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_15", new Vector3(0.38f, 1.95f, -3.87f),
-            "Radio Receiver", 460f,
-            "+50% Sleep Depression Reduction\n+25% Base Food Cost",
-            BoosterStat.SleepDepressionReduction, ModifierMode.PercentageChange, 50f,
-            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 25f,
+            "Pirated Cable Descrambler", 460f,
+            "+120% Sleep Depression Reduction\n+50% Base Food Cost",
+            BoosterStat.SleepDepressionReduction, ModifierMode.PercentageChange, 120f,
+            BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 50f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_16", new Vector3(0.58f, 1.95f, -3.87f),
-            "Inkwell", 500f,
-            "+25% Money on All Bounces\n+25% Sleep Dirtiness",
-            BoosterStat.MoneyAllBounces, ModifierMode.PercentageChange, 25f,
-            BoosterStat.SleepDirtinessIncrease, ModifierMode.PercentageChange, 25f,
+            "Questionable USB Thumbdrive", 500f,
+            "+75% Money on All Bounces\n+60% Sleep Dirtiness",
+            BoosterStat.MoneyAllBounces, ModifierMode.PercentageChange, 75f,
+            BoosterStat.SleepDirtinessIncrease, ModifierMode.PercentageChange, 60f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_17", new Vector3(-0.42f, 0.825f, -3.87f),
-            "Paperweight", 560f,
-            "+50% Food Hunger Reduction\n+25% Penalty Multiplier",
-            BoosterStat.FoodHungerReduction, ModifierMode.PercentageChange, 50f,
-            BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 25f,
+            "Pure Regret Paperweight", 560f,
+            "+110% Food Hunger Reduction\n+65% Penalty Multiplier",
+            BoosterStat.FoodHungerReduction, ModifierMode.PercentageChange, 110f,
+            BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 65f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_18", new Vector3(-0.32f, 0.825f, -3.87f),
-            "Statuette", 620f,
-            "+50% Cleaning Dirt Reduction\n+30% Hunger Fill Rate",
-            BoosterStat.CleanDirtinessReduction, ModifierMode.PercentageChange, 50f,
-            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 30f,
+            "Knockoff Golden Buddha Statue", 620f,
+            "+120% Cleaning Dirt Reduction\n+70% Hunger Fill Rate",
+            BoosterStat.CleanDirtinessReduction, ModifierMode.PercentageChange, 120f,
+            BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 70f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
 
         SetupCubePermanentItem(pbo, "Cube_Shelf_19", new Vector3(0.48f, 0.825f, -3.87f),
-            "Music Box", 700f,
-            "-40% Depression Fill Rate\n+35% Sleep Fill Rate",
-            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -40f,
-            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 35f,
+            "Broken Nostalgia Music Box", 700f,
+            "-75% Depression Fill Rate\n+80% Sleep Fill Rate",
+            BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, -75f,
+            BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 80f,
             smokePrefab, buildupClip, buyClip, cantAffordClip);
     }
 
@@ -714,5 +717,20 @@ public static class SetupDvdAndBoosters
 
         EditorUtility.SetDirty(activeObj);
         EditorUtility.SetDirty(buyableObj);
+    }
+
+    private static void SetupPlayerMovementSpeed()
+    {
+        GridCrawlerController controller = Object.FindObjectOfType<GridCrawlerController>();
+        if (controller != null)
+        {
+            controller.moveDuration = 0.3f;
+            controller.rotateDuration = 0.3f;
+            controller.bumpDuration = 0.2f;
+            controller.bumpDistance = 0.3f;
+            controller.postActionCooldown = 0.2f;
+            EditorUtility.SetDirty(controller);
+            Debug.Log("Updated GridCrawlerController movement speed settings.");
+        }
     }
 }

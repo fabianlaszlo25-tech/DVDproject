@@ -40,6 +40,21 @@ public class SceneTransitionOut : MonoBehaviour
     {
         if (!isTransitioning)
         {
+            // Check Bill restrictions
+            if (BillManager.Instance != null)
+            {
+                if (sceneToLoad == "KristofDreamGames" && BillManager.Instance.HasUnpaidBill)
+                {
+                    BillManager.Instance.ShowBedDenyFeedback(gameObject);
+                    return;
+                }
+                if (sceneToLoad == "BarGameBarni" && BillManager.Instance.IsBarBlocked)
+                {
+                    BillManager.Instance.ShowBarDenyFeedback(gameObject);
+                    return;
+                }
+            }
+
             if (targetCamera == null) targetCamera = Camera.main;
             if (targetCamera != null && targetCamera.fieldOfView > zoomTargetFOV + 1f)
             {

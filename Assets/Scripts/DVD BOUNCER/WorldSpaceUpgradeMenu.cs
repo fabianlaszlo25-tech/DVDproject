@@ -221,10 +221,11 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         var tier = currentPath.tiers[viewingIndex];
         bool isUnlocked = currentPath.unlockedIndices.Contains(viewingIndex);
         bool isEquipped = currentPath.equippedIndex == viewingIndex;
-        bool canAfford = UpgradeManager.Instance.bouncer.currentMoney >= (decimal)tier.cost;
+        decimal tierCost = UpgradeManager.Instance != null ? UpgradeManager.Instance.GetTierCost(tier) : (decimal)tier.cost;
+        bool canAfford = UpgradeManager.Instance != null && UpgradeManager.Instance.bouncer != null && UpgradeManager.Instance.bouncer.currentMoney >= tierCost;
 
         if (buyInteractable != null) buyInteractable.GetComponent<Collider>().enabled = !isEquipped && (isUnlocked || canAfford);
-        priceText.text = $"${tier.cost:0.00}";
+        priceText.text = $"${tierCost:0.00}";
 
         if (isEquipped)
         {

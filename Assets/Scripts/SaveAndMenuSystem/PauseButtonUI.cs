@@ -86,14 +86,28 @@ public class PauseButtonUI : MonoBehaviour
             }
         }
 
-        // Exact same hover scale & alpha lerp animation as MovementArrowUI
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 12f);
+        // Exact same hover scale & alpha lerp animation as MovementArrowUI (guarded to avoid dirtying canvas when settled)
+        if ((transform.localScale - targetScale).sqrMagnitude > 0.0001f)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 12f);
+            if ((transform.localScale - targetScale).sqrMagnitude <= 0.0001f)
+            {
+                transform.localScale = targetScale;
+            }
+        }
 
         if (img != null)
         {
             Color c = img.color;
-            c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * 12f);
-            img.color = c;
+            if (Mathf.Abs(c.a - targetAlpha) > 0.001f)
+            {
+                c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * 12f);
+                if (Mathf.Abs(c.a - targetAlpha) <= 0.001f)
+                {
+                    c.a = targetAlpha;
+                }
+                img.color = c;
+            }
         }
     }
 

@@ -652,7 +652,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25634982}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &28960397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1149,7 +1149,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40024129}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &49301218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
   propName: WEED
-  price: 1
+  price: 690
   effectDescription: HIGH and CALM
   holdPrompt: Hold Click to Buy
   notEnoughMoneyPrompt: Not enough money!
@@ -1316,7 +1316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'WEED - $1.00
+  hoverText: 'WEED - $690.00
 
     HIGH and CALM
 
@@ -1801,7 +1801,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65578730}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &65720118 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2410778234154031816, guid: e2848d481db4e884690d64664613b915, type: 3}
@@ -2246,7 +2246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Tome of Commerce
+  hoverMessage: 'Overdue Final Tax Notices
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -2304,7 +2304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Tome of Commerce
+  hoverText: 'Overdue Final Tax Notices
 
     (Hold Click to Break)'
   onClick:
@@ -2328,10 +2328,10 @@ MonoBehaviour:
   modifiers:
   - stat: 0
     mode: 1
-    value: 30
+    value: 150
   - stat: 5
     mode: 1
-    value: 20
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -3208,23 +3208,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'The Hustler''s Almanac
-
-    (Hold Click to Break)'
+  hoverMessage: Ex
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
   shakeSpeed: 40
-  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeSound: {fileID: 0}
   shakeVolume: 1
-  poofSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  poofSound: {fileID: 0}
   poofVolume: 1
-  poofParticlePrefab: {fileID: 521877039727993729, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
-  poofPositionOffset: {x: 0, y: 0.3, z: 0}
+  poofParticlePrefab: {fileID: 0}
+  poofPositionOffset: {x: 0, y: 0, z: 0}
   poofRotationOffset: {x: 0, y: 0, z: 0}
-  poofScale: {x: 1.2, y: 1.2, z: 1.2}
+  poofScale: {x: 1, y: 1, z: 1}
   offsetsRelativeToProp: 1
-  boosterObject: {fileID: 95876173}
+  boosterObject: {fileID: 0}
 --- !u!114 &95876171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3266,9 +3264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'The Hustler''s Almanac
-
-    (Hold Click to Break)'
+  hoverText: Ex
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -3290,10 +3286,10 @@ MonoBehaviour:
   modifiers:
   - stat: 1
     mode: 1
-    value: 40
-  - stat: 6
+    value: 180
+  - stat: 7
     mode: 1
-    value: 25
+    value: 45
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -3571,7 +3567,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99051034}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &107287253
 GameObject:
   m_ObjectHideFlags: 0
@@ -3914,7 +3910,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 108434520}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &112461095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4440,7 +4436,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130203614}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &130203617
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4704,7 +4700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Stoic Reflections
+  hoverMessage: 'Gross Anatomy Textbook
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -4762,7 +4758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Stoic Reflections
+  hoverText: 'Gross Anatomy Textbook
 
     (Hold Click to Break)'
   onClick:
@@ -4784,12 +4780,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 7
+  - stat: 3
     mode: 1
-    value: -35
-  - stat: 27
+    value: 65
+  - stat: 5
     mode: 1
-    value: 20
+    value: 50
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -4912,7 +4908,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137675535}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &137675538
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5147,7 +5143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Cedar Box
+  hoverMessage: 'Stale Scented Mood Candle
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -5205,7 +5201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Cedar Box
+  hoverText: 'Stale Scented Mood Candle
 
     (Hold Click to Break)'
   onClick:
@@ -5227,12 +5223,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 16
+  - stat: 7
     mode: 1
-    value: 50
+    value: -50
   - stat: 6
     mode: 1
-    value: 30
+    value: 50
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -5452,7 +5448,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 148036653}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &149641670
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,7 +5570,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149641670}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &150406543
 GameObject:
   m_ObjectHideFlags: 0
@@ -5751,7 +5747,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 151947208}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &153976229
 GameObject:
   m_ObjectHideFlags: 0
@@ -5826,7 +5822,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 153976229}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &155142771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6891,7 +6887,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194391699}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &200025074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7003,6 +6999,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7700000002}
   - {fileID: 22330613}
   - {fileID: 2776424364957985571}
   - {fileID: 4236316817392777}
@@ -7493,7 +7490,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 224735206}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &228910566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7744,7 +7741,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243472114}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &243766659
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9593,11 +9590,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Worn Journal
+  propName: Ex's Left-Behind Diary
   price: 110
-  effectDescription: '+35% Money per Corner Bounce
+  effectDescription: '+150% Cleaning Dirt Reduction
 
-    +20% Sleep Fill Rate'
+    +80% Base Depression Fill
+    Rate'
   holdPrompt: Hold Click to Buy
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 95876169}
@@ -9658,12 +9656,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Worn Journal - $110.00
+  hoverText: 'Ex''s Left-Behind Diary - $110.00
 
-    +35% Money per Corner Bounce
+    +150% Cleaning Dirt Reduction
 
-    +20%
-    Sleep Fill Rate
+    +80%
+    Base Depression Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -10580,7 +10578,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384969751}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &388553713
 GameObject:
   m_ObjectHideFlags: 0
@@ -10630,7 +10628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Brass Bell
+  propName: Crusty Gas Station Scratch-Off
   price: 380
   effectDescription: '+45% Food Hunger Reduction
 
@@ -10695,12 +10693,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Brass Bell - $380.00
+  hoverText: 'Crusty Gas Station Scratch-Off - $380.00
 
     +45% Food Hunger Reduction
 
-    +25% Depression
-    Fill Rate
+    +25%
+    Depression Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -10829,7 +10827,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389620063}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &389620066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12367,7 +12365,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427690455}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &430267505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12644,7 +12642,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 432099058}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &432939006
 GameObject:
   m_ObjectHideFlags: 0
@@ -12739,7 +12737,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 432939006}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &439471694
 GameObject:
   m_ObjectHideFlags: 0
@@ -12816,7 +12814,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 439471694}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &439471698
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -13119,7 +13117,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446711949}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &449568134
 GameObject:
   m_ObjectHideFlags: 0
@@ -13356,7 +13354,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451600939}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &451600942
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13450,7 +13448,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453496026}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &456208735
 GameObject:
   m_ObjectHideFlags: 0
@@ -13568,7 +13566,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456208735}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &456208738
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14008,7 +14006,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465026972}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &465026975
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -14192,7 +14190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Philosopher's Tract
+  propName: Gross Anatomy Textbook
   price: 150
   effectDescription: '+30% Depression Fill Rate
 
@@ -14257,7 +14255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Philosopher''s Tract - $150.00
+  hoverText: 'Gross Anatomy Textbook - $150.00
 
     +30% Depression Fill Rate
 
@@ -15030,7 +15028,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482134173}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &487005906
 GameObject:
   m_ObjectHideFlags: 0
@@ -15082,7 +15080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Stopwatch
+  hoverMessage: 'Moldy Takeout Styrofoam
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -15140,7 +15138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Stopwatch
+  hoverText: 'Moldy Takeout Styrofoam
 
     (Hold Click to Break)'
   onClick:
@@ -15162,12 +15160,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 2
+  - stat: 22
     mode: 1
-    value: 25
-  - stat: 28
+    value: 100
+  - stat: 17
     mode: 1
-    value: 35
+    value: 80
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -15387,7 +15385,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487387507}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &491164469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15707,7 +15705,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 498402490}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &498402494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16283,7 +16281,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511266635}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &512056775
 GameObject:
   m_ObjectHideFlags: 0
@@ -16617,7 +16615,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519009604}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &519009607
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17029,7 +17027,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533472430}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &536688283
 GameObject:
   m_ObjectHideFlags: 0
@@ -17166,7 +17164,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536688283}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &539839966
 GameObject:
   m_ObjectHideFlags: 0
@@ -17507,7 +17505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -334.65872, y: -329.59937}
+  m_AnchoredPosition: {x: -334.6587, y: -329.59937}
   m_SizeDelta: {x: -1266.59, y: -789.19995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &559705312
@@ -17547,7 +17545,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559705310}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &561559783
 GameObject:
   m_ObjectHideFlags: 0
@@ -17830,7 +17828,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 564087387}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &564087391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18763,7 +18761,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 597464696}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &604631595
 GameObject:
   m_ObjectHideFlags: 0
@@ -20114,7 +20112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Vintage Lantern
+  hoverMessage: 'Emotional Support Bong
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -20172,7 +20170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Vintage Lantern
+  hoverText: 'Emotional Support Bong
 
     (Hold Click to Break)'
   onClick:
@@ -20194,12 +20192,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 6
+  - stat: 24
     mode: 1
-    value: -25
+    value: 120
   - stat: 19
     mode: 1
-    value: 25
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -20772,7 +20770,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 687088527}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &687088530
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21529,7 +21527,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 725690992}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &727784061
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21836,7 +21834,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738698526}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &739124566
 GameObject:
   m_ObjectHideFlags: 0
@@ -21914,6 +21912,9 @@ MonoBehaviour:
   scorePerGamblingDollarLost: 5
   scorePerTrashCleaned: 25
   scorePerStoryElement: 300
+  currentActiveBillIndex: -1
+  isCurrentBillPaid: 0
+  billHistory: 
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1
@@ -22278,7 +22279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Stopwatch
+  propName: Moldy Takeout Styrofoam
   price: 320
   effectDescription: '+20% Money on All Bounces
 
@@ -22343,12 +22344,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Stopwatch - $320.00
+  hoverText: 'Moldy Takeout Styrofoam - $320.00
 
     +20% Money on All Bounces
 
-    +30% Inflation
-    Rate
+    +30%
+    Inflation Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -24432,7 +24433,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 803833543}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &815387231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24749,7 +24750,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 839304522}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &840703078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25212,7 +25213,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850596778}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &850596781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25658,7 +25659,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 875088150}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &880000101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25850,12 +25851,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Iron Key - $220.00
+  hoverText: 'Expired Xanax in a Pez Dispenser - $220.00
 
-    -25% Depression Fill Rate
+    -25% Depression Fill
+    Rate
 
-    +20% Toilet
-    Dirtiness
+    +20% Toilet Dirtiness
 
     (Hold Click to Buy)'
   onClick:
@@ -25903,7 +25904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Iron Key
+  propName: Expired Xanax in a Pez Dispenser
   price: 220
   effectDescription: '-25% Depression Fill Rate
 
@@ -26060,10 +26061,10 @@ MonoBehaviour:
   modifiers:
   - stat: 7
     mode: 1
-    value: -25
+    value: -60
   - stat: 18
     mode: 1
-    value: 20
+    value: 70
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -26081,7 +26082,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Iron Key
+  hoverText: 'Expired Xanax in a Pez Dispenser
 
     (Hold Click to Break)'
   onClick:
@@ -26130,7 +26131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Iron Key
+  hoverMessage: 'Expired Xanax in a Pez Dispenser
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -26274,12 +26275,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Matchbox - $270.00
+  hoverText: 'Shoddy Lithium Battery Charger - $270.00
 
     +20% Bounce Speed
 
-    +15% Depression Fill
-    Rate
+    +15%
+    Depression Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -26327,7 +26328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Matchbox
+  propName: Shoddy Lithium Battery Charger
   price: 270
   effectDescription: '+20% Bounce Speed
 
@@ -26484,10 +26485,10 @@ MonoBehaviour:
   modifiers:
   - stat: 3
     mode: 1
-    value: 20
+    value: 50
   - stat: 7
     mode: 1
-    value: 15
+    value: 40
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -26505,7 +26506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Matchbox
+  hoverText: 'Shoddy Lithium Battery Charger
 
     (Hold Click to Break)'
   onClick:
@@ -26554,7 +26555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Matchbox
+  hoverMessage: 'Shoddy Lithium Battery Charger
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -26698,12 +26699,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Porcelain Ashtray - $340.00
+  hoverText: 'Overflowing Ceramic Ashtray - $340.00
 
     -35% Toilet Dirtiness
 
-    +20% Hunger
-    Fill Rate
+    +20%
+    Hunger Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -26751,7 +26752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Porcelain Ashtray
+  propName: Overflowing Ceramic Ashtray
   price: 340
   effectDescription: '-35% Toilet Dirtiness
 
@@ -26908,10 +26909,10 @@ MonoBehaviour:
   modifiers:
   - stat: 18
     mode: 1
-    value: -35
+    value: -70
   - stat: 5
     mode: 1
-    value: 20
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -26929,7 +26930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Porcelain Ashtray
+  hoverText: 'Overflowing Ceramic Ashtray
 
     (Hold Click to Break)'
   onClick:
@@ -26978,7 +26979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Porcelain Ashtray
+  hoverMessage: 'Overflowing Ceramic Ashtray
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -27122,7 +27123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Magnifying Glass - $390.00
+  hoverText: 'Sticky Magnifying Glass - $390.00
 
     +40% Money per Edge Bounce
 
@@ -27175,7 +27176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Magnifying Glass
+  propName: Sticky Magnifying Glass
   price: 390
   effectDescription: '+40% Money per Edge Bounce
 
@@ -27332,10 +27333,10 @@ MonoBehaviour:
   modifiers:
   - stat: 0
     mode: 1
-    value: 40
+    value: 100
   - stat: 27
     mode: 1
-    value: 25
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -27353,7 +27354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Magnifying Glass
+  hoverText: 'Sticky Magnifying Glass
 
     (Hold Click to Break)'
   onClick:
@@ -27402,7 +27403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Magnifying Glass
+  hoverMessage: 'Sticky Magnifying Glass
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -27546,7 +27547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Radio Receiver - $460.00
+  hoverText: 'Pirated Cable Descrambler - $460.00
 
     +50% Sleep Depression Reduction
 
@@ -27599,7 +27600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Radio Receiver
+  propName: Pirated Cable Descrambler
   price: 460
   effectDescription: '+50% Sleep Depression Reduction
 
@@ -27756,10 +27757,10 @@ MonoBehaviour:
   modifiers:
   - stat: 24
     mode: 1
-    value: 50
+    value: 120
   - stat: 27
     mode: 1
-    value: 25
+    value: 50
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -27777,7 +27778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Radio Receiver
+  hoverText: 'Pirated Cable Descrambler
 
     (Hold Click to Break)'
   onClick:
@@ -27826,7 +27827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Radio Receiver
+  hoverMessage: 'Pirated Cable Descrambler
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -27970,14 +27971,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Inkwell - $500.00
+  hoverText: 'Questionable USB Thumbdrive - $500.00
 
     +25% Money on All Bounces
 
-    +25% Sleep Dirtiness
+    +25%
+    Sleep Dirtiness
 
-    (Hold
-    Click to Buy)'
+    (Hold Click to Buy)'
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -28023,7 +28024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Inkwell
+  propName: Questionable USB Thumbdrive
   price: 500
   effectDescription: '+25% Money on All Bounces
 
@@ -28180,10 +28181,10 @@ MonoBehaviour:
   modifiers:
   - stat: 2
     mode: 1
-    value: 25
+    value: 75
   - stat: 19
     mode: 1
-    value: 25
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -28201,7 +28202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Inkwell
+  hoverText: 'Questionable USB Thumbdrive
 
     (Hold Click to Break)'
   onClick:
@@ -28250,7 +28251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Inkwell
+  hoverMessage: 'Questionable USB Thumbdrive
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -28394,12 +28395,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Paperweight - $560.00
+  hoverText: 'Pure Regret Paperweight - $560.00
 
     +50% Food Hunger Reduction
 
-    +25% Penalty
-    Multiplier
+    +25%
+    Penalty Multiplier
 
     (Hold Click to Buy)'
   onClick:
@@ -28447,7 +28448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Paperweight
+  propName: Pure Regret Paperweight
   price: 560
   effectDescription: '+50% Food Hunger Reduction
 
@@ -28604,10 +28605,10 @@ MonoBehaviour:
   modifiers:
   - stat: 13
     mode: 1
-    value: 50
+    value: 110
   - stat: 29
     mode: 1
-    value: 25
+    value: 65
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -28625,7 +28626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Paperweight
+  hoverText: 'Pure Regret Paperweight
 
     (Hold Click to Break)'
   onClick:
@@ -28674,7 +28675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Paperweight
+  hoverMessage: 'Pure Regret Paperweight
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -28818,12 +28819,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Statuette - $620.00
+  hoverText: 'Knockoff Golden Buddha Statue - $620.00
 
     +50% Cleaning Dirt Reduction
 
-    +30% Hunger
-    Fill Rate
+    +30%
+    Hunger Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -28871,7 +28872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Statuette
+  propName: Knockoff Golden Buddha Statue
   price: 620
   effectDescription: '+50% Cleaning Dirt Reduction
 
@@ -29028,10 +29029,10 @@ MonoBehaviour:
   modifiers:
   - stat: 16
     mode: 1
-    value: 50
+    value: 120
   - stat: 5
     mode: 1
-    value: 30
+    value: 70
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -29049,7 +29050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Statuette
+  hoverText: 'Knockoff Golden Buddha Statue
 
     (Hold Click to Break)'
   onClick:
@@ -29098,7 +29099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Statuette
+  hoverMessage: 'Knockoff Golden Buddha Statue
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -29242,12 +29243,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Music Box - $700.00
+  hoverText: 'Broken Nostalgia Music Box - $700.00
 
     -40% Depression Fill Rate
 
-    +35% Sleep
-    Fill Rate
+    +35%
+    Sleep Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -29295,7 +29296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Music Box
+  propName: Broken Nostalgia Music Box
   price: 700
   effectDescription: '-40% Depression Fill Rate
 
@@ -29450,12 +29451,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
+  - stat: 16
+    mode: 1
+    value: 150
   - stat: 7
     mode: 1
-    value: -40
-  - stat: 6
-    mode: 1
-    value: 35
+    value: 80
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -29473,7 +29474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Music Box
+  hoverText: 'Broken Nostalgia Music Box
 
     (Hold Click to Break)'
   onClick:
@@ -29522,7 +29523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Music Box
+  hoverMessage: 'Broken Nostalgia Music Box
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -30684,7 +30685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Pocket Compass
+  propName: Half-Empty Anti-Depressant Bottle
   price: 250
   effectDescription: '+40% Sleep Depression Reduction
 
@@ -30749,12 +30750,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Pocket Compass - $250.00
+  hoverText: 'Half-Empty Anti-Depressant Bottle - $250.00
 
-    +40% Sleep Depression Reduction
+    +40% Sleep Depression
+    Reduction
 
-    +20%
-    Hunger Fill Rate
+    +20% Hunger Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -31961,7 +31962,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963174698}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &963174701
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32667,7 +32668,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 990471092}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &992328543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33014,7 +33015,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997436464}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1003284026
 GameObject:
   m_ObjectHideFlags: 0
@@ -33099,7 +33100,7 @@ MonoBehaviour:
   sleepDepressionReduction: 10
   cleanDepressionReduction: 15
   baseFoodCost: 10
-  inflationRatePerDollar: 0.01
+  inflationRatePerDollar: 0.00025
   moneyDepressionRatePerDollar: 0.08
   maxMoneyDepressionMultiplier: 2.5
   currentMoneyDepressionMultiplier: 1
@@ -33357,7 +33358,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1012246096}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1012246100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33664,7 +33665,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1038826257}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1041148804
 GameObject:
   m_ObjectHideFlags: 0
@@ -33740,7 +33741,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1041148804}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1041148808
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34148,7 +34149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Speedreader''s Guide
+  hoverMessage: 'Self-Help Book (Still in Shrinkwrap)
+
+    (Hold Click to Break)''s
+    Guide
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -34206,7 +34210,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Speedreader''s Guide
+  hoverText: 'Self-Help Book (Still in Shrinkwrap)
+
+    (Hold Click to Break)''s
+    Guide
 
     (Hold Click to Break)'
   onClick:
@@ -34228,12 +34235,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 3
+  - stat: 2
     mode: 1
-    value: 25
-  - stat: 18
+    value: 100
+  - stat: 6
     mode: 1
-    value: 30
+    value: 60
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -34528,7 +34535,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1086471612}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1086471615
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35087,7 +35094,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1101301518}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1114488873
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35483,7 +35490,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1119817322}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1119817325
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35977,7 +35984,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1138099811}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1139056284
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36267,7 +36274,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1147019701}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1148599201
 GameObject:
   m_ObjectHideFlags: 0
@@ -36590,7 +36597,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1158465408}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1160972073
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37193,7 +37200,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174086960}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1175936744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38171,7 +38178,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204489763}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1207260588
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39329,7 +39336,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1250281390}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1250281393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -39655,7 +39662,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278820910}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1278820914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39844,7 +39851,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297429755}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1297669919
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40453,7 +40460,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1325077333}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1325077336
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -41450,7 +41457,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333860118}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1333860122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41635,7 +41642,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1343318009}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1343318012
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -42543,7 +42550,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385245608}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1385245612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43131,7 +43138,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1397730873}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1398249364
 GameObject:
   m_ObjectHideFlags: 0
@@ -43269,7 +43276,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398249364}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1398249368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43442,7 +43449,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1399775801}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1407970393
 GameObject:
   m_ObjectHideFlags: 0
@@ -43517,7 +43524,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407970393}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1410935573
 GameObject:
   m_ObjectHideFlags: 0
@@ -43905,7 +43912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Study Guide
+  propName: Self-Help Book (Still in Shrinkwrap)
   price: 200
   effectDescription: '+25% Bounce Speed
 
@@ -43970,14 +43977,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Study Guide - $200.00
+  hoverText: 'Self-Help Book (Still in Shrinkwrap) - $200.00
 
     +25% Bounce Speed
 
-    +25% Toilet Dirtiness
+    +25%
+    Toilet Dirtiness
 
-    (Hold
-    Click to Buy)'
+    (Hold Click to Buy)'
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -44170,7 +44177,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1428668550}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1428668553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44619,7 +44626,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1458300426}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1458300429
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -44770,7 +44777,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1460114751}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1460114754
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45033,7 +45040,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Cedar Box
+  propName: Stale Scented Mood Candle
   price: 440
   effectDescription: '+45% Cleaning Dirt Reduction
 
@@ -45098,12 +45105,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Cedar Box - $440.00
+  hoverText: 'Stale Scented Mood Candle - $440.00
 
     +45% Cleaning Dirt Reduction
 
-    +25% Sleep
-    Fill Rate
+    +25%
+    Sleep Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -45262,7 +45269,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468411786}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1469148562
 GameObject:
   m_ObjectHideFlags: 0
@@ -45476,7 +45483,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1475845268}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1475845271
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -46238,7 +46245,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1529998231}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1536352869
 GameObject:
   m_ObjectHideFlags: 0
@@ -47000,7 +47007,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1543244543}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1551490980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47866,7 +47873,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1568381525}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1572085763
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47983,7 +47990,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -10.758723, y: -329.59937}
+  m_AnchoredPosition: {x: -10.758728, y: -329.59937}
   m_SizeDelta: {x: -1266.59, y: -789.19995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1573078598
@@ -48023,7 +48030,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1573078596}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1573141038
 GameObject:
   m_ObjectHideFlags: 0
@@ -48543,7 +48550,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1587195558}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1589310731
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49379,7 +49386,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1598359308}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1598359312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49882,7 +49889,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1627959629}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1631340993
 GameObject:
   m_ObjectHideFlags: 0
@@ -49957,7 +49964,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1631340993}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1634121411
 GameObject:
   m_ObjectHideFlags: 0
@@ -50971,7 +50978,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1662325297}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1664552902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52686,7 +52693,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723812272}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1723812275
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -52861,7 +52868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Pocket Compass
+  hoverMessage: 'Half-Empty Anti-Depressant Bottle
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -52919,7 +52926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Pocket Compass
+  hoverText: 'Half-Empty Anti-Depressant Bottle
 
     (Hold Click to Break)'
   onClick:
@@ -52941,12 +52948,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 24
+  - stat: 7
+    mode: 1
+    value: -60
+  - stat: 17
     mode: 1
     value: 40
-  - stat: 5
-    mode: 1
-    value: 25
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -53438,7 +53445,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1746280009}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1746280012
 RectTransform:
   m_ObjectHideFlags: 0
@@ -53614,7 +53621,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749273378}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1750699187
 GameObject:
   m_ObjectHideFlags: 0
@@ -53942,7 +53949,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755309103}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1755309106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55407,7 +55414,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1779046365}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1779046369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56292,7 +56299,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1815773326}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1815773329
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56929,7 +56936,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1842251508}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1842662694
 GameObject:
   m_ObjectHideFlags: 0
@@ -57094,7 +57101,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843391868}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1843909382
 GameObject:
   m_ObjectHideFlags: 0
@@ -57204,7 +57211,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843909382}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1853337568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57693,7 +57700,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1872933274}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1872933277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57798,7 +57805,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878018051}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1881796031
 GameObject:
   m_ObjectHideFlags: 0
@@ -58113,7 +58120,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883380968}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1886158657
 GameObject:
   m_ObjectHideFlags: 0
@@ -58231,7 +58238,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886158657}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1886158660
 RectTransform:
   m_ObjectHideFlags: 0
@@ -58469,7 +58476,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1890164219}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1892196233
 GameObject:
   m_ObjectHideFlags: 0
@@ -58587,7 +58594,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892196233}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &1892196236
 RectTransform:
   m_ObjectHideFlags: 0
@@ -58745,7 +58752,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1895958191}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1895958194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59067,7 +59074,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902890660}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1909109409
 GameObject:
   m_ObjectHideFlags: 0
@@ -59119,7 +59126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Copper Flask
+  hoverMessage: 'Flask of Warm Cooking Wine
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -59177,7 +59184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Copper Flask
+  hoverText: 'Flask of Warm Cooking Wine
 
     (Hold Click to Break)'
   onClick:
@@ -59201,10 +59208,10 @@ MonoBehaviour:
   modifiers:
   - stat: 1
     mode: 1
-    value: 50
+    value: 150
   - stat: 29
     mode: 1
-    value: 35
+    value: 75
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -59719,7 +59726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
   holdDuration: 1.5
-  hoverMessage: 'Brass Bell
+  hoverMessage: 'Crusty Gas Station Scratch-Off
 
     (Hold Click to Break)'
   levitateHeight: 0
@@ -59777,7 +59784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Brass Bell
+  hoverText: 'Crusty Gas Station Scratch-Off
 
     (Hold Click to Break)'
   onClick:
@@ -59799,12 +59806,12 @@ MonoBehaviour:
   economyBouncer: {fileID: 0}
   barManager: {fileID: 0}
   modifiers:
-  - stat: 13
+  - stat: 1
     mode: 1
-    value: 50
-  - stat: 7
+    value: 250
+  - stat: 27
     mode: 1
-    value: 30
+    value: 80
   instantDepressionChange: 0
   instantDirtinessChange: 0
   onBoosterActivated:
@@ -60332,7 +60339,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936377166}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1936662983
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60939,7 +60946,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1939840211}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &1939840216
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -61668,7 +61675,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950000001}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &1950000010
 GameObject:
   m_ObjectHideFlags: 0
@@ -61815,7 +61822,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950000020}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1950000023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61926,7 +61933,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950000040}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1950000043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62037,7 +62044,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950000060}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1950000063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62117,7 +62124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Copper Flask
+  propName: Flask of Warm Cooking Wine
   price: 520
   effectDescription: '+45% Money per Corner Bounce
 
@@ -62182,7 +62189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Copper Flask - $520.00
+  hoverText: 'Flask of Warm Cooking Wine - $520.00
 
     +45% Money per Corner Bounce
 
@@ -62967,7 +62974,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975604392}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &1977900066
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63098,7 +63105,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978952782}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &1978952785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63191,7 +63198,7 @@ MonoBehaviour:
     targetMeshFilter1: {fileID: 960807724101403802}
     targetMeshFilter2: {fileID: 3731511433064525986}
     tiers:
-    - tierName: Classic Chassis
+    - tierName: Curb-Find Sanyo (Missing Remote)
       cost: 0
       multiplierValue: 1
       previewPrefab: {fileID: 5552092563427411271, guid: df4e40d60dd48c24ca9b0a3d927b3d02, type: 3}
@@ -63205,9 +63212,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 13646b1af6e3fde4d9b7f03bdd8ec051, type: 2}
       booster: {fileID: 0}
-    - tierName: Ruby Runner
+    - tierName: Dusty Pawnshop Apex
       cost: 25
-      multiplierValue: 1.25
+      multiplierValue: 1.4
       previewPrefab: {fileID: 5552092563427411271, guid: 9c6b1fa370ed3a4449d4fbcc84b77461, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63219,9 +63226,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 2a2cfa0b3880c1140bc13ce6974502cc, type: 2}
       booster: {fileID: 0}
-    - tierName: Cobalt Cruiser
+    - tierName: Taped-Together Magnavox
       cost: 75
-      multiplierValue: 1.55
+      multiplierValue: 1.9
       previewPrefab: {fileID: 5552092563427411271, guid: 65a5d0354f187fe439d9723e2c05b49e, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63233,9 +63240,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: c297537c31636ab409f9271910957212, type: 2}
       booster: {fileID: 0}
-    - tierName: Ravenous Sprinter
+    - tierName: Overclocked 3AM Insomniac Deck
       cost: 180
-      multiplierValue: 1.9
+      multiplierValue: 2.6
       previewPrefab: {fileID: 5552092563427411271, guid: d10ba260416138d4b83c56b9fa2cbbc7, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63247,9 +63254,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 7f9d591c7de2e2b45a5f727c8abb50e6, type: 2}
       booster: {fileID: 1677126161}
-    - tierName: Drowsy Overclocker
+    - tierName: Eviction Auction Trinitron Companion
       cost: 380
-      multiplierValue: 2.3
+      multiplierValue: 3.5
       previewPrefab: {fileID: 5552092563427411271, guid: c001d54f910bd5649ba96a229604a0fa, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63261,9 +63268,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: fdc24968cc8e35b4ea95942b6be7832a, type: 2}
       booster: {fileID: 491164471}
-    - tierName: Somber Velocity
+    - tierName: Smoking Circuitboard Turbo-Box
       cost: 750
-      multiplierValue: 2.75
+      multiplierValue: 4.7
       previewPrefab: {fileID: 5552092563427411271, guid: 25c7013e49849a240b0517042a2c2005, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63275,9 +63282,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: cd0686cea1f815842b2d366342750e51, type: 2}
       booster: {fileID: 1165516015}
-    - tierName: Sloppy Turbine
+    - tierName: Bribe-To-The-Landlord Hi-Fi
       cost: 1400
-      multiplierValue: 3.25
+      multiplierValue: 6.2
       previewPrefab: {fileID: 5552092563427411271, guid: 93717b4b951f19649aba0727d86c9c60, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63289,9 +63296,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 43ea967bbfd5b2f4186eb7bd23846f32, type: 2}
       booster: {fileID: 355009033}
-    - tierName: Stained Hyperdrive
+    - tierName: Gold-Plated Repo'd Panasonic
       cost: 2500
-      multiplierValue: 3.8
+      multiplierValue: 8
       previewPrefab: {fileID: 5552092563427411271, guid: b2bf6b7cbae5bbd4cac1a5a50d5a054f, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63303,9 +63310,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 32c9ce7f9c1d92a4994ab8ffbc834d6b, type: 2}
       booster: {fileID: 644547752}
-    - tierName: Lavish Afterburner
+    - tierName: Unlicensed Croatian LaserDisc Monolith
       cost: 4500
-      multiplierValue: 4.4
+      multiplierValue: 10.5
       previewPrefab: {fileID: 5552092563427411271, guid: 142804ee7fd204149ba8e97c2837db53, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63317,9 +63324,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: f96c8c6365921d145a57003761c6af29, type: 2}
       booster: {fileID: 954990920}
-    - tierName: Reckless Singularity
+    - tierName: Industrial Doom Accelerator 9000
       cost: 8000
-      multiplierValue: 5
+      multiplierValue: 14
       previewPrefab: {fileID: 5552092563427411271, guid: 9c24deb29d9c3414684db2a288aaa369, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -63347,7 +63354,7 @@ MonoBehaviour:
     targetMeshFilter1: {fileID: 0}
     targetMeshFilter2: {fileID: 0}
     tiers:
-    - tierName: Silver Disc
+    - tierName: Blank Memorex CD-R (Sharpie Scribbles)
       cost: 0
       multiplierValue: 1
       previewPrefab: {fileID: 7228993373051037621, guid: 01ca73f8bff18ea448c04a2f25f6aaed, type: 3}
@@ -63361,9 +63368,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Crimson Tape
+    - tierName: Bargain Bin Kung Fu IV (Polish Dub)
       cost: 30
-      multiplierValue: 1.3
+      multiplierValue: 5
       previewPrefab: {fileID: 7228993373051037621, guid: 5da8925e659a5db4c8910e02302a608b, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63375,9 +63382,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Azure Broadcast
+    - tierName: Subprime Mortgage Seminar 2006
       cost: 90
-      multiplierValue: 1.7
+      multiplierValue: 15
       previewPrefab: {fileID: 7228993373051037621, guid: 60133244e81e9e246ad2d93830d573ed, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63389,9 +63396,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Sleepless Static
+    - tierName: Late-Night Psychic Hotline Archives
       cost: 220
-      multiplierValue: 2.2
+      multiplierValue: 40
       previewPrefab: {fileID: 7228993373051037621, guid: 2355df4c029c088438b39a1ebc7de097, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63403,9 +63410,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1136130874}
-    - tierName: Starving Signal
+    - tierName: Caught Cheating on Dashcam Vol. 7
       cost: 450
-      multiplierValue: 2.8
+      multiplierValue: 100
       previewPrefab: {fileID: 7228993373051037621, guid: fd3c7d6b6112e074d83f224bdbe9cb6d, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63417,9 +63424,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1945030757}
-    - tierName: Melancholic Frequency
+    - tierName: Bass Fishing & Deep Personal Regret
       cost: 900
-      multiplierValue: 3.5
+      multiplierValue: 250
       previewPrefab: {fileID: 7228993373051037621, guid: 949f663423dca054ab96e5d9977abfbd, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63431,9 +63438,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 112461097}
-    - tierName: Cluttered Footage
+    - tierName: Banned Energy Drink Commercials '03
       cost: 1700
-      multiplierValue: 4.3
+      multiplierValue: 600
       previewPrefab: {fileID: 7228993373051037621, guid: 80fabc7279f4bab4599d7aa3eab1f0e2, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63445,9 +63452,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1830758836}
-    - tierName: Costly Archive
+    - tierName: Foreclosed McMansion ASMR Tour
       cost: 3200
-      multiplierValue: 5.2
+      multiplierValue: 1500
       previewPrefab: {fileID: 7228993373051037621, guid: 7815bd0853b16ae4a912feff801d9606, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63459,9 +63466,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1141808364}
-    - tierName: Shallow Reverie
+    - tierName: Underground Warehouse Rave Bootleg
       cost: 5800
-      multiplierValue: 6.3
+      multiplierValue: 3500
       previewPrefab: {fileID: 7228993373051037621, guid: 1b9977b1763dd0143b150b6295888fc7, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -63473,9 +63480,9 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 284998250}
-    - tierName: Ominous Master
+    - tierName: Corporate Executive Severance Leak
       cost: 10000
-      multiplierValue: 7.5
+      multiplierValue: 10000
       previewPrefab: {fileID: 7228993373051037621, guid: 18d59f9ff90e2ed4ba66f1ef85aa8df8, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -64178,7 +64185,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003079588}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!225 &2003079591
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -64286,7 +64293,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2008557210}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2008744210
 GameObject:
   m_ObjectHideFlags: 0
@@ -64563,7 +64570,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012916357}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2013806278
 GameObject:
   m_ObjectHideFlags: 0
@@ -64815,7 +64822,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2019130247}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2028022124
 GameObject:
   m_ObjectHideFlags: 0
@@ -64904,7 +64911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Leather Ledger
+  propName: Overdue Final Tax Notices
   price: 50
   effectDescription: '+30% Money per Edge Bounce
 
@@ -64969,12 +64976,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Leather Ledger - $50.00
+  hoverText: 'Overdue Final Tax Notices - $50.00
 
     +30% Money per Edge Bounce
 
-    +15% Hunger
-    Fill Rate
+    +15%
+    Hunger Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -65529,7 +65536,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050607171}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2050607174
 RectTransform:
   m_ObjectHideFlags: 0
@@ -65879,7 +65886,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2058659728}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2058659731
 RectTransform:
   m_ObjectHideFlags: 0
@@ -65973,7 +65980,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2070944604}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &2075128301
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66095,7 +66102,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: asdasd
+  m_text: +0.00% Inflation
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 957801226}
@@ -66129,7 +66136,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -66174,7 +66181,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2079674432}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2079674435
 RectTransform:
   m_ObjectHideFlags: 0
@@ -66191,9 +66198,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -55, y: -25}
-  m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 23.69, y: 41.600006}
+  m_SizeDelta: {x: 350, y: 50}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &2079674436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66368,7 +66375,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085331489}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &2085331493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66867,7 +66874,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092745455}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2095245225
 GameObject:
   m_ObjectHideFlags: 0
@@ -66976,7 +66983,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097280817}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &2097280821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67247,7 +67254,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099629072}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &2104348678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67645,7 +67652,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117530356}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2117530359
 RectTransform:
   m_ObjectHideFlags: 0
@@ -67998,7 +68005,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2122657184}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2122657187
 RectTransform:
   m_ObjectHideFlags: 0
@@ -68135,7 +68142,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123628447}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2123628450
 RectTransform:
   m_ObjectHideFlags: 0
@@ -68203,7 +68210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85bea0e473db8b247be31479442899f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuyableBoosterProp
-  propName: Kerosene Lantern
+  propName: Emotional Support Bong
   price: 180
   effectDescription: '+25% Sleep Fill Rate
 
@@ -68268,12 +68275,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Kerosene Lantern - $180.00
+  hoverText: 'Emotional Support Bong - $180.00
 
     +25% Sleep Fill Rate
 
-    +20% Sleep
-    Dirtiness
+    +20%
+    Sleep Dirtiness
 
     (Hold Click to Buy)'
   onClick:
@@ -68354,7 +68361,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2124927775}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1001 &2128304543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -68602,7 +68609,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137419160}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &2137419163
 RectTransform:
   m_ObjectHideFlags: 0
@@ -68860,7 +68867,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144206486}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2144940064
 GameObject:
   m_ObjectHideFlags: 0
@@ -68935,7 +68942,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144940064}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!1 &2145264690
 GameObject:
   m_ObjectHideFlags: 0
@@ -69126,6 +69133,1027 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030989081, guid: abc00000000006207164080373519345, type: 3}
   m_PrefabInstance: {fileID: 2145266151}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7700000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000002}
+  - component: {fileID: 7700000003}
+  m_Layer: 0
+  m_Name: BillsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7700000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.25, y: 1.35, z: 0.32}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7700000005}
+  - {fileID: 7700000013}
+  - {fileID: 7700000021}
+  - {fileID: 7700000029}
+  - {fileID: 7700000037}
+  m_Father: {fileID: 201337191}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d24cbbd4d694eac9fffaaccc36db845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillManager
+  billObjects:
+  - {fileID: 7700000011}
+  - {fileID: 7700000019}
+  - {fileID: 7700000027}
+  - {fileID: 7700000035}
+  - {fileID: 7700000043}
+  economyBouncer: {fileID: 854348182134054070}
+  barManager: {fileID: 1003284028}
+  foodBillMultiplier: 2
+  electricSpeedMultiplier: 0.5
+  activeBillIndex: -1
+  isPaid: 0
+--- !u!1 &7700000004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000005}
+  - component: {fileID: 7700000006}
+  - component: {fileID: 7700000007}
+  - component: {fileID: 7700000008}
+  - component: {fileID: 7700000009}
+  - component: {fileID: 7700000010}
+  - component: {fileID: 7700000011}
+  m_Layer: 0
+  m_Name: Bill_Food
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7700000005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.364, y: 0.217, z: 0.057}
+  m_LocalScale: {x: 0.28, y: 0.38, z: 0.05}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7700000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7700000006
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7700000007
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8a303e05ecb9bcd46900f0b26e3d5a22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7700000008
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: Overdraft & Groceries Debt Notice - $15.00\nDebit card frozen! Food
+    costs x2 until settled.\n(Hold Click to Pay)
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  hideHoverText: 0
+--- !u!114 &7700000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 2, g: 0.15, b: 0.15, a: 1}
+  thickness: 0.035
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 1.5
+  periodicDuration: 1.2
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 0}
+--- !u!114 &7700000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e560912bed4ef4b6f98ee8ecd63259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillObject
+  billType: 0
+  billTitle: Overdraft & Groceries Debt Notice
+  basePrice: 15
+  penaltyDescription: Debit card frozen! Food costs x2 until settled.
+  holdPrompt: Hold Click to Pay
+  notEnoughMoneyPrompt: Not enough money!
+  holdDuration: 1.2
+  levitateHeight: 0.06
+  returnDuration: 0.2
+  shakeIntensity: 0.025
+  shakeSpeed: 35
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  paidSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  paidVolume: 1
+  cantAffordSound: {fileID: 0}
+  poofParticlePrefab: {fileID: 8184519965564883445, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
+  economyBouncer: {fileID: 854348182134054070}
+--- !u!1 &7700000012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000013}
+  - component: {fileID: 7700000014}
+  - component: {fileID: 7700000015}
+  - component: {fileID: 7700000016}
+  - component: {fileID: 7700000017}
+  - component: {fileID: 7700000018}
+  - component: {fileID: 7700000019}
+  m_Layer: 0
+  m_Name: Bill_Electric
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7700000013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.36399984, y: 0.21700001, z: 0.05700016}
+  m_LocalScale: {x: 0.28, y: 0.38, z: 0.05}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7700000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7700000014
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7700000015
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8a303e05ecb9bcd46900f0b26e3d5a22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7700000016
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: 'Final Notice: Electric Grid Disconnect - $20.00\nVoltage reduced! DVD
+    player runs at 50% speed.\n(Hold Click to Pay)'
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  hideHoverText: 0
+--- !u!114 &7700000018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 2, g: 0.15, b: 0.15, a: 1}
+  thickness: 0.035
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 1.5
+  periodicDuration: 1.2
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 0}
+--- !u!114 &7700000019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e560912bed4ef4b6f98ee8ecd63259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillObject
+  billType: 1
+  billTitle: 'Final Notice: Electric Grid Disconnect'
+  basePrice: 20
+  penaltyDescription: Voltage reduced! DVD player runs at 50% speed.
+  holdPrompt: Hold Click to Pay
+  notEnoughMoneyPrompt: Not enough money!
+  holdDuration: 1.2
+  levitateHeight: 0.06
+  returnDuration: 0.2
+  shakeIntensity: 0.025
+  shakeSpeed: 35
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  paidSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  paidVolume: 1
+  cantAffordSound: {fileID: 0}
+  poofParticlePrefab: {fileID: 8184519965564883445, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
+  economyBouncer: {fileID: 854348182134054070}
+--- !u!1 &7700000020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000021}
+  - component: {fileID: 7700000022}
+  - component: {fileID: 7700000023}
+  - component: {fileID: 7700000024}
+  - component: {fileID: 7700000025}
+  - component: {fileID: 7700000026}
+  - component: {fileID: 7700000027}
+  m_Layer: 0
+  m_Name: Bill_Water
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7700000021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.36399984, y: 0.21700001, z: 0.05700016}
+  m_LocalScale: {x: 0.28, y: 0.38, z: 0.05}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7700000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7700000022
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7700000023
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8a303e05ecb9bcd46900f0b26e3d5a22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7700000024
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: Municipal Water Shutoff Warrant - $15.00\nMain water valve locked! Toilet
+    is out of service.\n(Hold Click to Pay)
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  hideHoverText: 0
+--- !u!114 &7700000026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 2, g: 0.15, b: 0.15, a: 1}
+  thickness: 0.035
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 1.5
+  periodicDuration: 1.2
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 0}
+--- !u!114 &7700000027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e560912bed4ef4b6f98ee8ecd63259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillObject
+  billType: 2
+  billTitle: Municipal Water Shutoff Warrant
+  basePrice: 15
+  penaltyDescription: Main water valve locked! Toilet is out of service.
+  holdPrompt: Hold Click to Pay
+  notEnoughMoneyPrompt: Not enough money!
+  holdDuration: 1.2
+  levitateHeight: 0.06
+  returnDuration: 0.2
+  shakeIntensity: 0.025
+  shakeSpeed: 35
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  paidSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  paidVolume: 1
+  cantAffordSound: {fileID: 0}
+  poofParticlePrefab: {fileID: 8184519965564883445, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
+  economyBouncer: {fileID: 854348182134054070}
+--- !u!1 &7700000028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000029}
+  - component: {fileID: 7700000030}
+  - component: {fileID: 7700000031}
+  - component: {fileID: 7700000032}
+  - component: {fileID: 7700000033}
+  - component: {fileID: 7700000034}
+  - component: {fileID: 7700000035}
+  m_Layer: 0
+  m_Name: Bill_Sanitation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7700000029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.36399984, y: 0.21700001, z: 0.05700016}
+  m_LocalScale: {x: 0.28, y: 0.38, z: 0.05}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7700000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7700000030
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7700000031
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8a303e05ecb9bcd46900f0b26e3d5a22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7700000032
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: Gas & Sanitation Delinquency Order - $15.00\nHot water boiler cut off!
+    Shower is unusable.\n(Hold Click to Pay)
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  hideHoverText: 0
+--- !u!114 &7700000034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 2, g: 0.15, b: 0.15, a: 1}
+  thickness: 0.035
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 1.5
+  periodicDuration: 1.2
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 0}
+--- !u!114 &7700000035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e560912bed4ef4b6f98ee8ecd63259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillObject
+  billType: 3
+  billTitle: Gas & Sanitation Delinquency Order
+  basePrice: 15
+  penaltyDescription: Hot water boiler cut off! Shower is unusable.
+  holdPrompt: Hold Click to Pay
+  notEnoughMoneyPrompt: Not enough money!
+  holdDuration: 1.2
+  levitateHeight: 0.06
+  returnDuration: 0.2
+  shakeIntensity: 0.025
+  shakeSpeed: 35
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  paidSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  paidVolume: 1
+  cantAffordSound: {fileID: 0}
+  poofParticlePrefab: {fileID: 8184519965564883445, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
+  economyBouncer: {fileID: 854348182134054070}
+--- !u!1 &7700000036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7700000037}
+  - component: {fileID: 7700000038}
+  - component: {fileID: 7700000039}
+  - component: {fileID: 7700000040}
+  - component: {fileID: 7700000041}
+  - component: {fileID: 7700000042}
+  - component: {fileID: 7700000043}
+  m_Layer: 0
+  m_Name: Bill_CarPayment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7700000037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.36399984, y: 0.21700001, z: 0.05700016}
+  m_LocalScale: {x: 0.28, y: 0.38, z: 0.05}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7700000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7700000038
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7700000039
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8a303e05ecb9bcd46900f0b26e3d5a22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7700000040
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7700000041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  hoverText: Vehicle Repossession & Wheel Clamp - $25.00\nBeater car immobilized!
+    Cannot travel to the Bar.\n(Hold Click to Pay)
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  hideHoverText: 0
+--- !u!114 &7700000042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d394c7a9ed6e949892e8495dcb9017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractVisualizer
+  glowColor: {r: 2, g: 0.15, b: 0.15, a: 1}
+  thickness: 0.035
+  radialBlend: 0.5
+  fillStrength: 0.6
+  enablePeriodicGlow: 1
+  periodicWait: 1.5
+  periodicDuration: 1.2
+  periodicPeakIntensity: 1
+  baseBrightness: 0.6
+  pulseBrightness: 2.2
+  pulseThicknessMultiplier: 1.6
+  pulsePeriod: 0.45
+  swirlBands: 2
+  swirlTwist: 8
+  onlyUseLOD0WhenLODGroupPresent: 1
+  smoothing: 10
+  outlineShader: {fileID: 0}
+--- !u!114 &7700000043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e560912bed4ef4b6f98ee8ecd63259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillObject
+  billType: 4
+  billTitle: Vehicle Repossession & Wheel Clamp
+  basePrice: 25
+  penaltyDescription: Beater car immobilized! Cannot travel to the Bar.
+  holdPrompt: Hold Click to Pay
+  notEnoughMoneyPrompt: Not enough money!
+  holdDuration: 1.2
+  levitateHeight: 0.06
+  returnDuration: 0.2
+  shakeIntensity: 0.025
+  shakeSpeed: 35
+  shakeSound: {fileID: 8300000, guid: 8c865c0401cccbe4fb6858789a87ae53, type: 3}
+  shakeVolume: 0.8
+  paidSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
+  paidVolume: 1
+  cantAffordSound: {fileID: 0}
+  poofParticlePrefab: {fileID: 8184519965564883445, guid: cb9dec6170aeaac42afaa0013f4ba083, type: 3}
+  economyBouncer: {fileID: 854348182134054070}
 --- !u!1 &1027380570504221
 GameObject:
   m_ObjectHideFlags: 0
@@ -70176,6 +71204,7 @@ MonoBehaviour:
   minAxisVelocity: 0.2
   startingMoney: 9999
   moneyMultiplier: 1
+  billSpeedMultiplier: 1
   totalMoneyText: {fileID: 1333860120}
   popupCanvasParent: {fileID: 738698527}
   moneyPopupPrefab: {fileID: 7343643644851287380, guid: 62735e313d3b8ab4b8a7bc02bb312360, type: 3}

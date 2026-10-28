@@ -221,18 +221,23 @@ public class RunSaveManager : MonoBehaviour
     private float savedSleepDepressionReduction = 10f;
     private float savedCleanDepressionReduction = 15f;
     private float savedBaseFoodCost = 10f;
-    private float savedInflationRatePerDollar = 0.01f;
+    private float savedInflationRatePerDollar = 0.00025f;
     private float savedPenaltyMultiplier = 2f;
 
     // DVDLogoBouncer economy & speed state
     private bool hasSavedBouncerState;
     private decimal savedCurrentMoney;
     private decimal savedEdgeReward = 0.01m;
-    private decimal savedCornerReward = 0.50m;
+    private decimal savedCornerReward = 0.05m;
     private float savedBaseSpeed = 2.5f;
     private float savedStateMultiplier = 1f;
     private float savedMoneyMultiplier = 1f;
     private Vector2 savedBouncerDirection = Vector2.zero;
+
+    [Header("Daily Bill State")]
+    public int currentActiveBillIndex = -1;
+    public bool isCurrentBillPaid = false;
+    public List<int> billHistory = new List<int>();
 
     // UpgradeManager state
     private bool hasSavedUpgrades;
@@ -639,6 +644,10 @@ public class RunSaveManager : MonoBehaviour
         runWideBrokenPermanentBoosterPaths.Clear();
         resetTrashOnNextRoomLoad = false;
         lastActiveGameplayScene = string.Empty;
+
+        currentActiveBillIndex = -1;
+        isCurrentBillPaid = false;
+        billHistory.Clear();
     }
 
     public void ReturnToMainMenuFromDeath()

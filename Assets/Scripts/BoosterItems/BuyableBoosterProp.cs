@@ -208,9 +208,16 @@ public class BuyableBoosterProp : MonoBehaviour
         }
     }
 
+    public decimal GetInflatedPrice()
+    {
+        float mult = BarManager.Instance != null ? BarManager.Instance.CurrentInflationMultiplier : 1f;
+        return (decimal)(price * mult);
+    }
+
     private string FormatHoverText()
     {
-        string text = $"{propName} - ${price:0.00}";
+        decimal currentPrice = GetInflatedPrice();
+        string text = $"{propName} - ${currentPrice:0.00}";
         if (!string.IsNullOrWhiteSpace(effectDescription))
         {
             text += $"\n{effectDescription}";
@@ -226,6 +233,13 @@ public class BuyableBoosterProp : MonoBehaviour
     {
         switch (state)
         {
+            case State.Idle:
+                if (interactable != null && !interactable.hideHoverText && denyMessageRoutine == null)
+                {
+                    UpdateHoverText();
+                }
+                break;
+
             case State.Holding:
                 if (!IsStillHeld())
                 {
@@ -252,8 +266,9 @@ public class BuyableBoosterProp : MonoBehaviour
     {
         if (state != State.Idle) return;
 
-        // Check if the player has enough money before starting the hold
-        if (economyBouncer != null && economyBouncer.currentMoney < (decimal)price)
+        // Check if the player has enough money before starting the hold (scaled by inflation)
+        decimal cost = GetInflatedPrice();
+        if (economyBouncer != null && economyBouncer.currentMoney < cost)
         {
             if (cantAffordSound != null) audioSource.PlayOneShot(cantAffordSound);
             if (denyMessageRoutine != null) StopCoroutine(denyMessageRoutine);
@@ -272,7 +287,7 @@ public class BuyableBoosterProp : MonoBehaviour
 
     private IEnumerator ShowNotEnoughMoneyFeedback()
     {
-        interactable.hoverText = $"{propName} - ${price:0.00}\n{notEnoughMoneyPrompt}";
+        interactable.hoverText = $"{propName} - ${GetInflatedPrice():0.00}\n{notEnoughMoneyPrompt}";
         yield return new WaitForSeconds(1.2f);
         UpdateHoverText();
         denyMessageRoutine = null;
@@ -329,7 +344,7 @@ public class BuyableBoosterProp : MonoBehaviour
 
     private void TryCompletePurchase()
     {
-        decimal cost = (decimal)price;
+        decimal cost = GetInflatedPrice();
 
         // Spend the money through DVDLogoBouncer
         if (economyBouncer != null && !economyBouncer.TrySpendMoney(cost))

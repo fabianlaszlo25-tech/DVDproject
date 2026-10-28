@@ -51,9 +51,13 @@ public class DVDLogoBouncer : MonoBehaviour
     [Tooltip("Starting money for a new game / fresh day.")]
     public float startingMoney = 25f;
     public decimal edgeReward = 0.01m;
-    public decimal cornerReward = 0.50m;
+    public decimal cornerReward = 0.05m;
     public decimal currentMoney = 0m;
+    public decimal allTimeMoneyEarned = 0m;
     public float moneyMultiplier = 1f;
+    [HideInInspector] public float billSpeedMultiplier = 1f;
+
+    public decimal AllTimeMoneyEarned => RunSaveManager.HasInstance ? RunSaveManager.Instance.TotalMoneyEarned : allTimeMoneyEarned;
 
     public TMP_Text totalMoneyText;
     public Transform popupCanvasParent;
@@ -152,7 +156,7 @@ public class DVDLogoBouncer : MonoBehaviour
             }
         }
 
-        float activeSpeed = (baseSpeed * stateMultiplier) + totalBoostAdder;
+        float activeSpeed = ((baseSpeed * stateMultiplier) + totalBoostAdder) * billSpeedMultiplier;
         transform.position += (Vector3)(direction * activeSpeed * Time.deltaTime);
 
         CheckBounds();
@@ -218,13 +222,16 @@ public class DVDLogoBouncer : MonoBehaviour
         direction.Normalize();
         bool isCorner = hitX && hitY;
 
+        decimal edgeAmount = edgeReward * (decimal)moneyMultiplier;
         if (isCorner)
         {
             if (audioSource != null && cornerHitSound != null) audioSource.PlayOneShot(cornerHitSound);
             TriggerVisualBounce(cornerBounceMultiplier);
 
-            decimal reward = cornerReward * (decimal)moneyMultiplier;
+            // Corner is always worth exactly 5x regular edge bounce
+            decimal reward = edgeAmount * 5m;
             currentMoney += reward;
+            allTimeMoneyEarned += reward;
             if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(reward);
             SpawnHitEffect(cornerEffectTemplate);
             SpawnPopup(reward, false);
@@ -234,8 +241,9 @@ public class DVDLogoBouncer : MonoBehaviour
             if (audioSource != null && edgeHitSound != null) audioSource.PlayOneShot(edgeHitSound);
             TriggerVisualBounce(edgeBounceMultiplier);
 
-            decimal reward = edgeReward * (decimal)moneyMultiplier;
+            decimal reward = edgeAmount;
             currentMoney += reward;
+            allTimeMoneyEarned += reward;
             if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(reward);
             SpawnHitEffect(edgeEffectTemplate);
             SpawnPopup(reward, false);

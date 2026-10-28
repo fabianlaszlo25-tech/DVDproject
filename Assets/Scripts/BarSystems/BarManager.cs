@@ -4,6 +4,8 @@ using TMPro;
 
 public class BarManager : MonoBehaviour
 {
+    public static BarManager Instance { get; private set; }
+
     [Header("References")]
     public DVDLogoBouncer economyBouncer;
     [Tooltip("Auto-found or auto-created if left empty. Triggered when Depression reaches 100%.")]
@@ -64,8 +66,8 @@ public class BarManager : MonoBehaviour
 
     [Header("Economy & Inflation")]
     public float baseFoodCost = 10f;
-    [Tooltip("Rate at which food prices inflate per dollar earned.")]
-    public float inflationRatePerDollar = 0.01f;
+    [Tooltip("Rate at which prices inflate per dollar of all-time money earned.")]
+    public float inflationRatePerDollar = 0.00025f;
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
 
@@ -81,6 +83,18 @@ public class BarManager : MonoBehaviour
     public float penaltyMultiplier = 2f;
 
     private bool hasTriggeredDepressionEnding = false;
+    private float lastDisplayedInflationPercent = -1f;
+    private decimal lastDisplayedFoodCost = -1m;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else if (Instance != this)
+        {
+            // Update reference if a new instance loaded
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -106,9 +120,16 @@ public class BarManager : MonoBehaviour
     private void ProcessInflation()
     {
         if (economyBouncer == null) return;
-        float moneyFloat = (float)economyBouncer.currentMoney;
-        currentInflationMultiplier = 1f + (moneyFloat * inflationRatePerDollar);
-        currentFoodCost = (decimal)(baseFoodCost * currentInflationMultiplier);
+        // Monotonic inflation: based strictly on all-time money earned so spending money never lowers inflation
+        float allTimeMoneyFloat = (float)economyBouncer.AllTimeMoneyEarned;
+        currentInflationMultiplier = 1f + (allTimeMoneyFloat * inflationRatePerDollar);
+
+        float foodMultiplier = currentInflationMultiplier;
+        if (BillManager.Instance != null && BillManager.Instance.IsFoodMoreExpensive)
+        {
+            foodMultiplier *= BillManager.Instance.FoodBillMultiplier;
+        }
+        currentFoodCost = (decimal)(baseFoodCost * foodMultiplier);
     }
 
     private void ProcessBars()
@@ -165,8 +186,18 @@ public class BarManager : MonoBehaviour
         if (dirtinessSlider) dirtinessSlider.value = currentDirtiness / maxDirtiness;
         if (depressionSlider) depressionSlider.value = currentDepression / maxDepression;
 
-        if (inflationText) inflationText.text = $"Inflation: {(currentInflationMultiplier * 100f):0}%";
-        if (foodCostText) foodCostText.text = $"Food Cost: ${currentFoodCost:0.00}";
+        float percentOverBase = (currentInflationMultiplier - 1f) * 100f;
+        if (inflationText && (Mathf.Abs(percentOverBase - lastDisplayedInflationPercent) > 0.005f || lastDisplayedInflationPercent < 0f))
+        {
+            lastDisplayedInflationPercent = percentOverBase;
+            inflationText.text = $"+{percentOverBase:0.00}% Inflation";
+        }
+
+        if (foodCostText && currentFoodCost != lastDisplayedFoodCost)
+        {
+            lastDisplayedFoodCost = currentFoodCost;
+            foodCostText.text = $"Food Cost: ${currentFoodCost:0.00}";
+        }
     }
 
     public decimal GetCurrentFoodCost()
@@ -178,7 +209,12 @@ public class BarManager : MonoBehaviour
 
     public decimal GetFoodCost(float basePrice)
     {
-        return (decimal)(basePrice * currentInflationMultiplier);
+        float foodMultiplier = currentInflationMultiplier;
+        if (BillManager.Instance != null && BillManager.Instance.IsFoodMoreExpensive)
+        {
+            foodMultiplier *= BillManager.Instance.FoodBillMultiplier;
+        }
+        return (decimal)(basePrice * foodMultiplier);
     }
 
     // --- INTERACTION METHODS ---
