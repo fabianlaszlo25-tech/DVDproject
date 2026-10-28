@@ -200,7 +200,18 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
     {
         var tier = currentPath.tiers[viewingIndex];
         titleText.text = tier.tierName;
-        statsText.text = $"Multiplier: x{tier.multiplierValue}";
+        if (currentPath.category == UpgradeCategory.MoneyMultiplier)
+        {
+            decimal baseEdge = (UpgradeManager.Instance != null && UpgradeManager.Instance.bouncer != null)
+                ? UpgradeManager.Instance.bouncer.edgeReward
+                : 0.01m;
+            decimal bounceMoney = baseEdge * (decimal)tier.multiplierValue;
+            statsText.text = $"${bounceMoney:0.00} / Bounce";
+        }
+        else
+        {
+            statsText.text = $"Speed: x{tier.multiplierValue:0.00}";
+        }
 
         RefreshButtonStates();
 

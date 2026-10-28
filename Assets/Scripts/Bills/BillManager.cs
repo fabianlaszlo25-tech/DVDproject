@@ -70,21 +70,12 @@ public class BillManager : MonoBehaviour
         bool isNewMorning = true;
         if (RunSaveManager.HasInstance)
         {
-            // If we have an active bill and haven't slept yet (e.g. returning from Bar on the same day)
-            if (RunSaveManager.Instance.currentActiveBillIndex >= 0 && !RunSaveManager.Instance.isCurrentBillPaid)
+            // If a bill was already rolled for the CURRENT day (e.g. returning from Bar on the same day)
+            if (RunSaveManager.Instance.lastBillDay == RunSaveManager.Instance.daysSurvived && RunSaveManager.Instance.currentActiveBillIndex >= 0)
             {
-                // Preserve current bill state
                 isNewMorning = false;
                 activeBillIndex = RunSaveManager.Instance.currentActiveBillIndex;
                 isPaid = RunSaveManager.Instance.isCurrentBillPaid;
-            }
-            else if (RunSaveManager.Instance.currentActiveBillIndex >= 0 && RunSaveManager.Instance.isCurrentBillPaid)
-            {
-                // If paid today and returning to room on the same day without sleeping
-                // Check if days survived changed or if it was marked as a new day
-                isNewMorning = false;
-                activeBillIndex = RunSaveManager.Instance.currentActiveBillIndex;
-                isPaid = true;
             }
         }
 
@@ -128,6 +119,7 @@ public class BillManager : MonoBehaviour
 
         if (RunSaveManager.HasInstance)
         {
+            RunSaveManager.Instance.lastBillDay = RunSaveManager.Instance.daysSurvived;
             RunSaveManager.Instance.currentActiveBillIndex = activeBillIndex;
             RunSaveManager.Instance.isCurrentBillPaid = false;
         }

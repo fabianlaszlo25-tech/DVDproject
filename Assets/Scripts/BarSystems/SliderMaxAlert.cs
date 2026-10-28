@@ -12,13 +12,17 @@ public class SliderMaxAlert : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip alertSound;
 
+    [Header("Alert Trigger Condition")]
+    [Tooltip("If true, alerts and shakes when the slider value is empty (<= 0) instead of full (>= 1).")]
+    public bool alertOnEmpty = false;
+
     [Header("Shake Settings")]
     [Tooltip("How far the UI element moves while shaking")]
     public float shakeIntensity = 5f;
     [Tooltip("How fast the UI element vibrates")]
     public float shakeSpeed = 30f;
 
-    private bool isMaxed = false;
+    private bool isAlerting = false;
 
     void Start()
     {
@@ -36,12 +40,13 @@ public class SliderMaxAlert : MonoBehaviour
 
     void Update()
     {
-        // BarManager sets slider value from 0 to 1
-        if (slider.value >= 1f)
+        bool shouldAlert = alertOnEmpty ? (slider.value <= 0.001f) : (slider.value >= 0.999f);
+
+        if (shouldAlert)
         {
-            if (!isMaxed)
+            if (!isAlerting)
             {
-                isMaxed = true;
+                isAlerting = true;
                 if (alertSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(alertSound);
@@ -56,10 +61,10 @@ public class SliderMaxAlert : MonoBehaviour
         }
         else
         {
-            if (isMaxed)
+            if (isAlerting)
             {
-                // Reset state and lock position back to normal once the bar lowers
-                isMaxed = false;
+                // Reset state and lock position back to normal once the bar leaves the danger threshold
+                isAlerting = false;
                 rectTransform.anchoredPosition = originalPosition;
             }
         }

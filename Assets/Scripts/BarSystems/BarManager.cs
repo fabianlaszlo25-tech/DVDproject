@@ -22,6 +22,10 @@ public class BarManager : MonoBehaviour
     public TMP_Text inflationText;
     public TMP_Text foodCostText;
 
+    [Header("Hunger Bar Visual Customization")]
+    [Tooltip("If checked: 0 hunger shows a FULL bar, max hunger shows an EMPTY bar, and the bar shakes when empty. If unchecked: standard fill-up.")]
+    public bool invertHungerVisuals = true;
+
     [Header("Bar Maximums")]
     public float maxHunger = 100f;
     public float maxNeeds = 100f;
@@ -180,7 +184,17 @@ public class BarManager : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (hungerSlider) hungerSlider.value = currentHunger / maxHunger;
+        if (hungerSlider)
+        {
+            float hungerNorm = currentHunger / maxHunger;
+            hungerSlider.value = invertHungerVisuals ? (1f - hungerNorm) : hungerNorm;
+
+            SliderMaxAlert alert = hungerSlider.GetComponent<SliderMaxAlert>();
+            if (alert != null)
+            {
+                alert.alertOnEmpty = invertHungerVisuals;
+            }
+        }
         if (needsSlider) needsSlider.value = currentNeeds / maxNeeds;
         if (sleepSlider) sleepSlider.value = currentSleep / maxSleep;
         if (dirtinessSlider) dirtinessSlider.value = currentDirtiness / maxDirtiness;
@@ -221,6 +235,12 @@ public class BarManager : MonoBehaviour
 
     public bool TryEatFood(decimal cost, float hungerReduction, float needsIncrease, float dirtinessIncrease, float depressionReduction)
     {
+        // Cannot eat if needs/bladder are already full
+        if (currentNeeds >= maxNeeds - 0.01f)
+        {
+            return false;
+        }
+
         if (economyBouncer != null && !economyBouncer.TrySpendMoney(cost))
         {
             return false;

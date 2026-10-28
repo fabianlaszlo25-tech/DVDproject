@@ -290,16 +290,16 @@ public static class SetupDvdAndBoosters
 
         string[] playerNames = new string[]
         {
-            "Curb-Find Sanyo (Missing Remote)",
-            "Dusty Pawnshop Apex",
-            "Taped-Together Magnavox",
-            "Overclocked 3AM Insomniac Deck",
-            "Eviction Auction Trinitron Companion",
-            "Smoking Circuitboard Turbo-Box",
-            "Bribe-To-The-Landlord Hi-Fi",
-            "Gold-Plated Repo'd Panasonic",
-            "Unlicensed Croatian LaserDisc Monolith",
-            "Industrial Doom Accelerator 9000"
+            "Dumpster Sanyo",
+            "Pawnshop Apex",
+            "Taped Magnavox",
+            "Overclocked Deck",
+            "Repo'd Trinitron",
+            "Smoking Turbo",
+            "Landlord Bribe",
+            "Gold Panasonic",
+            "Bootleg Monolith",
+            "Doom Accelerator"
         };
         float[] playerCosts = new float[] { 0f, 25f, 75f, 180f, 380f, 750f, 1400f, 2500f, 4500f, 8000f };
         float[] playerMults = new float[] { 1.00f, 1.40f, 1.90f, 2.60f, 3.50f, 4.70f, 6.20f, 8.00f, 10.50f, 14.00f };
@@ -329,16 +329,16 @@ public static class SetupDvdAndBoosters
 
         string[] dvdNames = new string[]
         {
-            "Blank Memorex CD-R (Sharpie Scribbles)",
-            "Bargain Bin Kung Fu IV (Polish Dub)",
-            "Subprime Mortgage Seminar 2006",
-            "Late-Night Psychic Hotline Archives",
-            "Caught Cheating on Dashcam Vol. 7",
-            "Bass Fishing & Deep Personal Regret",
-            "Banned Energy Drink Commercials '03",
-            "Foreclosed McMansion ASMR Tour",
-            "Underground Warehouse Rave Bootleg",
-            "Corporate Executive Severance Leak"
+            "Sharpie CDR",
+            "Bargain Kung-Fu",
+            "Mortgage Seminar",
+            "Psychic Hotline",
+            "Dashcam Cheaters",
+            "Depressed Fishing",
+            "Banned Commercials",
+            "Foreclosure Tour",
+            "Warehouse Bootleg",
+            "Executive Severance"
         };
         float[] dvdCosts = new float[] { 0f, 30f, 90f, 220f, 450f, 900f, 1700f, 3200f, 5800f, 10000f };
         float[] dvdMults = new float[] { 1f, 5f, 15f, 40f, 100f, 250f, 600f, 1500f, 3500f, 10000f };

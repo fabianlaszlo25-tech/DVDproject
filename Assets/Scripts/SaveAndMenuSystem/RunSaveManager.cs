@@ -237,6 +237,7 @@ public class RunSaveManager : MonoBehaviour
     [Header("Daily Bill State")]
     public int currentActiveBillIndex = -1;
     public bool isCurrentBillPaid = false;
+    public int lastBillDay = -1;
     public List<int> billHistory = new List<int>();
 
     // UpgradeManager state
@@ -647,6 +648,7 @@ public class RunSaveManager : MonoBehaviour
 
         currentActiveBillIndex = -1;
         isCurrentBillPaid = false;
+        lastBillDay = -1;
         billHistory.Clear();
     }
 

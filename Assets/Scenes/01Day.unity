@@ -33072,6 +33072,7 @@ MonoBehaviour:
   depressionSlider: {fileID: 1680633886}
   inflationText: {fileID: 2079674433}
   foodCostText: {fileID: 0}
+  invertHungerVisuals: 1
   maxHunger: 500
   maxNeeds: 100
   maxSleep: 500
@@ -63198,7 +63199,7 @@ MonoBehaviour:
     targetMeshFilter1: {fileID: 960807724101403802}
     targetMeshFilter2: {fileID: 3731511433064525986}
     tiers:
-    - tierName: Curb-Find Sanyo (Missing Remote)
+    - tierName: Dumpster Sanyo
       cost: 0
       multiplierValue: 1
       previewPrefab: {fileID: 5552092563427411271, guid: df4e40d60dd48c24ca9b0a3d927b3d02, type: 3}
@@ -63212,7 +63213,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 13646b1af6e3fde4d9b7f03bdd8ec051, type: 2}
       booster: {fileID: 0}
-    - tierName: Dusty Pawnshop Apex
+    - tierName: Pawnshop Apex
       cost: 25
       multiplierValue: 1.4
       previewPrefab: {fileID: 5552092563427411271, guid: 9c6b1fa370ed3a4449d4fbcc84b77461, type: 3}
@@ -63226,7 +63227,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 2a2cfa0b3880c1140bc13ce6974502cc, type: 2}
       booster: {fileID: 0}
-    - tierName: Taped-Together Magnavox
+    - tierName: Taped Magnavox
       cost: 75
       multiplierValue: 1.9
       previewPrefab: {fileID: 5552092563427411271, guid: 65a5d0354f187fe439d9723e2c05b49e, type: 3}
@@ -63240,7 +63241,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: c297537c31636ab409f9271910957212, type: 2}
       booster: {fileID: 0}
-    - tierName: Overclocked 3AM Insomniac Deck
+    - tierName: Overclocked Deck
       cost: 180
       multiplierValue: 2.6
       previewPrefab: {fileID: 5552092563427411271, guid: d10ba260416138d4b83c56b9fa2cbbc7, type: 3}
@@ -63254,7 +63255,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 7f9d591c7de2e2b45a5f727c8abb50e6, type: 2}
       booster: {fileID: 1677126161}
-    - tierName: Eviction Auction Trinitron Companion
+    - tierName: Repo'd Trinitron
       cost: 380
       multiplierValue: 3.5
       previewPrefab: {fileID: 5552092563427411271, guid: c001d54f910bd5649ba96a229604a0fa, type: 3}
@@ -63268,7 +63269,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: fdc24968cc8e35b4ea95942b6be7832a, type: 2}
       booster: {fileID: 491164471}
-    - tierName: Smoking Circuitboard Turbo-Box
+    - tierName: Smoking Turbo
       cost: 750
       multiplierValue: 4.7
       previewPrefab: {fileID: 5552092563427411271, guid: 25c7013e49849a240b0517042a2c2005, type: 3}
@@ -63282,7 +63283,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: cd0686cea1f815842b2d366342750e51, type: 2}
       booster: {fileID: 1165516015}
-    - tierName: Bribe-To-The-Landlord Hi-Fi
+    - tierName: Landlord Bribe
       cost: 1400
       multiplierValue: 6.2
       previewPrefab: {fileID: 5552092563427411271, guid: 93717b4b951f19649aba0727d86c9c60, type: 3}
@@ -63296,7 +63297,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 43ea967bbfd5b2f4186eb7bd23846f32, type: 2}
       booster: {fileID: 355009033}
-    - tierName: Gold-Plated Repo'd Panasonic
+    - tierName: Gold Panasonic
       cost: 2500
       multiplierValue: 8
       previewPrefab: {fileID: 5552092563427411271, guid: b2bf6b7cbae5bbd4cac1a5a50d5a054f, type: 3}
@@ -63310,7 +63311,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: 32c9ce7f9c1d92a4994ab8ffbc834d6b, type: 2}
       booster: {fileID: 644547752}
-    - tierName: Unlicensed Croatian LaserDisc Monolith
+    - tierName: Bootleg Monolith
       cost: 4500
       multiplierValue: 10.5
       previewPrefab: {fileID: 5552092563427411271, guid: 142804ee7fd204149ba8e97c2837db53, type: 3}
@@ -63324,7 +63325,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 2100000, guid: f96c8c6365921d145a57003761c6af29, type: 2}
       booster: {fileID: 954990920}
-    - tierName: Industrial Doom Accelerator 9000
+    - tierName: Doom Accelerator
       cost: 8000
       multiplierValue: 14
       previewPrefab: {fileID: 5552092563427411271, guid: 9c24deb29d9c3414684db2a288aaa369, type: 3}
@@ -63354,7 +63355,7 @@ MonoBehaviour:
     targetMeshFilter1: {fileID: 0}
     targetMeshFilter2: {fileID: 0}
     tiers:
-    - tierName: Blank Memorex CD-R (Sharpie Scribbles)
+    - tierName: Sharpie CDR
       cost: 0
       multiplierValue: 1
       previewPrefab: {fileID: 7228993373051037621, guid: 01ca73f8bff18ea448c04a2f25f6aaed, type: 3}
@@ -63368,7 +63369,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Bargain Bin Kung Fu IV (Polish Dub)
+    - tierName: Bargain Kung-Fu
       cost: 30
       multiplierValue: 5
       previewPrefab: {fileID: 7228993373051037621, guid: 5da8925e659a5db4c8910e02302a608b, type: 3}
@@ -63382,7 +63383,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Subprime Mortgage Seminar 2006
+    - tierName: Mortgage Seminar
       cost: 90
       multiplierValue: 15
       previewPrefab: {fileID: 7228993373051037621, guid: 60133244e81e9e246ad2d93830d573ed, type: 3}
@@ -63396,7 +63397,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
-    - tierName: Late-Night Psychic Hotline Archives
+    - tierName: Psychic Hotline
       cost: 220
       multiplierValue: 40
       previewPrefab: {fileID: 7228993373051037621, guid: 2355df4c029c088438b39a1ebc7de097, type: 3}
@@ -63410,7 +63411,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1136130874}
-    - tierName: Caught Cheating on Dashcam Vol. 7
+    - tierName: Dashcam Cheaters
       cost: 450
       multiplierValue: 100
       previewPrefab: {fileID: 7228993373051037621, guid: fd3c7d6b6112e074d83f224bdbe9cb6d, type: 3}
@@ -63424,7 +63425,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1945030757}
-    - tierName: Bass Fishing & Deep Personal Regret
+    - tierName: Depressed Fishing
       cost: 900
       multiplierValue: 250
       previewPrefab: {fileID: 7228993373051037621, guid: 949f663423dca054ab96e5d9977abfbd, type: 3}
@@ -63438,7 +63439,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 112461097}
-    - tierName: Banned Energy Drink Commercials '03
+    - tierName: Banned Commercials
       cost: 1700
       multiplierValue: 600
       previewPrefab: {fileID: 7228993373051037621, guid: 80fabc7279f4bab4599d7aa3eab1f0e2, type: 3}
@@ -63452,7 +63453,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1830758836}
-    - tierName: Foreclosed McMansion ASMR Tour
+    - tierName: Foreclosure Tour
       cost: 3200
       multiplierValue: 1500
       previewPrefab: {fileID: 7228993373051037621, guid: 7815bd0853b16ae4a912feff801d9606, type: 3}
@@ -63466,7 +63467,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 1141808364}
-    - tierName: Underground Warehouse Rave Bootleg
+    - tierName: Warehouse Bootleg
       cost: 5800
       multiplierValue: 3500
       previewPrefab: {fileID: 7228993373051037621, guid: 1b9977b1763dd0143b150b6295888fc7, type: 3}
@@ -63480,7 +63481,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 284998250}
-    - tierName: Corporate Executive Severance Leak
+    - tierName: Executive Severance
       cost: 10000
       multiplierValue: 10000
       previewPrefab: {fileID: 7228993373051037621, guid: 18d59f9ff90e2ed4ba66f1ef85aa8df8, type: 3}

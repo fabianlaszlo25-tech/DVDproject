@@ -18,6 +18,7 @@ public class FoodPriceDisplay : MonoBehaviour
     private InteractableObject interactable;
     private SurvivalAction survivalAction;
     private float denyMessageTimer = 0f;
+    private string activeDenyMessage = null;
 
     private void Start()
     {
@@ -56,11 +57,17 @@ public class FoodPriceDisplay : MonoBehaviour
         if (denyMessageTimer > 0f)
         {
             denyMessageTimer -= Time.unscaledDeltaTime;
-            interactable.hoverText = $"{foodName} (${currentCost:0.00})\n{notEnoughMoneyMessage}";
+            string msg = !string.IsNullOrEmpty(activeDenyMessage) ? activeDenyMessage : notEnoughMoneyMessage;
+            interactable.hoverText = $"{foodName} (${currentCost:0.00})\n{msg}";
         }
         else
         {
-            if (!string.IsNullOrEmpty(holdPrompt))
+            activeDenyMessage = null;
+            if (barManager != null && barManager.currentNeeds >= barManager.maxNeeds - 0.01f)
+            {
+                interactable.hoverText = $"{foodName} (${currentCost:0.00})\n(Cannot Eat: Needs Full!)";
+            }
+            else if (!string.IsNullOrEmpty(holdPrompt))
             {
                 interactable.hoverText = $"{foodName} (${currentCost:0.00})\n({holdPrompt})";
             }
@@ -82,6 +89,13 @@ public class FoodPriceDisplay : MonoBehaviour
 
     public void ShowNotEnoughMoneyFeedback(float duration = 1.2f)
     {
+        activeDenyMessage = notEnoughMoneyMessage;
+        denyMessageTimer = Mathf.Max(0.2f, duration);
+    }
+
+    public void ShowCustomFeedback(string message, float duration = 1.5f)
+    {
+        activeDenyMessage = message;
         denyMessageTimer = Mathf.Max(0.2f, duration);
     }
 }
