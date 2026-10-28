@@ -70,8 +70,8 @@ public class BarManager : MonoBehaviour
 
     [Header("Economy & Inflation")]
     public float baseFoodCost = 10f;
-    [Tooltip("Rate at which prices inflate per dollar of all-time money earned.")]
-    public float inflationRatePerDollar = 0.00025f;
+    [Tooltip("Rate at which prices inflate per dollar of all-time money earned (e.g. 0.0001 = 0.01% per $1, 0.00025 = 0.025% per $1, 0.001 = 0.1% per $1).")]
+    public float inflationRatePerDollar = 0.0001f;
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
 

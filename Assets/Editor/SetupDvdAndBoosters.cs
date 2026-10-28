@@ -301,7 +301,7 @@ public static class SetupDvdAndBoosters
             "Bootleg Monolith",
             "Doom Accelerator"
         };
-        float[] playerCosts = new float[] { 0f, 25f, 75f, 180f, 380f, 750f, 1400f, 2500f, 4500f, 8000f };
+        float[] playerCosts = new float[] { 0f, 12f, 38f, 90f, 250f, 500f, 950f, 2500f, 4500f, 8000f };
         float[] playerMults = new float[] { 1.00f, 1.40f, 1.90f, 2.60f, 3.50f, 4.70f, 6.20f, 8.00f, 10.50f, 14.00f };
 
         while (playerPath.tiers.Count < 10) playerPath.tiers.Add(new UpgradeTier());
@@ -340,7 +340,7 @@ public static class SetupDvdAndBoosters
             "Warehouse Bootleg",
             "Executive Severance"
         };
-        float[] dvdCosts = new float[] { 0f, 30f, 90f, 220f, 450f, 900f, 1700f, 3200f, 5800f, 10000f };
+        float[] dvdCosts = new float[] { 0f, 15f, 45f, 110f, 300f, 600f, 1150f, 3200f, 5800f, 10000f };
         float[] dvdMults = new float[] { 1f, 5f, 15f, 40f, 100f, 250f, 600f, 1500f, 3500f, 10000f };
 
         while (dvdPath.tiers.Count < 10) dvdPath.tiers.Add(new UpgradeTier());

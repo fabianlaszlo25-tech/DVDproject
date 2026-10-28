@@ -35,6 +35,7 @@ public class PauseButtonUI : MonoBehaviour
         }
     }
     private Image img;
+    private Vector3 baseScale = Vector3.one;
     private Vector3 targetScale = Vector3.one;
     private float targetAlpha;
     private bool isCurrentlyHovered = false;
@@ -43,6 +44,9 @@ public class PauseButtonUI : MonoBehaviour
     {
         _rect = GetComponent<RectTransform>();
         img = GetComponent<Image>();
+
+        baseScale = transform.localScale;
+        targetScale = baseScale;
 
         if (controller == null) controller = FindObjectOfType<GridCrawlerController>(true);
         if (pauseManager == null) pauseManager = FindObjectOfType<PauseManager>(true);
@@ -141,7 +145,7 @@ public class PauseButtonUI : MonoBehaviour
     public void SetHoverState(bool isHovering)
     {
         isCurrentlyHovered = isHovering;
-        targetScale = isHovering ? Vector3.one * hoverScale : Vector3.one;
+        targetScale = isHovering ? baseScale * hoverScale : baseScale;
         targetAlpha = isHovering ? hoverAlpha : defaultAlpha;
     }
 
@@ -186,7 +190,10 @@ public class PauseButtonUI : MonoBehaviour
         Canvas parentCanvas = GetComponentInParent<Canvas>();
         if (parentCanvas != null && parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
         {
-            return parentCanvas.worldCamera != null ? parentCanvas.worldCamera : Camera.main;
+            if (parentCanvas.worldCamera != null) return parentCanvas.worldCamera;
+            Canvas root = parentCanvas.rootCanvas;
+            if (root != null && root.worldCamera != null) return root.worldCamera;
+            return Camera.main;
         }
         return null;
     }

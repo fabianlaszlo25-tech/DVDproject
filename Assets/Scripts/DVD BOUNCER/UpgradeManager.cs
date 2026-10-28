@@ -303,7 +303,12 @@ public class UpgradeManager : MonoBehaviour
         if (!string.IsNullOrEmpty(videoName))
         {
             string fullPath = Path.Combine(Application.streamingAssetsPath, videoName);
-            if (File.Exists(fullPath))
+#if UNITY_WEBGL && !UNITY_EDITOR
+            bool exists = true;
+#else
+            bool exists = File.Exists(fullPath);
+#endif
+            if (exists)
             {
                 path.targetVideoPlayer.source = VideoSource.Url;
                 path.targetVideoPlayer.url = fullPath;

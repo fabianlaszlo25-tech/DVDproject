@@ -221,7 +221,7 @@ public class RunSaveManager : MonoBehaviour
     private float savedSleepDepressionReduction = 10f;
     private float savedCleanDepressionReduction = 15f;
     private float savedBaseFoodCost = 10f;
-    private float savedInflationRatePerDollar = 0.00025f;
+    private float savedInflationRatePerDollar = 0.0001f;
     private float savedPenaltyMultiplier = 2f;
 
     // DVDLogoBouncer economy & speed state

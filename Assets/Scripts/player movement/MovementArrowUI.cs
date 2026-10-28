@@ -34,11 +34,28 @@ public class MovementArrowUI : MonoBehaviour
 
     void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 12f);
+        if ((transform.localScale - targetScale).sqrMagnitude > 0.0001f)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 12f);
+            if ((transform.localScale - targetScale).sqrMagnitude <= 0.0001f)
+            {
+                transform.localScale = targetScale;
+            }
+        }
 
-        Color c = img.color;
-        c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * 12f);
-        img.color = c;
+        if (img != null)
+        {
+            Color c = img.color;
+            if (Mathf.Abs(c.a - targetAlpha) > 0.001f)
+            {
+                c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * 12f);
+                if (Mathf.Abs(c.a - targetAlpha) <= 0.001f)
+                {
+                    c.a = targetAlpha;
+                }
+                img.color = c;
+            }
+        }
     }
 
     // Custom mathematical hitbox that applies your padding and offsets

@@ -148,7 +148,8 @@ public class GridCrawlerController : MonoBehaviour
     {
         Camera cam = cameraScript != null ? cameraScript.GetComponent<Camera>() : Camera.main;
         if (cam == null) return;
-        Camera uiCam = crosshairContainer.GetComponentInParent<Canvas>().worldCamera;
+        Canvas rootCanvas = cropPanel != null ? cropPanel.GetComponentInParent<Canvas>() : (crosshairContainer != null ? crosshairContainer.GetComponentInParent<Canvas>() : null);
+        Camera uiCam = (rootCanvas != null && rootCanvas.worldCamera != null) ? rootCanvas.worldCamera : Camera.main;
 
         if (crosshairContainer != null && crosshairContainer.parent != null)
         {
@@ -162,7 +163,15 @@ public class GridCrawlerController : MonoBehaviour
 
         if (interactTextUI != null)
         {
-            interactTextUI.transform.localScale = Vector3.Lerp(interactTextUI.transform.localScale, textTargetScale, Time.deltaTime * 15f);
+            Vector3 target = textTargetScale.sqrMagnitude < 0.01f ? Vector3.one * 0.0001f : textTargetScale;
+            if ((interactTextUI.transform.localScale - target).sqrMagnitude > 0.0001f)
+            {
+                interactTextUI.transform.localScale = Vector3.Lerp(interactTextUI.transform.localScale, target, Time.deltaTime * 15f);
+                if ((interactTextUI.transform.localScale - target).sqrMagnitude <= 0.0001f)
+                {
+                    interactTextUI.transform.localScale = target;
+                }
+            }
         }
 
         ResetAllArrows();
