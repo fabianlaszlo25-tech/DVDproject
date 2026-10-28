@@ -216,7 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrashItem
   holdDuration: 1.5
   hoverMessage: Hold to clear trash
-  levitateHeight: 0.4
+  levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
   shakeSpeed: 40

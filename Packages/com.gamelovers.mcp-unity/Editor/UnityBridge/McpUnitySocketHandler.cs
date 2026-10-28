@@ -44,7 +44,11 @@ namespace McpUnity.Unity
 
         public static void Enqueue(Action action)
         {
-            if (action != null) _queue.Enqueue(action);
+            if (action != null)
+            {
+                _queue.Enqueue(action);
+                EditorApplication.QueuePlayerLoopUpdate();
+            }
         }
 
         private static void Drain()

@@ -257,6 +257,7 @@ public class RunSaveManager : MonoBehaviour
 
     public bool IsRestoringSceneState => isRestoringSceneState;
     public bool HasSavedUpgrades => hasSavedUpgrades;
+    public bool HasSavedBouncerState => hasSavedBouncerState;
 
     // =========================================================================
     // LIFECYCLE & SINGLETON

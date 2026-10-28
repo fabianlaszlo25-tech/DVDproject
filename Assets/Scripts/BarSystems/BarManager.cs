@@ -64,9 +64,18 @@ public class BarManager : MonoBehaviour
 
     [Header("Economy & Inflation")]
     public float baseFoodCost = 10f;
+    [Tooltip("Rate at which food prices inflate per dollar earned.")]
     public float inflationRatePerDollar = 0.01f;
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
+
+    [Header("Depression From Money (Tuning & Testing)")]
+    [Tooltip("Rate at which money increases depression fill speed. Set to 0 in Inspector to completely disable money scaling during testing! (e.g. 0.00005 = +5% depression rate per $1,000; 0 = disabled).")]
+    public float moneyDepressionRatePerDollar = 0.00005f;
+    [Tooltip("Maximum multiplier money can scale depression speed to. Prevents instant runaway depression when holding large funds.")]
+    public float maxMoneyDepressionMultiplier = 2.5f;
+    [Tooltip("Current active depression multiplier driven by money (visible in real-time while testing).")]
+    public float currentMoneyDepressionMultiplier = 1f;
 
     [Header("Penalty Settings")]
     public float penaltyMultiplier = 2f;
@@ -118,7 +127,9 @@ public class BarManager : MonoBehaviour
         bool isSleepFull = currentSleep >= maxSleep;
         bool isDirtinessFull = currentDirtiness >= maxDirtiness;
 
-        float depressionSpeed = baseDepressionFillRate * currentInflationMultiplier;
+        float moneyFloat = economyBouncer != null ? (float)economyBouncer.currentMoney : 0f;
+        currentMoneyDepressionMultiplier = Mathf.Clamp(1f + (moneyFloat * moneyDepressionRatePerDollar), 1f, maxMoneyDepressionMultiplier);
+        float depressionSpeed = baseDepressionFillRate * currentMoneyDepressionMultiplier;
 
         if (isHungerFull) depressionSpeed *= penaltyMultiplier;
         if (isNeedsFull) depressionSpeed *= penaltyMultiplier;

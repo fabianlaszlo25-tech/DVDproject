@@ -48,6 +48,8 @@ public class DVDLogoBouncer : MonoBehaviour
     public float minAxisVelocity = 0.2f;
 
     [Header("Economy & UI")]
+    [Tooltip("Starting money for a new game / fresh day.")]
+    public float startingMoney = 25f;
     public decimal edgeReward = 0.01m;
     public decimal cornerReward = 0.50m;
     public decimal currentMoney = 0m;
@@ -86,6 +88,11 @@ public class DVDLogoBouncer : MonoBehaviour
         {
             direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
         }
+        if (!RunSaveManager.HasInstance || !RunSaveManager.Instance.HasSavedBouncerState)
+        {
+            currentMoney = (decimal)startingMoney;
+        }
+
         SyncCameraAndTextureAspect();
         UpdateMoneyUI();
     }

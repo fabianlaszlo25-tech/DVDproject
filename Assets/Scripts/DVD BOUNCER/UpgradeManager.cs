@@ -26,6 +26,10 @@ public class UpgradeTier
     public GameObject worldGameObject;
     public Mesh playerMesh1;
     public Mesh playerMesh2;
+
+    [Header("Visual & Booster Upgrades")]
+    public Material logoMaterial;
+    public BoosterObject booster;
 }
 
 [System.Serializable]
@@ -38,6 +42,7 @@ public class UpgradePath
     [Header("Targets to Update")]
     public VideoPlayer targetVideoPlayer;
     public AudioSource audioSource;
+    public Renderer targetRenderer;
 
     [Header("Static Transition (WebGL)")]
     [Tooltip("Type the exact file name including extension, e.g., 'static.mp4'")]
@@ -133,6 +138,33 @@ public class UpgradeManager : MonoBehaviour
         return false;
     }
 
+    public BoosterObject GetTierBooster(UpgradeTier tier)
+    {
+        if (tier == null) return null;
+        if (tier.booster != null) return tier.booster;
+        if (tier.worldGameObject != null) return tier.worldGameObject.GetComponentInChildren<BoosterObject>(true);
+        return null;
+    }
+
+    private void UpdateLogoMaterial(UpgradePath path, int targetIndex)
+    {
+        if (path == null || path.tiers == null || targetIndex < 0 || targetIndex >= path.tiers.Count) return;
+
+        Material mat = path.tiers[targetIndex].logoMaterial;
+        if (mat == null) return;
+
+        Renderer r = path.targetRenderer;
+        if (r == null && path.targetMeshFilter1 != null)
+        {
+            r = path.targetMeshFilter1.GetComponent<Renderer>();
+        }
+
+        if (r != null)
+        {
+            r.material = mat;
+        }
+    }
+
     public void FinalizeEquip(UpgradePath path, int targetIndex)
     {
         int previousIndex = path.equippedIndex;
@@ -140,9 +172,24 @@ public class UpgradeManager : MonoBehaviour
 
         float newMultiplier = path.tiers[targetIndex].multiplierValue;
 
+        // Revert previous booster if changed
+        if (previousIndex >= 0 && previousIndex < path.tiers.Count && previousIndex != targetIndex)
+        {
+            BoosterObject prevB = GetTierBooster(path.tiers[previousIndex]);
+            if (prevB != null) prevB.RevertBooster();
+        }
+
+        // Apply new booster
+        BoosterObject newB = GetTierBooster(path.tiers[targetIndex]);
+        if (newB != null) newB.ApplyBooster();
+
+        // Update logo material if provided
+        UpdateLogoMaterial(path, targetIndex);
+
         if (path.category == UpgradeCategory.MoneyMultiplier)
         {
             bouncer.SetMoneyMultiplier(newMultiplier);
+            ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
             if (path.targetVideoPlayer != null)
             {
                 StartCoroutine(PlayVideoTransition(path, targetIndex));
@@ -157,16 +204,25 @@ public class UpgradeManager : MonoBehaviour
 
     private void SnapWorldVisuals(UpgradePath path, int targetIndex)
     {
-        if (path.category == UpgradeCategory.SpeedMultiplier)
+        for (int i = 0; i < path.tiers.Count; i++)
         {
-            for (int i = 0; i < path.tiers.Count; i++)
+            if (path.tiers[i].worldGameObject != null)
             {
-                if (path.tiers[i].worldGameObject != null)
-                {
-                    path.tiers[i].worldGameObject.SetActive(i == targetIndex);
-                }
+                path.tiers[i].worldGameObject.SetActive(i == targetIndex);
             }
 
+            BoosterObject b = GetTierBooster(path.tiers[i]);
+            if (b != null)
+            {
+                if (i == targetIndex) b.ApplyBooster();
+                else b.RevertBooster();
+            }
+        }
+
+        UpdateLogoMaterial(path, targetIndex);
+
+        if (path.category == UpgradeCategory.SpeedMultiplier)
+        {
             if (path.targetMeshFilter1 != null && path.tiers[targetIndex].playerMesh1 != null)
                 path.targetMeshFilter1.mesh = path.tiers[targetIndex].playerMesh1;
 
@@ -177,18 +233,18 @@ public class UpgradeManager : MonoBehaviour
 
     private void ApplyWorldVisualsAnimated(UpgradePath path, int previousIndex, int targetIndex)
     {
+        if (previousIndex >= 0 && previousIndex < path.tiers.Count && previousIndex != targetIndex && path.tiers[previousIndex].worldGameObject != null)
+        {
+            StartCoroutine(ShrinkAndDisable(path.tiers[previousIndex].worldGameObject));
+        }
+
+        if (path.tiers[targetIndex].worldGameObject != null)
+        {
+            path.tiers[targetIndex].worldGameObject.SetActive(true);
+        }
+
         if (path.category == UpgradeCategory.SpeedMultiplier)
         {
-            if (previousIndex != targetIndex && path.tiers[previousIndex].worldGameObject != null)
-            {
-                StartCoroutine(ShrinkAndDisable(path.tiers[previousIndex].worldGameObject));
-            }
-
-            if (path.tiers[targetIndex].worldGameObject != null)
-            {
-                path.tiers[targetIndex].worldGameObject.SetActive(true);
-            }
-
             if (path.targetMeshFilter1 != null && path.tiers[targetIndex].playerMesh1 != null)
                 path.targetMeshFilter1.mesh = path.tiers[targetIndex].playerMesh1;
 

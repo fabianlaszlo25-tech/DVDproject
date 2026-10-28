@@ -70,6 +70,24 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         originalScale = transform.localScale;
         transform.localScale = Vector3.zero;
         targetScale = Vector3.zero;
+
+        ApplyTitleOutline();
+    }
+
+    private void ApplyTitleOutline()
+    {
+        if (titleText != null)
+        {
+            Material mat = titleText.fontMaterial;
+            if (mat != null)
+            {
+                mat.EnableKeyword("OUTLINE_ON");
+                mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.22f);
+                mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.72f));
+                mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.05f);
+                titleText.UpdateMeshPadding();
+            }
+        }
     }
 
     private void Update()

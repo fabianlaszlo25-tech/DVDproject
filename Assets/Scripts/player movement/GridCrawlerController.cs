@@ -28,6 +28,8 @@ public class GridCrawlerController : MonoBehaviour
 
     [Header("Interactable Text Settings")]
     public TextMeshProUGUI interactTextUI;
+    [Tooltip("Underlay shadow text for crisp readability against any background.")]
+    public TextMeshProUGUI interactTextShadowUI;
     public float interactReach = 3f;
 
     [Header("HUD Pause Button")]
@@ -64,6 +66,8 @@ public class GridCrawlerController : MonoBehaviour
 
         allArrows = FindObjectsOfType<MovementArrowUI>();
         if (hudPauseButton == null) hudPauseButton = FindObjectOfType<PauseButtonUI>(true);
+
+        SetupInteractTextOutline();
     }
 
     void Start()
@@ -218,7 +222,7 @@ public class GridCrawlerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactReach))
         {
-            InteractableObject interactObj = hit.collider.GetComponent<InteractableObject>();
+            InteractableObject interactObj = hit.collider.GetComponentInParent<InteractableObject>();
             if (interactObj != null)
             {
                 SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
@@ -348,5 +352,27 @@ public class GridCrawlerController : MonoBehaviour
         if (cameraScript != null) cameraScript.isAutoCentering = false;
         yield return new WaitForSeconds(postActionCooldown);
         isActing = false;
+    }
+    private void SetupInteractTextOutline()
+    {
+        if (interactTextUI == null) return;
+
+        // Clean up any old duplicate shadow child if it existed from previous versions
+        Transform oldShadow = interactTextUI.transform.Find("Text_Shadow");
+        if (oldShadow != null)
+        {
+            Destroy(oldShadow.gameObject);
+        }
+
+        // Apply true Signed Distance Field (SDF) per-glyph shader outline
+        Material mat = interactTextUI.fontMaterial;
+        if (mat != null)
+        {
+            mat.EnableKeyword("OUTLINE_ON");
+            mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.22f);
+            mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.72f));
+            mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.05f);
+            interactTextUI.UpdateMeshPadding();
+        }
     }
 }
