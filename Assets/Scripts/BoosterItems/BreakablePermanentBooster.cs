@@ -54,6 +54,12 @@ public class BreakablePermanentBooster : MonoBehaviour
 
     private void Awake()
     {
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.IsPermanentBoosterBroken(gameObject))
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         interactable = GetComponent<InteractableObject>();
         colliders = GetComponentsInChildren<Collider>();
         renderers = GetComponentsInChildren<Renderer>();
@@ -176,6 +182,12 @@ public class BreakablePermanentBooster : MonoBehaviour
 
         if (visualizer != null) visualizer.HideImmediate();
         shakeSource.Stop();
+
+        // Record in RunSaveManager that this booster was permanently broken for the rest of the run!
+        if (RunSaveManager.HasInstance)
+        {
+            RunSaveManager.Instance.RecordPermanentBoosterBroken(gameObject);
+        }
 
         // Revert the booster so the stats return to normal!
         if (boosterObject != null)

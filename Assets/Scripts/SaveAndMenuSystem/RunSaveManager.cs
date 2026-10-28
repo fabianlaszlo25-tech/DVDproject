@@ -180,11 +180,15 @@ public class RunSaveManager : MonoBehaviour
 
         public readonly HashSet<string> purchasedPermanentBuyablePaths = new HashSet<string>();
         public readonly HashSet<string> consumedActiveBuyablePaths = new HashSet<string>();
+        public readonly HashSet<string> brokenPermanentBoosterPaths = new HashSet<string>();
 
         public bool hasSavedTrashState;
         public readonly HashSet<string> remainingPreplacedTrashPaths = new HashSet<string>();
         public readonly Dictionary<string, SavedTrashManagerState> trashManagerStates = new Dictionary<string, SavedTrashManagerState>();
     }
+
+    // Run-wide tracking of broken permanent booster props so they stay gone for the rest of the run
+    public readonly HashSet<string> runWideBrokenPermanentBoosterPaths = new HashSet<string>();
 
     private bool hasSavedPlayerBars;
     private float savedHunger;
@@ -632,6 +636,7 @@ public class RunSaveManager : MonoBehaviour
         savedComboIntensity = 0f;
 
         sceneStates.Clear();
+        runWideBrokenPermanentBoosterPaths.Clear();
         resetTrashOnNextRoomLoad = false;
         lastActiveGameplayScene = string.Empty;
     }
@@ -941,6 +946,13 @@ public class RunSaveManager : MonoBehaviour
 
             if (isConsumable) continue;
 
+            // If broken, NEVER record as purchased!
+            if (IsPermanentBoosterBroken(buyable.gameObject)
+                || (buyable.unlockedPropObject != null && IsPermanentBoosterBroken(buyable.unlockedPropObject)))
+            {
+                continue;
+            }
+
             // A permanent prop is purchased if it is in Purchased state or its unlockedPropObject is active
             bool isPurchased = buyable.IsPurchased
                 || (buyable.unlockedPropObject != null && buyable.unlockedPropObject.activeSelf && !buyable.gameObject.activeSelf);
@@ -1223,19 +1235,101 @@ public class RunSaveManager : MonoBehaviour
         }
     }
 
+        public void RecordPermanentBoosterBroken(GameObject brokenProp)
+    {
+        if (brokenProp == null) return;
+
+        string activePath = GetHierarchyPath(brokenProp.transform);
+        if (!string.IsNullOrEmpty(activePath))
+        {
+            runWideBrokenPermanentBoosterPaths.Add(activePath);
+        }
+        runWideBrokenPermanentBoosterPaths.Add(brokenProp.name);
+
+        // Also find and mark the corresponding BuyableBoosterProp as broken
+        BuyableBoosterProp[] allBuyables = FindObjectsOfType<BuyableBoosterProp>(true);
+        foreach (BuyableBoosterProp buyable in allBuyables)
+        {
+            if (buyable == null) continue;
+            string bPath = GetHierarchyPath(buyable.transform);
+            bool isMatching = (buyable.unlockedPropObject == brokenProp)
+                || (!string.IsNullOrEmpty(buyable.name) && buyable.name.Replace("_Buyable", "") == brokenProp.name.Replace("_Active", ""));
+
+            if (isMatching)
+            {
+                if (!string.IsNullOrEmpty(bPath))
+                {
+                    runWideBrokenPermanentBoosterPaths.Add(bPath);
+                }
+                runWideBrokenPermanentBoosterPaths.Add(buyable.name);
+
+                // Remove from all purchased sets so it never respawns
+                foreach (var s in sceneStates.Values)
+                {
+                    s.purchasedPermanentBuyablePaths.Remove(bPath);
+                    s.purchasedPermanentBuyablePaths.Remove(activePath);
+                    if (!string.IsNullOrEmpty(bPath)) s.brokenPermanentBoosterPaths.Add(bPath);
+                    if (!string.IsNullOrEmpty(activePath)) s.brokenPermanentBoosterPaths.Add(activePath);
+                }
+            }
+        }
+    }
+
+    public bool IsPermanentBoosterBroken(GameObject prop)
+    {
+        if (prop == null) return false;
+        string path = GetHierarchyPath(prop.transform);
+        if (runWideBrokenPermanentBoosterPaths.Contains(path) || runWideBrokenPermanentBoosterPaths.Contains(prop.name))
+        {
+            return true;
+        }
+
+        foreach (var s in sceneStates.Values)
+        {
+            if (s.brokenPermanentBoosterPaths.Contains(path) || s.brokenPermanentBoosterPaths.Contains(prop.name))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void RestorePermanentBuyableBoosters(SceneSpecificSavedState sceneState)
     {
-        if (sceneState.purchasedPermanentBuyablePaths.Count == 0) return;
-
         BuyableBoosterProp[] allBuyables = FindObjectsOfType<BuyableBoosterProp>(true);
         foreach (BuyableBoosterProp buyable in allBuyables)
         {
             if (buyable == null) continue;
 
             string path = GetHierarchyPath(buyable.transform);
+            bool isBroken = IsPermanentBoosterBroken(buyable.gameObject)
+                || (buyable.unlockedPropObject != null && IsPermanentBoosterBroken(buyable.unlockedPropObject));
+
+            if (isBroken)
+            {
+                // Permanent booster was broken earlier in this run: keep it GONE!
+                buyable.gameObject.SetActive(false);
+                if (buyable.unlockedPropObject != null)
+                {
+                    buyable.unlockedPropObject.SetActive(false);
+                }
+                continue;
+            }
+
             if (sceneState.purchasedPermanentBuyablePaths.Contains(path))
             {
                 buyable.RestoreAsPurchasedFromSave(applyBoosterStats: false);
+            }
+        }
+
+        // Also ensure any standalone BreakablePermanentBooster in the scene is disabled if broken
+        BreakablePermanentBooster[] allBreakables = FindObjectsOfType<BreakablePermanentBooster>(true);
+        foreach (BreakablePermanentBooster breakable in allBreakables)
+        {
+            if (breakable == null) continue;
+            if (IsPermanentBoosterBroken(breakable.gameObject))
+            {
+                breakable.gameObject.SetActive(false);
             }
         }
     }

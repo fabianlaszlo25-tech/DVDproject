@@ -81,10 +81,20 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             Material mat = titleText.fontMaterial;
             if (mat != null)
             {
+                mat.SetFloat(ShaderUtilities.ID_FaceDilate, 0.05f);
+
                 mat.EnableKeyword("OUTLINE_ON");
-                mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.22f);
-                mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.72f));
-                mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.05f);
+                mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.28f);
+                mat.SetColor(ShaderUtilities.ID_OutlineColor, Color.black);
+                mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.02f);
+
+                mat.EnableKeyword("UNDERLAY_ON");
+                mat.SetColor(ShaderUtilities.ID_UnderlayColor, Color.black);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0f);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, 0f);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.28f);
+                mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.02f);
+
                 titleText.UpdateMeshPadding();
             }
         }

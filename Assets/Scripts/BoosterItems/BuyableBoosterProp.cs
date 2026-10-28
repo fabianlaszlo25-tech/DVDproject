@@ -72,6 +72,14 @@ public class BuyableBoosterProp : MonoBehaviour
 
     private void Awake()
     {
+        if (RunSaveManager.HasInstance && (RunSaveManager.Instance.IsPermanentBoosterBroken(gameObject)
+            || (unlockedPropObject != null && RunSaveManager.Instance.IsPermanentBoosterBroken(unlockedPropObject))))
+        {
+            if (unlockedPropObject != null) unlockedPropObject.SetActive(false);
+            gameObject.SetActive(false);
+            return;
+        }
+
         interactable = GetComponent<InteractableObject>();
         visualizer = GetComponent<InteractVisualizer>();
         colliders = GetComponentsInChildren<Collider>();
@@ -129,6 +137,14 @@ public class BuyableBoosterProp : MonoBehaviour
     /// </summary>
     public void RestoreAsPurchasedFromSave(bool applyBoosterStats = false)
     {
+        if (RunSaveManager.HasInstance && (RunSaveManager.Instance.IsPermanentBoosterBroken(gameObject)
+            || (unlockedPropObject != null && RunSaveManager.Instance.IsPermanentBoosterBroken(unlockedPropObject))))
+        {
+            if (unlockedPropObject != null) unlockedPropObject.SetActive(false);
+            gameObject.SetActive(false);
+            return;
+        }
+
         state = State.Purchased;
         holdProgress = 0f;
 

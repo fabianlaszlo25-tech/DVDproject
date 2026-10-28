@@ -148,7 +148,10 @@ public class UpgradeManager : MonoBehaviour
 
     private void UpdateLogoMaterial(UpgradePath path, int targetIndex)
     {
-        if (path == null || path.tiers == null || targetIndex < 0 || targetIndex >= path.tiers.Count) return;
+        // Only the DVD player upgrades change the DVD bouncing logo!
+        // DVDs (MoneyMultiplier) change the TV screen background video, not the bouncing logo.
+        if (path == null || path.category != UpgradeCategory.SpeedMultiplier) return;
+        if (path.tiers == null || targetIndex < 0 || targetIndex >= path.tiers.Count) return;
 
         Material mat = path.tiers[targetIndex].logoMaterial;
         if (mat == null) return;
@@ -273,10 +276,11 @@ public class UpgradeManager : MonoBehaviour
     {
         StopDvdMusicOnPathSources(path);
 
-        if (!string.IsNullOrEmpty(path.staticVideoFileName))
+        if (path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.staticVideoFileName))
         {
             path.targetVideoPlayer.source = VideoSource.Url;
             path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.staticVideoFileName);
+            path.targetVideoPlayer.isLooping = true;
             path.targetVideoPlayer.Play();
 
             if (path.audioSource != null && path.staticSoundEffect != null)
@@ -287,10 +291,27 @@ public class UpgradeManager : MonoBehaviour
             yield return new WaitForSeconds(path.staticDuration);
         }
 
-        if (!string.IsNullOrEmpty(path.tiers[targetIndex].dvdVideoFileName))
+        string videoName = path.tiers[targetIndex].dvdVideoFileName;
+        bool hasSpecificVideo = false;
+        if (!string.IsNullOrEmpty(videoName))
+        {
+            string fullPath = Path.Combine(Application.streamingAssetsPath, videoName);
+            if (File.Exists(fullPath))
+            {
+                path.targetVideoPlayer.source = VideoSource.Url;
+                path.targetVideoPlayer.url = fullPath;
+                path.targetVideoPlayer.isLooping = true;
+                path.targetVideoPlayer.Play();
+                hasSpecificVideo = true;
+            }
+        }
+
+        // If no video clip is ready for this DVD yet, ensure the background video stays on static!
+        if (!hasSpecificVideo && path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.staticVideoFileName))
         {
             path.targetVideoPlayer.source = VideoSource.Url;
-            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[targetIndex].dvdVideoFileName);
+            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.staticVideoFileName);
+            path.targetVideoPlayer.isLooping = true;
             path.targetVideoPlayer.Play();
         }
 
