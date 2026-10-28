@@ -23,7 +23,7 @@ public class BuyableBoosterProp : MonoBehaviour
 
     [Header("Hold Settings")]
     [Tooltip("Seconds the player must hold left click to buy this prop.")]
-    public float holdDuration = 1.2f;
+    public float holdDuration = 1.5f;
 
     [Header("Levitate Settings")]
     [Tooltip("How high the prop rises while held (set to 0 if you want heavy furniture to stay grounded).")]

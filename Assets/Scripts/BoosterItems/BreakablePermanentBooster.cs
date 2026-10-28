@@ -9,7 +9,7 @@ public class BreakablePermanentBooster : MonoBehaviour
 
     [Header("Hold Settings")]
     [Tooltip("Seconds the player must hold left click to break this object.")]
-    public float holdDuration = 1.0f;
+    public float holdDuration = 1.5f;
     public string hoverMessage = "Hold to break";
 
     [Header("Levitate Settings (0 = no floating)")]

@@ -1289,7 +1289,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 684525969}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -2170,7 +2170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Tome of Commerce
 
     (Hold Click to Break)'
@@ -3132,7 +3132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'The Hustler''s Almanac
 
     (Hold Click to Break)'
@@ -4628,7 +4628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Stoic Reflections
 
     (Hold Click to Break)'
@@ -5071,7 +5071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Cedar Box
 
     (Hold Click to Break)'
@@ -9527,7 +9527,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 95876169}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -10564,7 +10564,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 1931951911}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -14126,7 +14126,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 137494652}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -14304,7 +14304,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 2087382236}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -15006,7 +15006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Stopwatch
 
     (Hold Click to Break)'
@@ -19963,7 +19963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Vintage Lantern
 
     (Hold Click to Break)'
@@ -22137,7 +22137,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 487005906}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -24710,7 +24710,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842777435}
-  m_LocalRotation: {x: 0.24999967, y: -0.24999958, z: 0.066987105, w: 0.9330129}
+  m_LocalRotation: {x: 0.12607859, y: -0.2566048, z: 0.03378265, w: 0.9576622}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.0020132002, y: 0.0020132002, z: 0.0020132002}
   m_ConstrainProportionsScale: 1
@@ -24724,7 +24724,7 @@ RectTransform:
   - {fileID: 1012246097}
   - {fileID: 1398249365}
   m_Father: {fileID: 1807508263}
-  m_LocalEulerAnglesHint: {x: 30, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: -30, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.000000007450581, y: 0.000000059604645}
@@ -25762,7 +25762,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000571}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -25979,7 +25979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Iron Key
 
     (Hold Click to Break)'
@@ -26186,7 +26186,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000621}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -26403,7 +26403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Matchbox
 
     (Hold Click to Break)'
@@ -26610,7 +26610,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000671}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -26827,7 +26827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Porcelain Ashtray
 
     (Hold Click to Break)'
@@ -27034,7 +27034,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000721}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -27251,7 +27251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Magnifying Glass
 
     (Hold Click to Break)'
@@ -27458,7 +27458,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000771}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -27675,7 +27675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Radio Receiver
 
     (Hold Click to Break)'
@@ -27882,7 +27882,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000821}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -28099,7 +28099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Inkwell
 
     (Hold Click to Break)'
@@ -28306,7 +28306,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000871}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -28523,7 +28523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Paperweight
 
     (Hold Click to Break)'
@@ -28730,7 +28730,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000921}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -28947,7 +28947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Statuette
 
     (Hold Click to Break)'
@@ -29154,7 +29154,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 880000971}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -29371,7 +29371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Music Box
 
     (Hold Click to Break)'
@@ -30543,7 +30543,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 1727554400}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -33997,7 +33997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Speedreader''s Guide
 
     (Hold Click to Break)'
@@ -43614,7 +43614,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 1060879672}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -44742,7 +44742,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 145769124}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -49611,7 +49611,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1634121411}
-  m_LocalRotation: {x: 0.25880784, y: -0.009064904, z: 0.0024289687, w: 0.96588326}
+  m_LocalRotation: {x: 0.13052042, y: -0.0093008205, z: 0.0012244758, w: 0.9914013}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.00201, y: 0.00201, z: 0.00201}
   m_ConstrainProportionsScale: 1
@@ -49625,7 +49625,7 @@ RectTransform:
   - {fileID: 1598359309}
   - {fileID: 498402491}
   m_Father: {fileID: 464559707}
-  m_LocalEulerAnglesHint: {x: 30, y: -1.075, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: -1.075, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -0.152, y: 0.6382601}
@@ -51617,7 +51617,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 272473310}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -52485,7 +52485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Pocket Compass
 
     (Hold Click to Break)'
@@ -58627,7 +58627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Copper Flask
 
     (Hold Click to Break)'
@@ -59227,7 +59227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecc5753df6cf554e8ab1a7e84ce2c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakablePermanentBooster
-  holdDuration: 1
+  holdDuration: 1.5
   hoverMessage: 'Brass Bell
 
     (Hold Click to Break)'
@@ -61635,7 +61635,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 1909109409}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -64422,7 +64422,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 72450169}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -67700,7 +67700,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 670059332}
   economyBouncer: {fileID: 854348182134054070}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04

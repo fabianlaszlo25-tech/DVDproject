@@ -6416,7 +6416,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 2078175245}
   economyBouncer: {fileID: 1440695576}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -8640,7 +8640,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 756178803}
   economyBouncer: {fileID: 1440695576}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04
@@ -9859,7 +9859,7 @@ MonoBehaviour:
   notEnoughMoneyPrompt: Not enough money!
   unlockedPropObject: {fileID: 1858074306}
   economyBouncer: {fileID: 1440695576}
-  holdDuration: 1.2
+  holdDuration: 1.5
   levitateHeight: 0
   returnDuration: 0.2
   shakeIntensity: 0.04

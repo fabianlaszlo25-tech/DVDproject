@@ -650,7 +650,7 @@ public static class SetupDvdAndBoosters
         // BreakablePermanentBooster
         BreakablePermanentBooster breakable = activeObj.GetComponent<BreakablePermanentBooster>();
         if (breakable == null) breakable = activeObj.AddComponent<BreakablePermanentBooster>();
-        breakable.holdDuration = 1.0f;
+        breakable.holdDuration = 1.5f;
         breakable.levitateHeight = 0f;
         breakable.hoverMessage = $"{displayName}\n(Hold Click to Break)";
         breakable.shakeSound = buildupClip;
@@ -703,7 +703,7 @@ public static class SetupDvdAndBoosters
         buyable.notEnoughMoneyPrompt = "Not enough money!";
         buyable.unlockedPropObject = activeObj;
         buyable.economyBouncer = bouncer;
-        buyable.holdDuration = 1.2f;
+        buyable.holdDuration = 1.5f;
         buyable.levitateHeight = 0f;
         buyable.shakeSound = buildupClip;
         buyable.purchasePoofSound = buyClip;
