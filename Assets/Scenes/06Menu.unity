@@ -770,7 +770,9 @@ MonoBehaviour:
   boostRampDownTime: 1
   bounceVariation: 0.15
   minAxisVelocity: 0.2
+  startingMoney: 25
   moneyMultiplier: 1
+  billSpeedMultiplier: 1
   totalMoneyText: {fileID: 0}
   popupCanvasParent: {fileID: 0}
   moneyPopupPrefab: {fileID: 7343643644851287380, guid: 62735e313d3b8ab4b8a7bc02bb312360, type: 3}
@@ -6206,6 +6208,7 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 0}
     audioSource: {fileID: 0}
+    targetRenderer: {fileID: 0}
     staticVideoFileName: static.mp4
     staticSoundEffect: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
     staticDuration: 0.5
@@ -6224,6 +6227,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     - tierName: RED
       cost: 1
       multiplierValue: 4
@@ -6236,6 +6241,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     equippedIndex: 0
     unlockedIndices: 
   - pathName: pile
@@ -6245,6 +6252,7 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 900628548}
     audioSource: {fileID: 1541265051}
+    targetRenderer: {fileID: 0}
     staticVideoFileName: 
     staticSoundEffect: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
     staticDuration: 0.5
@@ -6263,6 +6271,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     - tierName: RED
       cost: 1
       multiplierValue: 4
@@ -6275,6 +6285,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     equippedIndex: 0
     unlockedIndices: 
   worldModelShrinkSpeed: 0.5

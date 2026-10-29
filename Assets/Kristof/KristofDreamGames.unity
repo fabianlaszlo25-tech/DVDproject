@@ -2281,6 +2281,10 @@ MonoBehaviour:
   scorePerGamblingDollarLost: 5
   scorePerTrashCleaned: 25
   scorePerStoryElement: 300
+  currentActiveBillIndex: -1
+  isCurrentBillPaid: 0
+  lastBillDay: -1
+  billHistory: 
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1

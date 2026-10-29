@@ -4213,6 +4213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SliderMaxAlert
   audioSource: {fileID: 406044527}
   alertSound: {fileID: 0}
+  alertOnEmpty: 0
   shakeIntensity: 5
   shakeSpeed: 30
 --- !u!114 &406044529
@@ -4949,6 +4950,10 @@ MonoBehaviour:
   scorePerGamblingDollarLost: 5
   scorePerTrashCleaned: 25
   scorePerStoryElement: 300
+  currentActiveBillIndex: -1
+  isCurrentBillPaid: 0
+  lastBillDay: -1
+  billHistory: 
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1
@@ -11188,6 +11193,7 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 0}
     audioSource: {fileID: 0}
+    targetRenderer: {fileID: 0}
     staticVideoFileName: 
     staticSoundEffect: {fileID: 0}
     staticDuration: 0.5
@@ -11206,6 +11212,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     - tierName: RED
       cost: 1
       multiplierValue: 4
@@ -11218,6 +11226,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     equippedIndex: 0
     unlockedIndices: 
   - pathName: pile
@@ -11227,6 +11237,7 @@ MonoBehaviour:
     - {fileID: 0}
     targetVideoPlayer: {fileID: 2040945157}
     audioSource: {fileID: 1809295922}
+    targetRenderer: {fileID: 0}
     staticVideoFileName: static.mp4
     staticSoundEffect: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
     staticDuration: 0.5
@@ -11245,6 +11256,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     - tierName: RED
       cost: 1
       multiplierValue: 4
@@ -11257,6 +11270,8 @@ MonoBehaviour:
       worldGameObject: {fileID: 0}
       playerMesh1: {fileID: 0}
       playerMesh2: {fileID: 0}
+      logoMaterial: {fileID: 0}
+      booster: {fileID: 0}
     equippedIndex: 0
     unlockedIndices: 
   worldModelShrinkSpeed: 0.5
@@ -11414,6 +11429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SliderMaxAlert
   audioSource: {fileID: 1181469414}
   alertSound: {fileID: 0}
+  alertOnEmpty: 0
   shakeIntensity: 5
   shakeSpeed: 30
 --- !u!114 &1181469416
@@ -11579,6 +11595,9 @@ MonoBehaviour:
   cleanDepressionReduction: 15
   baseFoodCost: 10
   inflationRatePerDollar: 0.0001
+  moneyDepressionRatePerDollar: 0.00005
+  maxMoneyDepressionMultiplier: 2.5
+  currentMoneyDepressionMultiplier: 1
   penaltyMultiplier: 2
 --- !u!1 &1217594705
 GameObject:
@@ -12338,6 +12357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SliderMaxAlert
   audioSource: {fileID: 1287728214}
   alertSound: {fileID: 0}
+  alertOnEmpty: 0
   shakeIntensity: 5
   shakeSpeed: 30
 --- !u!114 &1287728216
@@ -13274,6 +13294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SliderMaxAlert
   audioSource: {fileID: 1408376095}
   alertSound: {fileID: 0}
+  alertOnEmpty: 0
   shakeIntensity: 5
   shakeSpeed: 30
 --- !u!114 &1408376097
@@ -14068,7 +14089,9 @@ MonoBehaviour:
   boostRampDownTime: 1
   bounceVariation: 0.15
   minAxisVelocity: 0.2
+  startingMoney: 25
   moneyMultiplier: 1
+  billSpeedMultiplier: 1
   totalMoneyText: {fileID: 1598446969}
   popupCanvasParent: {fileID: 1804915878}
   moneyPopupPrefab: {fileID: 7343643644851287380, guid: 62735e313d3b8ab4b8a7bc02bb312360, type: 3}
@@ -16393,6 +16416,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SliderMaxAlert
   audioSource: {fileID: 1785414515}
   alertSound: {fileID: 0}
+  alertOnEmpty: 0
   shakeIntensity: 5
   shakeSpeed: 30
 --- !u!114 &1785414517
@@ -18960,6 +18984,7 @@ MonoBehaviour:
   defaultCrosshairImg: {fileID: 122038423}
   interactCrosshairImg: {fileID: 209284315}
   interactTextUI: {fileID: 646589773}
+  interactTextShadowUI: {fileID: 0}
   interactReach: 3
   hudPauseButton: {fileID: 764795073}
   mouseSensitivity: 1
@@ -20003,7 +20028,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "+0.00% Inflation"
+  m_text: +0.00% Inflation
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
