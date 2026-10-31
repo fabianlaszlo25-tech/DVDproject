@@ -1,0 +1,468 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 6 0 R 8 0 R 10 0 R 12 0 R ] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 7361 >>
+stream
+0.12 0.16 0.24 rg
+0 766 612 26 re f
+BT /F2 8.5 Tf 0.85 0.92 1.0 rg 42 775 Td (DVDproject - Fine-Tuning & Inspector Adjustment Guide) Tj ET
+0.08 0.28 0.52 rg
+BT /F2 15 Tf 42 744 Td (DVDPROJECT - COMPLETE FINE-TUNING & ADJUSTMENT GUIDE) Tj ET
+0.30 0.35 0.42 rg
+BT /F1 9.5 Tf 42 726 Td (Scene: Assets/Scenes/01Day.unity  |  All 3 Upgrade Paths \(11 Tiers Each\) + 6 Remote Minigames) Tj ET
+0.92 0.96 1.00 rg
+38 700 536 18 re f
+0.08 0.32 0.60 rg
+BT /F2 9 Tf 44 705 Td (HOW TO AUTO-APPLY SCENE SETUP: In Unity, click Tools -> Setup Gameplay Overhaul \(or Tools -> Run Complete Setup\).) Tj ET
+0.12 0.22 0.38 rg
+38 677 536 20 re f
+1 1 1 rg
+BT /F2 11.5 Tf 46 682 Td (1. SOUNDS & AUDIO CLIPS \(WHERE TO CHANGE EVERY SOUND IN THE GAME\)) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 662 Td (All audio clips and volume sliders are exposed on the following GameObjects in 01Day.unity:) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 642.5 Td (1.1 DVDLogoBouncer \(Hierarchy: DVDSetup/Camera/DVDLogo\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 629.0 Td (  *  audioSource \(AudioSource\): Main SFX speaker for DVD bounces, direct hits, and popups.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 617.0 Td (  *  edgeHitSound \(AudioClip\): Played when any DVD logo bounces off a normal screen edge.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 605.0 Td (  *  cornerHitSound \(AudioClip\): Played when any DVD logo hits a 2-wall corner \(5x payout\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 593.0 Td (  *  directHitSound \(AudioClip\): Played when clicking directly on the DVD logo with the Remote.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 581.0 Td (  *  recombinePopSound \(AudioClip\): Played when two split Mitosis logos recombine into one.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 569.0 Td (  *  grabShakeSound \(AudioClip\): Played on shake ticks when using the Telekinetic Grabber Remote.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 550.0 Td (1.2 TVFocusController \(Hierarchy: DVDSetup\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 536.5 Td (  *  focusAudioSource \(AudioSource\): Speaker for Remote/Towel pickup and Pinball Bumper SFX.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 524.5 Td (  *  pickUpSound \(AudioClip\): Played when picking up the Remote or Towel from the desk.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 512.5 Td (  *  putDownSound \(AudioClip\): Played when putting the Remote or Towel back down.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 500.5 Td (  *  bumperSpawnSound \(AudioClip\): Played when clicking empty screen space to place a Pinball Bumper.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 488.5 Td (  *  bumperPingSound \(AudioClip\): Played when a DVD logo ricochets off a Pinball Bumper.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 476.5 Td (  *  grabStartSound / grabShakeTickSound / grabReleaseSound \(AudioClip\): Telekinetic Grabber SFX.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 457.5 Td (1.3 TVMinigameController \(Hierarchy: DVDSetup\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 444.0 Td (  *  audioSource \(AudioSource\): Speaker for all 6 Remote Minigames.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 432.0 Td (  *  minigameSoundVolume \(0..2, default 0.9\): Master volume multiplier for minigame SFX.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 420.0 Td (  *  jumpSound \(AudioClip\): Dino Runner jump hop, Suika piece drop, and Tower Stack block drop.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 408.0 Td (  *  enemyPassSound \(AudioClip\): Dino Runner chime when safely clearing a cactus or flying bird.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 396.0 Td (  *  damageHitSound \(AudioClip\): Played on damage/loss in Dino, Pong, Suika, Tower, Fish & Block Blast.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 384.0 Td (  *  pongPaddleHitSound \(AudioClip\): One-Sided Pong sound when defending the logo with the paddle bar.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 372.0 Td (  *  suikaMergeSound \(AudioClip\): Suika Merger sound when two same-size logos combine.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 360.0 Td (  *  towerLandSound \(AudioClip\): Tower Stack sound when a falling block lands safely on the stack.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 348.0 Td (  *  fishEatSound \(AudioClip\): Fish Frenzy sound when eating a smaller swimming DVD logo.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 336.0 Td (  *  blockBlastPlaceSound \(AudioClip\): Block Blast sound when placing a polyomino shape onto the grid.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 324.0 Td (  *  blockBlastClearSound \(AudioClip\): Block Blast combo sound when full rows or columns blast apart.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 305.0 Td (1.4 TVScreenCleaner & TVScreenHazard \(Hierarchy: DVDSetup\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 291.5 Td (  *  TVScreenCleaner -> wipeRubSound \(AudioClip\): Scrubbing sound while wiping dust with the Towel.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 279.5 Td (  *  TVScreenCleaner -> cleanChimeSound \(AudioClip\): Sparkle chime when the TV screen reaches 100% clean.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 267.5 Td (  *  TVScreenHazard -> slapImpactSound \(AudioClip\): Heavy thud when clicking 'Hit TV' on the TV casing.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 255.5 Td (  *  TVScreenHazard -> staticNoiseSound \(AudioClip\): Looping static noise during a TV static malfunction.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 243.5 Td (  *  TVScreenHazard -> staticLoopAudioSource \(AudioSource\): Dedicated child object DVDSetup/StaticNoiseAudio.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 224.5 Td (1.5 UpgradeManager & WorldSpaceUpgradeMenu \(Hierarchy: DVDSetup & DVDPLAYERMANAGER/Canvas\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 211.0 Td (  *  UpgradeManager -> upgradePaths[i].staticSoundEffect \(AudioClip\): Static burst when switching DVDs.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 199.0 Td (  *  UpgradeManager -> upgradePaths[1].tiers[i].dvdMusic \(AudioClip\): Music track for each DVD Pile tier.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 187.0 Td (  *  WorldSpaceUpgradeMenu -> openMenuSound / closeMenuSound \(AudioClip\): Menu open & close SFX.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 175.0 Td (  *  WorldSpaceUpgradeMenu -> cycleItemSound \(AudioClip\): Next/Prev button click & Tab switch SFX.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 163.0 Td (  *  WorldSpaceUpgradeMenu -> buyUpgradeSound / equipUpgradeSound / errorSound \(AudioClip\): Purchase SFX.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 144.0 Td (1.6 Room Interactions, Survival Bars, Bills & Boosters) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 130.5 Td (  *  GridCrawlerController \(Player\) -> stepSounds[] \(AudioClip[]\): Footstep sounds when moving/turning.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 118.5 Td (  *  BarManager \(GameManagers\) -> eatSound, sleepSound, toiletSound, showerSound, trashSound \(AudioClip\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 106.5 Td (  *  BillManager \(GameManagers\) -> billArrivalSound, billPaySound, billPenaltySound \(AudioClip\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 94.5 Td (  *  PermanentBoosterItem \(permanentBoosterObjects/*\) -> buildupSound, buySound, cantAffordSound.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 82.5 Td (  *  PauseManager \(PauseCanvas\) -> musicVolumeSlider, sfxVolumeSlider \(Global audio mixer/volume sliders\).) Tj ET
+0.45 0.48 0.52 rg
+BT /F1 8 Tf 280 24 Td (Page 1 of 4) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 6784 >>
+stream
+0.12 0.16 0.24 rg
+0 766 612 26 re f
+BT /F2 8.5 Tf 0.85 0.92 1.0 rg 42 775 Td (DVDproject - Fine-Tuning & Inspector Adjustment Guide) Tj ET
+0.12 0.22 0.38 rg
+38 739 536 20 re f
+1 1 1 rg
+BT /F2 11.5 Tf 46 744 Td (2. MODELS, PREFABS, MATERIALS, COLORS, VIDEOS & PARTICLES) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 724 Td (Where to swap 3D models, prefabs, materials, videos, and particle effects across the project:) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 704.5 Td (2.1 DVD Logo 3D Model, Two-Tone Materials & Circular Hit Particles) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 691.0 Td (  *  Hierarchy: DVDSetup/Camera/DVDLogo \(3D mesh child: 'dvd' and 'dvd/Torus'\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 679.0 Td (  *  Two-Tone Logo Materials: 'dvd' uses the primary material; 'dvd/Torus' uses the secondary ring material.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 667.0 Td (  *  DVDLogoBouncer -> hitSparkColor \(Color\): Fallback spark tint \(particles automatically sample both) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 655.0 Td (  *     'dvd' and 'dvd/Torus' colors so every burst spawns circular two-tone particles!\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 643.0 Td (  *  DVDLogoBouncer -> hitParticleBurstCount \(int, default 20\): Number of circular particles per hit.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 631.0 Td (  *  DVDLogoBouncer -> edgeEffectTemplate / cornerEffectTemplate: Optional custom particle templates.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 619.0 Td (  *  DVDLogoBouncer -> moneyPopupPrefab / negativeMoneyPopupPrefab: Floating +$ / -$ UI popup prefabs.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 600.0 Td (2.2 All 11 Remote Desk Models, Preview Prefabs & Reticle / Bumper Visuals) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 586.5 Td (  *  Desk Remote Models: Hierarchy -> interactables/remote/RemoteControlTV \(Tier 0\) through) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 574.5 Td (  *     RemoteControlTV_Tier10 \(Tiers 1..10\). Materials live in Assets/3DAssets/remote/Remote_Tier0..10.mat.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 562.5 Td (  *  Upgrade Preview Prefabs: Assets/Prefabs/remote_tier0.prefab through remote_tier10.prefab.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 550.5 Td (  *  TVFocusController \(DVDSetup\) -> screenReticleScale \(default 0.22\) & screenReticleColor \(In-screen cursor\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 538.5 Td (  *  TVFocusController \(DVDSetup\) -> customBumperPrefab \(GameObject\): Optional custom 3D Pinball Bumper prefab.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 526.5 Td (  *  TVFocusController \(DVDSetup\) -> bumperColor \(Color\) & bumperOrthoRadius \(float, default 0.55\).) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 507.5 Td (2.3 All 11 DVD Player & 11 DVD Pile Models, Prefabs, Videos & Logo Materials) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 494.0 Td (  *  UpgradeManager \(DVDSetup\) -> upgradePaths[0] \(Player Path, 11 Tiers 0..10\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 482.0 Td (  *     - worldGameObject: Scene objects playerbasic, playerbasic 1 .. playerbasic 10.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 470.0 Td (  *     - previewPrefab: Assets/Prefabs/playerbasic.prefab .. playerbasic 10.prefab.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 458.0 Td (  *     - Base Materials: Assets/3DAssets/DVDPlayer/Base 2.mat .. Base_10_Platinum.mat.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 446.0 Td (  *  UpgradeManager \(DVDSetup\) -> upgradePaths[1] \(DVD Pile Path, 11 Tiers 0..10\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 434.0 Td (  *     - previewPrefab: Assets/Prefabs/dvdv.prefab .. dvdv 10.prefab.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 422.0 Td (  *     - dvdVideoFileName \(string\): StreamingAssets .mp4 filename played on DVDSetup/Camera/bgvideo.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 410.0 Td (  *     - logoMaterial \(Material\): Assets/materials/EMMISSIVES 1.mat .. EMMISSIVES_10_Platinum.mat.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 391.0 Td (2.4 Towel Model, High-Res Dust Overlay Quad & Static Video Malfunction) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 377.5 Td (  *  Desk Towel Object: Hierarchy -> interactables/towel \(Visual child: TowelVisual\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 365.5 Td (  *  TVFocusController \(DVDSetup\) -> towelHoverScale \(Vector3, default 0.85, 0.85, 0.85\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 353.5 Td (  *  TVFocusController \(DVDSetup\) -> towelHoverRotationOffset \(Vector3, default 0, 0, 0 = 90 deg upright\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 341.5 Td (  *  TVFocusController \(DVDSetup\) -> towelHoverSurfaceOffset \(0.025\) & towelPressDepthOffset \(-0.012\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 329.5 Td (  *  TVScreenCleaner \(DVDSetup\) -> dustTextureResolution \(int, default 512\) & dustTintColor \(Color\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 317.5 Td (  *  TVScreenCleaner \(DVDSetup\) -> overlayFrontOffset \(float, default 0.0012 in front of TV glass\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 305.5 Td (  *  TVScreenHazard \(DVDSetup\) -> staticVideoFileName \('static.mp4' on DVDSetup/Camera/bgvideo\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 293.5 Td (  *  TVScreenHazard \(DVDSetup\) -> staticVideoFullAlpha \(float, default 1.0 = full opacity during static\).) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 274.5 Td (2.5 Minigame Custom Prefabs, Colors & Red Screen Flash \(TVMinigameController on DVDSetup\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 261.0 Td (  *  Dino Runner Models: customGroundObstaclePrefab & customBirdObstaclePrefab \(leave empty for primitives\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 249.0 Td (  *  Dino Runner Scales & Colors: groundObstacleScale, birdObstacleScale, groundObstacleColor, birdObstacleColor.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 237.0 Td (  *  One-Sided Pong Model: customPongPaddlePrefab, pongPaddleWidth \(2.45\), pongPaddleHeight \(0.28\), pongPaddleColor.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 225.0 Td (  *  Suika Merger Tiers: suikaTierScales[8], suikaTierPrimaryColors[8], suikaTierSecondaryColors[8].) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 213.0 Td (  *  Tower Stack Shapes: TowerShapes[6] in TVMinigameController.cs \(ClassicBrick, WidePlank, TallPillar,) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 201.0 Td (  *     HeavyMega, TrapezoidWedge, SkewedSlant\) - each deforms the 2-part DVDLogo mesh & sets 2 colors.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 189.0 Td (  *  Block Blast Grid: blockBlastGridCols \(8\), blockBlastGridRows \(8\), blockBlastGhostAlpha \(0.54\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 177.0 Td (  *  Red Screen Flash \(All Minigames\): screenRedFlashColor, screenRedFlashMaxAlpha \(0.42, semi-transparent\).) Tj ET
+0.45 0.48 0.52 rg
+BT /F1 8 Tf 280 24 Td (Page 2 of 4) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 6956 >>
+stream
+0.12 0.16 0.24 rg
+0 766 612 26 re f
+BT /F2 8.5 Tf 0.85 0.92 1.0 rg 42 775 Td (DVDproject - Fine-Tuning & Inspector Adjustment Guide) Tj ET
+0.12 0.22 0.38 rg
+38 739 536 20 re f
+1 1 1 rg
+BT /F2 11.5 Tf 46 744 Td (3. ANIMATION SPEEDS, SQUASH/STRETCH, CAMERA & MINIGAME PHYSICS) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 724 Td (Where to fine-tune every animation speed, squash/stretch curve, camera zoom, and minigame physics value:) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 704.5 Td (3.1 DVD Logo Directional Squash & Stretch + Movement Speeds \(DVDLogoBouncer\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 691.0 Td (  *  baseSpeed \(float, default 3.5\): Base movement speed of the DVD logo in orthographic screen units/sec.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 679.0 Td (  *  directHitImpulseSpeed \(float, default 9.5\): Instant bonus speed added when clicking the logo.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 667.0 Td (  *  bounceImpulseRetention \(0..1, default 0.72\): Fraction of impulse speed kept after each wall bounce.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 655.0 Td (  *  impulseContinuousDrag \(float, default 1.2\): Smooth continuous deceleration of impulse speed.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 643.0 Td (  *  squashStretchDuration \(float, default 0.55s\): Duration of the fluid directional squash & stretch wave.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 631.0 Td (  *  maxSquashAmount \(0.05..0.55, default 0.24\): Peak deformation intensity on direct hits.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 619.0 Td (  *  wallBounceSquashMultiplier \(0.2..1.2, default 0.78\): Relative squash strength on regular wall bounces.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 607.0 Td (  *  squashOscillations \(float, default 2.0\) & squashDamping \(float, default 2.6\): Elastic spring feel.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 595.0 Td (  *  visualBounceDuration \(float, default 0.15s\), edgeBounceMultiplier \(1.05\), cornerBounceMultiplier \(1.15\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 583.0 Td (  *  splitRecombineGracePeriod \(float, default 2.0s\): Seconds before split Mitosis logos can recombine.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 564.0 Td (3.2 TV Focus Zoom, Towel Scrub Tilt & Camera Follow \(TVFocusController & SmoothCameraFollow\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 550.5 Td (  *  TVFocusController -> focusDistanceFromScreen \(float, default 0.69\): Distance from TV glass when zoomed.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 538.5 Td (  *  TVFocusController -> focusFieldOfView \(float, default 38\): Camera FOV in TV Focus Mode \(~88% screen fill\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 526.5 Td (  *  TVFocusController -> focusFramingOffset \(Vector2, default 0, 0\): Fine-tune horizontal/vertical framing.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 514.5 Td (  *  TVFocusController -> towelHoverFollowSpeed \(22\) & towelScrubTiltAmount \(14\): Towel scrub animation feel.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 502.5 Td (  *  SmoothCameraFollow \(Main Camera\) -> focusTransitionSpeed \(float, default 7.5\): Zoom-in/out lerp speed.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 490.5 Td (  *  GridCrawlerController \(Player\) -> moveSpeed, rotateSpeed: First-person grid movement & turn speeds.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 471.5 Td (3.3 TV Slap Jiggle & Upgrade Menu Transitions \(TVScreenHazard & WorldSpaceUpgradeMenu\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 458.0 Td (  *  TVScreenHazard \(DVDSetup\) -> slapJiggleDuration \(0.42s\): Duration of the top-down TV casing squish.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 446.0 Td (  *  TVScreenHazard \(DVDSetup\) -> slapSquashScale \(Vector3: 1.14, 0.82, 1.10\): Wide X/Z & compressed Y.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 434.0 Td (  *  TVScreenHazard \(DVDSetup\) -> centerSquishOnScreen \(bool, default true\): Keeps squish centered on screen.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 422.0 Td (  *  UpgradeManager \(DVDSetup\) -> worldModelShrinkSpeed \(float, default 0.5\): Pop-in/shrink speed on purchase.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 410.0 Td (  *  WorldSpaceUpgradeMenu \(DVDPLAYERMANAGER/Canvas\) -> previewSpinSpeed: Rotation speed of 3D preview model.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 391.0 Td (3.4 All 6 Remote Minigames - Speeds & Physics \(TVMinigameController on DVDSetup\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 377.5 Td (  *  Minigame 1 - Dino & Bird Runner \(Remote Tier 4\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 365.5 Td (  *     - dinoJumpVelocity \(12.8\), dinoGravity \(30.0\), dinoObstacleSpeed \(5.6\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 353.5 Td (  *     - dinoJumpSquashIntensity \(0.12\), dinoLandSquashIntensity \(0.10\), dinoDamageSquashIntensity \(0.24\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 341.5 Td (  *     - dinoSpawnIntervalRange \(1.15s..2.15s\), birdSpawnChance \(0.42\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 329.5 Td (  *  Minigame 2 - One-Sided Pong \(Remote Tier 5\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 317.5 Td (  *     - pongPaddleFollowSpeed \(28.0\), pongPaddleOffsetFromBottom \(0.72\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 305.5 Td (  *  Minigame 3 - Suika Logo Merger \(Remote Tier 6\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 293.5 Td (  *     - suikaGravity \(18.5\), suikaDropCooldown \(0.36s\), suikaRestitution \(0.22\), suikaOverflowGraceTime \(0.95s\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 281.5 Td (  *  Minigame 4 - Tower Stack / Deform Tetris \(Remote Tier 7\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 269.5 Td (  *     - towerTopSwingSpeed \(5.2\), towerDropGravity \(26.0\), towerScrollTriggerHeightRatio \(0.45\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 257.5 Td (  *     - towerScrollLerpSpeed \(6.5\), towerToppleDuration \(1.55s\), towerBalanceForgiveness \(0.92\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 245.5 Td (  *  Minigame 5 - Fish Frenzy / Eat Smaller Logos \(Remote Tier 8\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 233.5 Td (  *     - fishInitialPlayerSize \(0.44\), fishPlayerFollowSpeed \(14.5\), fishMaxActiveNpcCount \(11\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 221.5 Td (  *     - fishSpawnIntervalRange \(0.45s..0.95s\), fishSwimSpeedRange \(1.8..4.2\), fishGrowthPerEatFactor \(0.16\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 209.5 Td (  *     - fishRedFlashDuration \(0.40s\) + fishPostFlashLockDuration \(0.50s wait before controlling eating fish\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 197.5 Td (  *  Minigame 6 - Block Blast DVD Grid \(Remote Tier 9\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 185.5 Td (  *     - blockBlastGridCols \(8\), blockBlastGridRows \(8\), blockBlastShatterDuration \(0.68s\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 173.5 Td (  *  Shared Red Screen Flash \(All Minigames\): screenRedFlashDuration \(0.38s\), screenRedFlashMaxAlpha \(0.42\).) Tj ET
+0.45 0.48 0.52 rg
+BT /F1 8 Tf 280 24 Td (Page 3 of 4) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 7565 >>
+stream
+0.12 0.16 0.24 rg
+0 766 612 26 re f
+BT /F2 8.5 Tf 0.85 0.92 1.0 rg 42 775 Td (DVDproject - Fine-Tuning & Inspector Adjustment Guide) Tj ET
+0.12 0.22 0.38 rg
+38 739 536 20 re f
+1 1 1 rg
+BT /F2 11.5 Tf 46 744 Td (4. BOOSTERS, UPGRADES \(11 TIERS EACH\), ECONOMY & SURVIVAL VALUES) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 724 Td (Every upgrade tier \(1 Starter + 10 Upgrades per category\), booster item, reward multiplier, and hazard:) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 704.5 Td (4.1 Core DVD Bouncer Economy & Minigame Rewards/Penalties \(DVDLogoBouncer\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 691.0 Td (  *  startingMoney \(float\) & edgeReward \(float\): Base cash earned per wall bounce \(CornerHitValue = 5x Edge\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 679.0 Td (  *  directHitBonusMultiplier \(float, default 1.5\): Direct click payout multiplier.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 667.0 Td (  *  Minigame Payouts & Penalties \(all scale automatically with CornerHitValue\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 655.0 Td (  *     - Dino Runner: +1x Corner per passed enemy \(no particles\); -3x Corner + Red Flash on obstacle hit.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 643.0 Td (  *     - One-Sided Pong: +1x Corner per paddle save; -3x Corner + Red Flash on bottom wall miss.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 631.0 Td (  *     - Suika Merger: Exponential +CornerHitValue * 2^tier on every merge; Red Flash + board reset on overflow.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 619.0 Td (  *     - Tower Stack: +1x Corner per stacked block; -3x Corner + Red Flash + full-tower shrink topple on fall.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 607.0 Td (  *     - Fish Frenzy: +Corner * \(eatenFishSize / startSize\) per eat; -10x Corner + Red Flash when eaten.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 595.0 Td (  *     - Block Blast: +1x Corner per shape placed, +\(lines^2 * 3\)x Corner on line blast; -3x Corner on reset.) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 576.0 Td (4.2 Upgrade Path 0: DVD PLAYERS \(SpeedMultiplier - 1 Starter + 10 Upgrades = 11 Tiers\)) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 562.5 Td (Configured in UpgradeManager.upgradePaths[0] \(and SetupDvdAndBoosters.cs\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 550.0 Td (  *  Tier 0 \(Starter\): Dumpster Sanyo \($0, 1.00x Speed\)  |  Tier 1: Pawnshop Apex \($12, 1.40x Speed\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 538.0 Td (  *  Tier 2: Taped Magnavox \($38, 1.90x\)                 |  Tier 3: Overclocked Deck \($90, 2.60x, +45% Hunger\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 526.0 Td (  *  Tier 4: Repo'd Trinitron \($250, 3.50x, +55% Sleep\)  |  Tier 5: Smoking Turbo \($500, 4.70x, +60% Depress.\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 514.0 Td (  *  Tier 6: Landlord Bribe \($950, 6.20x, +70% Toilet\)   |  Tier 7: Gold Panasonic \($2500, 8.00x, +65% EatDirt\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 502.0 Td (  *  Tier 8: Bootleg Monolith \($4500, 10.5x, +80% Infl.\) |  Tier 9: Doom Accelerator \($8000, 14.0x, +100% Pen.\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 490.0 Td (  *  Tier 10: Quantum Singularity Deck \($15000, 18.50x Speed, +110% Depression Fill Rate\)) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 471.0 Td (4.3 Upgrade Path 1: DVD PILE \(MoneyMultiplier - 1 Starter + 10 Upgrades = 11 Tiers\)) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 457.5 Td (Configured in UpgradeManager.upgradePaths[1] \(and SetupDvdAndBoosters.cs\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 445.0 Td (  *  Tier 0 \(Starter\): Sharpie CDR \($0, 1x Cash\)         |  Tier 1: Bargain Kung-Fu \($15, 5x Cash\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 433.0 Td (  *  Tier 2: Mortgage Seminar \($45, 15x\)                 |  Tier 3: Psychic Hotline \($110, 40x, +45% Sleep\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 421.0 Td (  *  Tier 4: Dashcam Cheaters \($300, 100x, +55% Hunger\)  |  Tier 5: Depressed Fishing \($600, 250x, +65% Depr.\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 409.0 Td (  *  Tier 6: Banned Commercials \($1150, 600x, +75% Trsh\) |  Tier 7: Foreclosure Tour \($3200, 1500x, +60% Food\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 397.0 Td (  *  Tier 8: Warehouse Bootleg \($5800, 3500x, -50% Slp\)  |  Tier 9: Executive Severance \($10000, 10000x\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 385.0 Td (  *  Tier 10: Lost Studio Master \($20000, 25000x Cash, +95% Inflation Rate\)) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 366.0 Td (4.4 Upgrade Path 2: REMOTES \(RemoteUpgrade - 1 Starter + 10 Upgrades = 11 Tiers\)) Tj ET
+0.15 0.15 0.18 rg
+BT /F1 9 Tf 42 352.5 Td (Configured in UpgradeManager.upgradePaths[2] \(and SetupGameplayOverhaul.cs\):) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 340.0 Td (  *  Tier 0 \(Starter\): Stock Clicker \($0\)       - Direct Impulse Hit + Bonus Cash + Squash/Stretch) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 328.0 Td (  *  Tier 1 \(Upgrade 1\): Mitosis Splitter \($85\) - Splits Logo into 2x Children + Recombines on Collision) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 316.0 Td (  *  Tier 2 \(Upgrade 2\): Telekinetic Grabber \($190\) - Hold Logo & Drag Into Walls/Corners to Bounce) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 304.0 Td (  *  Tier 3 \(Upgrade 3\): Pinball Bumper Pro \($320\)  - Click Empty Screen to Spawn up to 5 Bumpers) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 292.0 Td (  *  Tier 4 \(Upgrade 4\): Dino Jump Remote \($420\)    - Minigame 1: No-Internet Dino & Bird Jumper) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 280.0 Td (  *  Tier 5 \(Upgrade 5\): Pong Paddle Remote \($520\)  - Minigame 2: One-Sided Pong Bar Defender) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 268.0 Td (  *  Tier 6 \(Upgrade 6\): Suika Merger Remote \($640\) - Minigame 3: Suika Fruit Merger \(Saves Board State\)) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 256.0 Td (  *  Tier 7 \(Upgrade 7\): Tower Stack Remote \($760\)  - Minigame 4: Deformed Logo Tower Stacker) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 244.0 Td (  *  Tier 8 \(Upgrade 8\): Fish Frenzy Remote \($880\)  - Minigame 5: Eat Smaller Logos & Endless Zoom-Out) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 232.0 Td (  *  Tier 9 \(Upgrade 9\): Block Blast Remote \($1020\) - Minigame 6: Full-Screen 8x8 Square DVD Block Blast) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 220.0 Td (  *  Tier 10 \(Upgrade 10\): Omni-Remote 9000 \($1250\) - ULTIMATE: Direct Hit + Mitosis + Pinball Bumpers!) Tj ET
+0.10 0.36 0.62 rg
+BT /F2 10 Tf 42 201.0 Td (4.5 Dust Debuff, Static Malfunction, Survival Bars, Bills & 19 Shelf Boosters) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 187.5 Td (  *  TVScreenCleaner \(DVDSetup\): fullDirtAccumulationSeconds \(180s\), maxDustSpeedDebuff \(0.50 = -50% speed\).) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 175.5 Td (  *  TVScreenHazard \(DVDSetup\): minSecondsBetweenStatic \(75s\), maxSecondsBetweenStatic \(140s\),) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 163.5 Td (  *     staticChancePerRoll \(0.65\). Tactical Slap when logo is in top 20% hammers it down for +2x EdgeCash!) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 151.5 Td (  *  BarManager & BillManager \(GameManagers\): Adjust Hunger, Sleep, Depression, Dirtiness rates & Bill timers.) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 139.5 Td (  *  Permanent Shelf Boosters: Hierarchy -> permanentBoosterObjects/* \(19 items with PermanentBoosterItem) Tj ET
+0.12 0.12 0.15 rg
+BT /F1 8.8 Tf 42 127.5 Td (  *     + BoosterObject components; edit itemName, cost, description, and StatModifier values in Inspector\).) Tj ET
+0.45 0.48 0.52 rg
+BT /F1 8 Tf 280 24 Td (Page 4 of 4) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000143 00000 n 
+0000000213 00000 n 
+0000000288 00000 n 
+0000007701 00000 n 
+0000007837 00000 n 
+0000014673 00000 n 
+0000014809 00000 n 
+0000021817 00000 n 
+0000021954 00000 n 
+0000029572 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+29710
+%%EOF

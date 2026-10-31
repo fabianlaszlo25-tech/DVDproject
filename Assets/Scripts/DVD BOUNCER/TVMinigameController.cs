@@ -37,7 +37,9 @@ public class TVMinigameController : MonoBehaviour
         DinoRunner = 1,
         OneSidedPong = 2,
         SuikaMerge = 3,
-        TowerStack = 4
+        TowerStack = 4,
+        FishFrenzy = 5,
+        BlockBlast = 6
     }
 
     [Header("References")]
@@ -53,6 +55,10 @@ public class TVMinigameController : MonoBehaviour
     public int suikaRemoteTier = 6;
     [Tooltip("Remote tier index that activates the Tower Stack / Deform Tetris game when held in TV Focus Mode.")]
     public int towerRemoteTier = 7;
+    [Tooltip("Remote tier index that activates the Fish Eat Fish / Feeding Frenzy game when held in TV Focus Mode.")]
+    public int fishFrenzyRemoteTier = 8;
+    [Tooltip("Remote tier index that activates the Block Blast DVD Grid game when held in TV Focus Mode.")]
+    public int blockBlastRemoteTier = 9;
 
     [Header("Minigame 1: Dino & Bird Runner Settings")]
     [Tooltip("Optional custom 3D prefab for ground obstacles (cacti/blocks). Uses procedural primitive cactus if left empty.")]
@@ -162,6 +168,46 @@ public class TVMinigameController : MonoBehaviour
     [Range(0.55f, 1.35f)]
     public float towerBalanceForgiveness = 0.92f;
 
+    [Header("Minigame 5: Fish Frenzy (Eat Smaller Logos) Settings")]
+    [Tooltip("Starting scale multiplier for the player's DVD logo in Fish Frenzy mode.")]
+    public float fishInitialPlayerSize = 0.44f;
+    [Tooltip("How quickly the player's DVD logo follows the cursor in Fish Frenzy mode.")]
+    public float fishPlayerFollowSpeed = 14.5f;
+    [Tooltip("Maximum number of NPC DVD fish swimming on screen at once.")]
+    public int fishMaxActiveNpcCount = 11;
+    [Tooltip("Seconds between spawning new swimming DVD logos from the 4 screen edges.")]
+    public Vector2 fishSpawnIntervalRange = new Vector2(0.45f, 0.95f);
+    [Tooltip("Swimming speed range (in screen units/sec) for NPC DVD logos.")]
+    public Vector2 fishSwimSpeedRange = new Vector2(1.8f, 4.2f);
+    [Tooltip("Fraction of an eaten fish's size added to the player's size upon eating it.")]
+    [Range(0.05f, 0.45f)]
+    public float fishGrowthPerEatFactor = 0.16f;
+    [Tooltip("Duration of the red screen flash when eaten by a larger fish.")]
+    public float fishRedFlashDuration = 0.40f;
+    [Tooltip("Additional seconds after the red flash finishes before the player regains control of the fish that ate them (default 0.5s).")]
+    public float fishPostFlashLockDuration = 0.50f;
+
+    [Header("Minigame 6: Block Blast DVD Grid Settings")]
+    [Tooltip("Number of columns in the full-screen Block Blast grid.")]
+    [Range(6, 10)]
+    public int blockBlastGridCols = 8;
+    [Tooltip("Number of rows in the full-screen Block Blast grid.")]
+    [Range(6, 10)]
+    public int blockBlastGridRows = 8;
+    [Tooltip("Alpha transparency (0..1) of the Block Blast shape while following the cursor before clicking.")]
+    [Range(0.25f, 0.85f)]
+    public float blockBlastGhostAlpha = 0.54f;
+    [Tooltip("Duration in seconds of the board shatter animation when no space remains for the next piece.")]
+    public float blockBlastShatterDuration = 0.68f;
+
+    [Header("Shared Screen Red Flash Settings (Damage / Penalty / Loss)")]
+    [Tooltip("Default duration in seconds of the semi-transparent red screen flash when losing money or resetting.")]
+    public float screenRedFlashDuration = 0.38f;
+    [Tooltip("Maximum alpha opacity (0..1) of the semi-transparent red screen flash (never fully opaque).")]
+    [Range(0.15f, 0.75f)]
+    public float screenRedFlashMaxAlpha = 0.42f;
+    public Color screenRedFlashColor = new Color(1.0f, 0.12f, 0.12f, 1.0f);
+
     [Header("Minigame Audio")]
     public AudioSource audioSource;
     public AudioClip jumpSound;
@@ -170,6 +216,9 @@ public class TVMinigameController : MonoBehaviour
     public AudioClip pongPaddleHitSound;
     public AudioClip suikaMergeSound;
     public AudioClip towerLandSound;
+    public AudioClip fishEatSound;
+    public AudioClip blockBlastPlaceSound;
+    public AudioClip blockBlastClearSound;
     [Range(0f, 2f)]
     public float minigameSoundVolume = 0.9f;
 
@@ -180,10 +229,14 @@ public class TVMinigameController : MonoBehaviour
     public bool IsPongActive => currentMode == MinigameMode.OneSidedPong;
     public bool IsSuikaActive => currentMode == MinigameMode.SuikaMerge;
     public bool IsTowerActive => currentMode == MinigameMode.TowerStack;
+    public bool IsFishFrenzyActive => currentMode == MinigameMode.FishFrenzy;
+    public bool IsBlockBlastActive => currentMode == MinigameMode.BlockBlast;
     public bool OverridesMainLogoMovement =>
         currentMode == MinigameMode.DinoRunner ||
         currentMode == MinigameMode.SuikaMerge ||
-        currentMode == MinigameMode.TowerStack;
+        currentMode == MinigameMode.TowerStack ||
+        currentMode == MinigameMode.FishFrenzy ||
+        currentMode == MinigameMode.BlockBlast;
 
     // Dino Runner runtime state
     private float dinoVerticalVelocity = 0f;
@@ -399,6 +452,32 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
+        public void SetColorsAndAlpha(Color colA, Color colB, float alpha = 1f)
+        {
+            primaryColor = new Color(colA.r, colA.g, colA.b, alpha);
+            secondaryColor = new Color(colB.r, colB.g, colB.b, alpha);
+
+            for (int i = 0; i < primaryRenderers.Count; i++)
+            {
+                Renderer r = primaryRenderers[i];
+                if (r != null && r.sharedMaterial != null)
+                {
+                    if (r.sharedMaterial.HasProperty("_BaseColor")) r.sharedMaterial.SetColor("_BaseColor", primaryColor);
+                    if (r.sharedMaterial.HasProperty("_Color")) r.sharedMaterial.SetColor("_Color", primaryColor);
+                }
+            }
+
+            for (int i = 0; i < secondaryRenderers.Count; i++)
+            {
+                Renderer r = secondaryRenderers[i];
+                if (r != null && r.sharedMaterial != null)
+                {
+                    if (r.sharedMaterial.HasProperty("_BaseColor")) r.sharedMaterial.SetColor("_BaseColor", secondaryColor);
+                    if (r.sharedMaterial.HasProperty("_Color")) r.sharedMaterial.SetColor("_Color", secondaryColor);
+                }
+            }
+        }
+
         public void DestroyPiece()
         {
             for (int i = 0; i < parts.Count; i++)
@@ -541,6 +620,163 @@ public class TVMinigameController : MonoBehaviour
     private float towerToppleTargetFitScale = 1f;
     private float towerToppleStartScrollY = 0f;
 
+    // =========================================================================
+    // MINIGAME 5: FISH FRENZY (EAT SMALLER LOGOS) STATE
+    // =========================================================================
+
+    private class FishEntity
+    {
+        public DeformableLogoPiece visual;
+        public Vector2 pos;
+        public Vector2 vel;
+        public float rawSize;
+        public float bobPhase;
+        public bool isBeingMerged;
+        public float mergeTimer;
+        public float mergeDuration;
+        public Vector2 mergeStartPos;
+        public float mergeStartSize;
+    }
+
+    private DeformableLogoPiece fishPlayerVisual;
+    private Vector2 fishPlayerPos;
+    private Vector2 fishPlayerVel;
+    private float fishPlayerRawSize = 0.44f;
+    private float fishWorldZoomScale = 1f;
+    private float fishTargetWorldZoomScale = 1f;
+    private float fishSpawnTimer = 0f;
+    private readonly List<FishEntity> activeFishList = new List<FishEntity>();
+    private readonly List<FishEntity> mergingFishAnimations = new List<FishEntity>();
+
+    // Being-eaten-by-bigger-fish sequence state
+    private bool isFishPlayerBeingEaten = false;
+    private float fishEatenSequenceTimer = 0f;
+    private FishEntity fishPredatorThatAtePlayer;
+    private Vector2 fishPlayerEatenStartPos;
+    private float fishPlayerEatenStartScale;
+    private float fishPredatorShrinkStartSize;
+    private float fishZoomBeforeReset;
+
+    // =========================================================================
+    // MINIGAME 6: BLOCK BLAST DVD GRID STATE
+    // =========================================================================
+
+    private struct BlockBlastShapeDef
+    {
+        public string name;
+        public Vector2Int[] offsets;
+        public Color primaryColor;
+        public Color secondaryColor;
+    }
+
+    private static readonly BlockBlastShapeDef[] BlockBlastShapes = new BlockBlastShapeDef[]
+    {
+        new BlockBlastShapeDef {
+            name = "Single1x1",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0) },
+            primaryColor = new Color(1.00f, 0.86f, 0.18f, 1f), secondaryColor = new Color(1.00f, 0.96f, 0.65f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "DominoH2",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(1, 0) },
+            primaryColor = new Color(0.20f, 0.90f, 1.00f, 1f), secondaryColor = new Color(0.16f, 0.48f, 0.98f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "DominoV2",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(0, 1) },
+            primaryColor = new Color(0.20f, 0.90f, 1.00f, 1f), secondaryColor = new Color(0.16f, 0.48f, 0.98f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "BarH3",
+            offsets = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(0, 0), new Vector2Int(1, 0) },
+            primaryColor = new Color(1.00f, 0.52f, 0.16f, 1f), secondaryColor = new Color(1.00f, 0.85f, 0.34f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "BarV3",
+            offsets = new Vector2Int[] { new Vector2Int(0, -1), new Vector2Int(0, 0), new Vector2Int(0, 1) },
+            primaryColor = new Color(1.00f, 0.52f, 0.16f, 1f), secondaryColor = new Color(1.00f, 0.85f, 0.34f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "BarH4",
+            offsets = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0) },
+            primaryColor = new Color(1.00f, 0.25f, 0.42f, 1f), secondaryColor = new Color(1.00f, 0.72f, 0.82f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "BarV4",
+            offsets = new Vector2Int[] { new Vector2Int(0, -1), new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(0, 2) },
+            primaryColor = new Color(1.00f, 0.25f, 0.42f, 1f), secondaryColor = new Color(1.00f, 0.72f, 0.82f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "Square2x2",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1) },
+            primaryColor = new Color(0.26f, 0.96f, 0.46f, 1f), secondaryColor = new Color(0.75f, 1.00f, 0.82f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "CornerSmallL",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1) },
+            primaryColor = new Color(0.78f, 0.32f, 1.00f, 1f), secondaryColor = new Color(0.92f, 0.74f, 1.00f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "CornerSmallJ",
+            offsets = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(0, 1) },
+            primaryColor = new Color(0.78f, 0.32f, 1.00f, 1f), secondaryColor = new Color(0.92f, 0.74f, 1.00f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "BigL3x3",
+            offsets = new Vector2Int[] { new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, -1), new Vector2Int(-1, 0), new Vector2Int(-1, 1) },
+            primaryColor = new Color(1.00f, 0.34f, 0.78f, 1f), secondaryColor = new Color(0.62f, 0.22f, 0.96f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "TeePiece",
+            offsets = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1) },
+            primaryColor = new Color(0.32f, 0.98f, 0.78f, 1f), secondaryColor = new Color(0.14f, 0.56f, 0.96f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "ZPiece",
+            offsets = new Vector2Int[] { new Vector2Int(-1, 1), new Vector2Int(0, 1), new Vector2Int(0, 0), new Vector2Int(1, 0) },
+            primaryColor = new Color(1.00f, 0.68f, 0.16f, 1f), secondaryColor = new Color(1.00f, 0.30f, 0.25f, 1f)
+        },
+        new BlockBlastShapeDef {
+            name = "MegaSquare3x3",
+            offsets = new Vector2Int[] {
+                new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, -1),
+                new Vector2Int(-1,  0), new Vector2Int(0,  0), new Vector2Int(1,  0),
+                new Vector2Int(-1,  1), new Vector2Int(0,  1), new Vector2Int(1,  1)
+            },
+            primaryColor = new Color(1.00f, 0.92f, 0.28f, 1f), secondaryColor = new Color(0.18f, 0.95f, 0.52f, 1f)
+        }
+    };
+
+    private class FlyingBlockBlastTile
+    {
+        public DeformableLogoPiece visual;
+        public Vector2 pos;
+        public Vector2 vel;
+        public float angularVelZ;
+        public float angleZ;
+        public float timer;
+        public float duration;
+        public float startScale;
+    }
+
+    private DeformableLogoPiece[,] blockBlastGrid;
+    private GameObject blockBlastBoardBgRoot;
+    private readonly List<DeformableLogoPiece> blockBlastGhostTiles = new List<DeformableLogoPiece>();
+    private readonly List<FlyingBlockBlastTile> activeBlastingTiles = new List<FlyingBlockBlastTile>();
+    private int currentBlockBlastShapeIdx = 0;
+    private Vector2Int currentSnappedGridCell = new Vector2Int(3, 3);
+    private bool currentGhostPlacementValid = false;
+    private bool isBlockBlastShatteringReset = false;
+    private float blockBlastShatterTimer = 0f;
+    private Vector2 targetCursorOrthoPos;
+
+    // Shared in-screen semi-transparent Red Screen Flash state
+    private GameObject redFlashQuadObj;
+    private Material redFlashMaterial;
+    private float redFlashTimer = -1f;
+    private float activeRedFlashDuration = 0.38f;
+    private float activeRedFlashMaxAlpha = 0.42f;
+
     private Material sharedUnlitTemplate;
 
     private void Awake()
@@ -581,6 +817,10 @@ public class TVMinigameController : MonoBehaviour
         if (suikaMergeSound == null && mainBouncer != null)
             suikaMergeSound = mainBouncer.recombinePopSound != null ? mainBouncer.recombinePopSound : mainBouncer.cornerHitSound;
         if (towerLandSound == null && mainBouncer != null) towerLandSound = mainBouncer.edgeHitSound;
+        if (fishEatSound == null && mainBouncer != null)
+            fishEatSound = mainBouncer.recombinePopSound != null ? mainBouncer.recombinePopSound : mainBouncer.cornerHitSound;
+        if (blockBlastPlaceSound == null && mainBouncer != null) blockBlastPlaceSound = mainBouncer.edgeHitSound;
+        if (blockBlastClearSound == null && mainBouncer != null) blockBlastClearSound = mainBouncer.cornerHitSound;
     }
 
     private void Update()
@@ -599,6 +839,8 @@ public class TVMinigameController : MonoBehaviour
         }
 
         float dt = Time.deltaTime;
+        UpdateRedScreenFlash(dt);
+
         if (currentMode == MinigameMode.DinoRunner)
         {
             UpdateDinoRunner(dt);
@@ -615,6 +857,14 @@ public class TVMinigameController : MonoBehaviour
         {
             UpdateTowerStack(dt);
         }
+        else if (currentMode == MinigameMode.FishFrenzy)
+        {
+            UpdateFishFrenzy(dt);
+        }
+        else if (currentMode == MinigameMode.BlockBlast)
+        {
+            UpdateBlockBlast(dt);
+        }
     }
 
     private MinigameMode DetermineDesiredMinigameMode()
@@ -629,6 +879,8 @@ public class TVMinigameController : MonoBehaviour
         if (tier == pongRemoteTier) return MinigameMode.OneSidedPong;
         if (tier == suikaRemoteTier) return MinigameMode.SuikaMerge;
         if (tier == towerRemoteTier) return MinigameMode.TowerStack;
+        if (tier == fishFrenzyRemoteTier) return MinigameMode.FishFrenzy;
+        if (tier == blockBlastRemoteTier) return MinigameMode.BlockBlast;
 
         return MinigameMode.None;
     }
@@ -652,6 +904,14 @@ public class TVMinigameController : MonoBehaviour
         {
             ExitTowerStackMode();
         }
+        else if (currentMode == MinigameMode.FishFrenzy)
+        {
+            ExitFishFrenzyMode();
+        }
+        else if (currentMode == MinigameMode.BlockBlast)
+        {
+            ExitBlockBlastMode();
+        }
 
         currentMode = nextMode;
 
@@ -672,6 +932,14 @@ public class TVMinigameController : MonoBehaviour
         {
             EnterTowerStackMode();
         }
+        else if (currentMode == MinigameMode.FishFrenzy)
+        {
+            EnterFishFrenzyMode();
+        }
+        else if (currentMode == MinigameMode.BlockBlast)
+        {
+            EnterBlockBlastMode();
+        }
     }
 
     // =========================================================================
@@ -684,6 +952,7 @@ public class TVMinigameController : MonoBehaviour
     public void OnScreenCursorMoved(Vector3 orthoWorldPoint)
     {
         targetPaddleX = orthoWorldPoint.x;
+        targetCursorOrthoPos = new Vector2(orthoWorldPoint.x, orthoWorldPoint.y);
     }
 
     /// <summary>
@@ -693,6 +962,7 @@ public class TVMinigameController : MonoBehaviour
     public bool OnScreenClicked(Vector3 orthoWorldPoint)
     {
         targetPaddleX = orthoWorldPoint.x;
+        targetCursorOrthoPos = new Vector2(orthoWorldPoint.x, orthoWorldPoint.y);
 
         if (currentMode == MinigameMode.DinoRunner)
         {
@@ -714,6 +984,17 @@ public class TVMinigameController : MonoBehaviour
         if (currentMode == MinigameMode.TowerStack)
         {
             TryDropCurrentTowerBlock();
+            return true;
+        }
+
+        if (currentMode == MinigameMode.FishFrenzy)
+        {
+            return true;
+        }
+
+        if (currentMode == MinigameMode.BlockBlast)
+        {
+            TryPlaceCurrentBlockBlastShape();
             return true;
         }
 
@@ -883,6 +1164,7 @@ public class TVMinigameController : MonoBehaviour
                     obs.passedRewardGiven = true;
 
                     mainBouncer.TriggerDamageFlash();
+                    TriggerScreenRedFlash();
                     mainBouncer.TriggerSquashStretch(Vector2.right, dinoDamageSquashIntensity);
                     mainBouncer.ApplyMinigameCornerPenalty(3, pos);
                     PlaySound(damageHitSound, 0.78f);
@@ -896,7 +1178,8 @@ public class TVMinigameController : MonoBehaviour
             if (!obs.passedRewardGiven && (pos.x + obs.halfWidth) < logoBounds.min.x - 0.1f)
             {
                 obs.passedRewardGiven = true;
-                mainBouncer.AwardMinigameCornerReward(1, mainBouncer.GetLogoVisualCenter());
+                // No particle effect when safely passing an obstacle in Dino Runner!
+                mainBouncer.AwardMinigameCornerReward(1, mainBouncer.GetLogoVisualCenter(), false);
                 PlaySound(enemyPassSound, 1.15f);
             }
 
@@ -1783,6 +2066,7 @@ public class TVMinigameController : MonoBehaviour
             suikaPreviewVisual = null;
         }
 
+        TriggerScreenRedFlash();
         PlaySound(damageHitSound, 0.88f);
     }
 
@@ -2172,6 +2456,7 @@ public class TVMinigameController : MonoBehaviour
 
         TowerBlock topBlock = stackedTowerBlocks[stackedTowerBlocks.Count - 1];
         Vector3 penaltyPos = new Vector3(screenCenterX + topBlock.towerRelX, baseFloorY + (topBlock.towerRelY - currentTowerScrollY), zPlane);
+        TriggerScreenRedFlash();
         mainBouncer.ApplyMinigameCornerPenalty(3, penaltyPos, topBlock.visual.primaryColor, topBlock.visual.secondaryColor);
         PlaySound(damageHitSound, 0.76f);
     }
@@ -2201,6 +2486,1077 @@ public class TVMinigameController : MonoBehaviour
     }
 
     // =========================================================================
+    // MINIGAME 5: FISH FRENZY / EAT SMALLER LOGOS
+    // =========================================================================
+
+    private void EnterFishFrenzyMode()
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        mainBouncer.DespawnAllChildLogosForMinigame();
+        savedLogoPositionBeforeRunner = mainBouncer.transform.position;
+        savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
+        mainBouncer.SetMainLogoRenderersVisible(false);
+
+        ClearAllFishFrenzyEntities();
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        Vector2 screenCenter = new Vector2((camMinX + camMaxX) * 0.5f, (camMinY + camMaxY) * 0.5f);
+
+        fishPlayerRawSize = fishInitialPlayerSize;
+        fishWorldZoomScale = 1f;
+        fishTargetWorldZoomScale = 1f;
+        fishPlayerPos = screenCenter;
+        fishPlayerVel = Vector2.zero;
+        isFishPlayerBeingEaten = false;
+        fishEatenSequenceTimer = 0f;
+        fishPredatorThatAtePlayer = null;
+        fishSpawnTimer = 0.15f;
+
+        Color pCol = new Color(0.20f, 0.96f, 1.00f, 1f);
+        Color sCol = new Color(1.00f, 0.88f, 0.22f, 1f);
+        fishPlayerVisual = CreateDeformableLogoClone("FishPlayer_Logo", fishPlayerRawSize, pCol, sCol);
+        if (fishPlayerVisual != null)
+        {
+            float zPlane = mainBouncer.transform.position.z;
+            fishPlayerVisual.SetCenterPosition(new Vector3(fishPlayerPos.x, fishPlayerPos.y, zPlane));
+            fishPlayerVisual.TriggerPop(0.32f, 0.30f);
+            fishPlayerVisual.UpdateVisuals(0f);
+        }
+
+        // Pre-populate a few fish swimming around so the screen feels alive right away
+        for (int i = 0; i < 4; i++)
+        {
+            SpawnSwimmingFishFromEdge(i < 3); // guarantee at least 3 smaller edible fish initially
+        }
+    }
+
+    private void ExitFishFrenzyMode()
+    {
+        ClearAllFishFrenzyEntities();
+        if (mainBouncer != null)
+        {
+            mainBouncer.SetMainLogoRenderersVisible(true);
+            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+        }
+    }
+
+    private void ClearAllFishFrenzyEntities()
+    {
+        if (fishPlayerVisual != null)
+        {
+            fishPlayerVisual.DestroyPiece();
+            fishPlayerVisual = null;
+        }
+
+        for (int i = 0; i < activeFishList.Count; i++)
+        {
+            if (activeFishList[i] != null && activeFishList[i].visual != null)
+            {
+                activeFishList[i].visual.DestroyPiece();
+            }
+        }
+        activeFishList.Clear();
+
+        for (int i = 0; i < mergingFishAnimations.Count; i++)
+        {
+            if (mergingFishAnimations[i] != null && mergingFishAnimations[i].visual != null)
+            {
+                mergingFishAnimations[i].visual.DestroyPiece();
+            }
+        }
+        mergingFishAnimations.Clear();
+        fishPredatorThatAtePlayer = null;
+        isFishPlayerBeingEaten = false;
+    }
+
+    private void SpawnSwimmingFishFromEdge(bool forceSmallerThanPlayer = false)
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float zPlane = mainBouncer.transform.position.z;
+
+        // Choose size relative to the player's current raw size so the game scales infinitely!
+        bool isSmaller = forceSmallerThanPlayer || (Random.value < 0.58f);
+        float sizeRatio = isSmaller ? Random.Range(0.42f, 0.86f) : Random.Range(1.18f, 1.85f);
+        float fishRawSize = Mathf.Max(0.22f, fishPlayerRawSize * sizeRatio);
+
+        // Pick a vibrant two-tone color pair from the Suika palette + extra ocean hues
+        int colorIdx = Random.Range(0, suikaTierPrimaryColors.Length);
+        Color colA = suikaTierPrimaryColors[colorIdx];
+        Color colB = suikaTierSecondaryColors[colorIdx];
+
+        float renderedScale = fishRawSize * fishWorldZoomScale;
+        DeformableLogoPiece vis = CreateDeformableLogoClone("FishNPC_Logo", renderedScale, colA, colB);
+        if (vis == null) return;
+
+        float marginX = vis.EffectiveHalfWidth + 0.35f;
+        float marginY = vis.EffectiveHalfHeight + 0.35f;
+
+        // Pick one of the 4 sides: 0 = Left, 1 = Right, 2 = Bottom, 3 = Top
+        int edge = Random.Range(0, 4);
+        Vector2 spawnPos = Vector2.zero;
+        Vector2 targetAcross = Vector2.zero;
+
+        if (edge == 0)
+        {
+            spawnPos = new Vector2(camMinX - marginX, Random.Range(camMinY + 0.5f, camMaxY - 0.5f));
+            targetAcross = new Vector2(camMaxX + marginX, Random.Range(camMinY + 0.5f, camMaxY - 0.5f));
+        }
+        else if (edge == 1)
+        {
+            spawnPos = new Vector2(camMaxX + marginX, Random.Range(camMinY + 0.5f, camMaxY - 0.5f));
+            targetAcross = new Vector2(camMinX - marginX, Random.Range(camMinY + 0.5f, camMaxY - 0.5f));
+        }
+        else if (edge == 2)
+        {
+            spawnPos = new Vector2(Random.Range(camMinX + 0.5f, camMaxX - 0.5f), camMinY - marginY);
+            targetAcross = new Vector2(Random.Range(camMinX + 0.5f, camMaxX - 0.5f), camMaxY + marginY);
+        }
+        else
+        {
+            spawnPos = new Vector2(Random.Range(camMinX + 0.5f, camMaxX - 0.5f), camMaxY + marginY);
+            targetAcross = new Vector2(Random.Range(camMinX + 0.5f, camMaxX - 0.5f), camMinY - marginY);
+        }
+
+        Vector2 dir = (targetAcross - spawnPos).normalized;
+        float swimSpeed = Random.Range(fishSwimSpeedRange.x, fishSwimSpeedRange.y);
+
+        vis.SetCenterPosition(new Vector3(spawnPos.x, spawnPos.y, zPlane));
+        vis.UpdateVisuals(0f);
+
+        activeFishList.Add(new FishEntity
+        {
+            visual = vis,
+            pos = spawnPos,
+            vel = dir * swimSpeed,
+            rawSize = fishRawSize,
+            bobPhase = Random.Range(0f, 10f),
+            isBeingMerged = false
+        });
+    }
+
+    private void UpdateFishFrenzy(float dt)
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float zPlane = mainBouncer.transform.position.z;
+
+        // 1. Update any eaten smaller fish converging into the player (merge animation)
+        for (int i = mergingFishAnimations.Count - 1; i >= 0; i--)
+        {
+            FishEntity mf = mergingFishAnimations[i];
+            if (mf == null || mf.visual == null)
+            {
+                mergingFishAnimations.RemoveAt(i);
+                continue;
+            }
+
+            mf.mergeTimer += dt;
+            float t = Mathf.Clamp01(mf.mergeTimer / Mathf.Max(0.05f, mf.mergeDuration));
+            float smooth = t * t * (3f - 2f * t);
+
+            Vector2 targetPos = fishPlayerPos;
+            mf.pos = Vector2.Lerp(mf.mergeStartPos, targetPos, smooth);
+            mf.visual.overallScaleFactor = Mathf.Lerp(mf.mergeStartSize, 0.08f, smooth);
+            mf.visual.SetCenterPosition(new Vector3(mf.pos.x, mf.pos.y, zPlane));
+            mf.visual.UpdateVisuals(dt);
+
+            if (t >= 1f)
+            {
+                mf.visual.DestroyPiece();
+                mergingFishAnimations.RemoveAt(i);
+            }
+        }
+
+        // 2. Handle sequence when a BIGGER fish eats the player!
+        //    - Screen flashes red (semi-transparent)
+        //    - Player loses control during flash + 0.5s after flash
+        //    - Player visual merges into the eating fish
+        //    - Then player gains control of the fish that ate it, which shrinks back to smallest starting size & zooms back in!
+        if (isFishPlayerBeingEaten)
+        {
+            fishEatenSequenceTimer += dt;
+            float lockDuration = fishRedFlashDuration + fishPostFlashLockDuration; // e.g., 0.40s flash + 0.50s wait = 0.90s
+            float shrinkPhaseDuration = 0.36f;
+
+            // Animate player visual merging into the predator during the first 0.24s
+            if (fishPlayerVisual != null && fishPredatorThatAtePlayer != null && fishPredatorThatAtePlayer.visual != null)
+            {
+                float mergeT = Mathf.Clamp01(fishEatenSequenceTimer / 0.24f);
+                float smoothM = mergeT * mergeT * (3f - 2f * mergeT);
+                Vector2 curP = Vector2.Lerp(fishPlayerEatenStartPos, fishPredatorThatAtePlayer.pos, smoothM);
+                fishPlayerVisual.overallScaleFactor = Mathf.Lerp(fishPlayerEatenStartScale, 0.06f, smoothM);
+                fishPlayerVisual.SetCenterPosition(new Vector3(curP.x, curP.y, zPlane));
+                fishPlayerVisual.UpdateVisuals(dt);
+
+                if (mergeT >= 1f)
+                {
+                    fishPlayerVisual.DestroyPiece();
+                    fishPlayerVisual = null;
+                }
+            }
+
+            // Keep the predator fish gently drifting while locked, then shrinking back to starting size as camera zooms back in
+            if (fishPredatorThatAtePlayer != null && fishPredatorThatAtePlayer.visual != null)
+            {
+                if (fishEatenSequenceTimer < lockDuration)
+                {
+                    fishPredatorThatAtePlayer.pos += fishPredatorThatAtePlayer.vel * 0.25f * dt;
+                    float hw = fishPredatorThatAtePlayer.visual.EffectiveHalfWidth;
+                    float hh = fishPredatorThatAtePlayer.visual.EffectiveHalfHeight;
+                    fishPredatorThatAtePlayer.pos.x = Mathf.Clamp(fishPredatorThatAtePlayer.pos.x, camMinX + hw, camMaxX - hw);
+                    fishPredatorThatAtePlayer.pos.y = Mathf.Clamp(fishPredatorThatAtePlayer.pos.y, camMinY + hh, camMaxY - hh);
+                    fishPredatorThatAtePlayer.visual.SetCenterPosition(new Vector3(fishPredatorThatAtePlayer.pos.x, fishPredatorThatAtePlayer.pos.y, zPlane));
+                    fishPredatorThatAtePlayer.visual.UpdateVisuals(dt);
+                }
+                else
+                {
+                    // Flash + 0.5s is over! Shrink the eating fish back to smallest starting size and zoom camera back in!
+                    float shrinkT = Mathf.Clamp01((fishEatenSequenceTimer - lockDuration) / shrinkPhaseDuration);
+                    float smoothS = shrinkT * shrinkT * (3f - 2f * shrinkT);
+
+                    fishWorldZoomScale = Mathf.Lerp(fishZoomBeforeReset, 1.0f, smoothS);
+                    fishTargetWorldZoomScale = 1.0f;
+
+                    float currentPredatorScale = Mathf.Lerp(fishPredatorShrinkStartSize, fishInitialPlayerSize, smoothS);
+                    fishPredatorThatAtePlayer.visual.overallScaleFactor = currentPredatorScale;
+
+                    // Allow the newly controlled fish to start moving toward the cursor as it finishes shrinking
+                    Vector2 clampedCursor = new Vector2(
+                        Mathf.Clamp(targetCursorOrthoPos.x, camMinX + 0.5f, camMaxX - 0.5f),
+                        Mathf.Clamp(targetCursorOrthoPos.y, camMinY + 0.5f, camMaxY - 0.5f));
+                    fishPredatorThatAtePlayer.pos = Vector2.Lerp(fishPredatorThatAtePlayer.pos, clampedCursor, dt * fishPlayerFollowSpeed * 0.65f);
+                    fishPredatorThatAtePlayer.visual.SetCenterPosition(new Vector3(fishPredatorThatAtePlayer.pos.x, fishPredatorThatAtePlayer.pos.y, zPlane));
+                    fishPredatorThatAtePlayer.visual.UpdateVisuals(dt);
+
+                    if (shrinkT >= 1f)
+                    {
+                        // Hand full control of the predator fish to the player!
+                        fishPlayerVisual = fishPredatorThatAtePlayer.visual;
+                        fishPlayerVisual.rootObj.name = "FishPlayer_Logo";
+                        fishPlayerPos = fishPredatorThatAtePlayer.pos;
+                        fishPlayerVel = Vector2.zero;
+                        fishPlayerRawSize = fishInitialPlayerSize;
+                        fishWorldZoomScale = 1.0f;
+                        fishTargetWorldZoomScale = 1.0f;
+                        fishPlayerVisual.overallScaleFactor = fishInitialPlayerSize;
+                        fishPlayerVisual.TriggerPop(0.28f, 0.28f);
+
+                        fishPredatorThatAtePlayer = null;
+                        isFishPlayerBeingEaten = false;
+
+                        // Rescale remaining NPC fish so there are still smaller ones around the reset player
+                        for (int i = 0; i < activeFishList.Count; i++)
+                        {
+                            if (activeFishList[i] != null)
+                            {
+                                activeFishList[i].rawSize = fishInitialPlayerSize * Random.Range(0.48f, 1.35f);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                isFishPlayerBeingEaten = false;
+            }
+        }
+        else if (fishPlayerVisual != null)
+        {
+            // 3. Normal Fish Frenzy gameplay: Smoothly zoom out world scale as player grows (keeping bgvideo untouched!)
+            fishTargetWorldZoomScale = Mathf.Clamp(fishInitialPlayerSize / Mathf.Max(0.1f, fishPlayerRawSize), 0.05f, 1.0f);
+            fishWorldZoomScale = Mathf.Lerp(fishWorldZoomScale, fishTargetWorldZoomScale, dt * 4.5f);
+
+            float playerRenderedScale = fishPlayerRawSize * fishWorldZoomScale;
+            fishPlayerVisual.overallScaleFactor = playerRenderedScale;
+
+            float hw = fishPlayerVisual.EffectiveHalfWidth;
+            float hh = fishPlayerVisual.EffectiveHalfHeight;
+
+            Vector2 targetPos = new Vector2(
+                Mathf.Clamp(targetCursorOrthoPos.x, camMinX + hw, camMaxX - hw),
+                Mathf.Clamp(targetCursorOrthoPos.y, camMinY + hh, camMaxY - hh));
+
+            Vector2 prevPos = fishPlayerPos;
+            fishPlayerPos = Vector2.Lerp(fishPlayerPos, targetPos, dt * fishPlayerFollowSpeed);
+            if (dt > 0.0001f)
+            {
+                fishPlayerVel = (fishPlayerPos - prevPos) / dt;
+            }
+
+            fishPlayerVisual.SetCenterPosition(new Vector3(fishPlayerPos.x, fishPlayerPos.y, zPlane));
+            fishPlayerVisual.UpdateVisuals(dt);
+        }
+
+        // 4. Spawn new swimming NPC fish from the 4 edges
+        fishSpawnTimer -= dt;
+        if (fishSpawnTimer <= 0f && activeFishList.Count < fishMaxActiveNpcCount)
+        {
+            SpawnSwimmingFishFromEdge(false);
+            fishSpawnTimer = Random.Range(fishSpawnIntervalRange.x, fishSpawnIntervalRange.y);
+        }
+
+        // 5. Update all swimming NPC fish & check collisions with the player
+        for (int i = activeFishList.Count - 1; i >= 0; i--)
+        {
+            FishEntity f = activeFishList[i];
+            if (f == null || f.visual == null)
+            {
+                activeFishList.RemoveAt(i);
+                continue;
+            }
+
+            f.bobPhase += dt * 3.8f;
+            Vector2 perp = new Vector2(-f.vel.y, f.vel.x).normalized;
+            float swimWave = Mathf.Sin(f.bobPhase) * 0.35f;
+
+            f.pos += (f.vel + perp * swimWave) * dt;
+            f.visual.overallScaleFactor = f.rawSize * fishWorldZoomScale;
+            f.visual.SetCenterPosition(new Vector3(f.pos.x, f.pos.y, zPlane));
+            f.visual.UpdateVisuals(dt);
+
+            // Check collision with player if player is active and not currently being eaten
+            if (!isFishPlayerBeingEaten && fishPlayerVisual != null)
+            {
+                float sumRx = (fishPlayerVisual.EffectiveHalfWidth + f.visual.EffectiveHalfWidth) * 0.82f;
+                float sumRy = (fishPlayerVisual.EffectiveHalfHeight + f.visual.EffectiveHalfHeight) * 0.82f;
+                float dx = Mathf.Abs(f.pos.x - fishPlayerPos.x);
+                float dy = Mathf.Abs(f.pos.y - fishPlayerPos.y);
+
+                if (dx <= sumRx && dy <= sumRy)
+                {
+                    if (fishPlayerRawSize >= f.rawSize * 0.96f)
+                    {
+                        // PLAYER IS BIGGER -> Player eats the smaller logo with the merge animation!
+                        EatSmallerFish(i);
+                        continue;
+                    }
+                    else
+                    {
+                        // OTHER LOGO IS BIGGER -> Bigger logo eats the player!
+                        TriggerFishPlayerEaten(i);
+                        break;
+                    }
+                }
+            }
+
+            // Despawn fish once it swims completely off the far side of the screen
+            float outMargin = 2.5f;
+            if (f.pos.x < camMinX - outMargin || f.pos.x > camMaxX + outMargin ||
+                f.pos.y < camMinY - outMargin || f.pos.y > camMaxY + outMargin)
+            {
+                f.visual.DestroyPiece();
+                activeFishList.RemoveAt(i);
+            }
+        }
+    }
+
+    private void EatSmallerFish(int fishIndex)
+    {
+        if (fishIndex < 0 || fishIndex >= activeFishList.Count) return;
+        FishEntity eaten = activeFishList[fishIndex];
+        activeFishList.RemoveAt(fishIndex);
+
+        // Start merge animation of the eaten fish into the player logo
+        eaten.isBeingMerged = true;
+        eaten.mergeTimer = 0f;
+        eaten.mergeDuration = 0.20f;
+        eaten.mergeStartPos = eaten.pos;
+        eaten.mergeStartSize = eaten.visual.overallScaleFactor;
+        eaten.visual.TriggerSquash((fishPlayerPos - eaten.pos).normalized, 0.24f, 0.24f);
+        mergingFishAnimations.Add(eaten);
+
+        // Grow player size (which smoothly zooms out fishTargetWorldZoomScale so growth is endless!)
+        fishPlayerRawSize += eaten.rawSize * fishGrowthPerEatFactor;
+
+        if (fishPlayerVisual != null)
+        {
+            fishPlayerVisual.TriggerPop(0.36f, 0.30f);
+            fishPlayerVisual.TriggerSquash(Vector2.up, 0.22f, 0.42f);
+        }
+
+        // Award money based on the size of the eaten fish!
+        float sizeRewardMultiplier = Mathf.Clamp(eaten.rawSize / Mathf.Max(0.1f, fishInitialPlayerSize), 0.5f, 25f);
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z : 5f;
+        mainBouncer.AwardMinigameScaledCornerReward(
+            sizeRewardMultiplier,
+            new Vector3(eaten.pos.x, eaten.pos.y, zPlane),
+            eaten.visual.primaryColor,
+            eaten.visual.secondaryColor,
+            true);
+
+        PlaySound(fishEatSound, Random.Range(0.96f, 1.22f));
+    }
+
+    private void TriggerFishPlayerEaten(int predatorIndex)
+    {
+        if (predatorIndex < 0 || predatorIndex >= activeFishList.Count) return;
+
+        FishEntity predator = activeFishList[predatorIndex];
+        activeFishList.RemoveAt(predatorIndex);
+
+        isFishPlayerBeingEaten = true;
+        fishEatenSequenceTimer = 0f;
+        fishPredatorThatAtePlayer = predator;
+        fishPlayerEatenStartPos = fishPlayerPos;
+        fishPlayerEatenStartScale = fishPlayerVisual != null ? fishPlayerVisual.overallScaleFactor : fishInitialPlayerSize;
+        fishPredatorShrinkStartSize = predator.visual.overallScaleFactor * 1.12f;
+        fishZoomBeforeReset = fishWorldZoomScale;
+
+        // Predator pops & squashes as it eats the player with the merge animation!
+        predator.visual.overallScaleFactor = fishPredatorShrinkStartSize;
+        predator.visual.TriggerPop(0.42f, 0.36f);
+        predator.visual.TriggerSquash(Vector2.up, 0.26f, 0.48f);
+
+        // Semi-transparent red screen flash + lose 10 * CornerHitValue!
+        TriggerScreenRedFlash(fishRedFlashDuration, screenRedFlashMaxAlpha);
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z : 5f;
+        mainBouncer.ApplyMinigameCornerPenalty(
+            10,
+            new Vector3(predator.pos.x, predator.pos.y, zPlane),
+            predator.visual.primaryColor,
+            predator.visual.secondaryColor);
+
+        PlaySound(damageHitSound, 0.72f);
+    }
+
+    // =========================================================================
+    // MINIGAME 6: BLOCK BLAST DVD GRID
+    // =========================================================================
+
+    private void EnterBlockBlastMode()
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        mainBouncer.DespawnAllChildLogosForMinigame();
+        savedLogoPositionBeforeRunner = mainBouncer.transform.position;
+        savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
+        mainBouncer.SetMainLogoRenderersVisible(false);
+
+        ClearAllBlockBlastObjects();
+
+        int cols = Mathf.Clamp(blockBlastGridCols, 6, 10);
+        int rows = Mathf.Clamp(blockBlastGridRows, 6, 10);
+        blockBlastGrid = new DeformableLogoPiece[cols, rows];
+        isBlockBlastShatteringReset = false;
+        blockBlastShatterTimer = 0f;
+
+        BuildBlockBlastGridBackground(cols, rows);
+        RollNextBlockBlastShape();
+    }
+
+    private void ExitBlockBlastMode()
+    {
+        ClearAllBlockBlastObjects();
+        if (mainBouncer != null)
+        {
+            mainBouncer.SetMainLogoRenderersVisible(true);
+            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+        }
+    }
+
+    private void ClearAllBlockBlastObjects()
+    {
+        if (blockBlastGrid != null)
+        {
+            int cols = blockBlastGrid.GetLength(0);
+            int rows = blockBlastGrid.GetLength(1);
+            for (int x = 0; x < cols; x++)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    if (blockBlastGrid[x, y] != null)
+                    {
+                        blockBlastGrid[x, y].DestroyPiece();
+                        blockBlastGrid[x, y] = null;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < blockBlastGhostTiles.Count; i++)
+        {
+            if (blockBlastGhostTiles[i] != null) blockBlastGhostTiles[i].DestroyPiece();
+        }
+        blockBlastGhostTiles.Clear();
+
+        for (int i = 0; i < activeBlastingTiles.Count; i++)
+        {
+            if (activeBlastingTiles[i] != null && activeBlastingTiles[i].visual != null)
+            {
+                activeBlastingTiles[i].visual.DestroyPiece();
+            }
+        }
+        activeBlastingTiles.Clear();
+
+        if (blockBlastBoardBgRoot != null)
+        {
+            Destroy(blockBlastBoardBgRoot);
+            blockBlastBoardBgRoot = null;
+        }
+    }
+
+    private void GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out Vector2 gridOriginBottomLeft)
+    {
+        cols = blockBlastGrid != null ? blockBlastGrid.GetLength(0) : Mathf.Clamp(blockBlastGridCols, 6, 10);
+        rows = blockBlastGrid != null ? blockBlastGrid.GetLength(1) : Mathf.Clamp(blockBlastGridRows, 6, 10);
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float screenW = (camMaxX - camMinX) * 0.90f;
+        float screenH = (camMaxY - camMinY) * 0.90f;
+
+        cellSize = Mathf.Min(screenW / cols, screenH / rows);
+        float totalW = cols * cellSize;
+        float totalH = rows * cellSize;
+
+        float centerX = (camMinX + camMaxX) * 0.5f;
+        float centerY = (camMinY + camMaxY) * 0.5f;
+        gridOriginBottomLeft = new Vector2(centerX - totalW * 0.5f, centerY - totalH * 0.5f);
+    }
+
+    private Vector2 GetBlockBlastCellCenter(int gx, int gy, float cellSize, Vector2 gridOriginBottomLeft)
+    {
+        return new Vector2(
+            gridOriginBottomLeft.x + (gx + 0.5f) * cellSize,
+            gridOriginBottomLeft.y + (gy + 0.5f) * cellSize);
+    }
+
+    private void BuildBlockBlastGridBackground(int cols, int rows)
+    {
+        if (blockBlastBoardBgRoot != null) Destroy(blockBlastBoardBgRoot);
+
+        GetBlockBlastGridMetrics(out _, out _, out float cellSize, out Vector2 origin);
+        int layer = mainBouncer != null ? mainBouncer.gameObject.layer : 0;
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z + 0.12f : 5.12f;
+
+        blockBlastBoardBgRoot = new GameObject("BlockBlast_GridBackground");
+        blockBlastBoardBgRoot.layer = layer;
+        if (orthoCamera != null && orthoCamera.transform.parent != null)
+        {
+            blockBlastBoardBgRoot.transform.SetParent(orthoCamera.transform.parent, true);
+        }
+
+        Material cellMatA = CreateUnlitColorMaterial(new Color(0.12f, 0.16f, 0.24f, 0.42f), true);
+        Material cellMatB = CreateUnlitColorMaterial(new Color(0.16f, 0.21f, 0.30f, 0.42f), true);
+
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                GameObject cellQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                cellQuad.name = $"Cell_{x}_{y}";
+                cellQuad.layer = layer;
+                Collider c = cellQuad.GetComponent<Collider>();
+                if (c != null) Destroy(c);
+
+                cellQuad.transform.SetParent(blockBlastBoardBgRoot.transform, true);
+                Vector2 center = GetBlockBlastCellCenter(x, y, cellSize, origin);
+                cellQuad.transform.position = new Vector3(center.x, center.y, zPlane);
+                cellQuad.transform.localScale = new Vector3(cellSize * 0.92f, cellSize * 0.92f, 1f);
+                cellQuad.GetComponent<Renderer>().sharedMaterial = ((x + y) % 2 == 0) ? cellMatA : cellMatB;
+            }
+        }
+    }
+
+    private DeformableLogoPiece CreateSquareBlockBlastTile(string name, float cellSize, Color colA, Color colB, bool isGhostTransparent)
+    {
+        if (mainBouncer == null) return null;
+
+        Vector2 baseHalf = mainBouncer.GetBaseHalfSize();
+        float targetHalf = (cellSize * 0.44f);
+        float baseScaleMult = targetHalf / Mathf.Max(0.05f, baseHalf.y);
+        float squareWidthCompensation = baseHalf.y / Mathf.Max(0.05f, baseHalf.x);
+
+        DeformableLogoPiece tile = CreateDeformableLogoClone(
+            name,
+            baseScaleMult,
+            colA,
+            colB,
+            squareWidthCompensation,
+            1.0f,
+            1.0f,
+            0f,
+            isGhostTransparent);
+
+        return tile;
+    }
+
+    private void RollNextBlockBlastShape()
+    {
+        for (int i = 0; i < blockBlastGhostTiles.Count; i++)
+        {
+            if (blockBlastGhostTiles[i] != null) blockBlastGhostTiles[i].DestroyPiece();
+        }
+        blockBlastGhostTiles.Clear();
+
+        currentBlockBlastShapeIdx = Random.Range(0, BlockBlastShapes.Length);
+        BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
+
+        GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out _);
+
+        Color ghostPrimary = new Color(shape.primaryColor.r, shape.primaryColor.g, shape.primaryColor.b, blockBlastGhostAlpha);
+        Color ghostSecondary = new Color(shape.secondaryColor.r, shape.secondaryColor.g, shape.secondaryColor.b, blockBlastGhostAlpha);
+
+        for (int i = 0; i < shape.offsets.Length; i++)
+        {
+            DeformableLogoPiece ghostTile = CreateSquareBlockBlastTile($"GhostTile_{i}", cellSize, ghostPrimary, ghostSecondary, true);
+            if (ghostTile != null)
+            {
+                ghostTile.TriggerPop(0.24f, 0.24f);
+                blockBlastGhostTiles.Add(ghostTile);
+            }
+        }
+
+        // Check if this newly rolled piece can fit ANYWHERE on the board!
+        if (!CanShapeFitAnywhereOnBoard(shape, cols, rows))
+        {
+            TriggerBlockBlastNoSpaceReset();
+        }
+    }
+
+    private bool CanShapeFitAtCell(BlockBlastShapeDef shape, int anchorX, int anchorY, int cols, int rows)
+    {
+        if (blockBlastGrid == null) return false;
+        for (int i = 0; i < shape.offsets.Length; i++)
+        {
+            int gx = anchorX + shape.offsets[i].x;
+            int gy = anchorY + shape.offsets[i].y;
+            if (gx < 0 || gx >= cols || gy < 0 || gy >= rows) return false;
+            if (blockBlastGrid[gx, gy] != null) return false;
+        }
+        return true;
+    }
+
+    private bool CanShapeFitAnywhereOnBoard(BlockBlastShapeDef shape, int cols, int rows)
+    {
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if (CanShapeFitAtCell(shape, x, y, cols, rows))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void TryPlaceCurrentBlockBlastShape()
+    {
+        if (isBlockBlastShatteringReset || blockBlastGrid == null) return;
+
+        GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out Vector2 origin);
+        BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
+
+        if (!CanShapeFitAtCell(shape, currentSnappedGridCell.x, currentSnappedGridCell.y, cols, rows))
+        {
+            // Invalid spot (overlapping or out of bounds) -> subtle feedback wiggle
+            for (int i = 0; i < blockBlastGhostTiles.Count; i++)
+            {
+                if (blockBlastGhostTiles[i] != null) blockBlastGhostTiles[i].TriggerSquash(Vector2.right, 0.16f, 0.28f);
+            }
+            return;
+        }
+
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z : 5f;
+        Vector2 placedCenterSum = Vector2.zero;
+
+        // Place each square DVD logo tile onto the grid!
+        for (int i = 0; i < shape.offsets.Length; i++)
+        {
+            int gx = currentSnappedGridCell.x + shape.offsets[i].x;
+            int gy = currentSnappedGridCell.y + shape.offsets[i].y;
+            Vector2 cellWorld = GetBlockBlastCellCenter(gx, gy, cellSize, origin);
+            placedCenterSum += cellWorld;
+
+            DeformableLogoPiece placedTile = CreateSquareBlockBlastTile(
+                $"PlacedTile_{gx}_{gy}",
+                cellSize,
+                shape.primaryColor,
+                shape.secondaryColor,
+                false);
+
+            if (placedTile != null)
+            {
+                placedTile.SetCenterPosition(new Vector3(cellWorld.x, cellWorld.y, zPlane));
+                placedTile.TriggerPop(0.32f, 0.28f);
+                placedTile.TriggerSquash(Vector2.up, 0.18f, 0.36f);
+                placedTile.UpdateVisuals(0f);
+                blockBlastGrid[gx, gy] = placedTile;
+            }
+        }
+
+        Vector2 avgPlacedPos = placedCenterSum / Mathf.Max(1, shape.offsets.Length);
+        mainBouncer.AwardMinigameCornerReward(1, new Vector3(avgPlacedPos.x, avgPlacedPos.y, zPlane), shape.primaryColor, shape.secondaryColor, true);
+        PlaySound(blockBlastPlaceSound, 1.06f);
+
+        // Check for completed full rows and full columns!
+        CheckAndBlastCompletedLines(cols, rows, cellSize, origin, zPlane);
+
+        // Roll next shape (and automatically check if space remains!)
+        RollNextBlockBlastShape();
+    }
+
+    private void CheckAndBlastCompletedLines(int cols, int rows, float cellSize, Vector2 origin, float zPlane)
+    {
+        List<int> fullRows = new List<int>();
+        List<int> fullCols = new List<int>();
+
+        for (int y = 0; y < rows; y++)
+        {
+            bool rowFull = true;
+            for (int x = 0; x < cols; x++)
+            {
+                if (blockBlastGrid[x, y] == null)
+                {
+                    rowFull = false;
+                    break;
+                }
+            }
+            if (rowFull) fullRows.Add(y);
+        }
+
+        for (int x = 0; x < cols; x++)
+        {
+            bool colFull = true;
+            for (int y = 0; y < rows; y++)
+            {
+                if (blockBlastGrid[x, y] == null)
+                {
+                    colFull = false;
+                    break;
+                }
+            }
+            if (colFull) fullCols.Add(x);
+        }
+
+        int totalLinesCleared = fullRows.Count + fullCols.Count;
+        if (totalLinesCleared <= 0) return;
+
+        bool[,] toBlast = new bool[cols, rows];
+        for (int r = 0; r < fullRows.Count; r++)
+        {
+            int y = fullRows[r];
+            for (int x = 0; x < cols; x++) toBlast[x, y] = true;
+        }
+        for (int c = 0; c < fullCols.Count; c++)
+        {
+            int x = fullCols[c];
+            for (int y = 0; y < rows; y++) toBlast[x, y] = true;
+        }
+
+        Vector2 boardCenter = GetBlockBlastCellCenter(cols / 2, rows / 2, cellSize, origin);
+        Color lastPrimary = Color.cyan;
+        Color lastSecondary = Color.yellow;
+
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if (!toBlast[x, y]) continue;
+                DeformableLogoPiece tile = blockBlastGrid[x, y];
+                blockBlastGrid[x, y] = null;
+                if (tile == null) continue;
+
+                lastPrimary = tile.primaryColor;
+                lastSecondary = tile.secondaryColor;
+                Vector2 cellPos = GetBlockBlastCellCenter(x, y, cellSize, origin);
+
+                // Spawn dual-color circular particles along the blasted line
+                if ((x + y) % 2 == 0)
+                {
+                    mainBouncer.TriggerHitParticlesWithColors(new Vector3(cellPos.x, cellPos.y, zPlane), tile.primaryColor, tile.secondaryColor);
+                }
+
+                // Launch the tile into a satisfying outward blast animation!
+                Vector2 outDir = (cellPos - boardCenter);
+                if (outDir.sqrMagnitude < 0.01f) outDir = Random.insideUnitCircle;
+                outDir.Normalize();
+
+                tile.TriggerPop(0.55f, 0.42f);
+                tile.TriggerSquash(outDir, 0.30f, 0.42f);
+
+                activeBlastingTiles.Add(new FlyingBlockBlastTile
+                {
+                    visual = tile,
+                    pos = cellPos,
+                    vel = outDir * Random.Range(3.5f, 7.5f) + new Vector2(0f, Random.Range(2.0f, 4.5f)),
+                    angularVelZ = Random.Range(-360f, 360f),
+                    angleZ = 0f,
+                    timer = 0f,
+                    duration = 0.46f,
+                    startScale = tile.overallScaleFactor
+                });
+            }
+        }
+
+        // Combo cash reward for blasting 1 or more lines!
+        int comboCornerMult = totalLinesCleared * totalLinesCleared * 3;
+        mainBouncer.AwardMinigameCornerReward(comboCornerMult, new Vector3(boardCenter.x, boardCenter.y, zPlane), lastPrimary, lastSecondary, true);
+        PlaySound(blockBlastClearSound, Mathf.Clamp(1.05f + totalLinesCleared * 0.12f, 1.0f, 1.6f));
+    }
+
+    private void TriggerBlockBlastNoSpaceReset()
+    {
+        if (isBlockBlastShatteringReset) return;
+        isBlockBlastShatteringReset = true;
+        blockBlastShatterTimer = 0f;
+
+        GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out Vector2 origin);
+        Vector2 boardCenter = GetBlockBlastCellCenter(cols / 2, rows / 2, cellSize, origin);
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z : 5f;
+
+        // Flash the screen semi-transparent red & apply -3x CornerHitValue penalty
+        TriggerScreenRedFlash(0.52f, screenRedFlashMaxAlpha);
+        mainBouncer.ApplyMinigameCornerPenalty(3, new Vector3(boardCenter.x, boardCenter.y, zPlane));
+        PlaySound(damageHitSound, 0.76f);
+
+        // Shatter every placed block on the board outward!
+        if (blockBlastGrid != null)
+        {
+            for (int x = 0; x < cols; x++)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    DeformableLogoPiece tile = blockBlastGrid[x, y];
+                    blockBlastGrid[x, y] = null;
+                    if (tile == null) continue;
+
+                    Vector2 cellPos = GetBlockBlastCellCenter(x, y, cellSize, origin);
+                    Vector2 shatterDir = (cellPos - boardCenter) + Random.insideUnitCircle * 0.65f;
+                    if (shatterDir.sqrMagnitude < 0.01f) shatterDir = Vector2.up;
+                    shatterDir.Normalize();
+
+                    tile.TriggerPop(0.38f, 0.36f);
+                    tile.TriggerSquash(shatterDir, 0.28f, 0.50f);
+
+                    activeBlastingTiles.Add(new FlyingBlockBlastTile
+                    {
+                        visual = tile,
+                        pos = cellPos,
+                        vel = shatterDir * Random.Range(4.0f, 9.2f) + new Vector2(0f, Random.Range(1.5f, 4.0f)),
+                        angularVelZ = Random.Range(-420f, 420f),
+                        angleZ = 0f,
+                        timer = 0f,
+                        duration = blockBlastShatterDuration,
+                        startScale = tile.overallScaleFactor
+                    });
+                }
+            }
+        }
+
+        // Also shatter the ghost tiles that couldn't fit
+        for (int i = 0; i < blockBlastGhostTiles.Count; i++)
+        {
+            if (blockBlastGhostTiles[i] != null)
+            {
+                blockBlastGhostTiles[i].DestroyPiece();
+            }
+        }
+        blockBlastGhostTiles.Clear();
+    }
+
+    private void UpdateBlockBlast(float dt)
+    {
+        if (mainBouncer == null || orthoCamera == null || blockBlastGrid == null) return;
+
+        GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out Vector2 origin);
+        float zPlane = mainBouncer.transform.position.z;
+
+        // 1. Update any blasting / shattering tiles flying across the screen
+        for (int i = activeBlastingTiles.Count - 1; i >= 0; i--)
+        {
+            FlyingBlockBlastTile ft = activeBlastingTiles[i];
+            if (ft == null || ft.visual == null)
+            {
+                activeBlastingTiles.RemoveAt(i);
+                continue;
+            }
+
+            ft.timer += dt;
+            float norm = Mathf.Clamp01(ft.timer / Mathf.Max(0.1f, ft.duration));
+            ft.vel.y -= 18.0f * dt;
+            ft.pos += ft.vel * dt;
+            ft.angleZ += ft.angularVelZ * dt;
+
+            ft.visual.overallScaleFactor = Mathf.Lerp(ft.startScale, 0.05f, norm * norm);
+            ft.visual.SetCenterPosition(new Vector3(ft.pos.x, ft.pos.y, zPlane - 0.05f));
+            if (ft.visual.rootObj != null)
+            {
+                ft.visual.rootObj.transform.rotation = Quaternion.Euler(0f, 0f, ft.angleZ);
+            }
+            ft.visual.UpdateVisuals(dt);
+
+            if (norm >= 1f)
+            {
+                ft.visual.DestroyPiece();
+                activeBlastingTiles.RemoveAt(i);
+            }
+        }
+
+        // 2. If shattering the whole board due to no space left, wait for shatter to finish then roll a fresh piece
+        if (isBlockBlastShatteringReset)
+        {
+            blockBlastShatterTimer += dt;
+            if (blockBlastShatterTimer >= blockBlastShatterDuration)
+            {
+                isBlockBlastShatteringReset = false;
+                RollNextBlockBlastShape();
+            }
+            return;
+        }
+
+        // 3. Update placed grid tiles' idle squash/pop animations
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if (blockBlastGrid[x, y] != null)
+                {
+                    blockBlastGrid[x, y].UpdateVisuals(dt);
+                }
+            }
+        }
+
+        // 4. Snap the cursor-following semi-transparent shape to the grid!
+        BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
+
+        // Compute bounding span of the shape in grid cells so we can clamp its anchor inside the 8x8 board
+        int minOx = 0, maxOx = 0, minOy = 0, maxOy = 0;
+        for (int i = 0; i < shape.offsets.Length; i++)
+        {
+            Vector2Int off = shape.offsets[i];
+            if (off.x < minOx) minOx = off.x;
+            if (off.x > maxOx) maxOx = off.x;
+            if (off.y < minOy) minOy = off.y;
+            if (off.y > maxOy) maxOy = off.y;
+        }
+
+        int rawGx = Mathf.FloorToInt((targetCursorOrthoPos.x - origin.x) / cellSize);
+        int rawGy = Mathf.FloorToInt((targetCursorOrthoPos.y - origin.y) / cellSize);
+
+        int clampedGx = Mathf.Clamp(rawGx, -minOx, (cols - 1) - maxOx);
+        int clampedGy = Mathf.Clamp(rawGy, -minOy, (rows - 1) - maxOy);
+
+        currentSnappedGridCell = new Vector2Int(clampedGx, clampedGy);
+        currentGhostPlacementValid = CanShapeFitAtCell(shape, clampedGx, clampedGy, cols, rows);
+
+        Color validPrimary = shape.primaryColor;
+        Color validSecondary = shape.secondaryColor;
+        Color invalidTint = new Color(1.0f, 0.22f, 0.22f, 1f);
+
+        for (int i = 0; i < blockBlastGhostTiles.Count && i < shape.offsets.Length; i++)
+        {
+            DeformableLogoPiece ghost = blockBlastGhostTiles[i];
+            if (ghost == null) continue;
+
+            int gx = clampedGx + shape.offsets[i].x;
+            int gy = clampedGy + shape.offsets[i].y;
+            Vector2 cellPos = GetBlockBlastCellCenter(gx, gy, cellSize, origin);
+
+            if (currentGhostPlacementValid)
+            {
+                ghost.SetColorsAndAlpha(validPrimary, validSecondary, blockBlastGhostAlpha);
+            }
+            else
+            {
+                ghost.SetColorsAndAlpha(invalidTint, invalidTint, blockBlastGhostAlpha * 0.65f);
+            }
+
+            ghost.SetCenterPosition(new Vector3(cellPos.x, cellPos.y, zPlane - 0.04f));
+            ghost.UpdateVisuals(dt);
+        }
+    }
+
+    // =========================================================================
+    // SHARED IN-SCREEN SEMI-TRANSPARENT RED FLASH (ALL MINIGAMES)
+    // =========================================================================
+
+    /// <summary>
+    /// Flashes the TV screen with a semi-transparent red overlay inside SCREENTRANSFER
+    /// whenever the player takes damage, loses money, or resets a minigame board.
+    /// </summary>
+    public void TriggerScreenRedFlash(float customDuration = -1f, float customMaxAlpha = -1f)
+    {
+        if (orthoCamera == null) return;
+
+        activeRedFlashDuration = customDuration > 0.05f ? customDuration : screenRedFlashDuration;
+        activeRedFlashMaxAlpha = customMaxAlpha > 0.05f ? customMaxAlpha : screenRedFlashMaxAlpha;
+        redFlashTimer = 0f;
+
+        EnsureRedFlashQuadExists();
+        if (redFlashQuadObj != null)
+        {
+            redFlashQuadObj.SetActive(true);
+            UpdateRedFlashQuadTransformAndAlpha(activeRedFlashMaxAlpha);
+        }
+    }
+
+    private void EnsureRedFlashQuadExists()
+    {
+        if (redFlashQuadObj != null) return;
+        if (orthoCamera == null) return;
+
+        int layer = mainBouncer != null ? mainBouncer.gameObject.layer : 0;
+        redFlashQuadObj = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        redFlashQuadObj.name = "TVMinigame_RedScreenFlash";
+        redFlashQuadObj.layer = layer;
+        Collider c = redFlashQuadObj.GetComponent<Collider>();
+        if (c != null) Destroy(c);
+
+        if (orthoCamera.transform.parent != null)
+        {
+            redFlashQuadObj.transform.SetParent(orthoCamera.transform.parent, true);
+        }
+
+        redFlashMaterial = CreateUnlitColorMaterial(new Color(screenRedFlashColor.r, screenRedFlashColor.g, screenRedFlashColor.b, 0f), true);
+        redFlashMaterial.renderQueue = 3250;
+        redFlashQuadObj.GetComponent<Renderer>().sharedMaterial = redFlashMaterial;
+        redFlashQuadObj.SetActive(false);
+    }
+
+    private void UpdateRedScreenFlash(float dt)
+    {
+        if (redFlashTimer < 0f) return;
+
+        redFlashTimer += dt;
+        float norm = redFlashTimer / Mathf.Max(0.05f, activeRedFlashDuration);
+        if (norm >= 1f)
+        {
+            redFlashTimer = -1f;
+            if (redFlashQuadObj != null) redFlashQuadObj.SetActive(false);
+            return;
+        }
+
+        // Quick punch in, smooth fade out
+        float pulse = norm < 0.2f ? (norm / 0.2f) : (1f - ((norm - 0.2f) / 0.8f));
+        float alpha = Mathf.Clamp01(pulse) * activeRedFlashMaxAlpha;
+        UpdateRedFlashQuadTransformAndAlpha(alpha);
+    }
+
+    private void UpdateRedFlashQuadTransformAndAlpha(float alpha)
+    {
+        if (redFlashQuadObj == null || orthoCamera == null) return;
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float zPlane = mainBouncer != null ? mainBouncer.transform.position.z - 0.18f : (orthoCamera.transform.position.z + 2f);
+
+        redFlashQuadObj.transform.position = new Vector3((camMinX + camMaxX) * 0.5f, (camMinY + camMaxY) * 0.5f, zPlane);
+        redFlashQuadObj.transform.localScale = new Vector3((camMaxX - camMinX) + 1.5f, (camMaxY - camMinY) + 1.5f, 1f);
+
+        if (redFlashMaterial != null)
+        {
+            Color c = new Color(screenRedFlashColor.r, screenRedFlashColor.g, screenRedFlashColor.b, alpha);
+            if (redFlashMaterial.HasProperty("_BaseColor")) redFlashMaterial.SetColor("_BaseColor", c);
+            if (redFlashMaterial.HasProperty("_Color")) redFlashMaterial.SetColor("_Color", c);
+        }
+    }
+
+    // =========================================================================
     // FACTORY FOR DEFORMABLE TWO-COLOR DVD LOGO CLONES
     // =========================================================================
 
@@ -2212,7 +3568,8 @@ public class TVMinigameController : MonoBehaviour
         float shapeWidth = 1f,
         float shapeHeight = 1f,
         float shapeTopTaper = 1f,
-        float shapeSkewX = 0f)
+        float shapeSkewX = 0f,
+        bool useTransparentMaterial = false)
     {
         if (mainBouncer == null) return null;
 
@@ -2268,7 +3625,7 @@ public class TVMinigameController : MonoBehaviour
             if (primaryRend != null)
             {
                 primaryRend.enabled = true;
-                primaryRend.sharedMaterial = CreateUnlitColorMaterial(primaryColor);
+                primaryRend.sharedMaterial = CreateUnlitColorMaterial(primaryColor, useTransparentMaterial);
                 piece.primaryRenderers.Add(primaryRend);
             }
 
@@ -2279,7 +3636,7 @@ public class TVMinigameController : MonoBehaviour
                 if (secondaryRend != null)
                 {
                     secondaryRend.enabled = true;
-                    secondaryRend.sharedMaterial = CreateUnlitColorMaterial(secondaryColor);
+                    secondaryRend.sharedMaterial = CreateUnlitColorMaterial(secondaryColor, useTransparentMaterial);
                     piece.secondaryRenderers.Add(secondaryRend);
                 }
             }
@@ -2348,7 +3705,7 @@ public class TVMinigameController : MonoBehaviour
         camMaxY = camPos.y + camHeight - offset.y;
     }
 
-    private Material CreateUnlitColorMaterial(Color c)
+    private Material CreateUnlitColorMaterial(Color c, bool transparent = false)
     {
         if (sharedUnlitTemplate == null && mainBouncer != null)
         {
@@ -2359,12 +3716,28 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
-        Shader s = Shader.Find("Universal Render Pipeline/Unlit");
+        Shader s = null;
+        if (transparent)
+        {
+            s = Shader.Find("Universal Render Pipeline/Unlit");
+            if (s == null) s = Shader.Find("Sprites/Default");
+        }
+        if (s == null) s = Shader.Find("Universal Render Pipeline/Unlit");
         if (s == null && sharedUnlitTemplate != null) s = sharedUnlitTemplate.shader;
         if (s == null) s = Shader.Find("Unlit/Color");
         if (s == null) s = Shader.Find("Standard");
 
         Material m = new Material(s);
+        if (transparent || c.a < 0.99f)
+        {
+            if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 1f);
+            if (m.HasProperty("_Blend")) m.SetFloat("_Blend", 0f);
+            if (m.HasProperty("_SrcBlend")) m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            if (m.HasProperty("_DstBlend")) m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            if (m.HasProperty("_ZWrite")) m.SetInt("_ZWrite", 0);
+            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            m.renderQueue = 3050;
+        }
         if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
         if (m.HasProperty("_Color")) m.SetColor("_Color", c);
         return m;

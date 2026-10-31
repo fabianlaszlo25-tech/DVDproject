@@ -34,7 +34,8 @@ public static class SetupDvdAndBoosters
         new TierColorInfo { tierName = "Vibrant Cyan", baseColor = new Color(0.0f, 0.67f, 0.76f, 1f), emissionColor = new Color(0.0f, 1.1f, 1.2f, 1f), baseMatName = "Base_6_Cyan", logoMatName = "EMMISSIVES_6_Cyan" },
         new TierColorInfo { tierName = "Tangerine Orange", baseColor = new Color(0.90f, 0.32f, 0.0f, 1f), emissionColor = new Color(1.2f, 0.45f, 0.0f, 1f), baseMatName = "Base_7_Orange", logoMatName = "EMMISSIVES_7_Orange" },
         new TierColorInfo { tierName = "Magenta Rose", baseColor = new Color(0.76f, 0.09f, 0.36f, 1f), emissionColor = new Color(1.2f, 0.1f, 0.6f, 1f), baseMatName = "Base_8_Magenta", logoMatName = "EMMISSIVES_8_Magenta" },
-        new TierColorInfo { tierName = "Obsidian Glow", baseColor = new Color(0.12f, 0.12f, 0.14f, 1f), emissionColor = new Color(1.5f, 1.5f, 1.5f, 1f), baseMatName = "Base_9_Obsidian", logoMatName = "EMMISSIVES_9_Obsidian" }
+        new TierColorInfo { tierName = "Obsidian Glow", baseColor = new Color(0.12f, 0.12f, 0.14f, 1f), emissionColor = new Color(1.5f, 1.5f, 1.5f, 1f), baseMatName = "Base_9_Obsidian", logoMatName = "EMMISSIVES_9_Obsidian" },
+        new TierColorInfo { tierName = "Celestial Platinum", baseColor = new Color(0.88f, 0.94f, 1.00f, 1f), emissionColor = new Color(0.45f, 1.65f, 2.00f, 1f), baseMatName = "Base_10_Platinum", logoMatName = "EMMISSIVES_10_Platinum" }
     };
 
     [MenuItem("Tools/Run Complete Setup")]
@@ -75,10 +76,10 @@ public static class SetupDvdAndBoosters
 
     private static Material[] SetupBaseMaterials()
     {
-        Material[] mats = new Material[10];
+        Material[] mats = new Material[11];
         Material templateBase = AssetDatabase.LoadAssetAtPath<Material>("Assets/3DAssets/DVDPlayer/Base 3.mat");
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             string path = $"Assets/3DAssets/DVDPlayer/{Colors[i].baseMatName}.mat";
             Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -99,10 +100,10 @@ public static class SetupDvdAndBoosters
 
     private static Material[] SetupLogoMaterials()
     {
-        Material[] mats = new Material[10];
+        Material[] mats = new Material[11];
         Material templateLogo = AssetDatabase.LoadAssetAtPath<Material>("Assets/materials/EMMISSIVES 1.mat");
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             string path = $"Assets/materials/{Colors[i].logoMatName}.mat";
             Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -123,11 +124,11 @@ public static class SetupDvdAndBoosters
 
     private static GameObject[] SetupPlayerPrefabs(Material[] baseMaterials)
     {
-        GameObject[] prefabs = new GameObject[10];
+        GameObject[] prefabs = new GameObject[11];
         prefabs[0] = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/playerbasic.prefab");
         prefabs[1] = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/playerbasic 1.prefab");
 
-        for (int i = 2; i < 10; i++)
+        for (int i = 2; i < 11; i++)
         {
             string targetPath = $"Assets/Prefabs/playerbasic {i}.prefab";
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
@@ -166,11 +167,11 @@ public static class SetupDvdAndBoosters
 
     private static GameObject[] SetupDvdPrefabs(Material[] baseMaterials)
     {
-        GameObject[] prefabs = new GameObject[10];
+        GameObject[] prefabs = new GameObject[11];
         prefabs[0] = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/dvdv.prefab");
         prefabs[1] = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/dvdv 1.prefab");
 
-        for (int i = 2; i < 10; i++)
+        for (int i = 2; i < 11; i++)
         {
             string targetPath = $"Assets/Prefabs/dvdv {i}.prefab";
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
@@ -235,11 +236,11 @@ public static class SetupDvdAndBoosters
         Renderer dvdLogoRenderer = dvdLogoObj != null ? dvdLogoObj.GetComponent<Renderer>() : null;
 
         // --- Setup Player World GameObjects ---
-        GameObject[] worldPlayers = new GameObject[10];
+        GameObject[] worldPlayers = new GameObject[11];
         Vector3 playerPos = new Vector3(1.08f, -0.34733f, -2.822f);
         Quaternion playerRot = Quaternion.Euler(0f, -90f, 0f);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             string pName = i == 0 ? "playerbasic" : $"playerbasic {i}";
             GameObject go = FindSceneObject(pName);
@@ -255,8 +256,8 @@ public static class SetupDvdAndBoosters
             worldPlayers[i] = go;
         }
 
-        // Attach negative boosters to Players after the 3rd one (index 3 to 9)
-        BoosterObject[] playerBoosters = new BoosterObject[10];
+        // Attach negative boosters to Players after the 3rd one (index 3 to 10)
+        BoosterObject[] playerBoosters = new BoosterObject[11];
         playerBoosters[3] = AddOrUpdateModifier(worldPlayers[3], BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 45f);
         playerBoosters[4] = AddOrUpdateModifier(worldPlayers[4], BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 55f);
         playerBoosters[5] = AddOrUpdateModifier(worldPlayers[5], BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 60f);
@@ -264,6 +265,7 @@ public static class SetupDvdAndBoosters
         playerBoosters[7] = AddOrUpdateModifier(worldPlayers[7], BoosterStat.EatDirtinessIncrease, ModifierMode.PercentageChange, 65f);
         playerBoosters[8] = AddOrUpdateModifier(worldPlayers[8], BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 80f);
         playerBoosters[9] = AddOrUpdateModifier(worldPlayers[9], BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 100f);
+        playerBoosters[10] = AddOrUpdateModifier(worldPlayers[10], BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 110f);
 
         // --- Setup DVD Boosters under DVDSetup ---
         Transform dvdBoostersParent = dvdSetup.Find("DVDBoosters");
@@ -274,7 +276,7 @@ public static class SetupDvdAndBoosters
             dvdBoostersParent = parentGo.transform;
         }
 
-        BoosterObject[] dvdBoosters = new BoosterObject[10];
+        BoosterObject[] dvdBoosters = new BoosterObject[11];
         dvdBoosters[3] = CreateChildBooster(dvdBoostersParent, "DVDBooster_3", BoosterStat.SleepFillRate, ModifierMode.PercentageChange, 45f);
         dvdBoosters[4] = CreateChildBooster(dvdBoostersParent, "DVDBooster_4", BoosterStat.HungerFillRate, ModifierMode.PercentageChange, 55f);
         dvdBoosters[5] = CreateChildBooster(dvdBoostersParent, "DVDBooster_5", BoosterStat.BaseDepressionFillRate, ModifierMode.PercentageChange, 65f);
@@ -282,8 +284,9 @@ public static class SetupDvdAndBoosters
         dvdBoosters[7] = CreateChildBooster(dvdBoostersParent, "DVDBooster_7", BoosterStat.BaseFoodCost, ModifierMode.PercentageChange, 60f);
         dvdBoosters[8] = CreateChildBooster(dvdBoostersParent, "DVDBooster_8", BoosterStat.SleepReduction, ModifierMode.PercentageChange, -50f);
         dvdBoosters[9] = CreateChildBooster(dvdBoostersParent, "DVDBooster_9", BoosterStat.PenaltyMultiplier, ModifierMode.PercentageChange, 100f);
+        dvdBoosters[10] = CreateChildBooster(dvdBoostersParent, "DVDBooster_10", BoosterStat.InflationRatePerDollar, ModifierMode.PercentageChange, 95f);
 
-        // --- Populate UpgradeManager Player Path (Index 0) ---
+        // --- Populate UpgradeManager Player Path (Index 0: 1 Starter + 10 Upgrades = 11 Tiers) ---
         UpgradePath playerPath = manager.upgradePaths[0];
         playerPath.targetRenderer = dvdLogoRenderer;
         if (playerPath.tiers == null) playerPath.tiers = new List<UpgradeTier>();
@@ -299,15 +302,16 @@ public static class SetupDvdAndBoosters
             "Landlord Bribe",
             "Gold Panasonic",
             "Bootleg Monolith",
-            "Doom Accelerator"
+            "Doom Accelerator",
+            "Quantum Singularity Deck"
         };
-        float[] playerCosts = new float[] { 0f, 12f, 38f, 90f, 250f, 500f, 950f, 2500f, 4500f, 8000f };
-        float[] playerMults = new float[] { 1.00f, 1.40f, 1.90f, 2.60f, 3.50f, 4.70f, 6.20f, 8.00f, 10.50f, 14.00f };
+        float[] playerCosts = new float[] { 0f, 12f, 38f, 90f, 250f, 500f, 950f, 2500f, 4500f, 8000f, 15000f };
+        float[] playerMults = new float[] { 1.00f, 1.40f, 1.90f, 2.60f, 3.50f, 4.70f, 6.20f, 8.00f, 10.50f, 14.00f, 18.50f };
 
-        while (playerPath.tiers.Count < 10) playerPath.tiers.Add(new UpgradeTier());
-        while (playerPath.tiers.Count > 10) playerPath.tiers.RemoveAt(playerPath.tiers.Count - 1);
+        while (playerPath.tiers.Count < 11) playerPath.tiers.Add(new UpgradeTier());
+        while (playerPath.tiers.Count > 11) playerPath.tiers.RemoveAt(playerPath.tiers.Count - 1);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             var tier = playerPath.tiers[i];
             tier.tierName = playerNames[i];
@@ -322,7 +326,7 @@ public static class SetupDvdAndBoosters
             tier.booster = playerBoosters[i];
         }
 
-        // --- Populate UpgradeManager DVD Path (Index 1) ---
+        // --- Populate UpgradeManager DVD Path (Index 1: 1 Starter + 10 Upgrades = 11 Tiers) ---
         UpgradePath dvdPath = manager.upgradePaths[1];
         dvdPath.targetRenderer = dvdLogoRenderer;
         if (dvdPath.tiers == null) dvdPath.tiers = new List<UpgradeTier>();
@@ -338,15 +342,16 @@ public static class SetupDvdAndBoosters
             "Banned Commercials",
             "Foreclosure Tour",
             "Warehouse Bootleg",
-            "Executive Severance"
+            "Executive Severance",
+            "Lost Studio Master"
         };
-        float[] dvdCosts = new float[] { 0f, 15f, 45f, 110f, 300f, 600f, 1150f, 3200f, 5800f, 10000f };
-        float[] dvdMults = new float[] { 1f, 5f, 15f, 40f, 100f, 250f, 600f, 1500f, 3500f, 10000f };
+        float[] dvdCosts = new float[] { 0f, 15f, 45f, 110f, 300f, 600f, 1150f, 3200f, 5800f, 10000f, 20000f };
+        float[] dvdMults = new float[] { 1f, 5f, 15f, 40f, 100f, 250f, 600f, 1500f, 3500f, 10000f, 25000f };
 
-        while (dvdPath.tiers.Count < 10) dvdPath.tiers.Add(new UpgradeTier());
-        while (dvdPath.tiers.Count > 10) dvdPath.tiers.RemoveAt(dvdPath.tiers.Count - 1);
+        while (dvdPath.tiers.Count < 11) dvdPath.tiers.Add(new UpgradeTier());
+        while (dvdPath.tiers.Count > 11) dvdPath.tiers.RemoveAt(dvdPath.tiers.Count - 1);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             var tier = dvdPath.tiers[i];
             tier.tierName = dvdNames[i];

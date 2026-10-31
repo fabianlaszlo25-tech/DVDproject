@@ -396,26 +396,24 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
     public void CycleNext()
     {
-        if (currentPath == null) return;
-        if (viewingIndex < currentPath.tiers.Count - 1 && !isAnimatingAction)
-        {
-            if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
-            StartCoroutine(SlidePreviewRoutine(viewingIndex, viewingIndex + 1, true));
-            viewingIndex++;
-            UpdateUI(false);
-        }
+        if (currentPath == null || currentPath.tiers == null || currentPath.tiers.Count <= 1 || isAnimatingAction) return;
+
+        int nextIndex = (viewingIndex + 1) % currentPath.tiers.Count;
+        if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
+        StartCoroutine(SlidePreviewRoutine(viewingIndex, nextIndex, true));
+        viewingIndex = nextIndex;
+        UpdateUI(false);
     }
 
     public void CyclePrev()
     {
-        if (currentPath == null) return;
-        if (viewingIndex > 0 && !isAnimatingAction)
-        {
-            if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
-            StartCoroutine(SlidePreviewRoutine(viewingIndex, viewingIndex - 1, false));
-            viewingIndex--;
-            UpdateUI(false);
-        }
+        if (currentPath == null || currentPath.tiers == null || currentPath.tiers.Count <= 1 || isAnimatingAction) return;
+
+        int prevIndex = (viewingIndex - 1 + currentPath.tiers.Count) % currentPath.tiers.Count;
+        if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
+        StartCoroutine(SlidePreviewRoutine(viewingIndex, prevIndex, false));
+        viewingIndex = prevIndex;
+        UpdateUI(false);
     }
 
     public void OnBuyClicked()
@@ -481,16 +479,15 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
         RefreshButtonStates();
 
-        bool hasNext = viewingIndex < currentPath.tiers.Count - 1;
-        bool hasPrev = viewingIndex > 0;
+        bool canCycle = currentPath.tiers.Count > 1;
 
         if (nextInteractable != null && nextInteractable.GetComponent<Collider>() != null)
-            nextInteractable.GetComponent<Collider>().enabled = hasNext;
+            nextInteractable.GetComponent<Collider>().enabled = canCycle;
         if (prevInteractable != null && prevInteractable.GetComponent<Collider>() != null)
-            prevInteractable.GetComponent<Collider>().enabled = hasPrev;
+            prevInteractable.GetComponent<Collider>().enabled = canCycle;
 
-        if (nextButtonImage != null) nextButtonImage.color = hasNext ? enabledCycleColor : disabledCycleColor;
-        if (prevButtonImage != null) prevButtonImage.color = hasPrev ? enabledCycleColor : disabledCycleColor;
+        if (nextButtonImage != null) nextButtonImage.color = canCycle ? enabledCycleColor : disabledCycleColor;
+        if (prevButtonImage != null) prevButtonImage.color = canCycle ? enabledCycleColor : disabledCycleColor;
 
         if (spawnModel) SpawnPreviewModel(tier.previewPrefab, tier.previewScale, tier.previewRotation, tier.previewPositionOffset);
     }

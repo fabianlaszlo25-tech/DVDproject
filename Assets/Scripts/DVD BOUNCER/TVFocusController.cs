@@ -783,9 +783,11 @@ public class TVFocusController : MonoBehaviour
         // 5 = Tier 6: Pong Paddle Remote (1-Sided Pong Bar Defender while holding remote)
         // 6 = Tier 7: Suika Merger Remote (Suika Logo Drop & Exponential Merger while holding remote)
         // 7 = Tier 8: Tower Stack Remote (Deformed Logo Tower Stacker while holding remote)
-        // 8 = Tier 9: Omni-Remote 9000 (Ultimate Remote: Direct Hit + Mitosis Split + Pinball Bumpers!)
+        // 8 = Tier 9: Fish Frenzy Remote (Eat Smaller Swimming DVD Logos while holding remote)
+        // 9 = Tier 10: Block Blast Remote (Full-screen 8x8 DVD Block Blast Grid while holding remote)
+        // 10 = Tier 11: Omni-Remote 9000 (Ultimate Remote: Direct Hit + Mitosis Split + Pinball Bumpers!)
 
-        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeRemoteTier == 8);
+        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeRemoteTier == 10);
         bool isGrabShakeRemote = (activeRemoteTier == 2) || (isOmni && ultimateIncludesGrabShake);
         bool canMitosisSplit = (activeRemoteTier == 1) || isOmni;
         bool canSpawnBumpers = (activeRemoteTier == 3) || isOmni;

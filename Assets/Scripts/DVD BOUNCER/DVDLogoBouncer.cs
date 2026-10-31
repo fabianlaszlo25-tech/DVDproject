@@ -797,7 +797,7 @@ public class DVDLogoBouncer : MonoBehaviour
             correction.y = camMinY - minY;
             direction.y = Mathf.Abs(direction.y);
 
-            // In One-Sided Pong mode, hitting the bottom wall is a missed ball (-3x CornerHitValue + damage flash)
+            // In One-Sided Pong mode, hitting the bottom wall is a missed ball (-3x CornerHitValue + damage flash + red screen flash)
             if (TVMinigameController.Instance != null && TVMinigameController.Instance.IsPongActive)
             {
                 transform.position += correction;
@@ -805,6 +805,7 @@ public class DVDLogoBouncer : MonoBehaviour
                 direction.Normalize();
                 TriggerSquashStretch(Vector2.up, maxSquashAmount * 1.15f);
                 TriggerDamageFlash();
+                TVMinigameController.Instance.TriggerScreenRedFlash();
                 ApplyMinigameCornerPenalty(3, GetLogoCenter());
                 if (hitX) HandleBounce(true, false);
                 return;
@@ -1926,23 +1927,32 @@ public class DVDLogoBouncer : MonoBehaviour
         return cornerAmount;
     }
 
-    public void AwardMinigameCornerReward(int cornerMultiplier, Vector3 orthoPos)
+    public void AwardMinigameCornerReward(int cornerMultiplier, Vector3 orthoPos, bool spawnParticles = true)
     {
         GetLogoTwoColors(out Color cA, out Color cB);
-        AwardMinigameCornerReward(cornerMultiplier, orthoPos, cA, cB);
+        AwardMinigameCornerReward(cornerMultiplier, orthoPos, cA, cB, spawnParticles);
     }
 
-    public void AwardMinigameCornerReward(int cornerMultiplier, Vector3 orthoPos, Color particleColorA, Color particleColorB)
+    public void AwardMinigameCornerReward(int cornerMultiplier, Vector3 orthoPos, Color particleColorA, Color particleColorB, bool spawnParticles = true)
+    {
+        AwardMinigameScaledCornerReward((float)Mathf.Max(1, cornerMultiplier), orthoPos, particleColorA, particleColorB, spawnParticles);
+    }
+
+    public void AwardMinigameScaledCornerReward(float cornerMultiplier, Vector3 orthoPos, Color particleColorA, Color particleColorB, bool spawnParticles = true)
     {
         DVDLogoBouncer master = MainBouncer;
-        decimal amount = GetCornerHitRewardAmount() * Mathf.Max(1, cornerMultiplier);
+        decimal amount = System.Math.Round(GetCornerHitRewardAmount() * (decimal)Mathf.Max(0.1f, cornerMultiplier), 2);
+        if (amount < 0.01m) amount = 0.01m;
         master.currentMoney += amount;
         master.allTimeMoneyEarned += amount;
         if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(amount);
         master.UpdateMoneyUI();
         master.SpawnPopup(amount, false);
         master.TriggerVisualBounce(master.cornerBounceMultiplier);
-        TriggerHitParticlesWithColors(orthoPos, particleColorA, particleColorB);
+        if (spawnParticles)
+        {
+            TriggerHitParticlesWithColors(orthoPos, particleColorA, particleColorB);
+        }
     }
 
     public void ApplyMinigameCornerPenalty(int cornerMultiplier, Vector3 orthoPos)

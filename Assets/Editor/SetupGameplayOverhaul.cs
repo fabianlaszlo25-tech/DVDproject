@@ -22,7 +22,7 @@ public static class SetupGameplayOverhaul
 
             GameObject interactablesRoot = GameObject.Find("interactables");
             Transform remoteRoot = interactablesRoot != null ? interactablesRoot.transform.Find("remote") : null;
-            if (remoteRoot != null && remoteRoot.Find("RemoteControlTV_Tier8") == null)
+            if (remoteRoot != null && remoteRoot.Find("RemoteControlTV_Tier10") == null)
             {
                 RunSetup();
             }
@@ -39,6 +39,9 @@ public static class SetupGameplayOverhaul
         {
             EditorSceneManager.OpenScene(ScenePath);
         }
+
+        // Ensure all 11 tiers (1 starter + 10 upgrades) of DVD Player & DVD Pile + 19 shelf boosters are configured
+        SetupDvdAndBoosters.Run();
 
         // 1. Ensure TV FBX & DVDLogo FBX meshes are readable for planar UV generation & directional vertex squash/stretch
         EnsureMeshReadable("Assets/3DAssets/reTVfbx.fbx");
@@ -101,11 +104,11 @@ public static class SetupGameplayOverhaul
             Object.DestroyImmediate(oldExternalReticle.gameObject);
         }
 
-        // 4. Setup All 9 Remote 3D Models & Prefabs as Clean Color Variants (No Huge Attachments!)
+        // 4. Setup All 11 Remote 3D Models & Prefabs as Clean Color Variants (No Huge Attachments!)
         GameObject interactablesRoot = GameObject.Find("interactables");
         Transform remoteRoot = interactablesRoot != null ? interactablesRoot.transform.Find("remote") : null;
-        GameObject[] remoteWorldModels = new GameObject[9];
-        GameObject[] remotePreviewPrefabs = new GameObject[9];
+        GameObject[] remoteWorldModels = new GameObject[11];
+        GameObject[] remotePreviewPrefabs = new GameObject[11];
 
         if (remoteRoot != null)
         {
@@ -115,7 +118,7 @@ public static class SetupGameplayOverhaul
         // 5. Setup Towel Interactable in the Room (System 5)
         InteractableObject towelInteractable = SetupTowelInteractable(interactablesRoot != null ? interactablesRoot.transform : null);
 
-        // 6. Setup UpgradeManager Remote Path with 9 Tiers (System 3 & System 4)
+        // 6. Setup UpgradeManager Remote Path with 11 Tiers (1 Starter + 10 Upgrades)
         SetupRemotePathInUpgradeManager(upgradeManager, remoteWorldModels, remotePreviewPrefabs);
 
         // 7. Setup Unified Tabbed Upgrade Menu on DVDPLAYERMANAGER/Canvas (System 3)
@@ -254,6 +257,9 @@ public static class SetupGameplayOverhaul
         if (minigameCtrl.pongPaddleHitSound == null) minigameCtrl.pongPaddleHitSound = clipHit7 != null ? clipHit7 : bouncer.cornerHitSound;
         if (minigameCtrl.suikaMergeSound == null) minigameCtrl.suikaMergeSound = clipHit7 != null ? clipHit7 : bouncer.recombinePopSound;
         if (minigameCtrl.towerLandSound == null) minigameCtrl.towerLandSound = clipHit5 != null ? clipHit5 : bouncer.edgeHitSound;
+        if (minigameCtrl.fishEatSound == null) minigameCtrl.fishEatSound = clipHit7 != null ? clipHit7 : bouncer.recombinePopSound;
+        if (minigameCtrl.blockBlastPlaceSound == null) minigameCtrl.blockBlastPlaceSound = clipHit5 != null ? clipHit5 : bouncer.edgeHitSound;
+        if (minigameCtrl.blockBlastClearSound == null) minigameCtrl.blockBlastClearSound = clipHit9 != null ? clipHit9 : bouncer.cornerHitSound;
         EditorUtility.SetDirty(minigameCtrl);
 
         // Normalize PauseMenu Sliders in the scene so their track & handle align cleanly
@@ -329,7 +335,9 @@ public static class SetupGameplayOverhaul
             new Color(1.0f, 0.25f, 0.52f, 1f),          // Tier 5: Pong Paddle Remote (Neon Coral-Pink)
             new Color(0.95f, 0.22f, 0.28f, 1f),         // Tier 6: Suika Merger Remote (Watermelon Red)
             new Color(0.38f, 0.95f, 0.22f, 1f),         // Tier 7: Tower Stack Remote (Electric Lime)
-            new Color(1.0f, 0.82f, 0.22f, 1f)           // Tier 8: Omni-Remote 9000 (Golden Ultimate)
+            new Color(0.16f, 0.62f, 1.00f, 1f),         // Tier 8: Fish Frenzy Remote (Deep Ocean Azure)
+            new Color(0.98f, 0.36f, 0.92f, 1f),         // Tier 9: Block Blast Remote (Arcade Neon Magenta)
+            new Color(1.0f, 0.82f, 0.22f, 1f)           // Tier 10: Omni-Remote 9000 (Golden Ultimate)
         };
 
         Color[] emissionColors = new Color[]
@@ -342,11 +350,13 @@ public static class SetupGameplayOverhaul
             new Color(0.45f, 0.06f, 0.20f, 1f),
             new Color(0.45f, 0.05f, 0.08f, 1f),
             new Color(0.12f, 0.42f, 0.05f, 1f),
+            new Color(0.04f, 0.26f, 0.55f, 1f),
+            new Color(0.48f, 0.08f, 0.45f, 1f),
             new Color(0.55f, 0.38f, 0.06f, 1f)
         };
 
-        Material[] tierMats = new Material[9];
-        for (int i = 0; i < 9; i++)
+        Material[] tierMats = new Material[11];
+        for (int i = 0; i < 11; i++)
         {
             string matPath = $"Assets/3DAssets/remote/Remote_Tier{i}.mat";
             Material m = AssetDatabase.LoadAssetAtPath<Material>(matPath);
@@ -374,7 +384,7 @@ public static class SetupGameplayOverhaul
         }
         GameObject remoteFbxPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3DAssets/remote/RemoteControlTV.fbx");
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 11; i++)
         {
             string childName = i == 0 ? "RemoteControlTV" : $"RemoteControlTV_Tier{i}";
             Transform t = remoteRoot.Find(childName);
@@ -513,10 +523,12 @@ public static class SetupGameplayOverhaul
             "Pong Paddle Remote",
             "Suika Merger Remote",
             "Tower Stack Remote",
+            "Fish Frenzy Remote",
+            "Block Blast Remote",
             "Omni-Remote 9000"
         };
-        float[] costs = new float[] { 0f, 85f, 190f, 320f, 420f, 520f, 640f, 760f, 950f };
-        float[] mults = new float[] { 1f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f, 6f };
+        float[] costs = new float[] { 0f, 85f, 190f, 320f, 420f, 520f, 640f, 760f, 880f, 1020f, 1250f };
+        float[] mults = new float[] { 1f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f, 5.5f, 6f, 7f };
         string[] descriptions = new string[]
         {
             "Direct Impulse Hit + Bonus Cash",
@@ -527,13 +539,15 @@ public static class SetupGameplayOverhaul
             "Hold Remote: 1-Sided Pong Bar Defender!",
             "Hold Remote: Suika Logo Drop & Exponential Merger!",
             "Hold Remote: Deformed Logo Tower Stacker!",
+            "Hold Remote: Eat Smaller Logos & Grow Endlessly!",
+            "Hold Remote: Full-Screen DVD Block Blast Grid!",
             "ULTIMATE: Direct Hit + Mitosis + Bumpers!"
         };
 
-        while (remotePath.tiers.Count < 9) remotePath.tiers.Add(new UpgradeTier());
-        while (remotePath.tiers.Count > 9) remotePath.tiers.RemoveAt(remotePath.tiers.Count - 1);
+        while (remotePath.tiers.Count < 11) remotePath.tiers.Add(new UpgradeTier());
+        while (remotePath.tiers.Count > 11) remotePath.tiers.RemoveAt(remotePath.tiers.Count - 1);
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 11; i++)
         {
             UpgradeTier t = remotePath.tiers[i];
             t.tierName = tierNames[i];

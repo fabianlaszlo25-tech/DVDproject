@@ -78,7 +78,7 @@ public class UpgradeManager : MonoBehaviour
     public float worldModelShrinkSpeed = 0.5f;
 
     /// <summary>
-    /// Currently equipped Remote tier index (0 to 8):
+    /// Currently equipped Remote tier index (0 to 10 — 1 starter + 10 upgrades):
     /// 0 = Stock Clicker (Base Remote: direct hit impulse + bonus cash + squash/stretch + sparks)
     /// 1 = Mitosis Splitter (Base + splits logo into 2 smaller children that recombine on same-size collision)
     /// 2 = Telekinetic Grabber (After Mitosis, NOT part of Ultimate: hold click to grab & drag logo; wall/corner hits award bounces)
@@ -87,15 +87,17 @@ public class UpgradeManager : MonoBehaviour
     /// 5 = Pong Paddle Remote (Hold Remote in Focus Mode: 1-Sided Pong paddle bar defender!)
     /// 6 = Suika Merger Remote (Hold Remote in Focus Mode: Suika Logo Drop & Exponential Merger; remembers board state!)
     /// 7 = Tower Stack Remote (Hold Remote in Focus Mode: Deformed Logo Tower Stacker; scrolls down & shrinks on topple!)
-    /// 8 = Omni-Remote 9000 (ULTIMATE Remote: combines Base + Mitosis Splitting + Pinball Bumpers all at once!)
+    /// 8 = Fish Frenzy Remote (Hold Remote in Focus Mode: Eat smaller swimming DVD logos & grow endlessly; bigger logos eat you!)
+    /// 9 = Block Blast Remote (Hold Remote in Focus Mode: Full-screen 8x8 Block Blast with square DVD logos!)
+    /// 10 = Omni-Remote 9000 (ULTIMATE Remote: combines Base + Mitosis Splitting + Pinball Bumpers all at once!)
     /// </summary>
     public int ActiveRemoteTier { get; private set; } = 0;
 
-    public bool IsCurrentRemoteOmni => ActiveRemoteTier == 8;
-    public bool IsCurrentRemoteBumperCapable => ActiveRemoteTier == 3 || ActiveRemoteTier == 8;
-    public bool IsCurrentRemoteMitosisCapable => ActiveRemoteTier == 1 || ActiveRemoteTier == 8;
+    public bool IsCurrentRemoteOmni => ActiveRemoteTier == 10;
+    public bool IsCurrentRemoteBumperCapable => ActiveRemoteTier == 3 || ActiveRemoteTier == 10;
+    public bool IsCurrentRemoteMitosisCapable => ActiveRemoteTier == 1 || ActiveRemoteTier == 10;
     public bool IsCurrentRemoteGrabber => ActiveRemoteTier == 2;
-    public bool IsCurrentRemoteMinigame => ActiveRemoteTier >= 4 && ActiveRemoteTier <= 7;
+    public bool IsCurrentRemoteMinigame => ActiveRemoteTier >= 4 && ActiveRemoteTier <= 9;
 
     private void Awake()
     {
@@ -205,10 +207,12 @@ public class UpgradeManager : MonoBehaviour
             "Pong Paddle Remote",
             "Suika Merger Remote",
             "Tower Stack Remote",
+            "Fish Frenzy Remote",
+            "Block Blast Remote",
             "Omni-Remote 9000"
         };
-        float[] defaultCosts = new float[] { 0f, 85f, 190f, 320f, 420f, 520f, 640f, 760f, 950f };
-        float[] defaultMults = new float[] { 1f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f, 6f };
+        float[] defaultCosts = new float[] { 0f, 85f, 190f, 320f, 420f, 520f, 640f, 760f, 880f, 1020f, 1250f };
+        float[] defaultMults = new float[] { 1f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f, 5.5f, 6f, 7f };
         string[] defaultDescs = new string[]
         {
             "Direct Impulse Hit + Bonus Cash",
@@ -219,6 +223,8 @@ public class UpgradeManager : MonoBehaviour
             "Hold Remote: 1-Sided Pong Bar Defender!",
             "Hold Remote: Suika Logo Drop & Exponential Merger!",
             "Hold Remote: Deformed Logo Tower Stacker!",
+            "Hold Remote: Eat Smaller Logos & Grow Endlessly!",
+            "Hold Remote: Full-Screen DVD Block Blast Grid!",
             "ULTIMATE: Direct Hit + Mitosis + Bumpers!"
         };
 
@@ -239,10 +245,10 @@ public class UpgradeManager : MonoBehaviour
             };
             UpgradeTier omniTier = new UpgradeTier
             {
-                tierName = defaultNames[8],
-                cost = defaultCosts[8],
-                multiplierValue = defaultMults[8],
-                customDescription = defaultDescs[8],
+                tierName = defaultNames[10],
+                cost = defaultCosts[10],
+                multiplierValue = defaultMults[10],
+                customDescription = defaultDescs[10],
                 previewScale = oldPinballTier.previewScale,
                 previewRotation = oldPinballTier.previewRotation
             };
@@ -300,14 +306,41 @@ public class UpgradeManager : MonoBehaviour
                 previewScale = oldOmniTier.previewScale,
                 previewRotation = oldOmniTier.previewRotation
             };
-            oldOmniTier.cost = defaultCosts[8];
-            oldOmniTier.multiplierValue = defaultMults[8];
             remotePath.tiers[6] = suikaTier;
             remotePath.tiers.Add(towerTier);
             remotePath.tiers.Add(oldOmniTier);
         }
 
-        while (remotePath.tiers.Count < 9)
+        // Migrate from 9-tier layout (where index 8 was Omni-Remote 9000) to 11-tier layout (inserting Fish Frenzy & Block Blast before Omni)
+        if (remotePath.tiers.Count == 9 && remotePath.tiers[8] != null && remotePath.tiers[8].tierName == "Omni-Remote 9000")
+        {
+            UpgradeTier oldOmniTier = remotePath.tiers[8];
+            UpgradeTier fishTier = new UpgradeTier
+            {
+                tierName = defaultNames[8],
+                cost = defaultCosts[8],
+                multiplierValue = defaultMults[8],
+                customDescription = defaultDescs[8],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            UpgradeTier blockBlastTier = new UpgradeTier
+            {
+                tierName = defaultNames[9],
+                cost = defaultCosts[9],
+                multiplierValue = defaultMults[9],
+                customDescription = defaultDescs[9],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            oldOmniTier.cost = defaultCosts[10];
+            oldOmniTier.multiplierValue = defaultMults[10];
+            remotePath.tiers[8] = fishTier;
+            remotePath.tiers.Add(blockBlastTier);
+            remotePath.tiers.Add(oldOmniTier);
+        }
+
+        while (remotePath.tiers.Count < 11)
         {
             remotePath.tiers.Add(new UpgradeTier());
         }
@@ -317,7 +350,7 @@ public class UpgradeManager : MonoBehaviour
             ? baseRefTier.worldGameObject.transform.parent
             : null;
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 11; i++)
         {
             UpgradeTier t = remotePath.tiers[i];
             if (string.IsNullOrEmpty(t.tierName) || t.tierName == "Level 1")
@@ -366,6 +399,58 @@ public class UpgradeManager : MonoBehaviour
         if (!remotePath.unlockedIndices.Contains(0))
         {
             remotePath.unlockedIndices.Add(0);
+        }
+
+        // Also ensure DVD Player (SpeedMultiplier) and DVD Pile (MoneyMultiplier) have 11 total tiers (1 starter + 10 upgrades)!
+        EnsurePlayerAndDvdPathsHave11Tiers();
+    }
+
+    private void EnsurePlayerAndDvdPathsHave11Tiers()
+    {
+        for (int p = 0; p < upgradePaths.Count; p++)
+        {
+            UpgradePath path = upgradePaths[p];
+            if (path == null || path.tiers == null || path.tiers.Count == 0) continue;
+
+            if (path.category == UpgradeCategory.SpeedMultiplier && path.tiers.Count == 10)
+            {
+                UpgradeTier prev = path.tiers[9];
+                UpgradeTier tier10 = new UpgradeTier
+                {
+                    tierName = "Quantum Singularity Deck",
+                    cost = 15000f,
+                    multiplierValue = 18.50f,
+                    previewPrefab = prev.previewPrefab,
+                    previewPositionOffset = prev.previewPositionOffset,
+                    previewScale = prev.previewScale,
+                    previewRotation = prev.previewRotation,
+                    worldGameObject = prev.worldGameObject,
+                    logoMaterial = prev.logoMaterial,
+                    booster = prev.booster,
+                    initialWorldScale = prev.initialWorldScale
+                };
+                path.tiers.Add(tier10);
+            }
+            else if (path.category == UpgradeCategory.MoneyMultiplier && path.tiers.Count == 10)
+            {
+                UpgradeTier prev = path.tiers[9];
+                UpgradeTier tier10 = new UpgradeTier
+                {
+                    tierName = "Lost Studio Master",
+                    cost = 20000f,
+                    multiplierValue = 25000f,
+                    previewPrefab = prev.previewPrefab,
+                    previewPositionOffset = prev.previewPositionOffset,
+                    previewScale = prev.previewScale,
+                    previewRotation = prev.previewRotation,
+                    dvdVideoFileName = prev.dvdVideoFileName,
+                    dvdMusic = prev.dvdMusic,
+                    logoMaterial = prev.logoMaterial,
+                    booster = prev.booster,
+                    initialWorldScale = prev.initialWorldScale
+                };
+                path.tiers.Add(tier10);
+            }
         }
     }
 
