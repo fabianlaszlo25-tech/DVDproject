@@ -45,8 +45,8 @@ public class TVFocusController : MonoBehaviour
     [Header("In-Screen 3D Remote Cursor & Hitbox Settings (Captured by TV Camera)")]
     [Tooltip("Optional custom 3D object/prefab for the in-screen Remote cursor sphere. Auto-created inside DVDSetup/Camera if empty.")]
     public Transform screenReticleTransform;
-    [Tooltip("Diameter of the 3D cursor sphere inside the TV ortho camera space when holding the Remote.")]
-    public float remoteReticleOrthoSize = 0.42f;
+    [Tooltip("Diameter of the 3D cursor sphere inside the TV ortho camera space when holding the Remote (40% smaller).")]
+    public float remoteReticleOrthoSize = 0.25f;
     public Color remoteReticleColor = new Color(1f, 0.92f, 0.28f, 1f);
     [Tooltip("Extra clickable padding (in ortho units) around the DVD logo collider for forgiving direct hits.")]
     public float logoHitboxPadding = 0.25f;
@@ -240,13 +240,22 @@ public class TVFocusController : MonoBehaviour
 
         sphere.transform.localScale = Vector3.one * remoteReticleOrthoSize;
 
-        Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+        Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (shader == null) shader = Shader.Find("Universal Render Pipeline/Lit");
+        if (shader == null) shader = Shader.Find("Sprites/Default");
         if (shader == null) shader = Shader.Find("Standard");
-        if (shader == null) shader = Shader.Find("Universal Render Pipeline/Unlit");
 
         Material mat = new Material(shader);
+        mat.SetFloat("_Surface", 1f); // Transparent
+        mat.SetFloat("_Blend", 0f); // Alpha blend
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+
         mat.color = remoteReticleColor;
         if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", remoteReticleColor);
+        if (mat.HasProperty("_Color")) mat.SetColor("_Color", remoteReticleColor);
         if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", 0.85f);
         if (mat.HasProperty("_EmissionColor"))
         {
@@ -263,6 +272,45 @@ public class TVFocusController : MonoBehaviour
         }
 
         screenReticleTransform = sphere.transform;
+        UpdateScreenReticleVisuals();
+    }
+
+    /// <summary>
+    /// Adjusts the in-screen 3D reticle cursor size and transparency:
+    /// - 40% smaller everywhere.
+    /// - 100% opacity in modes where you click the logo/bumpers (Stock, Mitosis, Grab, Bumpers, Omni).
+    /// - 30% transparency in other minigames (Fish Frenzy, Block Blast, Dino, Pong, Suika, Tower).
+    /// </summary>
+    public void UpdateScreenReticleVisuals()
+    {
+        if (screenReticleTransform == null) return;
+        screenReticleTransform.localScale = Vector3.one * remoteReticleOrthoSize;
+
+        if (screenReticleRenderer == null)
+        {
+            screenReticleRenderer = screenReticleTransform.GetComponentInChildren<Renderer>();
+        }
+        if (screenReticleRenderer == null) return;
+
+        int activeTier = upgradeManager != null ? upgradeManager.ActiveRemoteTier : 0;
+        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeTier == 10);
+
+        bool isDirectClickMode = (activeTier == 0 || activeTier == 1 || activeTier == 2 || activeTier == 3 || isOmni);
+        float targetAlpha = isDirectClickMode ? 1.0f : 0.30f;
+
+        Material mat = Application.isPlaying ? screenReticleRenderer.material : screenReticleRenderer.sharedMaterial;
+        if (mat != null)
+        {
+            Color c = remoteReticleColor;
+            c.a = targetAlpha;
+            mat.color = c;
+            if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", c);
+            if (mat.HasProperty("_Color")) mat.SetColor("_Color", c);
+            if (mat.HasProperty("_EmissionColor"))
+            {
+                mat.SetColor("_EmissionColor", c * (isDirectClickMode ? 1.4f : 0.45f));
+            }
+        }
     }
 
     /// <summary>
@@ -600,6 +648,7 @@ public class TVFocusController : MonoBehaviour
                 Vector3 orthoPoint = ScreenUVToOrthoWorldPoint(uv);
                 EnsureScreenReticle();
                 SetScreenReticleVisible(true);
+                UpdateScreenReticleVisuals();
                 if (screenReticleTransform != null)
                 {
                     float reticleZ = bouncer != null ? (bouncer.transform.position.z - 0.2f) : (orthoPoint.z - 0.2f);

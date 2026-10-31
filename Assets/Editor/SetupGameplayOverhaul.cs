@@ -58,6 +58,9 @@ public static class SetupGameplayOverhaul
         AudioClip clipHit6 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/6.mp3");
         AudioClip clipHit7 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/7.mp3");
         AudioClip clipHit9 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/9.mp3");
+        AudioClip clipCleaningScreen = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/cleaningscreen.mp3");
+        AudioClip clipCleanSparkle = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/cleansparkle.mp3");
+        AudioClip clipTvHit = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/tvhit.mp3");
 
         // 3. Find Core Scene Objects
         DVDLogoBouncer bouncer = Object.FindObjectOfType<DVDLogoBouncer>();
@@ -73,7 +76,7 @@ public static class SetupGameplayOverhaul
 
         // Configure bouncer audio clips & subtle, fluid directional squash/stretch defaults
         // (Preserves the user's BoxCollider, manualOffset, and startingMoney on DVDLogo!)
-        if (bouncer.directHitSound == null) bouncer.directHitSound = clipHit5 != null ? clipHit5 : bouncer.edgeHitSound;
+        bouncer.directHitSound = clipHit5 != null ? clipHit5 : bouncer.edgeHitSound;
         if (bouncer.recombinePopSound == null) bouncer.recombinePopSound = clipHit7 != null ? clipHit7 : bouncer.cornerHitSound;
         bouncer.squashStretchDuration = 0.55f;
         bouncer.maxSquashAmount = 0.24f;
@@ -172,8 +175,10 @@ public static class SetupGameplayOverhaul
         cleaner.dustTextureResolution = 512;
         cleaner.overlayFrontOffset = 0.0012f;
         cleaner.wipeAudioSource = sharedAudio;
-        if (cleaner.wipeRubSound == null) cleaner.wipeRubSound = clipPoof != null ? clipPoof : clipOpen;
-        if (cleaner.cleanChimeSound == null) cleaner.cleanChimeSound = clipBuy != null ? clipBuy : clipHit9;
+        cleaner.wipeRubSound = clipCleaningScreen != null ? clipCleaningScreen : (clipPoof != null ? clipPoof : clipOpen);
+        cleaner.cleanChimeSound = clipCleanSparkle != null ? clipCleanSparkle : (clipHit9 != null ? clipHit9 : clipBuy);
+        cleaner.secondsToFullDust = 500f;
+        cleaner.initialDustRatio = 0.08f;
         EditorUtility.SetDirty(cleaner);
 
         // TVScreenHazard (System 6: Uses existing static.mp4 on DVDSetup/Camera/bgvideo + Centered Slap Squish)
@@ -187,7 +192,7 @@ public static class SetupGameplayOverhaul
         hazard.staticVideoFileName = "static.mp4";
         hazard.staticVideoFullAlpha = 1.0f;
         hazard.slapAudioSource = sharedAudio;
-        if (hazard.slapImpactSound == null) hazard.slapImpactSound = clipHit6 != null ? clipHit6 : clipPoof;
+        hazard.slapImpactSound = clipTvHit != null ? clipTvHit : (clipHit6 != null ? clipHit6 : clipPoof);
         if (hazard.staticNoiseSound == null) hazard.staticNoiseSound = clipStatic;
 
         Transform bgVideoTr = dvdSetup.Find("Camera/bgvideo");

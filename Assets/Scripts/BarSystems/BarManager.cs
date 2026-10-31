@@ -41,7 +41,7 @@ public class BarManager : MonoBehaviour
     public float currentDepression = 0f;
 
     [Header("Automatic Fill Rates (Per Second)")]
-    public float hungerFillRate = 2f;
+    public float hungerFillRate = 1f;
     public float sleepFillRate = 1.5f;
     public float baseDepressionFillRate = 1f;
 

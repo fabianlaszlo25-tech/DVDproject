@@ -620,6 +620,22 @@ public class TVMinigameController : MonoBehaviour
     private float towerToppleTargetFitScale = 1f;
     private float towerToppleStartScrollY = 0f;
 
+    // Tower Stack Persistence
+    private struct SavedTowerBlockState
+    {
+        public int shapeIndex;
+        public float towerRelX;
+        public float towerRelY;
+        public float halfWidth;
+        public float halfHeight;
+    }
+
+    private bool hasSavedTowerState = false;
+    private readonly List<SavedTowerBlockState> savedTowerBlocks = new List<SavedTowerBlockState>();
+    private float savedTowerScrollY = 0f;
+    private float savedTargetTowerScrollY = 0f;
+    private float savedTowerInstability = 0f;
+
     // =========================================================================
     // MINIGAME 5: FISH FRENZY (EAT SMALLER LOGOS) STATE
     // =========================================================================
@@ -656,6 +672,26 @@ public class TVMinigameController : MonoBehaviour
     private float fishPlayerEatenStartScale;
     private float fishPredatorShrinkStartSize;
     private float fishZoomBeforeReset;
+
+    // Fish Frenzy Persistence
+    private struct SavedNpcFishState
+    {
+        public Vector2 pos;
+        public Vector2 vel;
+        public float rawSize;
+        public Color primaryColor;
+        public Color secondaryColor;
+        public float bobPhase;
+    }
+
+    private bool hasSavedFishState = false;
+    private float savedFishPlayerRawSize = 0.44f;
+    private float savedFishWorldZoomScale = 1f;
+    private float savedFishTargetWorldZoomScale = 1f;
+    private Vector2 savedFishPlayerPos;
+    private Color savedFishPlayerPrimaryColor = new Color(0.20f, 0.96f, 1.00f, 1f);
+    private Color savedFishPlayerSecondaryColor = new Color(1.00f, 0.88f, 0.22f, 1f);
+    private readonly List<SavedNpcFishState> savedNpcFishList = new List<SavedNpcFishState>();
 
     // =========================================================================
     // MINIGAME 6: BLOCK BLAST DVD GRID STATE
@@ -770,6 +806,18 @@ public class TVMinigameController : MonoBehaviour
     private float blockBlastShatterTimer = 0f;
     private Vector2 targetCursorOrthoPos;
 
+    // Block Blast Persistence
+    private struct SavedBlockBlastCell
+    {
+        public bool isOccupied;
+        public Color primaryColor;
+        public Color secondaryColor;
+    }
+
+    private bool hasSavedBlockBlastState = false;
+    private SavedBlockBlastCell[,] savedBlockBlastGrid;
+    private int savedBlockBlastShapeIdx = 0;
+
     // Shared in-screen semi-transparent Red Screen Flash state
     private GameObject redFlashQuadObj;
     private Material redFlashMaterial;
@@ -778,6 +826,28 @@ public class TVMinigameController : MonoBehaviour
     private float activeRedFlashMaxAlpha = 0.42f;
 
     private Material sharedUnlitTemplate;
+
+    // Converge animation tracking
+    private Coroutine activeConvergeCoroutine = null;
+    private readonly List<DeformableLogoPiece> currentlyConvergingPieces = new List<DeformableLogoPiece>();
+
+    private void StopAnyActiveConvergeAnimation()
+    {
+        if (activeConvergeCoroutine != null)
+        {
+            StopCoroutine(activeConvergeCoroutine);
+            activeConvergeCoroutine = null;
+        }
+
+        for (int i = 0; i < currentlyConvergingPieces.Count; i++)
+        {
+            if (currentlyConvergingPieces[i] != null)
+            {
+                currentlyConvergingPieces[i].DestroyPiece();
+            }
+        }
+        currentlyConvergingPieces.Clear();
+    }
 
     private void Awake()
     {
@@ -1009,6 +1079,7 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
         mainBouncer.SetMainLogoRenderersVisible(true);
 
@@ -1383,6 +1454,7 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.SetMainLogoRenderersVisible(true);
 
         GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out _);
@@ -1491,6 +1563,7 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
         savedLogoPositionBeforeRunner = mainBouncer.transform.position;
         savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
@@ -1579,7 +1652,8 @@ public class TVMinigameController : MonoBehaviour
                 }
             }
             activeSuikaPieces.Clear();
-            StartCoroutine(AnimateConvergePiecesIntoMainLogo(piecesToConverge));
+            StopAnyActiveConvergeAnimation();
+            activeConvergeCoroutine = StartCoroutine(AnimateConvergePiecesIntoMainLogo(piecesToConverge));
         }
         else
         {
@@ -1596,6 +1670,12 @@ public class TVMinigameController : MonoBehaviour
 
     private IEnumerator AnimateConvergePiecesIntoMainLogo(List<DeformableLogoPiece> convergingVisuals)
     {
+        currentlyConvergingPieces.Clear();
+        if (convergingVisuals != null)
+        {
+            currentlyConvergingPieces.AddRange(convergingVisuals);
+        }
+
         if (mainBouncer != null)
         {
             mainBouncer.SetMainLogoRenderersVisible(true);
@@ -1640,6 +1720,8 @@ public class TVMinigameController : MonoBehaviour
         {
             if (convergingVisuals[i] != null) convergingVisuals[i].DestroyPiece();
         }
+        currentlyConvergingPieces.Clear();
+        activeConvergeCoroutine = null;
     }
 
     private void ClearAllActiveSuikaPiecesImmediate()
@@ -2114,21 +2196,100 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
         savedLogoPositionBeforeRunner = mainBouncer.transform.position;
         savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
         mainBouncer.SetMainLogoRenderersVisible(false);
 
-        ResetAndStartNewTower();
+        if (hasSavedTowerState && savedTowerBlocks.Count > 0)
+        {
+            ClearAllTowerBlocks();
+
+            currentTowerScrollY = savedTowerScrollY;
+            targetTowerScrollY = savedTargetTowerScrollY;
+            towerCumulativeInstability = savedTowerInstability;
+            towerSwayPhase = 0f;
+            isTowerToppling = false;
+            towerToppleTimer = 0f;
+
+            for (int i = 0; i < savedTowerBlocks.Count; i++)
+            {
+                SavedTowerBlockState st = savedTowerBlocks[i];
+                TowerBlock b = CreateTowerBlockOfShape(st.shapeIndex);
+                b.towerRelX = st.towerRelX;
+                b.towerRelY = st.towerRelY;
+                b.halfWidth = st.halfWidth;
+                b.halfHeight = st.halfHeight;
+                b.visual.TriggerPop(0.30f, 0.28f);
+                stackedTowerBlocks.Add(b);
+            }
+
+            SyncTowerBlockWorldPositions(0f);
+            SpawnNextSwingingTowerBlock();
+            PlaySound(suikaMergeSound, 1.08f);
+        }
+        else
+        {
+            ResetAndStartNewTower();
+        }
     }
 
     private void ExitTowerStackMode()
     {
-        ClearAllTowerBlocks();
-        if (mainBouncer != null)
+        if (!isTowerToppling && stackedTowerBlocks.Count > 0)
         {
-            mainBouncer.SetMainLogoRenderersVisible(true);
-            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            savedTowerBlocks.Clear();
+            for (int i = 0; i < stackedTowerBlocks.Count; i++)
+            {
+                TowerBlock b = stackedTowerBlocks[i];
+                if (b == null || b.visual == null) continue;
+                savedTowerBlocks.Add(new SavedTowerBlockState
+                {
+                    shapeIndex = b.shapeIndex,
+                    towerRelX = b.towerRelX,
+                    towerRelY = b.towerRelY,
+                    halfWidth = b.halfWidth,
+                    halfHeight = b.halfHeight
+                });
+            }
+            savedTowerScrollY = currentTowerScrollY;
+            savedTargetTowerScrollY = targetTowerScrollY;
+            savedTowerInstability = towerCumulativeInstability;
+            hasSavedTowerState = savedTowerBlocks.Count > 0;
+        }
+
+        List<DeformableLogoPiece> piecesToConverge = new List<DeformableLogoPiece>();
+        if (activeSwingingBlock != null && activeSwingingBlock.visual != null)
+        {
+            piecesToConverge.Add(activeSwingingBlock.visual);
+            activeSwingingBlock = null;
+        }
+        isActiveBlockFalling = false;
+
+        for (int i = 0; i < stackedTowerBlocks.Count; i++)
+        {
+            if (stackedTowerBlocks[i] != null && stackedTowerBlocks[i].visual != null)
+            {
+                piecesToConverge.Add(stackedTowerBlocks[i].visual);
+            }
+        }
+        stackedTowerBlocks.Clear();
+
+        if (piecesToConverge.Count > 0 && mainBouncer != null && gameObject.activeInHierarchy)
+        {
+            StopAnyActiveConvergeAnimation();
+            activeConvergeCoroutine = StartCoroutine(AnimateConvergePiecesIntoMainLogo(piecesToConverge));
+        }
+        else
+        {
+            if (mainBouncer != null)
+            {
+                mainBouncer.SetMainLogoRenderersVisible(true);
+                mainBouncer.TriggerRecombineBounce();
+                mainBouncer.TriggerSquashStretch(Vector2.up, mainBouncer.maxSquashAmount * 0.85f);
+                mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            }
         }
     }
 
@@ -2426,6 +2587,8 @@ public class TVMinigameController : MonoBehaviour
 
     private void TriggerTowerToppleAndShrinkReveal(float overhangDir, float baseFloorY, float screenHeight, float screenCenterX, float zPlane)
     {
+        hasSavedTowerState = false;
+        savedTowerBlocks.Clear();
         isTowerToppling = true;
         towerToppleTimer = 0f;
         towerToppleStartScrollY = currentTowerScrollY;
@@ -2493,6 +2656,7 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
         savedLogoPositionBeforeRunner = mainBouncer.transform.position;
         savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
@@ -2502,42 +2666,156 @@ public class TVMinigameController : MonoBehaviour
 
         GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
         Vector2 screenCenter = new Vector2((camMinX + camMaxX) * 0.5f, (camMinY + camMaxY) * 0.5f);
+        float zPlane = mainBouncer.transform.position.z;
 
-        fishPlayerRawSize = fishInitialPlayerSize;
-        fishWorldZoomScale = 1f;
-        fishTargetWorldZoomScale = 1f;
-        fishPlayerPos = screenCenter;
-        fishPlayerVel = Vector2.zero;
-        isFishPlayerBeingEaten = false;
-        fishEatenSequenceTimer = 0f;
-        fishPredatorThatAtePlayer = null;
-        fishSpawnTimer = 0.15f;
-
-        Color pCol = new Color(0.20f, 0.96f, 1.00f, 1f);
-        Color sCol = new Color(1.00f, 0.88f, 0.22f, 1f);
-        fishPlayerVisual = CreateDeformableLogoClone("FishPlayer_Logo", fishPlayerRawSize, pCol, sCol);
-        if (fishPlayerVisual != null)
+        if (hasSavedFishState)
         {
-            float zPlane = mainBouncer.transform.position.z;
-            fishPlayerVisual.SetCenterPosition(new Vector3(fishPlayerPos.x, fishPlayerPos.y, zPlane));
-            fishPlayerVisual.TriggerPop(0.32f, 0.30f);
-            fishPlayerVisual.UpdateVisuals(0f);
+            // Restore saved Fish Frenzy state!
+            fishPlayerRawSize = savedFishPlayerRawSize;
+            fishWorldZoomScale = savedFishWorldZoomScale;
+            fishTargetWorldZoomScale = savedFishTargetWorldZoomScale;
+            fishPlayerPos = savedFishPlayerPos;
+            fishPlayerVel = Vector2.zero;
+            isFishPlayerBeingEaten = false;
+            fishEatenSequenceTimer = 0f;
+            fishPredatorThatAtePlayer = null;
+            fishSpawnTimer = 0.55f;
+
+            float renderedPlayerScale = fishPlayerRawSize * fishWorldZoomScale;
+            fishPlayerVisual = CreateDeformableLogoClone("FishPlayer_Logo", renderedPlayerScale, savedFishPlayerPrimaryColor, savedFishPlayerSecondaryColor);
+            if (fishPlayerVisual != null)
+            {
+                fishPlayerVisual.SetCenterPosition(new Vector3(fishPlayerPos.x, fishPlayerPos.y, zPlane));
+                fishPlayerVisual.TriggerPop(0.35f, 0.32f);
+                fishPlayerVisual.TriggerSquash(Vector2.up, 0.22f, 0.42f);
+                fishPlayerVisual.UpdateVisuals(0f);
+            }
+
+            for (int i = 0; i < savedNpcFishList.Count; i++)
+            {
+                SavedNpcFishState sn = savedNpcFishList[i];
+                float renderedNpcScale = sn.rawSize * fishWorldZoomScale;
+                DeformableLogoPiece vis = CreateDeformableLogoClone("FishNPC_Logo", renderedNpcScale, sn.primaryColor, sn.secondaryColor);
+                if (vis != null)
+                {
+                    vis.SetCenterPosition(new Vector3(sn.pos.x, sn.pos.y, zPlane));
+                    vis.TriggerPop(0.28f, 0.28f);
+                    vis.UpdateVisuals(0f);
+                    activeFishList.Add(new FishEntity
+                    {
+                        visual = vis,
+                        pos = sn.pos,
+                        vel = sn.vel,
+                        rawSize = sn.rawSize,
+                        bobPhase = sn.bobPhase,
+                        isBeingMerged = false
+                    });
+                }
+            }
+
+            PlaySound(suikaMergeSound, 1.10f);
         }
-
-        // Pre-populate a few fish swimming around so the screen feels alive right away
-        for (int i = 0; i < 4; i++)
+        else
         {
-            SpawnSwimmingFishFromEdge(i < 3); // guarantee at least 3 smaller edible fish initially
+            fishPlayerRawSize = fishInitialPlayerSize;
+            fishWorldZoomScale = 1f;
+            fishTargetWorldZoomScale = 1f;
+            fishPlayerPos = screenCenter;
+            fishPlayerVel = Vector2.zero;
+            isFishPlayerBeingEaten = false;
+            fishEatenSequenceTimer = 0f;
+            fishPredatorThatAtePlayer = null;
+            fishSpawnTimer = 0.15f;
+
+            Color pCol = new Color(0.20f, 0.96f, 1.00f, 1f);
+            Color sCol = new Color(1.00f, 0.88f, 0.22f, 1f);
+            fishPlayerVisual = CreateDeformableLogoClone("FishPlayer_Logo", fishPlayerRawSize, pCol, sCol);
+            if (fishPlayerVisual != null)
+            {
+                fishPlayerVisual.SetCenterPosition(new Vector3(fishPlayerPos.x, fishPlayerPos.y, zPlane));
+                fishPlayerVisual.TriggerPop(0.32f, 0.30f);
+                fishPlayerVisual.UpdateVisuals(0f);
+            }
+
+            // Pre-populate a few fish swimming around so the screen feels alive right away
+            for (int i = 0; i < 4; i++)
+            {
+                SpawnSwimmingFishFromEdge(i < 3); // guarantee at least 3 smaller edible fish initially
+            }
         }
     }
 
     private void ExitFishFrenzyMode()
     {
-        ClearAllFishFrenzyEntities();
-        if (mainBouncer != null)
+        // Save current Fish Frenzy state if player wasn't currently being eaten
+        if (!isFishPlayerBeingEaten && fishPlayerVisual != null)
         {
-            mainBouncer.SetMainLogoRenderersVisible(true);
-            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            hasSavedFishState = true;
+            savedFishPlayerRawSize = fishPlayerRawSize;
+            savedFishWorldZoomScale = fishWorldZoomScale;
+            savedFishTargetWorldZoomScale = fishTargetWorldZoomScale;
+            savedFishPlayerPos = fishPlayerPos;
+            savedFishPlayerPrimaryColor = fishPlayerVisual.primaryColor;
+            savedFishPlayerSecondaryColor = fishPlayerVisual.secondaryColor;
+
+            savedNpcFishList.Clear();
+            for (int i = 0; i < activeFishList.Count; i++)
+            {
+                FishEntity f = activeFishList[i];
+                if (f == null || f.visual == null || f.isBeingMerged) continue;
+                savedNpcFishList.Add(new SavedNpcFishState
+                {
+                    pos = f.pos,
+                    vel = f.vel,
+                    rawSize = f.rawSize,
+                    primaryColor = f.visual.primaryColor,
+                    secondaryColor = f.visual.secondaryColor,
+                    bobPhase = f.bobPhase
+                });
+            }
+        }
+
+        List<DeformableLogoPiece> piecesToConverge = new List<DeformableLogoPiece>();
+        if (fishPlayerVisual != null)
+        {
+            piecesToConverge.Add(fishPlayerVisual);
+            fishPlayerVisual = null;
+        }
+
+        for (int i = 0; i < activeFishList.Count; i++)
+        {
+            if (activeFishList[i] != null && activeFishList[i].visual != null)
+            {
+                piecesToConverge.Add(activeFishList[i].visual);
+            }
+        }
+        activeFishList.Clear();
+
+        for (int i = 0; i < mergingFishAnimations.Count; i++)
+        {
+            if (mergingFishAnimations[i] != null && mergingFishAnimations[i].visual != null)
+            {
+                piecesToConverge.Add(mergingFishAnimations[i].visual);
+            }
+        }
+        mergingFishAnimations.Clear();
+        fishPredatorThatAtePlayer = null;
+        isFishPlayerBeingEaten = false;
+
+        if (piecesToConverge.Count > 0 && mainBouncer != null && gameObject.activeInHierarchy)
+        {
+            StopAnyActiveConvergeAnimation();
+            activeConvergeCoroutine = StartCoroutine(AnimateConvergePiecesIntoMainLogo(piecesToConverge));
+        }
+        else
+        {
+            if (mainBouncer != null)
+            {
+                mainBouncer.SetMainLogoRenderersVisible(true);
+                mainBouncer.TriggerRecombineBounce();
+                mainBouncer.TriggerSquashStretch(Vector2.up, mainBouncer.maxSquashAmount * 0.85f);
+                mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            }
         }
     }
 
@@ -2895,6 +3173,10 @@ public class TVMinigameController : MonoBehaviour
     {
         if (predatorIndex < 0 || predatorIndex >= activeFishList.Count) return;
 
+        // Player was eaten; clear saved state so looking away doesn't restore invalid state
+        hasSavedFishState = false;
+        savedNpcFishList.Clear();
+
         FishEntity predator = activeFishList[predatorIndex];
         activeFishList.RemoveAt(predatorIndex);
 
@@ -2931,6 +3213,7 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null) return;
 
+        StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
         savedLogoPositionBeforeRunner = mainBouncer.transform.position;
         savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
@@ -2945,16 +3228,137 @@ public class TVMinigameController : MonoBehaviour
         blockBlastShatterTimer = 0f;
 
         BuildBlockBlastGridBackground(cols, rows);
-        RollNextBlockBlastShape();
+
+        if (hasSavedBlockBlastState && savedBlockBlastGrid != null)
+        {
+            GetBlockBlastGridMetrics(out _, out _, out float cellSize, out Vector2 origin);
+            float zPlane = mainBouncer.transform.position.z;
+            int savedCols = savedBlockBlastGrid.GetLength(0);
+            int savedRows = savedBlockBlastGrid.GetLength(1);
+
+            for (int x = 0; x < Mathf.Min(cols, savedCols); x++)
+            {
+                for (int y = 0; y < Mathf.Min(rows, savedRows); y++)
+                {
+                    if (savedBlockBlastGrid[x, y].isOccupied)
+                    {
+                        DeformableLogoPiece placedTile = CreateSquareBlockBlastTile(
+                            $"PlacedTile_{x}_{y}",
+                            cellSize,
+                            savedBlockBlastGrid[x, y].primaryColor,
+                            savedBlockBlastGrid[x, y].secondaryColor,
+                            false);
+
+                        if (placedTile != null)
+                        {
+                            Vector2 cellWorld = GetBlockBlastCellCenter(x, y, cellSize, origin);
+                            placedTile.SetCenterPosition(new Vector3(cellWorld.x, cellWorld.y, zPlane));
+                            placedTile.TriggerPop(0.32f, 0.28f);
+                            placedTile.UpdateVisuals(0f);
+                            blockBlastGrid[x, y] = placedTile;
+                        }
+                    }
+                }
+            }
+
+            SpawnGhostTilesForShape(savedBlockBlastShapeIdx);
+            PlaySound(suikaMergeSound, 1.08f);
+        }
+        else
+        {
+            RollNextBlockBlastShape();
+        }
     }
 
     private void ExitBlockBlastMode()
     {
-        ClearAllBlockBlastObjects();
-        if (mainBouncer != null)
+        if (!isBlockBlastShatteringReset && blockBlastGrid != null)
         {
-            mainBouncer.SetMainLogoRenderersVisible(true);
-            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            int cols = blockBlastGrid.GetLength(0);
+            int rows = blockBlastGrid.GetLength(1);
+            savedBlockBlastGrid = new SavedBlockBlastCell[cols, rows];
+
+            for (int x = 0; x < cols; x++)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    if (blockBlastGrid[x, y] != null)
+                    {
+                        savedBlockBlastGrid[x, y] = new SavedBlockBlastCell
+                        {
+                            isOccupied = true,
+                            primaryColor = blockBlastGrid[x, y].primaryColor,
+                            secondaryColor = blockBlastGrid[x, y].secondaryColor
+                        };
+                    }
+                    else
+                    {
+                        savedBlockBlastGrid[x, y] = new SavedBlockBlastCell { isOccupied = false };
+                    }
+                }
+            }
+
+            savedBlockBlastShapeIdx = currentBlockBlastShapeIdx;
+            hasSavedBlockBlastState = true;
+        }
+
+        List<DeformableLogoPiece> piecesToConverge = new List<DeformableLogoPiece>();
+
+        if (blockBlastGrid != null)
+        {
+            int cols = blockBlastGrid.GetLength(0);
+            int rows = blockBlastGrid.GetLength(1);
+            for (int x = 0; x < cols; x++)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    if (blockBlastGrid[x, y] != null)
+                    {
+                        piecesToConverge.Add(blockBlastGrid[x, y]);
+                        blockBlastGrid[x, y] = null;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < blockBlastGhostTiles.Count; i++)
+        {
+            if (blockBlastGhostTiles[i] != null)
+            {
+                piecesToConverge.Add(blockBlastGhostTiles[i]);
+            }
+        }
+        blockBlastGhostTiles.Clear();
+
+        for (int i = 0; i < activeBlastingTiles.Count; i++)
+        {
+            if (activeBlastingTiles[i] != null && activeBlastingTiles[i].visual != null)
+            {
+                piecesToConverge.Add(activeBlastingTiles[i].visual);
+            }
+        }
+        activeBlastingTiles.Clear();
+
+        if (blockBlastBoardBgRoot != null)
+        {
+            Destroy(blockBlastBoardBgRoot);
+            blockBlastBoardBgRoot = null;
+        }
+
+        if (piecesToConverge.Count > 0 && mainBouncer != null && gameObject.activeInHierarchy)
+        {
+            StopAnyActiveConvergeAnimation();
+            activeConvergeCoroutine = StartCoroutine(AnimateConvergePiecesIntoMainLogo(piecesToConverge));
+        }
+        else
+        {
+            if (mainBouncer != null)
+            {
+                mainBouncer.SetMainLogoRenderersVisible(true);
+                mainBouncer.TriggerRecombineBounce();
+                mainBouncer.TriggerSquashStretch(Vector2.up, mainBouncer.maxSquashAmount * 0.85f);
+                mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+            }
         }
     }
 
@@ -3084,7 +3488,7 @@ public class TVMinigameController : MonoBehaviour
         return tile;
     }
 
-    private void RollNextBlockBlastShape()
+    private void SpawnGhostTilesForShape(int shapeIdx)
     {
         for (int i = 0; i < blockBlastGhostTiles.Count; i++)
         {
@@ -3092,10 +3496,10 @@ public class TVMinigameController : MonoBehaviour
         }
         blockBlastGhostTiles.Clear();
 
-        currentBlockBlastShapeIdx = Random.Range(0, BlockBlastShapes.Length);
+        currentBlockBlastShapeIdx = Mathf.Clamp(shapeIdx, 0, BlockBlastShapes.Length - 1);
         BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
 
-        GetBlockBlastGridMetrics(out int cols, out int rows, out float cellSize, out _);
+        GetBlockBlastGridMetrics(out _, out _, out float cellSize, out _);
 
         Color ghostPrimary = new Color(shape.primaryColor.r, shape.primaryColor.g, shape.primaryColor.b, blockBlastGhostAlpha);
         Color ghostSecondary = new Color(shape.secondaryColor.r, shape.secondaryColor.g, shape.secondaryColor.b, blockBlastGhostAlpha);
@@ -3109,6 +3513,15 @@ public class TVMinigameController : MonoBehaviour
                 blockBlastGhostTiles.Add(ghostTile);
             }
         }
+    }
+
+    private void RollNextBlockBlastShape()
+    {
+        int nextIdx = Random.Range(0, BlockBlastShapes.Length);
+        SpawnGhostTilesForShape(nextIdx);
+
+        GetBlockBlastGridMetrics(out int cols, out int rows, out _, out _);
+        BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
 
         // Check if this newly rolled piece can fit ANYWHERE on the board!
         if (!CanShapeFitAnywhereOnBoard(shape, cols, rows))
@@ -3303,6 +3716,7 @@ public class TVMinigameController : MonoBehaviour
     private void TriggerBlockBlastNoSpaceReset()
     {
         if (isBlockBlastShatteringReset) return;
+        hasSavedBlockBlastState = false;
         isBlockBlastShatteringReset = true;
         blockBlastShatterTimer = 0f;
 

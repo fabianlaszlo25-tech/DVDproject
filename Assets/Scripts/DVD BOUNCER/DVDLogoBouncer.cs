@@ -282,6 +282,13 @@ public class DVDLogoBouncer : MonoBehaviour
             audioSource.playOnAwake = false;
         }
 
+        if (directHitSound == null)
+        {
+#if UNITY_EDITOR
+            directHitSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/5.mp3");
+#endif
+        }
+
         if (direction.sqrMagnitude < 0.01f)
         {
             direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
@@ -1339,7 +1346,7 @@ public class DVDLogoBouncer : MonoBehaviour
         if (dvdTr != null)
         {
             Renderer r1 = dvdTr.GetComponent<Renderer>();
-            if (TryExtractRendererColor(r1, out Color c1))
+            if (TryExtractRendererColor(r1, out Color c1) && !IsColorNearWhite(c1))
             {
                 primaryColor = c1;
             }
@@ -1348,7 +1355,7 @@ public class DVDLogoBouncer : MonoBehaviour
             if (torusTr != null)
             {
                 Renderer r2 = torusTr.GetComponent<Renderer>();
-                if (TryExtractRendererColor(r2, out Color c2))
+                if (TryExtractRendererColor(r2, out Color c2) && !IsColorNearWhite(c2))
                 {
                     secondaryColor = c2;
                 }
@@ -1357,15 +1364,23 @@ public class DVDLogoBouncer : MonoBehaviour
         else
         {
             Renderer[] rends = GetComponentsInChildren<Renderer>(false);
-            if (rends.Length > 0 && TryExtractRendererColor(rends[0], out Color c1))
+            if (rends.Length > 0 && TryExtractRendererColor(rends[0], out Color c1) && !IsColorNearWhite(c1))
             {
                 primaryColor = c1;
             }
-            if (rends.Length > 1 && TryExtractRendererColor(rends[1], out Color c2))
+            if (rends.Length > 1 && TryExtractRendererColor(rends[1], out Color c2) && !IsColorNearWhite(c2))
             {
                 secondaryColor = c2;
             }
         }
+
+        if (IsColorNearWhite(primaryColor)) primaryColor = master.sparkColorPrimary;
+        if (IsColorNearWhite(secondaryColor)) secondaryColor = master.sparkColorSecondary;
+    }
+
+    private static bool IsColorNearWhite(Color c)
+    {
+        return c.r > 0.90f && c.g > 0.90f && c.b > 0.90f;
     }
 
     private static bool TryExtractRendererColor(Renderer r, out Color c)
@@ -1376,18 +1391,66 @@ public class DVDLogoBouncer : MonoBehaviour
         Material mat = r.sharedMaterial;
         if (mat == null) return false;
 
+        // 1. Check for emission color first if base color is white or uncolored,
+        // because CRT/DVD neon materials (e.g., EMMISSIVES, EMMISSIVES 1) have their true vibrant color in _EmissionColor!
+        if (mat.HasProperty("_EmissionColor"))
+        {
+            Color em = mat.GetColor("_EmissionColor");
+            if (em.r > 0.05f || em.g > 0.05f || em.b > 0.05f)
+            {
+                float maxComp = Mathf.Max(em.r, Mathf.Max(em.g, em.b));
+                if (maxComp > 1.0f) em /= maxComp;
+                em.a = 1f;
+
+                Color baseC = Color.white;
+                bool hasBase = false;
+                if (mat.HasProperty("_BaseColor")) { baseC = mat.GetColor("_BaseColor"); hasBase = true; }
+                else if (mat.HasProperty("_Color")) { baseC = mat.GetColor("_Color"); hasBase = true; }
+
+                bool isBaseWhiteOrGray = !hasBase || (Mathf.Abs(baseC.r - baseC.g) < 0.08f && Mathf.Abs(baseC.g - baseC.b) < 0.08f);
+                if (isBaseWhiteOrGray)
+                {
+                    c = em;
+                    return true;
+                }
+            }
+        }
+
         if (mat.HasProperty("_BaseColor"))
         {
-            c = mat.GetColor("_BaseColor");
-            c.a = 1f;
-            return true;
+            Color baseCol = mat.GetColor("_BaseColor");
+            if (!IsColorNearWhite(baseCol) || !mat.HasProperty("_EmissionColor"))
+            {
+                c = baseCol;
+                c.a = 1f;
+                return true;
+            }
         }
+
         if (mat.HasProperty("_Color"))
         {
-            c = mat.GetColor("_Color");
-            c.a = 1f;
-            return true;
+            Color col = mat.GetColor("_Color");
+            if (!IsColorNearWhite(col) || !mat.HasProperty("_EmissionColor"))
+            {
+                c = col;
+                c.a = 1f;
+                return true;
+            }
         }
+
+        if (mat.HasProperty("_EmissionColor"))
+        {
+            Color em = mat.GetColor("_EmissionColor");
+            if (em.r > 0.02f || em.g > 0.02f || em.b > 0.02f)
+            {
+                float maxComp = Mathf.Max(em.r, Mathf.Max(em.g, em.b));
+                if (maxComp > 1.0f) em /= maxComp;
+                em.a = 1f;
+                c = em;
+                return true;
+            }
+        }
+
         return false;
     }
 

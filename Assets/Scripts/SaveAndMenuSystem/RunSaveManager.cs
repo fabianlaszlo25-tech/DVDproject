@@ -203,7 +203,7 @@ public class RunSaveManager : MonoBehaviour
     private float savedMaxSleep = 100f;
     private float savedMaxDirtiness = 100f;
     private float savedMaxDepression = 100f;
-    private float savedHungerFillRate = 2f;
+    private float savedHungerFillRate = 1f;
     private float savedSleepFillRate = 1.5f;
     private float savedBaseDepressionFillRate = 1f;
     private float savedFoodHungerReduction = 50f;

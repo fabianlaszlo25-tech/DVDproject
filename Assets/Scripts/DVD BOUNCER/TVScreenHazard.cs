@@ -166,6 +166,14 @@ public class TVScreenHazard : MonoBehaviour
             }
         }
 
+        if (slapImpactSound == null)
+        {
+#if UNITY_EDITOR
+            slapImpactSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/tvhit.mp3");
+            if (slapImpactSound == null) slapImpactSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/6.mp3");
+#endif
+        }
+
         ScheduleNextMalfunction();
     }
 

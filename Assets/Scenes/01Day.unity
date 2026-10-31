@@ -10683,7 +10683,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.32, y: 0.12, z: 0.28}
+  m_Size: {x: 0.22, y: 0.28, z: 0.08}
   m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!4 &340653149
 Transform:
@@ -10693,14 +10693,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340653146}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.23697814, y: 0.3876636, z: -0.098882556, w: 0.88531387}
-  m_LocalPosition: {x: 10.096, y: 0.577, z: -5.739}
-  m_LocalScale: {x: 1.15, y: 0.846055, z: 1.453485}
+  m_LocalRotation: {x: 0.2567464, y: 0.40248418, z: -0.10260163, w: 0.87267447}
+  m_LocalPosition: {x: 10.092, y: 0.548, z: -5.743}
+  m_LocalScale: {x: 1.15, y: 0.98362356, z: 2.5994127}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 462478825}
   m_Father: {fileID: 201337191}
-  m_LocalEulerAnglesHint: {x: 29.753, y: 47.447, z: 0.571}
+  m_LocalEulerAnglesHint: {x: 32.053, y: 50.055, z: 1.866}
 --- !u!1 &349409292
 GameObject:
   m_ObjectHideFlags: 0
@@ -11366,11 +11366,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Crusty Gas Station Scratch-Off - $380.00
+  hoverText: 'Emotional Support Bong - $380.00
 
-    +45% Food Hunger Reduction
+    +120% Food Hunger Reduction
 
-    +25%
+    +50%
     Depression Fill Rate
 
     (Hold Click to Buy)'
@@ -16683,7 +16683,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: db8cf0dd9f66f2642b5cfaf1429a3598, type: 2}
     - target: {fileID: 1030985107, guid: abc00000000006334927166070235253, type: 3}
       propertyPath: m_StaticShadowCaster
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1030985107, guid: abc00000000006334927166070235253, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -16691,7 +16691,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: db8cf0dd9f66f2642b5cfaf1429a3598, type: 2}
     - target: {fileID: 1030985111, guid: abc00000000006334927166070235253, type: 3}
       propertyPath: m_StaticShadowCaster
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1030985111, guid: abc00000000006334927166070235253, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -24006,11 +24006,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Moldy Takeout Styrofoam - $320.00
+  hoverText: 'Crusty Gas Station Scratch-Off - $320.00
 
-    +20% Money on All Bounces
+    +70% Money on All Bounces
 
-    +30%
+    +80%
     Inflation Rate
 
     (Hold Click to Buy)'
@@ -27702,10 +27702,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Expired Xanax in a Pez Dispenser - $220.00
 
-    -25% Depression Fill
+    -60% Depression Fill
     Rate
 
-    +20% Toilet Dirtiness
+    +70% Toilet Dirtiness
 
     (Hold Click to Buy)'
   onClick:
@@ -28126,9 +28126,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Shoddy Lithium Battery Charger - $270.00
 
-    +20% Bounce Speed
+    +50% Bounce Speed
 
-    +15%
+    +40%
     Depression Fill Rate
 
     (Hold Click to Buy)'
@@ -28550,9 +28550,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Overflowing Ceramic Ashtray - $340.00
 
-    -35% Toilet Dirtiness
+    -70% Toilet Dirtiness
 
-    +20%
+    +60%
     Hunger Fill Rate
 
     (Hold Click to Buy)'
@@ -28974,9 +28974,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Sticky Magnifying Glass - $390.00
 
-    +40% Money per Edge Bounce
+    +100% Money per Edge Bounce
 
-    +25%
+    +60%
     Base Food Cost
 
     (Hold Click to Buy)'
@@ -29398,9 +29398,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Pirated Cable Descrambler - $460.00
 
-    +50% Sleep Depression Reduction
+    +120% Sleep Depression Reduction
 
-    +25%
+    +50%
     Base Food Cost
 
     (Hold Click to Buy)'
@@ -29822,9 +29822,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Questionable USB Thumbdrive - $500.00
 
-    +25% Money on All Bounces
+    +75% Money on All Bounces
 
-    +25%
+    +60%
     Sleep Dirtiness
 
     (Hold Click to Buy)'
@@ -30246,9 +30246,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Pure Regret Paperweight - $560.00
 
-    +50% Food Hunger Reduction
+    +110% Food Hunger Reduction
 
-    +25%
+    +65%
     Penalty Multiplier
 
     (Hold Click to Buy)'
@@ -30670,9 +30670,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Knockoff Golden Buddha Statue - $620.00
 
-    +50% Cleaning Dirt Reduction
+    +120% Cleaning Dirt Reduction
 
-    +30%
+    +70%
     Hunger Fill Rate
 
     (Hold Click to Buy)'
@@ -31094,9 +31094,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Broken Nostalgia Music Box - $700.00
 
-    -40% Depression Fill Rate
+    -75% Depression Fill Rate
 
-    +35%
+    +80%
     Sleep Fill Rate
 
     (Hold Click to Buy)'
@@ -32886,10 +32886,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Half-Empty Anti-Depressant Bottle - $250.00
 
-    +40% Sleep Depression
+    +120% Sleep Depression
     Reduction
 
-    +20% Hunger Fill Rate
+    +50% Hunger Fill Rate
 
     (Hold Click to Buy)'
   onClick:
@@ -35339,7 +35339,7 @@ MonoBehaviour:
   currentSleep: 0
   currentDirtiness: 0
   currentDepression: 0
-  hungerFillRate: 2
+  hungerFillRate: 1
   sleepFillRate: 1.5
   baseDepressionFillRate: 1
   foodHungerReduction: 250
@@ -47770,11 +47770,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95062256367a0a648b5df2529e063804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
-  hoverText: 'Stale Scented Mood Candle - $440.00
+  hoverText: 'Moldy Takeout Styrofoam - $440.00
 
-    +45% Cleaning Dirt Reduction
+    +100% Cleaning Dirt Reduction
 
-    +25%
+    +50%
     Sleep Fill Rate
 
     (Hold Click to Buy)'
@@ -65601,9 +65601,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   hoverText: 'Flask of Warm Cooking Wine - $520.00
 
-    +45% Money per Corner Bounce
+    +150% Money per Corner Bounce
 
-    +30%
+    +75%
     Penalty Multiplier
 
     (Hold Click to Buy)'
@@ -67203,7 +67203,7 @@ MonoBehaviour:
   manualSquishCenterOffset: {x: 0, y: 0, z: 0}
   slapAudioSource: {fileID: 1395691590}
   staticLoopAudioSource: {fileID: 276987196}
-  slapImpactSound: {fileID: 8300000, guid: 4bfb21acb7825eb4aa525ec413b27a18, type: 3}
+  slapImpactSound: {fileID: 8300000, guid: 9ededb9310b22964182727a8dad2d3de, type: 3}
   staticNoiseSound: {fileID: 8300000, guid: 2f415a6310f6a2648b83f3451c2b15cd, type: 3}
 --- !u!114 &1987252896
 MonoBehaviour:
@@ -67229,7 +67229,7 @@ MonoBehaviour:
   focusDistanceFromScreen: 1.45
   targetViewportFill: 0.88
   screenReticleTransform: {fileID: 0}
-  remoteReticleOrthoSize: 0.42
+  remoteReticleOrthoSize: 0.25
   remoteReticleColor: {r: 1, g: 0.92, b: 0.28, a: 1}
   logoHitboxPadding: 0.25
   towelHoverModelOverride: {fileID: 0}
@@ -67274,8 +67274,8 @@ MonoBehaviour:
   customDustPatternTexture: {fileID: 0}
   dustTintColor: {r: 0.82, g: 0.79, b: 0.72, a: 1}
   overlayFrontOffset: 0.0012
-  secondsToFullDust: 140
-  initialDustRatio: 0.22
+  secondsToFullDust: 500
+  initialDustRatio: 0.08
   maxDustVisualAlpha: 0.78
   minSpeedMultiplierAtFullDust: 0.5
   wipeBrushRadiusUV: 0.13
@@ -67283,8 +67283,8 @@ MonoBehaviour:
   cleanPayoffThreshold: 0.9
   cleanSparkleParticlePrefab: {fileID: 0}
   wipeAudioSource: {fileID: 1395691590}
-  wipeRubSound: {fileID: 8300000, guid: 157c61885f81d554db2dcc67316ef29a, type: 3}
-  cleanChimeSound: {fileID: 8300000, guid: 353d23f088062f946a9e61603a61b06c, type: 3}
+  wipeRubSound: {fileID: 8300000, guid: 596b7b68f431b30409ba7dff730daed7, type: 3}
+  cleanChimeSound: {fileID: 8300000, guid: bab37fce5de79e740ac2a0c99882691c, type: 3}
 --- !u!114 &1987252898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70326,7 +70326,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 23.690002, y: 41.600006}
+  m_AnchoredPosition: {x: 23.690063, y: 41.599976}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2079674436

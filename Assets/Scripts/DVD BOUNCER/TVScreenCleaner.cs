@@ -32,10 +32,10 @@ public class TVScreenCleaner : MonoBehaviour
 
     [Header("Dust Accumulation & Debuff Settings")]
     [Tooltip("Time in seconds for dust to reach 100% accumulation from a clean screen.")]
-    public float secondsToFullDust = 140f;
+    public float secondsToFullDust = 500f;
     [Tooltip("Starting dust level (0 to 1) so you can test/see dust early if desired.")]
     [Range(0f, 1f)]
-    public float initialDustRatio = 0.22f;
+    public float initialDustRatio = 0.08f;
     [Tooltip("Maximum visual opacity of the dust layer at 100% dust.")]
     [Range(0.2f, 0.95f)]
     public float maxDustVisualAlpha = 0.78f;
@@ -82,6 +82,8 @@ public class TVScreenCleaner : MonoBehaviour
     private float accumUpdateTimer = 0f;
     private float wipeSoundCooldown = 0f;
     private bool isPlayingPayoffFlash = false;
+    private AudioSource wipeLoopAudioSource;
+    private float lastWipeTime = -10f;
 
     public float CurrentDustRatio => currentDustRatio;
     public float CurrentCleanlinessRatio => 1f - currentDustRatio;
@@ -94,7 +96,44 @@ public class TVScreenCleaner : MonoBehaviour
     void Start()
     {
         EnsureOverlayAndTexture();
+        EnsureWipeLoopAudioSource();
         InitializeDustState(initialDustRatio);
+
+        if (wipeRubSound == null)
+        {
+#if UNITY_EDITOR
+            wipeRubSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/cleaningscreen.mp3");
+#endif
+        }
+        if (cleanChimeSound == null)
+        {
+#if UNITY_EDITOR
+            cleanChimeSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/cleansparkle.mp3");
+            if (cleanChimeSound == null) cleanChimeSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/9.mp3");
+#endif
+        }
+    }
+
+    private void EnsureWipeLoopAudioSource()
+    {
+        if (wipeLoopAudioSource == null)
+        {
+            Transform existing = transform.Find("TVScreenCleaner_WipeAudioLoop");
+            if (existing != null)
+            {
+                wipeLoopAudioSource = existing.GetComponent<AudioSource>();
+            }
+            if (wipeLoopAudioSource == null)
+            {
+                GameObject loopObj = new GameObject("TVScreenCleaner_WipeAudioLoop");
+                loopObj.transform.SetParent(transform, false);
+                wipeLoopAudioSource = loopObj.AddComponent<AudioSource>();
+            }
+            wipeLoopAudioSource.playOnAwake = false;
+            wipeLoopAudioSource.loop = true;
+            wipeLoopAudioSource.volume = 0f;
+            wipeLoopAudioSource.spatialBlend = 0f; // 2D clean audio
+        }
     }
 
     private void EnsureOverlayAndTexture()
@@ -267,12 +306,37 @@ public class TVScreenCleaner : MonoBehaviour
     {
         if (PauseManager.IsGamePaused || DVDLogoBouncer.GlobalStaticHalt || isPlayingPayoffFlash)
         {
+            if (wipeLoopAudioSource != null && wipeLoopAudioSource.isPlaying)
+            {
+                wipeLoopAudioSource.volume = Mathf.MoveTowards(wipeLoopAudioSource.volume, 0f, 8f * Time.deltaTime);
+                if (wipeLoopAudioSource.volume <= 0.005f) wipeLoopAudioSource.Stop();
+            }
             return;
         }
 
-        if (wipeSoundCooldown > 0f)
+        // Smoothly loop the cleaning sound while scrubbing and fade it out quickly when stopping
+        bool isWipingNow = (Time.time - lastWipeTime < 0.20f) && (TVFocusController.Instance != null && TVFocusController.Instance.IsInFocusMode);
+        float targetVol = isWipingNow ? 0.70f : 0f;
+
+        if (wipeLoopAudioSource != null)
         {
-            wipeSoundCooldown -= Time.deltaTime;
+            if (isWipingNow && !wipeLoopAudioSource.isPlaying && wipeRubSound != null)
+            {
+                wipeLoopAudioSource.clip = wipeRubSound;
+                wipeLoopAudioSource.pitch = 1.0f;
+                wipeLoopAudioSource.Play();
+            }
+
+            if (wipeLoopAudioSource.isPlaying)
+            {
+                float fadeSpeed = isWipingNow ? 12f : 5.0f; // Quick fade in (0.08s), smooth quick fade out (~0.2s)
+                wipeLoopAudioSource.volume = Mathf.MoveTowards(wipeLoopAudioSource.volume, targetVol, fadeSpeed * Time.deltaTime);
+                if (!isWipingNow && wipeLoopAudioSource.volume <= 0.005f)
+                {
+                    wipeLoopAudioSource.Stop();
+                    wipeLoopAudioSource.volume = 0f;
+                }
+            }
         }
 
         // Accumulate dust gradually over time
@@ -435,16 +499,7 @@ public class TVScreenCleaner : MonoBehaviour
 
     private void PlayWipeRubAudio()
     {
-        if (wipeSoundCooldown > 0f) return;
-        wipeSoundCooldown = 0.14f;
-
-        if (wipeAudioSource != null && wipeRubSound != null)
-        {
-            float prevPitch = wipeAudioSource.pitch;
-            wipeAudioSource.pitch = Random.Range(1.35f, 1.65f);
-            wipeAudioSource.PlayOneShot(wipeRubSound, 0.45f);
-            wipeAudioSource.pitch = prevPitch;
-        }
+        lastWipeTime = Time.time;
     }
 
     private void RebuildFullTextureAndStats()
@@ -513,11 +568,18 @@ public class TVScreenCleaner : MonoBehaviour
         RebuildFullTextureAndStats();
         DVDLogoBouncer.GlobalDustSpeedMultiplier = 1.0f;
 
+        lastWipeTime = -10f;
+        if (wipeLoopAudioSource != null)
+        {
+            wipeLoopAudioSource.volume = 0f;
+            wipeLoopAudioSource.Stop();
+        }
+
         if (wipeAudioSource != null && cleanChimeSound != null)
         {
             float prevPitch = wipeAudioSource.pitch;
-            wipeAudioSource.pitch = 1.25f;
-            wipeAudioSource.PlayOneShot(cleanChimeSound, 0.9f);
+            wipeAudioSource.pitch = 1.0f;
+            wipeAudioSource.PlayOneShot(cleanChimeSound, 0.90f);
             wipeAudioSource.pitch = prevPitch;
         }
 
@@ -531,64 +593,7 @@ public class TVScreenCleaner : MonoBehaviour
     {
         isPlayingPayoffFlash = true;
 
-        // Spawn sparkle particles inside the TV RenderTexture camera space (or custom prefab if assigned)
-        DVDLogoBouncer mainBouncer = FindObjectOfType<DVDLogoBouncer>();
-        if (mainBouncer != null && mainBouncer.RenderCamera != null)
-        {
-            Camera rCam = mainBouncer.RenderCamera;
-            Vector3 centerPos = new Vector3(
-                rCam.transform.position.x,
-                rCam.transform.position.y,
-                mainBouncer.transform.position.z - 0.18f);
-
-            if (cleanSparkleParticlePrefab != null)
-            {
-                GameObject customFx = Instantiate(cleanSparkleParticlePrefab, centerPos, Quaternion.identity, rCam.transform);
-                Destroy(customFx, 2.0f);
-            }
-            else
-            {
-                float orthoH = rCam.orthographicSize * 2f;
-                float orthoW = orthoH * rCam.aspect;
-
-                GameObject sparkleObj = new GameObject("CleanScreenSparkles_InScreen");
-                sparkleObj.transform.SetParent(rCam.transform, true);
-                sparkleObj.transform.position = centerPos;
-
-                ParticleSystem ps = sparkleObj.AddComponent<ParticleSystem>();
-                var main = ps.main;
-                main.loop = false;
-                main.playOnAwake = false;
-                main.simulationSpace = ParticleSystemSimulationSpace.World;
-                main.startLifetime = new ParticleSystem.MinMaxCurve(0.40f, 0.75f);
-                main.startSpeed = new ParticleSystem.MinMaxCurve(0.35f, 1.15f);
-                main.startSize = new ParticleSystem.MinMaxCurve(0.08f, 0.18f);
-                main.startColor = new ParticleSystem.MinMaxGradient(
-                    new Color(1f, 0.98f, 0.65f, 1f),
-                    new Color(0.55f, 0.98f, 1f, 1f));
-
-                var emission = ps.emission;
-                emission.rateOverTime = 0f;
-                emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 32) });
-
-                var shape = ps.shape;
-                shape.shapeType = ParticleSystemShapeType.Box;
-                shape.scale = new Vector3(orthoW * 0.85f, orthoH * 0.85f, 0.05f);
-
-                var psRend = sparkleObj.GetComponent<ParticleSystemRenderer>();
-                if (psRend != null)
-                {
-                    Shader s = Shader.Find("Universal Render Pipeline/Particles/Unlit");
-                    if (s == null) s = Shader.Find("Sprites/Default");
-                    if (s != null) psRend.material = new Material(s);
-                }
-
-                ps.Play();
-                Destroy(sparkleObj, 1.2f);
-            }
-        }
-
-        // Flash the screen overlay with a clean white-gold sheen that fades out smoothly
+        // Flash the screen overlay with a clean white-gold sheen that fades out smoothly (particles removed)
         float duration = 0.42f;
         float elapsed = 0f;
         int totalPixels = pixelBuffer.Length;
