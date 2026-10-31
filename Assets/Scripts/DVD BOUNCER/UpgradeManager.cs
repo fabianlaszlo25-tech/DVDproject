@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-public enum UpgradeCategory { MoneyMultiplier, SpeedMultiplier }
+public enum UpgradeCategory { MoneyMultiplier, SpeedMultiplier, RemoteUpgrade }
 
 [System.Serializable]
 public class UpgradeTier
@@ -12,6 +12,9 @@ public class UpgradeTier
     public string tierName;
     public float cost;
     public float multiplierValue;
+    [Tooltip("Optional custom ability description shown in the upgrade menu (used for Remote tiers).")]
+    public string customDescription = "";
+
     public GameObject previewPrefab;
     public Vector3 previewPositionOffset = Vector3.zero;
     public Vector3 previewScale = new Vector3(50f, 50f, 50f);
@@ -22,7 +25,7 @@ public class UpgradeTier
     public string dvdVideoFileName;
     public AudioClip dvdMusic;
 
-    [Header("Player Replacements")]
+    [Header("Player & Remote Replacements")]
     public GameObject worldGameObject;
     public Mesh playerMesh1;
     public Mesh playerMesh2;
@@ -30,6 +33,7 @@ public class UpgradeTier
     [Header("Visual & Booster Upgrades")]
     public Material logoMaterial;
     public BoosterObject booster;
+    [HideInInspector] public Vector3 initialWorldScale = Vector3.one;
 }
 
 [System.Serializable]
@@ -53,9 +57,15 @@ public class UpgradePath
     public MeshFilter targetMeshFilter1;
     public MeshFilter targetMeshFilter2;
 
-    public List<UpgradeTier> tiers;
+    public List<UpgradeTier> tiers = new List<UpgradeTier>();
     public int equippedIndex = 0;
     public List<int> unlockedIndices = new List<int>();
+
+    public UpgradeTier GetTier(int index)
+    {
+        if (tiers != null && index >= 0 && index < tiers.Count) return tiers[index];
+        return null;
+    }
 }
 
 public class UpgradeManager : MonoBehaviour
@@ -63,18 +73,46 @@ public class UpgradeManager : MonoBehaviour
     public static UpgradeManager Instance { get; private set; }
 
     public DVDLogoBouncer bouncer;
-    public List<UpgradePath> upgradePaths;
+    public List<UpgradePath> upgradePaths = new List<UpgradePath>();
 
     public float worldModelShrinkSpeed = 0.5f;
+
+    /// <summary>
+    /// Currently equipped Remote tier index (0 to 8):
+    /// 0 = Stock Clicker (Base Remote: direct hit impulse + bonus cash + squash/stretch + sparks)
+    /// 1 = Mitosis Splitter (Base + splits logo into 2 smaller children that recombine on same-size collision)
+    /// 2 = Telekinetic Grabber (After Mitosis, NOT part of Ultimate: hold click to grab & drag logo; wall/corner hits award bounces)
+    /// 3 = Pinball Bumper Pro (Base + click empty screen to spawn up to 5 glowing 3D bumpers inside the TV screen)
+    /// 4 = Dino Jump Remote (Hold Remote in Focus Mode: Google No-Internet style runner with cacti & birds!)
+    /// 5 = Pong Paddle Remote (Hold Remote in Focus Mode: 1-Sided Pong paddle bar defender!)
+    /// 6 = Suika Merger Remote (Hold Remote in Focus Mode: Suika Logo Drop & Exponential Merger; remembers board state!)
+    /// 7 = Tower Stack Remote (Hold Remote in Focus Mode: Deformed Logo Tower Stacker; scrolls down & shrinks on topple!)
+    /// 8 = Omni-Remote 9000 (ULTIMATE Remote: combines Base + Mitosis Splitting + Pinball Bumpers all at once!)
+    /// </summary>
+    public int ActiveRemoteTier { get; private set; } = 0;
+
+    public bool IsCurrentRemoteOmni => ActiveRemoteTier == 8;
+    public bool IsCurrentRemoteBumperCapable => ActiveRemoteTier == 3 || ActiveRemoteTier == 8;
+    public bool IsCurrentRemoteMitosisCapable => ActiveRemoteTier == 1 || ActiveRemoteTier == 8;
+    public bool IsCurrentRemoteGrabber => ActiveRemoteTier == 2;
+    public bool IsCurrentRemoteMinigame => ActiveRemoteTier >= 4 && ActiveRemoteTier <= 7;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        EnsureRemoteUpgradePath();
     }
 
     void Start()
     {
+        EnsureRemoteUpgradePath();
+
         bool hasSavedUpgrades = RunSaveManager.HasInstance && RunSaveManager.Instance.HasSavedUpgrades;
         if (hasSavedUpgrades)
         {
@@ -111,18 +149,246 @@ public class UpgradeManager : MonoBehaviour
                 }
             }
 
+            if (path.category == UpgradeCategory.RemoteUpgrade)
+            {
+                ActiveRemoteTier = Mathf.Clamp(equippedIdx, 0, path.tiers.Count - 1);
+            }
+
             if (path.category == UpgradeCategory.MoneyMultiplier)
             {
-                if (path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.tiers[equippedIdx].dvdVideoFileName))
-                {
-                    path.targetVideoPlayer.source = VideoSource.Url;
-                    path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.tiers[equippedIdx].dvdVideoFileName);
-                    path.targetVideoPlayer.Play();
-                }
-
+                PlayEquippedDvdVideoImmediate(path, equippedIdx);
                 PlayDvdMusicOnPathSources(path, path.tiers[equippedIdx].dvdMusic);
             }
         }
+    }
+
+    /// <summary>
+    /// Ensures the 3rd UpgradePath (Remote Upgrades) exists and is populated with all 5 Remote Ability Tiers.
+    /// </summary>
+    public void EnsureRemoteUpgradePath()
+    {
+        if (upgradePaths == null) upgradePaths = new List<UpgradePath>();
+
+        UpgradePath remotePath = null;
+        for (int i = 0; i < upgradePaths.Count; i++)
+        {
+            if (upgradePaths[i] == null) continue;
+            if (upgradePaths[i].category == UpgradeCategory.RemoteUpgrade ||
+                (!string.IsNullOrEmpty(upgradePaths[i].pathName) && upgradePaths[i].pathName.ToLowerInvariant().Contains("remote")))
+            {
+                remotePath = upgradePaths[i];
+                remotePath.category = UpgradeCategory.RemoteUpgrade;
+                break;
+            }
+        }
+
+        if (remotePath == null)
+        {
+            remotePath = new UpgradePath
+            {
+                pathName = "remote",
+                category = UpgradeCategory.RemoteUpgrade,
+                equippedIndex = 0,
+                unlockedIndices = new List<int> { 0 },
+                tiers = new List<UpgradeTier>()
+            };
+            upgradePaths.Add(remotePath);
+        }
+
+        string[] defaultNames = new string[]
+        {
+            "Stock Clicker",
+            "Mitosis Splitter",
+            "Telekinetic Grabber",
+            "Pinball Bumper Pro",
+            "Dino Jump Remote",
+            "Pong Paddle Remote",
+            "Suika Merger Remote",
+            "Tower Stack Remote",
+            "Omni-Remote 9000"
+        };
+        float[] defaultCosts = new float[] { 0f, 85f, 190f, 320f, 420f, 520f, 640f, 760f, 950f };
+        float[] defaultMults = new float[] { 1f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f, 6f };
+        string[] defaultDescs = new string[]
+        {
+            "Direct Impulse Hit + Bonus Cash",
+            "Splits Logo into 2x Children + Recombines",
+            "Hold Logo: Drag Into Walls & Corners to Bounce!",
+            "Click Empty Screen: Spawn up to 5 Bumpers",
+            "Hold Remote: No-Internet Dino & Bird Jumper!",
+            "Hold Remote: 1-Sided Pong Bar Defender!",
+            "Hold Remote: Suika Logo Drop & Exponential Merger!",
+            "Hold Remote: Deformed Logo Tower Stacker!",
+            "ULTIMATE: Direct Hit + Mitosis + Bumpers!"
+        };
+
+        if (remotePath.tiers == null) remotePath.tiers = new List<UpgradeTier>();
+
+        // Migrate from 3-tier layout (Stock, Mitosis, Pinball) to 5-tier layout first if needed
+        if (remotePath.tiers.Count == 3 && remotePath.tiers[2] != null && remotePath.tiers[2].tierName == "Pinball Bumper Pro")
+        {
+            UpgradeTier oldPinballTier = remotePath.tiers[2];
+            UpgradeTier grabberTier = new UpgradeTier
+            {
+                tierName = defaultNames[2],
+                cost = defaultCosts[2],
+                multiplierValue = defaultMults[2],
+                customDescription = defaultDescs[2],
+                previewScale = oldPinballTier.previewScale,
+                previewRotation = oldPinballTier.previewRotation
+            };
+            UpgradeTier omniTier = new UpgradeTier
+            {
+                tierName = defaultNames[8],
+                cost = defaultCosts[8],
+                multiplierValue = defaultMults[8],
+                customDescription = defaultDescs[8],
+                previewScale = oldPinballTier.previewScale,
+                previewRotation = oldPinballTier.previewRotation
+            };
+            remotePath.tiers[2] = grabberTier;
+            remotePath.tiers.Add(oldPinballTier);
+            remotePath.tiers.Add(omniTier);
+        }
+
+        // Migrate from 5-tier layout (where index 4 was Omni-Remote 9000) to 7-tier layout
+        if (remotePath.tiers.Count == 5 && remotePath.tiers[4] != null && remotePath.tiers[4].tierName == "Omni-Remote 9000")
+        {
+            UpgradeTier oldOmniTier = remotePath.tiers[4];
+            UpgradeTier dinoTier = new UpgradeTier
+            {
+                tierName = defaultNames[4],
+                cost = defaultCosts[4],
+                multiplierValue = defaultMults[4],
+                customDescription = defaultDescs[4],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            UpgradeTier pongTier = new UpgradeTier
+            {
+                tierName = defaultNames[5],
+                cost = defaultCosts[5],
+                multiplierValue = defaultMults[5],
+                customDescription = defaultDescs[5],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            remotePath.tiers[4] = dinoTier;
+            remotePath.tiers.Add(pongTier);
+            remotePath.tiers.Add(oldOmniTier);
+        }
+
+        // Migrate from 7-tier layout (where index 6 was Omni-Remote 9000) to 9-tier layout (inserting Suika & Tower before Omni)
+        if (remotePath.tiers.Count == 7 && remotePath.tiers[6] != null && remotePath.tiers[6].tierName == "Omni-Remote 9000")
+        {
+            UpgradeTier oldOmniTier = remotePath.tiers[6];
+            UpgradeTier suikaTier = new UpgradeTier
+            {
+                tierName = defaultNames[6],
+                cost = defaultCosts[6],
+                multiplierValue = defaultMults[6],
+                customDescription = defaultDescs[6],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            UpgradeTier towerTier = new UpgradeTier
+            {
+                tierName = defaultNames[7],
+                cost = defaultCosts[7],
+                multiplierValue = defaultMults[7],
+                customDescription = defaultDescs[7],
+                previewScale = oldOmniTier.previewScale,
+                previewRotation = oldOmniTier.previewRotation
+            };
+            oldOmniTier.cost = defaultCosts[8];
+            oldOmniTier.multiplierValue = defaultMults[8];
+            remotePath.tiers[6] = suikaTier;
+            remotePath.tiers.Add(towerTier);
+            remotePath.tiers.Add(oldOmniTier);
+        }
+
+        while (remotePath.tiers.Count < 9)
+        {
+            remotePath.tiers.Add(new UpgradeTier());
+        }
+
+        UpgradeTier baseRefTier = remotePath.tiers[0];
+        Transform remoteRoot = (baseRefTier != null && baseRefTier.worldGameObject != null)
+            ? baseRefTier.worldGameObject.transform.parent
+            : null;
+
+        for (int i = 0; i < 9; i++)
+        {
+            UpgradeTier t = remotePath.tiers[i];
+            if (string.IsNullOrEmpty(t.tierName) || t.tierName == "Level 1")
+                t.tierName = defaultNames[i];
+            if (i > 0 && t.cost <= 0f)
+                t.cost = defaultCosts[i];
+            else if (i == 0)
+                t.cost = 0f;
+            if (t.multiplierValue <= 0f)
+                t.multiplierValue = defaultMults[i];
+            if (string.IsNullOrEmpty(t.customDescription) || i == 2)
+                t.customDescription = defaultDescs[i];
+
+            if (baseRefTier != null && i > 0)
+            {
+                if (t.previewPrefab == null && baseRefTier.previewPrefab != null)
+                    t.previewPrefab = baseRefTier.previewPrefab;
+
+                // Ensure each tier has its own distinct desk model object so SnapWorldVisuals never disables Tier 0
+                if ((t.worldGameObject == null || t.worldGameObject == baseRefTier.worldGameObject) && remoteRoot != null)
+                {
+                    string expectedName = $"RemoteControlTV_Tier{i}";
+                    Transform existingChild = remoteRoot.Find(expectedName);
+                    if (existingChild != null)
+                    {
+                        t.worldGameObject = existingChild.gameObject;
+                    }
+                    else if (Application.isPlaying && baseRefTier.worldGameObject != null)
+                    {
+                        GameObject clone = Instantiate(baseRefTier.worldGameObject, remoteRoot);
+                        clone.name = expectedName;
+                        clone.SetActive(false);
+                        t.worldGameObject = clone;
+                    }
+                }
+
+                if (t.previewScale == new Vector3(50f, 50f, 50f) && baseRefTier.previewScale != Vector3.zero)
+                {
+                    t.previewScale = baseRefTier.previewScale;
+                    t.previewRotation = baseRefTier.previewRotation;
+                }
+            }
+        }
+
+        if (remotePath.unlockedIndices == null) remotePath.unlockedIndices = new List<int>();
+        if (!remotePath.unlockedIndices.Contains(0))
+        {
+            remotePath.unlockedIndices.Add(0);
+        }
+    }
+
+    public UpgradePath GetPathByCategory(UpgradeCategory category)
+    {
+        EnsureRemoteUpgradePath();
+        for (int i = 0; i < upgradePaths.Count; i++)
+        {
+            if (upgradePaths[i] != null && upgradePaths[i].category == category)
+                return upgradePaths[i];
+        }
+        return null;
+    }
+
+    public int GetPathIndexByCategory(UpgradeCategory category)
+    {
+        EnsureRemoteUpgradePath();
+        for (int i = 0; i < upgradePaths.Count; i++)
+        {
+            if (upgradePaths[i] != null && upgradePaths[i].category == category)
+                return i;
+        }
+        return 0;
     }
 
     public decimal GetTierCost(UpgradeTier tier)
@@ -137,7 +403,7 @@ public class UpgradeManager : MonoBehaviour
         if (path.unlockedIndices.Contains(targetIndex)) return true;
 
         decimal cost = GetTierCost(path.tiers[targetIndex]);
-        if (bouncer.TrySpendMoney(cost))
+        if (bouncer != null && bouncer.TrySpendMoney(cost))
         {
             path.unlockedIndices.Add(targetIndex);
             return true;
@@ -171,7 +437,24 @@ public class UpgradeManager : MonoBehaviour
 
         if (r != null)
         {
+            // Only replace the material on the primary 'dvd' renderer (NOT 'dvd/Torus'),
+            // so the logo preserves its distinct two-color design while both parts deform together!
             r.material = mat;
+        }
+
+        // Also update the primary 'dvd' renderer on any active split child logos
+        for (int i = 0; i < DVDLogoBouncer.ActiveLogos.Count; i++)
+        {
+            DVDLogoBouncer logo = DVDLogoBouncer.ActiveLogos[i];
+            if (logo != null && logo.isChildLogo)
+            {
+                Transform childDvd = logo.transform.Find("dvd");
+                Renderer childRend = childDvd != null ? childDvd.GetComponent<Renderer>() : logo.GetComponent<Renderer>();
+                if (childRend != null)
+                {
+                    childRend.material = mat;
+                }
+            }
         }
     }
 
@@ -198,7 +481,7 @@ public class UpgradeManager : MonoBehaviour
 
         if (path.category == UpgradeCategory.MoneyMultiplier)
         {
-            bouncer.SetMoneyMultiplier(newMultiplier);
+            if (bouncer != null) bouncer.SetMoneyMultiplier(newMultiplier);
             ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
             if (path.targetVideoPlayer != null)
             {
@@ -207,8 +490,81 @@ public class UpgradeManager : MonoBehaviour
         }
         else if (path.category == UpgradeCategory.SpeedMultiplier)
         {
-            bouncer.SetSpeedMultiplier(newMultiplier);
+            if (bouncer != null) bouncer.SetSpeedMultiplier(newMultiplier);
             ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
+        }
+        else if (path.category == UpgradeCategory.RemoteUpgrade)
+        {
+            int newRemoteTier = Mathf.Clamp(targetIndex, 0, path.tiers.Count - 1);
+            bool oldSupportsBumpers = (ActiveRemoteTier == 3 || ActiveRemoteTier == 8);
+            bool newSupportsBumpers = (newRemoteTier == 3 || newRemoteTier == 8);
+
+            if (oldSupportsBumpers && !newSupportsBumpers)
+            {
+                ScreenBumper.ClearAllBumpers();
+            }
+            ActiveRemoteTier = newRemoteTier;
+            ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
+        }
+    }
+
+    /// <summary>
+    /// Called by TVScreenHazard when CRT static malfunction begins so DVD music pauses while static blasts.
+    /// </summary>
+    public void PauseDvdMusicForStatic()
+    {
+        UpgradePath dvdPath = GetPathByCategory(UpgradeCategory.MoneyMultiplier);
+        if (dvdPath != null)
+        {
+            StopDvdMusicOnPathSources(dvdPath);
+        }
+    }
+
+    /// <summary>
+    /// Called by TVScreenHazard when the player slaps the TV to fix static malfunction,
+    /// restoring the currently equipped DVD's video on bgvideo and resuming its music.
+    /// </summary>
+    public void ResumeCurrentDvdVideoAndMusic()
+    {
+        UpgradePath dvdPath = GetPathByCategory(UpgradeCategory.MoneyMultiplier);
+        if (dvdPath == null || dvdPath.tiers == null || dvdPath.tiers.Count == 0) return;
+
+        int equippedIdx = Mathf.Clamp(dvdPath.equippedIndex, 0, dvdPath.tiers.Count - 1);
+        PlayEquippedDvdVideoImmediate(dvdPath, equippedIdx);
+        PlayDvdMusicOnPathSources(dvdPath, dvdPath.tiers[equippedIdx].dvdMusic);
+    }
+
+    private void PlayEquippedDvdVideoImmediate(UpgradePath path, int targetIndex)
+    {
+        if (path == null || path.targetVideoPlayer == null || targetIndex < 0 || targetIndex >= path.tiers.Count)
+            return;
+
+        string videoName = path.tiers[targetIndex].dvdVideoFileName;
+        bool hasSpecificVideo = false;
+        if (!string.IsNullOrEmpty(videoName))
+        {
+            string fullPath = Path.Combine(Application.streamingAssetsPath, videoName);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            bool exists = true;
+#else
+            bool exists = File.Exists(fullPath);
+#endif
+            if (exists)
+            {
+                path.targetVideoPlayer.source = VideoSource.Url;
+                path.targetVideoPlayer.url = fullPath;
+                path.targetVideoPlayer.isLooping = true;
+                path.targetVideoPlayer.Play();
+                hasSpecificVideo = true;
+            }
+        }
+
+        if (!hasSpecificVideo && !string.IsNullOrEmpty(path.staticVideoFileName))
+        {
+            path.targetVideoPlayer.source = VideoSource.Url;
+            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.staticVideoFileName);
+            path.targetVideoPlayer.isLooping = true;
+            path.targetVideoPlayer.Play();
         }
     }
 
@@ -298,35 +654,7 @@ public class UpgradeManager : MonoBehaviour
             yield return new WaitForSeconds(path.staticDuration);
         }
 
-        string videoName = path.tiers[targetIndex].dvdVideoFileName;
-        bool hasSpecificVideo = false;
-        if (!string.IsNullOrEmpty(videoName))
-        {
-            string fullPath = Path.Combine(Application.streamingAssetsPath, videoName);
-#if UNITY_WEBGL && !UNITY_EDITOR
-            bool exists = true;
-#else
-            bool exists = File.Exists(fullPath);
-#endif
-            if (exists)
-            {
-                path.targetVideoPlayer.source = VideoSource.Url;
-                path.targetVideoPlayer.url = fullPath;
-                path.targetVideoPlayer.isLooping = true;
-                path.targetVideoPlayer.Play();
-                hasSpecificVideo = true;
-            }
-        }
-
-        // If no video clip is ready for this DVD yet, ensure the background video stays on static!
-        if (!hasSpecificVideo && path.targetVideoPlayer != null && !string.IsNullOrEmpty(path.staticVideoFileName))
-        {
-            path.targetVideoPlayer.source = VideoSource.Url;
-            path.targetVideoPlayer.url = Path.Combine(Application.streamingAssetsPath, path.staticVideoFileName);
-            path.targetVideoPlayer.isLooping = true;
-            path.targetVideoPlayer.Play();
-        }
-
+        PlayEquippedDvdVideoImmediate(path, targetIndex);
         PlayDvdMusicOnPathSources(path, path.tiers[targetIndex].dvdMusic);
     }
 

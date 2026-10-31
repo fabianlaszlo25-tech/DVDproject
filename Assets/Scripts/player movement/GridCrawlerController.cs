@@ -41,8 +41,11 @@ public class GridCrawlerController : MonoBehaviour
     public float mouseSensitivity = 1.0f;
 
     [HideInInspector] public Vector2 virtualMousePos;
+    [HideInInspector] public bool isInTVFocusMode = false;
 
     private bool isActing = false;
+    public bool IsActing => isActing;
+
     private InputAction moveAction;
     private Vector3 textTargetScale = Vector3.zero;
     private MovementArrowUI[] allArrows;
@@ -93,12 +96,59 @@ public class GridCrawlerController : MonoBehaviour
 
     void OnDisable() => moveAction.Disable();
 
+    /// <summary>
+    /// Locks/unlocks player movement and rotation for TV Focus Mode while keeping virtual cursor active.
+    /// </summary>
+    public void SetTVFocusMode(bool active)
+    {
+        isInTVFocusMode = active;
+        isActing = active;
+        ResetAllArrows();
+
+        if (allArrows != null)
+        {
+            foreach (var arrow in allArrows)
+            {
+                if (arrow != null) arrow.gameObject.SetActive(!active);
+            }
+        }
+
+        if (!active)
+        {
+            SetCrosshairModeState(CrosshairMode.Default);
+            textTargetScale = Vector3.zero;
+            if (interactTextUI != null) interactTextUI.text = "";
+        }
+    }
+
+    /// <summary>
+    /// Updates standard 2D crosshair state and hover text when controlled by TVFocusController.
+    /// </summary>
+    public void SetFocusCursorVisuals(bool showStandardReticle, bool useInteractReticle, string hoverText)
+    {
+        if (!showStandardReticle)
+        {
+            SetCrosshairModeState(CrosshairMode.Hidden);
+            textTargetScale = Vector3.zero;
+            if (interactTextUI != null) interactTextUI.text = "";
+        }
+        else
+        {
+            SetCrosshairModeState(useInteractReticle ? CrosshairMode.Interact : CrosshairMode.Default);
+            if (interactTextUI != null)
+            {
+                interactTextUI.text = hoverText ?? "";
+                textTargetScale = string.IsNullOrEmpty(hoverText) ? Vector3.zero : Vector3.one;
+            }
+        }
+    }
+
     void Update()
     {
         CalculateVirtualMousePosition();
         HandleCursorAndInteractions();
 
-        if (isActing) return;
+        if (isActing || isInTVFocusMode) return;
         HandleMovementInputs();
     }
 
@@ -188,6 +238,10 @@ public class GridCrawlerController : MonoBehaviour
                     textTargetScale = Vector3.zero;
                     SetCrosshairModeState(CrosshairMode.Hidden); // Hide entirely while on pause button
                     hudPauseButton.SetHoverState(true);
+                    if (TVFocusController.Instance != null)
+                    {
+                        TVFocusController.Instance.HideScreenReticle();
+                    }
 
                     if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                     {
@@ -199,10 +253,17 @@ public class GridCrawlerController : MonoBehaviour
             hudPauseButton.SetHoverState(false);
         }
 
+        // Delegate to TVFocusController when in TV Focus Mode
+        if (isInTVFocusMode && TVFocusController.Instance != null)
+        {
+            TVFocusController.Instance.HandleFocusCursorAndInput(cam);
+            return;
+        }
+
         MovementArrowUI hoveredArrow = null;
         foreach (var arrow in allArrows)
         {
-            if (arrow == null || arrow.Rect == null) continue;
+            if (arrow == null || !arrow.gameObject.activeInHierarchy || arrow.Rect == null) continue;
 
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(arrow.Rect, virtualMousePos, uiCam, out Vector2 arrowLocalPoint))
             {
@@ -232,7 +293,7 @@ public class GridCrawlerController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, interactReach))
         {
             InteractableObject interactObj = hit.collider.GetComponentInParent<InteractableObject>();
-            if (interactObj != null)
+            if (interactObj != null && interactObj.enabled)
             {
                 SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
 
@@ -288,10 +349,10 @@ public class GridCrawlerController : MonoBehaviour
         }
     }
 
-    public void Action_MoveForward() { if (!isActing && gridManager != null) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
-    public void Action_TurnAround() { if (!isActing) StartCoroutine(PerformTurn(180f)); }
-    public void UI_TurnRight() { if (!isActing) StartCoroutine(PerformTurn(90f)); }
-    public void UI_TurnLeft() { if (!isActing) StartCoroutine(PerformTurn(-90f)); }
+    public void Action_MoveForward() { if (!isActing && !isInTVFocusMode && gridManager != null) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
+    public void Action_TurnAround() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(180f)); }
+    public void UI_TurnRight() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(90f)); }
+    public void UI_TurnLeft() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(-90f)); }
 
     private IEnumerator PerformMove(Vector3 targetDirection, Vector3? targetPos)
     {
@@ -337,7 +398,7 @@ public class GridCrawlerController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(postActionCooldown);
-        isActing = false;
+        if (!isInTVFocusMode) isActing = false;
     }
 
     private IEnumerator PerformTurn(float angle)
@@ -360,8 +421,9 @@ public class GridCrawlerController : MonoBehaviour
 
         if (cameraScript != null) cameraScript.isAutoCentering = false;
         yield return new WaitForSeconds(postActionCooldown);
-        isActing = false;
+        if (!isInTVFocusMode) isActing = false;
     }
+
     private void SetupInteractTextOutline()
     {
         if (interactTextUI == null) return;

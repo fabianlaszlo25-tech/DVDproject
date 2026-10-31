@@ -412,6 +412,9 @@ public class PauseManager : MonoBehaviour
         activeDraggedSlider = null;
 
         SyncSlidersToCurrentVolumes();
+        NormalizeSliderVisualAlignment(musicVolumeSlider);
+        NormalizeSliderVisualAlignment(sfxVolumeSlider);
+        NormalizeSliderVisualAlignment(sensitivitySlider);
         ResetButtonHoverScales();
 
         if (mainButtonsPanel != null && settingsPanel != null && mainButtonsPanel != settingsPanel)
@@ -642,7 +645,10 @@ public class PauseManager : MonoBehaviour
     {
         if (slider == null) return;
 
-        RectTransform trackRect = slider.GetComponent<RectTransform>();
+        Transform handleAreaTransform = slider.transform.Find("Handle Slide Area");
+        RectTransform trackRect = (handleAreaTransform is RectTransform handleAreaRT)
+            ? handleAreaRT
+            : slider.GetComponent<RectTransform>();
         if (trackRect == null) return;
 
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(trackRect, screenPos, uiCam, out Vector2 localPoint))
@@ -1031,6 +1037,10 @@ public class PauseManager : MonoBehaviour
             pauseCanvas.sortingOrder = 5000;
         }
 
+        NormalizeSliderVisualAlignment(musicVolumeSlider);
+        NormalizeSliderVisualAlignment(sfxVolumeSlider);
+        NormalizeSliderVisualAlignment(sensitivitySlider);
+
         GraphicRaycaster raycaster = pauseCanvas.GetComponent<GraphicRaycaster>();
         if (raycaster == null)
         {
@@ -1038,6 +1048,88 @@ public class PauseManager : MonoBehaviour
         }
         raycaster.enabled = true;
         raycaster.blockingObjects = GraphicRaycaster.BlockingObjects.None;
+    }
+
+    public static void NormalizeSliderVisualAlignment(Slider slider)
+    {
+        if (slider == null) return;
+
+        RectTransform sliderRT = slider.GetComponent<RectTransform>();
+        if (sliderRT == null) return;
+
+        Transform bgTransform = slider.transform.Find("Background");
+        Transform fillAreaTransform = slider.transform.Find("Fill Area");
+        Transform handleAreaTransform = slider.transform.Find("Handle Slide Area");
+
+        // Ensure Background is drawn first, Fill Area second, and Handle Slide Area last (on top)
+        if (bgTransform != null) bgTransform.SetSiblingIndex(0);
+        if (fillAreaTransform != null) fillAreaTransform.SetSiblingIndex(1);
+        if (handleAreaTransform != null) handleAreaTransform.SetAsLastSibling();
+
+        if (bgTransform != null)
+        {
+            RectTransform bgRT = bgTransform as RectTransform;
+            Image bgImg = bgTransform.GetComponent<Image>();
+            if (bgRT != null)
+            {
+                bgRT.anchorMin = new Vector2(0f, 0.25f);
+                bgRT.anchorMax = new Vector2(1f, 0.75f);
+                bgRT.anchoredPosition = Vector2.zero;
+                bgRT.sizeDelta = Vector2.zero;
+            }
+            if (bgImg != null && bgImg.sprite != null)
+            {
+                // Disable PreserveAspect so the track stretches across the full 440px slider width instead of shrinking to a small centered pill
+                bgImg.preserveAspect = false;
+            }
+        }
+
+        if (fillAreaTransform is RectTransform fillAreaRT)
+        {
+            fillAreaRT.anchorMin = new Vector2(0f, 0.25f);
+            fillAreaRT.anchorMax = new Vector2(1f, 0.75f);
+            fillAreaRT.offsetMin = new Vector2(6f, 0f);
+            fillAreaRT.offsetMax = new Vector2(-6f, 0f);
+
+            if (slider.fillRect != null)
+            {
+                slider.fillRect.anchorMin = Vector2.zero;
+                slider.fillRect.anchorMax = Vector2.one;
+                slider.fillRect.anchoredPosition = Vector2.zero;
+                slider.fillRect.sizeDelta = Vector2.zero;
+                Image fillImg = slider.fillRect.GetComponent<Image>();
+                if (fillImg != null && fillImg.sprite != null)
+                {
+                    fillImg.preserveAspect = false;
+                }
+            }
+        }
+
+        if (handleAreaTransform is RectTransform handleAreaRT)
+        {
+            handleAreaRT.anchorMin = Vector2.zero;
+            handleAreaRT.anchorMax = Vector2.one;
+            handleAreaRT.offsetMin = new Vector2(14f, 0f);
+            handleAreaRT.offsetMax = new Vector2(-14f, 0f);
+
+            if (slider.handleRect != null)
+            {
+                slider.handleRect.pivot = new Vector2(0.5f, 0.5f);
+                slider.handleRect.anchoredPosition = Vector2.zero;
+                slider.handleRect.sizeDelta = new Vector2(28f, 0f);
+                Image handleImg = slider.handleRect.GetComponent<Image>();
+                if (handleImg != null && handleImg.type == Image.Type.Filled)
+                {
+                    handleImg.type = Image.Type.Simple;
+                    handleImg.preserveAspect = true;
+                }
+            }
+        }
+
+        // Force Slider component to re-apply its current normalized value to the handle and fill anchors
+        float currentVal = slider.value;
+        slider.SetValueWithoutNotify(slider.minValue);
+        slider.SetValueWithoutNotify(currentVal);
     }
 
     // =========================================================================
