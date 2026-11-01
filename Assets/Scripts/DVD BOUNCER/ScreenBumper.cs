@@ -163,6 +163,15 @@ public class ScreenBumper : MonoBehaviour
 
     private void Update()
     {
+        // Bumpers only belong to the Pinball / Omni remotes: remove them if another remote is equipped
+        // so they never leak into other remote minigames.
+        if (UpgradeManager.Instance != null && !UpgradeManager.Instance.IsCurrentRemoteBumperCapable)
+        {
+            ClearAllBumpers();
+            Destroy(gameObject);
+            return;
+        }
+
         if (PauseManager.IsGamePaused || DVDLogoBouncer.GlobalStaticHalt) return;
 
         if (hitCooldown > 0f)

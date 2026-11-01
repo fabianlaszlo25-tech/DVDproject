@@ -571,7 +571,7 @@ public class SubstanceCombinationManager : MonoBehaviour
         isOverdoseSequenceRunning = true;
         EnsureOverlayInitialized();
 
-        SetGlobalInputBlocked(true);
+        SetGlobalInputBlocked(true); GridCrawlerController.InputFrozen = true; // freeze movement/look during the overdose
 
         for (int i = 0; i < activeConsumables.Count; i++)
         {
@@ -656,7 +656,7 @@ public class SubstanceCombinationManager : MonoBehaviour
         currentBlackoutFade = 0f;
         isOverdoseSequenceRunning = false;
 
-        SetGlobalInputBlocked(false);
+        SetGlobalInputBlocked(false); GridCrawlerController.InputFrozen = false; // resume movement/look
     }
 
     private void MaxOutAllBarsExceptDepression()

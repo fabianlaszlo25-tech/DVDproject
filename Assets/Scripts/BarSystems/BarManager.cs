@@ -72,6 +72,9 @@ public class BarManager : MonoBehaviour
     public float baseFoodCost = 10f;
     [Tooltip("Rate at which prices inflate per dollar of all-time money earned (e.g. 0.0001 = 0.01% per $1, 0.00025 = 0.025% per $1, 0.001 = 0.1% per $1).")]
     public float inflationRatePerDollar = 0.0001f;
+    [Tooltip("Inflation increase (in percent) can never be more than this fraction of the money gained (0.5 = 50%).")]
+    [Range(0.05f, 1f)]
+    public float maxInflationPercentOfMoneyGained = 0.5f;
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
 
@@ -128,6 +131,13 @@ public class BarManager : MonoBehaviour
         float allTimeMoneyFloat = (float)economyBouncer.AllTimeMoneyEarned;
         currentInflationMultiplier = 1f + (allTimeMoneyFloat * inflationRatePerDollar);
 
+        // Safety cap: the inflation increase (shown as "+X% Inflation") can never exceed
+        // maxInflationPercentOfMoneyGained (50%) of the money gained, so stacked permanent boosters
+        // can never make prices run away from what the player earns.
+        float maxInflationPercent = Mathf.Max(0f, allTimeMoneyFloat * maxInflationPercentOfMoneyGained);
+        float maxMultiplier = 1f + (maxInflationPercent / 100f);
+        if (currentInflationMultiplier > maxMultiplier) currentInflationMultiplier = maxMultiplier;
+
         float foodMultiplier = currentInflationMultiplier;
         if (BillManager.Instance != null && BillManager.Instance.IsFoodMoreExpensive)
         {
@@ -153,7 +163,11 @@ public class BarManager : MonoBehaviour
         bool isDirtinessFull = currentDirtiness >= maxDirtiness;
 
         float moneyFloat = economyBouncer != null ? (float)economyBouncer.currentMoney : 0f;
-        currentMoneyDepressionMultiplier = Mathf.Clamp(1f + (moneyFloat * moneyDepressionRatePerDollar), 1f, maxMoneyDepressionMultiplier);
+        // Money-driven depression is slightly reduced (x0.8 on the money-scaling part, incl. its cap)
+        const float MoneyDepressionScale = 0.8f;
+        float rawMoneyBonus = moneyFloat * moneyDepressionRatePerDollar * MoneyDepressionScale;
+        float maxMoneyBonus = Mathf.Max(0f, maxMoneyDepressionMultiplier - 1f) * MoneyDepressionScale;
+        currentMoneyDepressionMultiplier = 1f + Mathf.Clamp(rawMoneyBonus, 0f, maxMoneyBonus);
         float depressionSpeed = baseDepressionFillRate * currentMoneyDepressionMultiplier;
 
         if (isHungerFull) depressionSpeed *= penaltyMultiplier;
@@ -220,6 +234,19 @@ public class BarManager : MonoBehaviour
     }
 
     public float CurrentInflationMultiplier => currentInflationMultiplier;
+
+    /// <summary>
+    /// True when hunger, needs/bladder or dirtiness is at max (critical). While true the player cannot sleep.
+    /// The sleep bar itself is excluded, since a full sleep bar is exactly why you want to sleep.
+    /// </summary>
+    public bool IsCriticalBarMaxed(out string barName)
+    {
+        barName = null;
+        if (currentHunger >= maxHunger - 0.01f) barName = "hungry";
+        else if (currentNeeds >= maxNeeds - 0.01f) barName = "desperate for the toilet";
+        else if (currentDirtiness >= maxDirtiness - 0.01f) barName = "filthy";
+        return barName != null;
+    }
 
     public decimal GetFoodCost(float basePrice)
     {

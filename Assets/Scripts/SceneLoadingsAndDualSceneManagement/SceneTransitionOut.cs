@@ -48,6 +48,12 @@ public class SceneTransitionOut : MonoBehaviour
                     BillManager.Instance.ShowBedDenyFeedback(gameObject);
                     return;
                 }
+                if (sceneToLoad == "KristofDreamGames" && BarManager.Instance != null
+                    && BarManager.Instance.IsCriticalBarMaxed(out string criticalReason))
+                {
+                    BillManager.Instance.ShowCustomDenyFeedback(gameObject, $"Can't sleep while you're {criticalReason}!");
+                    return;
+                }
                 if (sceneToLoad == "BarGameBarni" && BillManager.Instance.IsBarBlocked)
                 {
                     BillManager.Instance.ShowBarDenyFeedback(gameObject);

@@ -46,6 +46,14 @@ public class GridCrawlerController : MonoBehaviour
     private bool isActing = false;
     public bool IsActing => isActing;
 
+    /// <summary>When true the player can't move or look around. Reset automatically when a new scene/player loads.</summary>
+    public static bool InputFrozen = false;
+
+    private void OnDestroy()
+    {
+        InputFrozen = false;
+    }
+
     private InputAction moveAction;
     private Vector3 textTargetScale = Vector3.zero;
     private MovementArrowUI[] allArrows;
@@ -145,6 +153,9 @@ public class GridCrawlerController : MonoBehaviour
 
     void Update()
     {
+        // Frozen (e.g. during the overdose hallucinations): no moving, no cursor/look movement
+        if (InputFrozen) return;
+
         CalculateVirtualMousePosition();
         HandleCursorAndInteractions();
 

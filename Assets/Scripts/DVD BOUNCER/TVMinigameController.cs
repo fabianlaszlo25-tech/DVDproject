@@ -242,6 +242,18 @@ public class TVMinigameController : MonoBehaviour
     private float dinoVerticalVelocity = 0f;
     private bool dinoIsGrounded = true;
     private float dinoSpawnTimer = 0f;
+    private float dinoElapsed = 0f;
+    private float fishEatenShrinkBeginTime = -1f;
+    // Player stops visibly growing once it is this many times its starting size (camera zooms out instead)
+    private const float FishMaxVisibleSizeFactor = 2.6f;
+    // Tower is a bit harder than the inspector value (multiplier applied on top, so scene overrides still work)
+    private float EffectiveTowerForgiveness => towerBalanceForgiveness * 0.84f;
+    private float dinoSpeedMult = 1f;
+    private const float DinoMaxSpeedMult = 2.4f;
+    private const float DinoSpeedRampPerSecond = 0.012f;
+    private const float DinoBaseGapMin = 8.5f;
+    private const float DinoBaseGapMax = 14.5f;
+    private const float DinoShortHopGravityMult = 3.4f;
     private GameObject dinoGroundLineObj;
     private Vector3 savedLogoPositionBeforeRunner;
     private Vector2 savedLogoDirectionBeforeRunner;
@@ -800,6 +812,9 @@ public class TVMinigameController : MonoBehaviour
     private readonly List<DeformableLogoPiece> blockBlastGhostTiles = new List<DeformableLogoPiece>();
     private readonly List<FlyingBlockBlastTile> activeBlastingTiles = new List<FlyingBlockBlastTile>();
     private int currentBlockBlastShapeIdx = 0;
+    private int[] blockBlastQueue = new int[] { -1, -1 };
+    private int[] savedBlockBlastQueue = new int[] { -1, -1 };
+    private readonly List<DeformableLogoPiece> blockBlastPreviewTiles = new List<DeformableLogoPiece>();
     private Vector2Int currentSnappedGridCell = new Vector2Int(3, 3);
     private bool currentGhostPlacementValid = false;
     private bool isBlockBlastShatteringReset = false;
@@ -1101,7 +1116,9 @@ public class TVMinigameController : MonoBehaviour
         mainBouncer.transform.position = new Vector3(targetX, targetY, savedLogoPositionBeforeRunner.z);
         dinoVerticalVelocity = 0f;
         dinoIsGrounded = true;
-        dinoSpawnTimer = 0.55f;
+        dinoSpawnTimer = 0.9f;
+        dinoElapsed = 0f;
+        dinoSpeedMult = 1f;
     }
 
     private void ExitDinoRunnerMode()
@@ -1155,7 +1172,12 @@ public class TVMinigameController : MonoBehaviour
         if (!dinoIsGrounded || dinoVerticalVelocity > 0f)
         {
             currentY += dinoVerticalVelocity * dt;
-            dinoVerticalVelocity -= dinoGravity * dt;
+
+            // Variable jump height (like the Chrome dino): holding the click keeps full gravity-limited ascent,
+            // releasing early while still rising cuts the jump short with much stronger gravity.
+            bool jumpHeld = UnityEngine.InputSystem.Mouse.current != null && UnityEngine.InputSystem.Mouse.current.leftButton.isPressed;
+            float gravityMult = (dinoVerticalVelocity > 0f && !jumpHeld) ? DinoShortHopGravityMult : 1f;
+            dinoVerticalVelocity -= dinoGravity * gravityMult * dt;
 
             float minPivotY = groundY - pivotToMinOffset.y;
             float maxPivotY = (camMaxY - 0.25f) - pivotToMaxOffset.y;
@@ -1185,11 +1207,18 @@ public class TVMinigameController : MonoBehaviour
         mainBouncer.transform.position = new Vector3(runnerX, currentY, mainBouncer.transform.position.z);
         logoBounds = mainBouncer.GetLogoWorldBounds();
 
+        dinoElapsed += dt;
+        dinoSpeedMult = Mathf.Min(DinoMaxSpeedMult, 1f + dinoElapsed * DinoSpeedRampPerSecond);
+        float currentObstacleSpeed = dinoObstacleSpeed * dinoSpeedMult;
+
         dinoSpawnTimer -= dt;
         if (dinoSpawnTimer <= 0f)
         {
             SpawnRunnerObstacle(camMaxX + 1.1f, groundY, camMaxY);
-            dinoSpawnTimer = Random.Range(dinoSpawnIntervalRange.x, dinoSpawnIntervalRange.y);
+            // Fixed gap in world units, widening as the game speeds up so it stays fair
+            float gapScale = 1f + (dinoSpeedMult - 1f) * 0.65f;
+            float gap = Random.Range(DinoBaseGapMin, DinoBaseGapMax) * gapScale;
+            dinoSpawnTimer = gap / currentObstacleSpeed;
         }
 
         for (int i = activeObstacles.Count - 1; i >= 0; i--)
@@ -1202,7 +1231,7 @@ public class TVMinigameController : MonoBehaviour
             }
 
             Vector3 pos = obs.root.transform.position;
-            pos.x -= dinoObstacleSpeed * dt;
+            pos.x -= currentObstacleSpeed * dt;
 
             if (obs.isBird)
             {
@@ -1249,8 +1278,9 @@ public class TVMinigameController : MonoBehaviour
             if (!obs.passedRewardGiven && (pos.x + obs.halfWidth) < logoBounds.min.x - 0.1f)
             {
                 obs.passedRewardGiven = true;
-                // No particle effect when safely passing an obstacle in Dino Runner!
-                mainBouncer.AwardMinigameCornerReward(1, mainBouncer.GetLogoVisualCenter(), false);
+                // Reward grows with game speed. No particle effect when safely passing an obstacle in Dino Runner!
+                mainBouncer.GetLogoTwoColors(out Color rewardA, out Color rewardB);
+                mainBouncer.AwardMinigameScaledCornerReward(dinoSpeedMult, mainBouncer.GetLogoVisualCenter(), rewardA, rewardB, false);
                 PlaySound(enemyPassSound, 1.15f);
             }
 
@@ -2463,7 +2493,8 @@ public class TVMinigameController : MonoBehaviour
             if (!isActiveBlockFalling)
             {
                 float maxSwingOffset = ((camMaxX - camMinX) * 0.5f) - activeSwingingBlock.halfWidth - 0.18f;
-                activeSwingingBlock.towerRelX += activeSwingDirection * towerTopSwingSpeed * dt;
+                float swingSpeed = towerTopSwingSpeed * (1f + Mathf.Min(stackedTowerBlocks.Count, 30) * 0.02f);
+                activeSwingingBlock.towerRelX += activeSwingDirection * swingSpeed * dt;
                 if (activeSwingingBlock.towerRelX >= maxSwingOffset)
                 {
                     activeSwingingBlock.towerRelX = maxSwingOffset;
@@ -2518,7 +2549,7 @@ public class TVMinigameController : MonoBehaviour
         if (supportBlock != null)
         {
             float dx = activeSwingingBlock.towerRelX - supportBlock.towerRelX;
-            float maxSupportSpan = (supportBlock.halfWidth + activeSwingingBlock.halfWidth * 0.45f) * towerBalanceForgiveness;
+            float maxSupportSpan = (supportBlock.halfWidth + activeSwingingBlock.halfWidth * 0.45f) * EffectiveTowerForgiveness;
             overhangRatio = dx / Mathf.Max(0.1f, supportBlock.halfWidth);
 
             if (Mathf.Abs(dx) <= maxSupportSpan)
@@ -2533,7 +2564,7 @@ public class TVMinigameController : MonoBehaviour
 
         // Accumulate overhang instability across the tower
         towerCumulativeInstability = towerCumulativeInstability * 0.78f + overhangRatio * 0.42f;
-        if (Mathf.Abs(towerCumulativeInstability) > 1.15f * towerBalanceForgiveness)
+        if (Mathf.Abs(towerCumulativeInstability) > 1.15f * EffectiveTowerForgiveness)
         {
             landedSafely = false;
         }
@@ -2556,7 +2587,9 @@ public class TVMinigameController : MonoBehaviour
             float landWorldY = baseFloorY + (activeSwingingBlock.towerRelY - currentTowerScrollY);
             Color cA = activeSwingingBlock.visual.primaryColor;
             Color cB = activeSwingingBlock.visual.secondaryColor;
-            mainBouncer.AwardMinigameCornerReward(1, new Vector3(landWorldX, landWorldY, zPlane), cA, cB);
+            // Taller tower = more money per landed block
+            float heightRewardMult = 1f + stackedTowerBlocks.Count * 0.25f;
+            mainBouncer.AwardMinigameScaledCornerReward(heightRewardMult, new Vector3(landWorldX, landWorldY, zPlane), cA, cB);
 
             float pitch = Mathf.Clamp(0.95f + stackedTowerBlocks.Count * 0.03f, 0.95f, 1.55f);
             PlaySound(towerLandSound, pitch);
@@ -2934,16 +2967,25 @@ public class TVMinigameController : MonoBehaviour
 
             mf.mergeTimer += dt;
             float t = Mathf.Clamp01(mf.mergeTimer / Mathf.Max(0.05f, mf.mergeDuration));
-            float smooth = t * t * (3f - 2f * t);
+            // Merge-game feel: slowly gets sucked in, then accelerates into the player while shrinking
+            float pull = t * t * t;
+            float shrink = 1f - (1f - t) * (1f - t);
 
             Vector2 targetPos = fishPlayerPos;
-            mf.pos = Vector2.Lerp(mf.mergeStartPos, targetPos, smooth);
-            mf.visual.overallScaleFactor = Mathf.Lerp(mf.mergeStartSize, 0.08f, smooth);
+            mf.pos = Vector2.Lerp(mf.mergeStartPos, targetPos, pull);
+            mf.visual.overallScaleFactor = Mathf.Lerp(mf.mergeStartSize, mf.mergeStartSize * 0.12f, shrink);
             mf.visual.SetCenterPosition(new Vector3(mf.pos.x, mf.pos.y, zPlane));
             mf.visual.UpdateVisuals(dt);
 
             if (t >= 1f)
             {
+                // Satisfying "merge" payoff: the player bulges and squashes as it absorbs the fish
+                if (fishPlayerVisual != null && !isFishPlayerBeingEaten)
+                {
+                    fishPlayerVisual.TriggerPop(0.30f, 0.26f);
+                    Vector2 impact = (mf.pos - fishPlayerPos);
+                    fishPlayerVisual.TriggerSquash(impact.sqrMagnitude > 0.0001f ? impact.normalized : Vector2.up, 0.20f, 0.32f);
+                }
                 mf.visual.DestroyPiece();
                 mergingFishAnimations.RemoveAt(i);
             }
@@ -2980,7 +3022,7 @@ public class TVMinigameController : MonoBehaviour
             // Keep the predator fish gently drifting while locked, then shrinking back to starting size as camera zooms back in
             if (fishPredatorThatAtePlayer != null && fishPredatorThatAtePlayer.visual != null)
             {
-                if (fishEatenSequenceTimer < lockDuration)
+                if (fishEatenSequenceTimer < lockDuration || (fishEatenShrinkBeginTime < 0f && activeFishList.Count > 0 && fishEatenSequenceTimer < lockDuration + 2.0f))
                 {
                     fishPredatorThatAtePlayer.pos += fishPredatorThatAtePlayer.vel * 0.25f * dt;
                     float hw = fishPredatorThatAtePlayer.visual.EffectiveHalfWidth;
@@ -2992,8 +3034,9 @@ public class TVMinigameController : MonoBehaviour
                 }
                 else
                 {
-                    // Flash + 0.5s is over! Shrink the eating fish back to smallest starting size and zoom camera back in!
-                    float shrinkT = Mathf.Clamp01((fishEatenSequenceTimer - lockDuration) / shrinkPhaseDuration);
+                    // Everything else has been pushed off-screen: NOW shrink back to starting size and zoom back in
+                    if (fishEatenShrinkBeginTime < 0f) fishEatenShrinkBeginTime = fishEatenSequenceTimer;
+                    float shrinkT = Mathf.Clamp01((fishEatenSequenceTimer - fishEatenShrinkBeginTime) / shrinkPhaseDuration);
                     float smoothS = shrinkT * shrinkT * (3f - 2f * shrinkT);
 
                     fishWorldZoomScale = Mathf.Lerp(fishZoomBeforeReset, 1.0f, smoothS);
@@ -3044,8 +3087,10 @@ public class TVMinigameController : MonoBehaviour
         }
         else if (fishPlayerVisual != null)
         {
-            // 3. Normal Fish Frenzy gameplay: Smoothly zoom out world scale as player grows (keeping bgvideo untouched!)
-            fishTargetWorldZoomScale = Mathf.Clamp(fishInitialPlayerSize / Mathf.Max(0.1f, fishPlayerRawSize), 0.05f, 1.0f);
+            // 3. Normal Fish Frenzy gameplay: the player visibly grows until FishMaxVisiblePlayerScale, after that the
+            //    "camera" zooms out so the player stops visibly growing and only the surrounding fish look smaller.
+            float maxVisible = fishInitialPlayerSize * FishMaxVisibleSizeFactor;
+            fishTargetWorldZoomScale = Mathf.Clamp(maxVisible / Mathf.Max(0.1f, fishPlayerRawSize), 0.05f, 1.0f);
             fishWorldZoomScale = Mathf.Lerp(fishWorldZoomScale, fishTargetWorldZoomScale, dt * 4.5f);
 
             float playerRenderedScale = fishPlayerRawSize * fishWorldZoomScale;
@@ -3071,7 +3116,7 @@ public class TVMinigameController : MonoBehaviour
 
         // 4. Spawn new swimming NPC fish from the 4 edges
         fishSpawnTimer -= dt;
-        if (fishSpawnTimer <= 0f && activeFishList.Count < fishMaxActiveNpcCount)
+        if (fishSpawnTimer <= 0f && activeFishList.Count < fishMaxActiveNpcCount && !isFishPlayerBeingEaten)
         {
             SpawnSwimmingFishFromEdge(false);
             fishSpawnTimer = Random.Range(fishSpawnIntervalRange.x, fishSpawnIntervalRange.y);
@@ -3123,6 +3168,10 @@ public class TVMinigameController : MonoBehaviour
 
             // Despawn fish once it swims completely off the far side of the screen
             float outMargin = 2.5f;
+            if (isFishPlayerBeingEaten)
+            {
+                outMargin = Mathf.Max(2.5f, Mathf.Max(f.visual.EffectiveHalfWidth, f.visual.EffectiveHalfHeight) + 0.6f);
+            }
             if (f.pos.x < camMinX - outMargin || f.pos.x > camMaxX + outMargin ||
                 f.pos.y < camMinY - outMargin || f.pos.y > camMaxY + outMargin)
             {
@@ -3141,19 +3190,22 @@ public class TVMinigameController : MonoBehaviour
         // Start merge animation of the eaten fish into the player logo
         eaten.isBeingMerged = true;
         eaten.mergeTimer = 0f;
-        eaten.mergeDuration = 0.20f;
+        eaten.mergeDuration = 0.28f;
         eaten.mergeStartPos = eaten.pos;
         eaten.mergeStartSize = eaten.visual.overallScaleFactor;
         eaten.visual.TriggerSquash((fishPlayerPos - eaten.pos).normalized, 0.24f, 0.24f);
         mergingFishAnimations.Add(eaten);
 
-        // Grow player size (which smoothly zooms out fishTargetWorldZoomScale so growth is endless!)
-        fishPlayerRawSize += eaten.rawSize * fishGrowthPerEatFactor;
+        // Grow player size. Grows faster at the start; once past the visible-size cap, growth is normal and the
+        // camera zoom-out (fishTargetWorldZoomScale) keeps the player's on-screen size constant.
+        float visibleCap = fishInitialPlayerSize * FishMaxVisibleSizeFactor;
+        float earlyBoost = fishPlayerRawSize < visibleCap ? 2.1f : 1f;
+        fishPlayerRawSize += eaten.rawSize * fishGrowthPerEatFactor * earlyBoost;
 
         if (fishPlayerVisual != null)
         {
-            fishPlayerVisual.TriggerPop(0.36f, 0.30f);
-            fishPlayerVisual.TriggerSquash(Vector2.up, 0.22f, 0.42f);
+            // The big pop happens when the eaten fish actually arrives (see merge animation update)
+            fishPlayerVisual.TriggerSquash(Vector2.up, 0.10f, 0.25f);
         }
 
         // Award money based on the size of the eaten fish!
@@ -3187,6 +3239,18 @@ public class TVMinigameController : MonoBehaviour
         fishPlayerEatenStartScale = fishPlayerVisual != null ? fishPlayerVisual.overallScaleFactor : fishInitialPlayerSize;
         fishPredatorShrinkStartSize = predator.visual.overallScaleFactor * 1.12f;
         fishZoomBeforeReset = fishWorldZoomScale;
+        fishEatenShrinkBeginTime = -1f;
+
+        // Push every other fish off the screen BEFORE the reset/scale-back so the rescale is never visible
+        for (int i = 0; i < activeFishList.Count; i++)
+        {
+            FishEntity other = activeFishList[i];
+            if (other == null) continue;
+            Vector2 away = other.pos - predator.pos;
+            if (away.sqrMagnitude < 0.0001f) away = Random.insideUnitCircle;
+            away.Normalize();
+            other.vel = away * Random.Range(17f, 24f);
+        }
 
         // Predator pops & squashes as it eats the player with the merge animation!
         predator.visual.overallScaleFactor = fishPredatorShrinkStartSize;
@@ -3261,11 +3325,14 @@ public class TVMinigameController : MonoBehaviour
                 }
             }
 
+            blockBlastQueue = new int[] { savedBlockBlastQueue[0], savedBlockBlastQueue[1] };
             SpawnGhostTilesForShape(savedBlockBlastShapeIdx);
+            RebuildBlockBlastPreviews();
             PlaySound(suikaMergeSound, 1.08f);
         }
         else
         {
+            blockBlastQueue = new int[] { -1, -1 };
             RollNextBlockBlastShape();
         }
     }
@@ -3299,6 +3366,7 @@ public class TVMinigameController : MonoBehaviour
             }
 
             savedBlockBlastShapeIdx = currentBlockBlastShapeIdx;
+            savedBlockBlastQueue = new int[] { blockBlastQueue[0], blockBlastQueue[1] };
             hasSavedBlockBlastState = true;
         }
 
@@ -3329,6 +3397,15 @@ public class TVMinigameController : MonoBehaviour
             }
         }
         blockBlastGhostTiles.Clear();
+
+        for (int i = 0; i < blockBlastPreviewTiles.Count; i++)
+        {
+            if (blockBlastPreviewTiles[i] != null)
+            {
+                piecesToConverge.Add(blockBlastPreviewTiles[i]);
+            }
+        }
+        blockBlastPreviewTiles.Clear();
 
         for (int i = 0; i < activeBlastingTiles.Count; i++)
         {
@@ -3386,6 +3463,8 @@ public class TVMinigameController : MonoBehaviour
             if (blockBlastGhostTiles[i] != null) blockBlastGhostTiles[i].DestroyPiece();
         }
         blockBlastGhostTiles.Clear();
+
+        ClearBlockBlastPreviews();
 
         for (int i = 0; i < activeBlastingTiles.Count; i++)
         {
@@ -3517,8 +3596,18 @@ public class TVMinigameController : MonoBehaviour
 
     private void RollNextBlockBlastShape()
     {
-        int nextIdx = Random.Range(0, BlockBlastShapes.Length);
+        int shapeCount = BlockBlastShapes.Length;
+        if (blockBlastQueue == null || blockBlastQueue.Length < 2) blockBlastQueue = new int[] { -1, -1 };
+        if (blockBlastQueue[0] < 0) blockBlastQueue[0] = Random.Range(0, shapeCount);
+        if (blockBlastQueue[1] < 0) blockBlastQueue[1] = Random.Range(0, shapeCount);
+
+        // Current piece comes from the queue; the queue shifts and gets a fresh random piece at the back
+        int nextIdx = blockBlastQueue[0];
+        blockBlastQueue[0] = blockBlastQueue[1];
+        blockBlastQueue[1] = Random.Range(0, shapeCount);
+
         SpawnGhostTilesForShape(nextIdx);
+        RebuildBlockBlastPreviews();
 
         GetBlockBlastGridMetrics(out int cols, out int rows, out _, out _);
         BlockBlastShapeDef shape = BlockBlastShapes[currentBlockBlastShapeIdx];
@@ -3527,6 +3616,70 @@ public class TVMinigameController : MonoBehaviour
         if (!CanShapeFitAnywhereOnBoard(shape, cols, rows))
         {
             TriggerBlockBlastNoSpaceReset();
+        }
+    }
+
+    private void ClearBlockBlastPreviews()
+    {
+        for (int i = 0; i < blockBlastPreviewTiles.Count; i++)
+        {
+            if (blockBlastPreviewTiles[i] != null) blockBlastPreviewTiles[i].DestroyPiece();
+        }
+        blockBlastPreviewTiles.Clear();
+    }
+
+    /// <summary>
+    /// Shows the next two upcoming shapes (shrunk) in the empty space left and right of the grid:
+    /// left = the piece after the current one, right = the one after that.
+    /// </summary>
+    private void RebuildBlockBlastPreviews()
+    {
+        ClearBlockBlastPreviews();
+        if (mainBouncer == null || orthoCamera == null || blockBlastQueue == null || blockBlastQueue.Length < 2) return;
+
+        GetBlockBlastGridMetrics(out int cols, out _, out float cellSize, out Vector2 origin);
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+
+        float gridLeft = origin.x;
+        float gridRight = origin.x + cols * cellSize;
+        float zPlane = mainBouncer.transform.position.z;
+        float centerY = (camMinY + camMaxY) * 0.5f;
+
+        for (int slot = 0; slot < 2; slot++)
+        {
+            int idx = blockBlastQueue[slot];
+            if (idx < 0 || idx >= BlockBlastShapes.Length) continue;
+            BlockBlastShapeDef shape = BlockBlastShapes[idx];
+
+            float marginMin = slot == 0 ? camMinX : gridRight;
+            float marginMax = slot == 0 ? gridLeft : camMaxX;
+            float marginW = Mathf.Max(0.2f, marginMax - marginMin);
+            float marginCenterX = (marginMin + marginMax) * 0.5f;
+
+            int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
+            for (int i = 0; i < shape.offsets.Length; i++)
+            {
+                minX = Mathf.Min(minX, shape.offsets[i].x); maxX = Mathf.Max(maxX, shape.offsets[i].x);
+                minY = Mathf.Min(minY, shape.offsets[i].y); maxY = Mathf.Max(maxY, shape.offsets[i].y);
+            }
+            int spanX = maxX - minX + 1;
+            int spanY = maxY - minY + 1;
+
+            // Shrink so the shape always fits inside the side margin
+            float previewCell = Mathf.Min(cellSize * 0.62f, (marginW * 0.78f) / Mathf.Max(1, spanX));
+            previewCell = Mathf.Min(previewCell, (cellSize * 4f) / Mathf.Max(1, spanY));
+            Vector2 shapeCenterCells = new Vector2((minX + maxX) * 0.5f, (minY + maxY) * 0.5f);
+
+            for (int i = 0; i < shape.offsets.Length; i++)
+            {
+                DeformableLogoPiece tile = CreateSquareBlockBlastTile($"PreviewTile_{slot}_{i}", previewCell, shape.primaryColor, shape.secondaryColor, false);
+                if (tile == null) continue;
+                Vector2 rel = (new Vector2(shape.offsets[i].x, shape.offsets[i].y) - shapeCenterCells) * previewCell;
+                tile.SetCenterPosition(new Vector3(marginCenterX + rel.x, centerY + rel.y, zPlane));
+                tile.TriggerPop(0.20f, 0.22f);
+                tile.UpdateVisuals(0f);
+                blockBlastPreviewTiles.Add(tile);
+            }
         }
     }
 
@@ -3825,6 +3978,10 @@ public class TVMinigameController : MonoBehaviour
         }
 
         // 3. Update placed grid tiles' idle squash/pop animations
+        for (int i = 0; i < blockBlastPreviewTiles.Count; i++)
+        {
+            if (blockBlastPreviewTiles[i] != null) blockBlastPreviewTiles[i].UpdateVisuals(dt);
+        }
         for (int x = 0; x < cols; x++)
         {
             for (int y = 0; y < rows; y++)

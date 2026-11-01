@@ -179,6 +179,17 @@ public class BillManager : MonoBehaviour
 
     // --- DENIAL FEEDBACK HELPERS ---
 
+    /// <summary>Shows a custom temporary hover message on the given interactable (e.g. bed can't be used).</summary>
+    public void ShowCustomDenyFeedback(GameObject obj, string message)
+    {
+        if (obj == null) return;
+        InteractableObject io = obj.GetComponent<InteractableObject>();
+        if (io != null)
+        {
+            StartCoroutine(ShowTemporaryFeedbackRoutine(io, message, 2.0f));
+        }
+    }
+
     public void ShowBedDenyFeedback(GameObject bedObject)
     {
         if (bedObject == null) return;

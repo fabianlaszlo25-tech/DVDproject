@@ -679,6 +679,17 @@ public class TVFocusController : MonoBehaviour
             SetHoverTowelVisible(false);
             prevWipeUV = new Vector2(-1f, -1f);
 
+            // GRACE ZONE: a border 5% bigger than the screen where nothing happens at all
+            // (no screen click, but the tool is NOT put down either).
+            if (IsInScreenGraceZone(ray))
+            {
+                if (playerController != null)
+                {
+                    playerController.SetFocusCursorVisuals(true, false, "");
+                }
+                return;
+            }
+
             if (playerController != null)
             {
                 string prompt = CurrentTool == HeldTool.Remote ? putDownRemoteText : putDownTowelText;
@@ -690,6 +701,20 @@ public class TVFocusController : MonoBehaviour
                 PutDownCurrentTool();
             }
         }
+    }
+
+    /// <summary>True if the ray hits the screen plane inside the screen rect enlarged by 5% (but not on the screen itself).</summary>
+    private bool IsInScreenGraceZone(Ray ray)
+    {
+        if (tvScreenRenderer == null) return false;
+        Bounds b = tvScreenRenderer.bounds;
+        Plane screenPlane = new Plane(-Vector3.forward, b.center);
+        if (!screenPlane.Raycast(ray, out float enter) || enter <= 0f) return false;
+        Vector3 p = ray.GetPoint(enter);
+        float padX = b.size.x * 0.05f;
+        float padY = b.size.y * 0.05f;
+        return p.x >= b.min.x - padX && p.x <= b.max.x + padX &&
+               p.y >= b.min.y - padY && p.y <= b.max.y + padY;
     }
 
     /// <summary>

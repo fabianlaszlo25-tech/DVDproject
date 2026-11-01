@@ -75,6 +75,8 @@ public class TVScreenHazard : MonoBehaviour
     // Saved bgvideo state before static malfunction
     private Vector3 savedBgVideoLocalPos;
     private bool hasSavedBgVideoState = false;
+    private bool hasSavedBgQueue = false;
+    private int savedBgRenderQueue = -1;
 
     public bool IsStaticActive => isStaticActive;
 
@@ -290,10 +292,14 @@ public class TVScreenHazard : MonoBehaviour
             if (bringInFrontOfLogos)
             {
                 // DVDLogo is at local z ~ 1.096 in front of DVDSetup/Camera; z = 0.65 places static.mp4 in front of all logos/bumpers
+                // Place static.mp4 right at the ortho camera's near plane so it covers EVERYTHING rendered in the TV
+                // (logos, bumpers, guide lines, minigame tiles, reticle...). Nothing can end up in front of it.
+                Camera tvCam = bgVideoPlayer.GetComponentInParent<Camera>();
+                float frontZ = (tvCam != null ? tvCam.nearClipPlane : 0.3f) + 0.01f;
                 bgVideoPlayer.transform.localPosition = new Vector3(
                     savedBgVideoLocalPos.x,
                     savedBgVideoLocalPos.y,
-                    0.65f);
+                    frontZ);
             }
             else
             {
@@ -306,6 +312,15 @@ public class TVScreenHazard : MonoBehaviour
             Material mat = Application.isPlaying ? bgVideoRenderer.material : bgVideoRenderer.sharedMaterial;
             if (mat != null)
             {
+                // Minigame visuals (guide lines, ghost tiles...) use transparent queue 3050, which would draw on top
+                // of the static regardless of depth. Push the static to the very end of the queue while active.
+                if (!hasSavedBgQueue)
+                {
+                    savedBgRenderQueue = mat.renderQueue;
+                    hasSavedBgQueue = true;
+                }
+                mat.renderQueue = bringInFrontOfLogos ? 4500 : savedBgRenderQueue;
+
                 if (mat.HasProperty("_BaseColor"))
                 {
                     Color c = mat.GetColor("_BaseColor");

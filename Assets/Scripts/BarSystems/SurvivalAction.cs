@@ -424,6 +424,14 @@ public class SurvivalAction : MonoBehaviour
             return;
         }
 
+        // Can't sleep while hunger / needs / dirtiness is maxed out (critical)
+        if (actionType == ActionType.Sleep && barManager != null && barManager.IsCriticalBarMaxed(out string criticalReason))
+        {
+            if (audioSource != null && cantAffordSound != null) audioSource.PlayOneShot(cantAffordSound);
+            if (BillManager.Instance != null) BillManager.Instance.ShowCustomDenyFeedback(gameObject, $"Can't sleep while you're {criticalReason}!");
+            return;
+        }
+
         // If this is the Sleep action and a SceneTransitionOut component is present (e.g. Bed transitioning to dream sequence),
 
         // let SceneTransitionOut drive the scene transition so two competing camera/fade routines don't fight each other!
