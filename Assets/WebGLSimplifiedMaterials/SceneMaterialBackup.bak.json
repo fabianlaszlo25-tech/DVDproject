@@ -1,5 +1,5 @@
 {
-    "lastUpdatedTimestamp": "2026-10-29 16:56:06",
+    "lastUpdatedTimestamp": "2026-11-01 12:05:36",
     "entries": [
         {
             "isPrefabAsset": false,
@@ -23880,9 +23880,9 @@
             "slots": [
                 {
                     "slotIndex": 0,
-                    "materialGuid": "f339f18bd5241774486bb5a6ab5914b2",
-                    "materialAssetPath": "Assets/3DAssets/remote/remote.mat",
-                    "materialName": "remote_backup",
+                    "materialGuid": "e80c3b9787c5c6946bbe60ef314da9b6",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier0.mat",
+                    "materialName": "Remote_Tier0",
                     "wasNull": false
                 }
             ]
@@ -74994,6 +74994,930 @@
                     "wasNull": false
                 }
             ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-565108058-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-565108056-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier1/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier1[1]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "0e478adbca20b8744bbebddcddf17fdc",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier1.mat",
+                    "materialName": "Remote_Tier1",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1403800992-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1403800990-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier2/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier2[2]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1d601e507b0a0314fadefdbbba8f450c",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier2.mat",
+                    "materialName": "Remote_Tier2",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-198495640-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-198495638-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier3/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier3[3]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "8153f3a8af0bbed469d7d986696f37e9",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier3.mat",
+                    "materialName": "Remote_Tier3",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-70339992-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-70339990-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier4/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier4[4]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "a78e7ffabb727d04991f95245484d8ce",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier4.mat",
+                    "materialName": "Remote_Tier4",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1201708724-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1201708722-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier5/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier5[5]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "33b2f9796b0cfcf4d9657af1c9b00c7e",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier5.mat",
+                    "materialName": "Remote_Tier5",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1603872286-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1603872284-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier6/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier6[6]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "e0a02243df7137545a3ee36119a03b8a",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier6.mat",
+                    "materialName": "Remote_Tier6",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1502439056-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1502439054-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier7/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier7[7]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "d9c23a88d79741f489ee37c40916022e",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier7.mat",
+                    "materialName": "Remote_Tier7",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-2055716032-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-2055716030-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier8/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier8[8]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c17df71a3f59956478852fa11f64667a",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier8.mat",
+                    "materialName": "Remote_Tier8",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-229231706-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-229231704-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier9/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier9[9]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "77e1a8c386f1bf149869818f2ec2802f",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier9.mat",
+                    "materialName": "Remote_Tier9",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1895880009-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1895880007-0",
+            "hierarchyPath": "interactables/remote/RemoteControlTV_Tier10/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "interactables[3]/remote[6]/RemoteControlTV_Tier10[10]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "b4b4bd8118241ae4c8b0d135117feead",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier10.mat",
+                    "materialName": "Remote_Tier10",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-462478827-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-462478824-0",
+            "hierarchyPath": "interactables/towel/TowelVisual",
+            "indexedHierarchyPath": "interactables[3]/towel[9]/TowelVisual[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "5c28021a6a229e540b021737ab59c4ea",
+                    "materialAssetPath": "Assets/AssetSlop/StylArts/StylizedHouseInterior/HDRP/Art/Materials/M_Curtain_Towels.mat",
+                    "materialName": "M_Curtain_Towels_backup",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-448146354-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-448146351-0",
+            "hierarchyPath": "DVDPLAYERMANAGER/Canvas/TAB_DVD/Cube (2)",
+            "indexedHierarchyPath": "DVDPLAYERMANAGER[10]/Canvas[0]/TAB_DVD[8]/Cube (2)[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1f96ba7a3c3ef3540b8dda1c860d8409",
+                    "materialAssetPath": "Assets/AssetSlop/Vefects/Free Fire VFX URP/Materials/M_VFX_Smoke_01.mat",
+                    "materialName": "M_VFX_Smoke_01",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1940816669-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1940816666-0",
+            "hierarchyPath": "DVDPLAYERMANAGER/Canvas/TAB_PLAYER/Cube (2)",
+            "indexedHierarchyPath": "DVDPLAYERMANAGER[10]/Canvas[0]/TAB_PLAYER[9]/Cube (2)[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1f96ba7a3c3ef3540b8dda1c860d8409",
+                    "materialAssetPath": "Assets/AssetSlop/Vefects/Free Fire VFX URP/Materials/M_VFX_Smoke_01.mat",
+                    "materialName": "M_VFX_Smoke_01",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-889069013-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-889069010-0",
+            "hierarchyPath": "DVDPLAYERMANAGER/Canvas/TAB_REMOTE/Cube (2)",
+            "indexedHierarchyPath": "DVDPLAYERMANAGER[10]/Canvas[0]/TAB_REMOTE[10]/Cube (2)[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1f96ba7a3c3ef3540b8dda1c860d8409",
+                    "materialAssetPath": "Assets/AssetSlop/Vefects/Free Fire VFX URP/Materials/M_VFX_Smoke_01.mat",
+                    "materialName": "M_VFX_Smoke_01",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-4653866426861951862-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-6023782508088927887-423796298",
+            "hierarchyPath": "playerbasic 10/Object.001",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.001[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-3804975344103610479-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-3424559049330366600-423796298",
+            "hierarchyPath": "playerbasic 10/Object.002",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.002[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-787455592991061029-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-7657546057541139607-423796298",
+            "hierarchyPath": "playerbasic 10/Object.003",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.003[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1666067378924792545-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1360401618388604360-423796298",
+            "hierarchyPath": "playerbasic 10/Object.004",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.004[3]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-8084831843206261914-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-5887535141436014746-423796298",
+            "hierarchyPath": "playerbasic 10/Object.005",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.005[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-891027337777258134-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-257141355391813706-423796298",
+            "hierarchyPath": "playerbasic 10/Object.006",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.006[5]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": false,
+            "prefabAssetPath": "",
+            "prefabAssetGuid": "",
+            "scenePath": "Assets/Scenes/01Day.unity",
+            "sceneName": "01Day",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-1941273732430964445-423796298",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-2-e195e24ca5c179c488fcf9c2b02c442c-6677341901211581032-423796298",
+            "hierarchyPath": "playerbasic 10/Object.007",
+            "indexedHierarchyPath": "playerbasic 10[37]/Object.007[6]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/dvdv 10.prefab",
+            "prefabAssetGuid": "282a592cd2cb7b644a1de38573707c5b",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-7098981427355132802-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-2202393095399839025-0",
+            "hierarchyPath": "dvdv 10/Torus",
+            "indexedHierarchyPath": "dvdv 10[0]/Torus[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/dvdv 10.prefab",
+            "prefabAssetGuid": "282a592cd2cb7b644a1de38573707c5b",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-4783027271549120911-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-2337606578605356454-0",
+            "hierarchyPath": "dvdv 10/Torus.001",
+            "indexedHierarchyPath": "dvdv 10[0]/Torus.001[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/dvdv 10.prefab",
+            "prefabAssetGuid": "282a592cd2cb7b644a1de38573707c5b",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-2354460722350144047-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-282a592cd2cb7b644a1de38573707c5b-7269363775103239059-0",
+            "hierarchyPath": "dvdv 10/Torus.002",
+            "indexedHierarchyPath": "dvdv 10[0]/Torus.002[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-4653866426861951862-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-6023782508088927887-0",
+            "hierarchyPath": "playerbasic 10/Object.001",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.001[0]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-3804975344103610479-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-3424559049330366600-0",
+            "hierarchyPath": "playerbasic 10/Object.002",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.002[1]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-787455592991061029-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-7657546057541139607-0",
+            "hierarchyPath": "playerbasic 10/Object.003",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.003[2]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-1666067378924792545-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-1360401618388604360-0",
+            "hierarchyPath": "playerbasic 10/Object.004",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.004[3]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-8084831843206261914-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-5887535141436014746-0",
+            "hierarchyPath": "playerbasic 10/Object.005",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.005[4]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-891027337777258134-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-257141355391813706-0",
+            "hierarchyPath": "playerbasic 10/Object.006",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.006[5]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/playerbasic 10.prefab",
+            "prefabAssetGuid": "31f90a4ed8ffe194c99a9b57837d58b1",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-1941273732430964445-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-31f90a4ed8ffe194c99a9b57837d58b1-6677341901211581032-0",
+            "hierarchyPath": "playerbasic 10/Object.007",
+            "indexedHierarchyPath": "playerbasic 10[0]/Object.007[6]",
+            "rendererTypeName": "UnityEngine.MeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1c0f01c4eb197424abed678f041d73e5",
+                    "materialAssetPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+                    "materialName": "Base_10_Platinum",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier0.prefab",
+            "prefabAssetGuid": "6f23cbc314476424f95426846dc4cdfa",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-6f23cbc314476424f95426846dc4cdfa-3179822552375313923-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-6f23cbc314476424f95426846dc4cdfa-309699799716210854-0",
+            "hierarchyPath": "remote_tier0/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier0[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "e80c3b9787c5c6946bbe60ef314da9b6",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier0.mat",
+                    "materialName": "Remote_Tier0",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier1.prefab",
+            "prefabAssetGuid": "9f2bba31edc5f1c4d8054f9d79496f41",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-9f2bba31edc5f1c4d8054f9d79496f41-4907865628181937081-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-9f2bba31edc5f1c4d8054f9d79496f41-4725546130146728250-0",
+            "hierarchyPath": "remote_tier1/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier1[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "0e478adbca20b8744bbebddcddf17fdc",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier1.mat",
+                    "materialName": "Remote_Tier1",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier2.prefab",
+            "prefabAssetGuid": "959bc8ece4c0f7241902821d6d47aba2",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-959bc8ece4c0f7241902821d6d47aba2-6800807070829271841-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-959bc8ece4c0f7241902821d6d47aba2-3689053794785491624-0",
+            "hierarchyPath": "remote_tier2/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier2[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "1d601e507b0a0314fadefdbbba8f450c",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier2.mat",
+                    "materialName": "Remote_Tier2",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier3.prefab",
+            "prefabAssetGuid": "33d88b89125d25249982245b04a2caaa",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-33d88b89125d25249982245b04a2caaa-3251373588685748324-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-33d88b89125d25249982245b04a2caaa-5648171673591994108-0",
+            "hierarchyPath": "remote_tier3/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier3[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "8153f3a8af0bbed469d7d986696f37e9",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier3.mat",
+                    "materialName": "Remote_Tier3",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier4.prefab",
+            "prefabAssetGuid": "cb726f116926e764bae7eb6c9e592e3d",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-cb726f116926e764bae7eb6c9e592e3d-3733107756554011370-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-cb726f116926e764bae7eb6c9e592e3d-2985144057519843675-0",
+            "hierarchyPath": "remote_tier4/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier4[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "a78e7ffabb727d04991f95245484d8ce",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier4.mat",
+                    "materialName": "Remote_Tier4",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier5.prefab",
+            "prefabAssetGuid": "f2b0d00eaa18c9a43aaaabf2ad65e09a",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-f2b0d00eaa18c9a43aaaabf2ad65e09a-4316000815341656224-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-f2b0d00eaa18c9a43aaaabf2ad65e09a-5074123141602434805-0",
+            "hierarchyPath": "remote_tier5/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier5[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "33b2f9796b0cfcf4d9657af1c9b00c7e",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier5.mat",
+                    "materialName": "Remote_Tier5",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier6.prefab",
+            "prefabAssetGuid": "00701fc8ba9b19044ac0eb3452c2622d",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-00701fc8ba9b19044ac0eb3452c2622d-3200962721858827438-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-00701fc8ba9b19044ac0eb3452c2622d-5468083836868244756-0",
+            "hierarchyPath": "remote_tier6/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier6[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "e0a02243df7137545a3ee36119a03b8a",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier6.mat",
+                    "materialName": "Remote_Tier6",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier7.prefab",
+            "prefabAssetGuid": "3e19fc3ed158a7747aa52e23a1e95f16",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-3e19fc3ed158a7747aa52e23a1e95f16-3756709286839492364-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-3e19fc3ed158a7747aa52e23a1e95f16-442262257199380617-0",
+            "hierarchyPath": "remote_tier7/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier7[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "d9c23a88d79741f489ee37c40916022e",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier7.mat",
+                    "materialName": "Remote_Tier7",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier8.prefab",
+            "prefabAssetGuid": "4ca0a54d04d45e4409cd16eccc33247e",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-4ca0a54d04d45e4409cd16eccc33247e-7735868604140709968-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-4ca0a54d04d45e4409cd16eccc33247e-1164962958512092058-0",
+            "hierarchyPath": "remote_tier8/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier8[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "c17df71a3f59956478852fa11f64667a",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier8.mat",
+                    "materialName": "Remote_Tier8",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier9.prefab",
+            "prefabAssetGuid": "77a466d9eb653ac4d9a90cd5ade6b6b8",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-77a466d9eb653ac4d9a90cd5ade6b6b8-7657307261387918149-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-77a466d9eb653ac4d9a90cd5ade6b6b8-5839035737507733623-0",
+            "hierarchyPath": "remote_tier9/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier9[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "77e1a8c386f1bf149869818f2ec2802f",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier9.mat",
+                    "materialName": "Remote_Tier9",
+                    "wasNull": false
+                }
+            ]
+        },
+        {
+            "isPrefabAsset": true,
+            "prefabAssetPath": "Assets/Prefabs/remote_tier10.prefab",
+            "prefabAssetGuid": "fd5efb65fce08524ca258fba7682794e",
+            "scenePath": "",
+            "sceneName": "",
+            "rendererGlobalObjectId": "GlobalObjectId_V1-1-fd5efb65fce08524ca258fba7682794e-8209140898635711108-0",
+            "gameObjectGlobalObjectId": "GlobalObjectId_V1-1-fd5efb65fce08524ca258fba7682794e-5084915044133778739-0",
+            "hierarchyPath": "remote_tier10/pCube17_1__mt_Body",
+            "indexedHierarchyPath": "remote_tier10[0]/pCube17_1__mt_Body[0]",
+            "rendererTypeName": "UnityEngine.SkinnedMeshRenderer",
+            "rendererComponentIndex": 0,
+            "slots": [
+                {
+                    "slotIndex": 0,
+                    "materialGuid": "b4b4bd8118241ae4c8b0d135117feead",
+                    "materialAssetPath": "Assets/3DAssets/remote/Remote_Tier10.mat",
+                    "materialName": "Remote_Tier10",
+                    "wasNull": false
+                }
+            ]
         }
     ],
     "materialLinks": [
@@ -84756,6 +85680,174 @@
             "originalMaterialGuid": "abb8beaadb408fb438266f3dfcb79a5b",
             "originalMaterialPath": "Assets/Barni/EverythingElse/BarModels/bar.fbx",
             "originalMaterialName": "TextureMaterial"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus__Base_10_Platinum_2672184a_SimpleLit.mat",
+            "simplifiedMaterialGuid": "dd75d6eea9ad93248bc41ea0531edb85",
+            "meshKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus.001__Base_10_Platinum_7af78c7f_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a0220c5d76bd9a94dbb3038424a5eb8d",
+            "meshKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus.001|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus.002__Base_10_Platinum_a3a1d296_SimpleLit.mat",
+            "simplifiedMaterialGuid": "037e53369a508b7448481ff457aa2e22",
+            "meshKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus.002|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.001__Base_10_Platinum_1923da9f_SimpleLit.mat",
+            "simplifiedMaterialGuid": "9e279ffe45386934b859d3c81c740960",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.001|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.002__Base_10_Platinum_d60a51b6_SimpleLit.mat",
+            "simplifiedMaterialGuid": "0dd8d54d2831b2743b0576cb89604c05",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.002|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.003__Base_10_Platinum_c3bf1f5d_SimpleLit.mat",
+            "simplifiedMaterialGuid": "9cd8014ddb110244caad1d30c3f4a019",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.003|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.004__Base_10_Platinum_02edb1f4_SimpleLit.mat",
+            "simplifiedMaterialGuid": "712b151660fb732409bfd925be2a6fcd",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.004|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.005__Base_10_Platinum_3fd6ebab_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a2a760eed74288b428a4037cd97e5915",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.005|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.006__Base_10_Platinum_469f2692_SimpleLit.mat",
+            "simplifiedMaterialGuid": "83ed6cb9e5d0e3f4fb18acec1a533d31",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.006|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.007__Base_10_Platinum_70429719_SimpleLit.mat",
+            "simplifiedMaterialGuid": "881b27193b5ce2b40be9072e6b52ff72",
+            "meshKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.007|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "originalMaterialName": "Base_10_Platinum"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier0_16e659b8_SimpleLit.mat",
+            "simplifiedMaterialGuid": "9cf23011dd3ce74439c6c3ab2ae2b48f",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|e80c3b9787c5c6946bbe60ef314da9b6",
+            "originalMaterialGuid": "e80c3b9787c5c6946bbe60ef314da9b6",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier0.mat",
+            "originalMaterialName": "Remote_Tier0"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier1_f4040c97_SimpleLit.mat",
+            "simplifiedMaterialGuid": "57283c66e5a8a1f439068c025986689d",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|0e478adbca20b8744bbebddcddf17fdc",
+            "originalMaterialGuid": "0e478adbca20b8744bbebddcddf17fdc",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier1.mat",
+            "originalMaterialName": "Remote_Tier1"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier2_bdbba4f1_SimpleLit.mat",
+            "simplifiedMaterialGuid": "adb05e386fd85ae40a554b8269773e37",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|1d601e507b0a0314fadefdbbba8f450c",
+            "originalMaterialGuid": "1d601e507b0a0314fadefdbbba8f450c",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier2.mat",
+            "originalMaterialName": "Remote_Tier2"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier3_bd06aadf_SimpleLit.mat",
+            "simplifiedMaterialGuid": "752a8317a69af864eac52e181dc1f14b",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|8153f3a8af0bbed469d7d986696f37e9",
+            "originalMaterialGuid": "8153f3a8af0bbed469d7d986696f37e9",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier3.mat",
+            "originalMaterialName": "Remote_Tier3"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier4_b2838043_SimpleLit.mat",
+            "simplifiedMaterialGuid": "d0cc013e55142134281c47638e4b600e",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|a78e7ffabb727d04991f95245484d8ce",
+            "originalMaterialGuid": "a78e7ffabb727d04991f95245484d8ce",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier4.mat",
+            "originalMaterialName": "Remote_Tier4"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier5_4f6a8705_SimpleLit.mat",
+            "simplifiedMaterialGuid": "93bc2cd48d429364aa28bf937e5a493e",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|33b2f9796b0cfcf4d9657af1c9b00c7e",
+            "originalMaterialGuid": "33b2f9796b0cfcf4d9657af1c9b00c7e",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier5.mat",
+            "originalMaterialName": "Remote_Tier5"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier6_94e8009c_SimpleLit.mat",
+            "simplifiedMaterialGuid": "f3b19227a09ecdb44bded3698df811cc",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|e0a02243df7137545a3ee36119a03b8a",
+            "originalMaterialGuid": "e0a02243df7137545a3ee36119a03b8a",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier6.mat",
+            "originalMaterialName": "Remote_Tier6"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier7_ff6202a3_SimpleLit.mat",
+            "simplifiedMaterialGuid": "ec9802bd947ecca43bd0c1e76bb5fb34",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|d9c23a88d79741f489ee37c40916022e",
+            "originalMaterialGuid": "d9c23a88d79741f489ee37c40916022e",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier7.mat",
+            "originalMaterialName": "Remote_Tier7"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier8_aef52e38_SimpleLit.mat",
+            "simplifiedMaterialGuid": "6fea0ceb5d597e7448a3397194b3b604",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|c17df71a3f59956478852fa11f64667a",
+            "originalMaterialGuid": "c17df71a3f59956478852fa11f64667a",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier8.mat",
+            "originalMaterialName": "Remote_Tier8"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier9_afe0374e_SimpleLit.mat",
+            "simplifiedMaterialGuid": "67cc77502f860ad4096dba1c47002bed",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|77e1a8c386f1bf149869818f2ec2802f",
+            "originalMaterialGuid": "77e1a8c386f1bf149869818f2ec2802f",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier9.mat",
+            "originalMaterialName": "Remote_Tier9"
+        },
+        {
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier10_68cf1c1d_SimpleLit.mat",
+            "simplifiedMaterialGuid": "a9925c90ea9a54641b8feadcc40e464e",
+            "meshKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|b4b4bd8118241ae4c8b0d135117feead",
+            "originalMaterialGuid": "b4b4bd8118241ae4c8b0d135117feead",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier10.mat",
+            "originalMaterialName": "Remote_Tier10"
         }
     ]
 }

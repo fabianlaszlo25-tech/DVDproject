@@ -756,6 +756,9 @@ MonoBehaviour:
   audioSource: {fileID: 717799442}
   edgeHitSound: {fileID: 8300000, guid: ace31dc442a64bd41b01b34bb4f7d88f, type: 3}
   cornerHitSound: {fileID: 8300000, guid: 11ade7ddbc00baf4aa41f612969bdaa1, type: 3}
+  directHitSound: {fileID: 0}
+  recombinePopSound: {fileID: 0}
+  grabShakeSound: {fileID: 0}
   tvTransform: {fileID: 717799441}
   edgeBounceMultiplier: 1
   cornerBounceMultiplier: 1
@@ -780,6 +783,39 @@ MonoBehaviour:
   edgeEffectTemplate: {fileID: 0}
   cornerEffectTemplate: {fileID: 0}
   effectLifetime: 0.5
+  directHitImpulseSpeed: 14
+  bounceImpulseRetention: 0.62
+  impulseContinuousDrag: 1.5
+  directHitBonusMultiplier: 1.5
+  squashStretchDuration: 0.55
+  maxSquashAmount: 0.24
+  squashOscillations: 2
+  squashDamping: 2.6
+  wallBounceSquashMultiplier: 0.78
+  onLogoHit:
+    m_PersistentCalls:
+      m_Calls: []
+  hitParticlePrefab: {fileID: 0}
+  hitParticleScale: 1
+  proceduralSparkCount: 18
+  proceduralSparkSpeed: 4.5
+  proceduralSparkSize: 0.18
+  sparkColorPrimary: {r: 1, g: 0.92, b: 0.35, a: 1}
+  sparkColorSecondary: {r: 0.3, g: 0.95, b: 1, a: 1}
+  maxSplitGenerations: 2
+  gen1ScaleMultiplier: 0.68
+  gen2ScaleMultiplier: 0.48
+  splitDivergenceAngle: 25
+  splitRecombineGracePeriod: 0.65
+  shakeEarnSpeedThreshold: 11
+  shakeMoneyInterval: 0.16
+  shakeBonusMultiplier: 1
+  grabThrowSpeedMultiplier: 0.65
+  maxGrabThrowImpulse: 22
+  isChildLogo: 0
+  parentBouncer: {fileID: 0}
+  splitGeneration: 0
+  isGrabbedByPlayer: 0
 --- !u!1 &593275717
 GameObject:
   m_ObjectHideFlags: 0
@@ -6218,6 +6254,7 @@ MonoBehaviour:
     - tierName: 
       cost: 0
       multiplierValue: 1
+      customDescription: 
       previewPrefab: {fileID: 5552092563427411271, guid: df4e40d60dd48c24ca9b0a3d927b3d02, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -6229,9 +6266,11 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
+      initialWorldScale: {x: 1, y: 1, z: 1}
     - tierName: RED
       cost: 1
       multiplierValue: 4
+      customDescription: 
       previewPrefab: {fileID: 5552092563427411271, guid: 9c6b1fa370ed3a4449d4fbcc84b77461, type: 3}
       previewPositionOffset: {x: 0, y: -150, z: 0}
       previewScale: {x: 75, y: 75, z: 75}
@@ -6243,6 +6282,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
+      initialWorldScale: {x: 1, y: 1, z: 1}
     equippedIndex: 0
     unlockedIndices: 
   - pathName: pile
@@ -6262,6 +6302,7 @@ MonoBehaviour:
     - tierName: 
       cost: 0
       multiplierValue: 1
+      customDescription: 
       previewPrefab: {fileID: 7228993373051037621, guid: 01ca73f8bff18ea448c04a2f25f6aaed, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -6273,9 +6314,11 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
+      initialWorldScale: {x: 1, y: 1, z: 1}
     - tierName: RED
       cost: 1
       multiplierValue: 4
+      customDescription: 
       previewPrefab: {fileID: 7228993373051037621, guid: 5da8925e659a5db4c8910e02302a608b, type: 3}
       previewPositionOffset: {x: 0, y: 0, z: 0}
       previewScale: {x: 20, y: 20, z: 20}
@@ -6287,6 +6330,7 @@ MonoBehaviour:
       playerMesh2: {fileID: 0}
       logoMaterial: {fileID: 0}
       booster: {fileID: 0}
+      initialWorldScale: {x: 1, y: 1, z: 1}
     equippedIndex: 0
     unlockedIndices: 
   worldModelShrinkSpeed: 0.5
