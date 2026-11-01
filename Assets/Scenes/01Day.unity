@@ -35328,7 +35328,7 @@ MonoBehaviour:
   depressionSlider: {fileID: 1680633886}
   inflationText: {fileID: 2079674433}
   foodCostText: {fileID: 0}
-  invertHungerVisuals: 1
+  invertHungerVisuals: 0
   maxHunger: 500
   maxNeeds: 100
   maxSleep: 500
