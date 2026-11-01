@@ -1,5 +1,5 @@
 {
-    "lastSavedTimestamp": "2026-11-01 12:04:22",
+    "lastSavedTimestamp": "2026-11-01 18:02:18",
     "overrides": [
         {
             "meshAndMaterialKey": "",
@@ -14887,9 +14887,9 @@
             "originalMaterialPath": "Assets/AssetSlop/StylArts/StylizedHouseInterior/HDRP/Art/Materials/M_LeatherCouch.mat",
             "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/SM_LeatherCouch__M_LeatherCouch_ecb7836b_SimpleLit.mat",
             "lastAutoColor": {
-                "r": 0.30024415254592898,
-                "g": 0.174455925822258,
-                "b": 0.11830542981624603,
+                "r": 0.3003406226634979,
+                "g": 0.1742088496685028,
+                "b": 0.11781356483697891,
                 "a": 1.0
             },
             "hasCustomOverride": false,
@@ -37290,6 +37290,678 @@
                 "r": 0.9063317179679871,
                 "g": 0.9063317179679871,
                 "b": 0.9063317179679871,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus__Base_10_Platinum_2672184a_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus.001|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus.001__Base_10_Platinum_7af78c7f_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:898debe998b4cbf44a4839df515895ea|Torus.002|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Torus.002__Base_10_Platinum_a3a1d296_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.001|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.001__Base_10_Platinum_1923da9f_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.002|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.002__Base_10_Platinum_d60a51b6_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.003|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.003__Base_10_Platinum_c3bf1f5d_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.004|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.004__Base_10_Platinum_02edb1f4_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.005|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.005__Base_10_Platinum_3fd6ebab_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.006|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.006__Base_10_Platinum_469f2692_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:4f116c9b812d11f4b8bdaeb2a7208a2f|Object.007|S0|1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialGuid": "1c0f01c4eb197424abed678f041d73e5",
+            "originalMaterialPath": "Assets/3DAssets/DVDPlayer/Base_10_Platinum.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/Object.007__Base_10_Platinum_70429719_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.8799999952316284,
+                "g": 0.9399999976158142,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|e80c3b9787c5c6946bbe60ef314da9b6",
+            "originalMaterialGuid": "e80c3b9787c5c6946bbe60ef314da9b6",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier0.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier0_16e659b8_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6283411979675293,
+                "g": 0.5687084197998047,
+                "b": 0.571940541267395,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|0e478adbca20b8744bbebddcddf17fdc",
+            "originalMaterialGuid": "0e478adbca20b8744bbebddcddf17fdc",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier1.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier1_f4040c97_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.16721563041210175,
+                "g": 0.635419487953186,
+                "b": 0.367874413728714,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|1d601e507b0a0314fadefdbbba8f450c",
+            "originalMaterialGuid": "1d601e507b0a0314fadefdbbba8f450c",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier2.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier2_bdbba4f1_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.5685332417488098,
+                "g": 0.23410189151763917,
+                "b": 0.6688626408576965,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|8153f3a8af0bbed469d7d986696f37e9",
+            "originalMaterialGuid": "8153f3a8af0bbed469d7d986696f37e9",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier3.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier3_bd06aadf_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.16721563041210175,
+                "g": 0.5685332417488098,
+                "b": 0.6688626408576965,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|a78e7ffabb727d04991f95245484d8ce",
+            "originalMaterialGuid": "a78e7ffabb727d04991f95245484d8ce",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier4.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier4_b2838043_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6688626408576965,
+                "g": 0.367874413728714,
+                "b": 0.12039525806903839,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|33b2f9796b0cfcf4d9657af1c9b00c7e",
+            "originalMaterialGuid": "33b2f9796b0cfcf4d9657af1c9b00c7e",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier5.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier5_4f6a8705_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6688626408576965,
+                "g": 0.16721563041210175,
+                "b": 0.3478085398674011,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|e0a02243df7137545a3ee36119a03b8a",
+            "originalMaterialGuid": "e0a02243df7137545a3ee36119a03b8a",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier6.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier6_94e8009c_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.635419487953186,
+                "g": 0.14714975655078889,
+                "b": 0.1872815191745758,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|d9c23a88d79741f489ee37c40916022e",
+            "originalMaterialGuid": "d9c23a88d79741f489ee37c40916022e",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier7.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier7_ff6202a3_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.254167765378952,
+                "g": 0.635419487953186,
+                "b": 0.14714975655078889,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|c17df71a3f59956478852fa11f64667a",
+            "originalMaterialGuid": "c17df71a3f59956478852fa11f64667a",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier8.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier8_aef52e38_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.10701799392700196,
+                "g": 0.41469481587409975,
+                "b": 0.6688626408576965,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|77e1a8c386f1bf149869818f2ec2802f",
+            "originalMaterialGuid": "77e1a8c386f1bf149869818f2ec2802f",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier9.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier9_afe0374e_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6554853320121765,
+                "g": 0.24079053103923798,
+                "b": 0.6153536438941956,
+                "a": 1.0
+            },
+            "hasCustomOverride": false,
+            "customColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "customSmoothness": 0.5,
+            "customSpecColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 0.5
+            },
+            "customEmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            }
+        },
+        {
+            "meshAndMaterialKey": "MESH:84f2764f02ccd254685eb91b2c52468b|pCube17_1__mt_Body|S0|b4b4bd8118241ae4c8b0d135117feead",
+            "originalMaterialGuid": "b4b4bd8118241ae4c8b0d135117feead",
+            "originalMaterialPath": "Assets/3DAssets/remote/Remote_Tier10.mat",
+            "simplifiedMaterialPath": "Assets/WebGLSimplifiedMaterials/Materials/pCube17_1__mt_Body__Remote_Tier10_68cf1c1d_SimpleLit.mat",
+            "lastAutoColor": {
+                "r": 0.6688626408576965,
+                "g": 0.5484673380851746,
+                "b": 0.14714975655078889,
                 "a": 1.0
             },
             "hasCustomOverride": false,

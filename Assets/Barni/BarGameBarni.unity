@@ -11605,6 +11605,7 @@ MonoBehaviour:
   cleanDepressionReduction: 15
   baseFoodCost: 10
   inflationRatePerDollar: 0.0001
+  maxInflationPercentOfMoneyGained: 0.5
   moneyDepressionRatePerDollar: 0.00005
   maxMoneyDepressionMultiplier: 2.5
   currentMoneyDepressionMultiplier: 1
