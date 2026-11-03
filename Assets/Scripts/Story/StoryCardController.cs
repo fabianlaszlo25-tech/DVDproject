@@ -133,11 +133,47 @@ namespace Story
         public TMP_Text reckoningNarrativeText;
         public TMP_Text reckoningPositiveChoicesText;
         public TMP_Text reckoningNegativeChoicesText;
+        public TMP_Text reckoningDaysText;
+        public TMP_Text reckoningCleanlinessText;
         public TMP_Text reckoningDepressionText;
         public TMP_Text reckoningSubstancesText;
+        public TMP_Text reckoningMissedCallsText;
         public TMP_Text reckoningScoreText;
         public TMP_Text reckoningVerdictPromptText;
         public Button reckoningContinueButton;
+
+        [Header("Reckoning Physical Scale & Falling DVDs")]
+        public RectTransform scaleContainer;
+        public RectTransform scaleBeam;
+        public RectTransform leftPan;
+        public RectTransform rightPan;
+        public RectTransform leftDvdContainer;
+        public RectTransform rightDvdContainer;
+        public TMP_Text leftWeightText;
+        public TMP_Text rightWeightText;
+        public RectTransform leftChainA;
+        public RectTransform leftChainB;
+        public RectTransform rightChainA;
+        public RectTransform rightChainB;
+
+        public static bool ForceDay3FinaleForTesting = false;
+
+        private Coroutine reckoningAnimationRoutine;
+        private float reckoningSpeedMultiplier = 1f;
+        private float scaleCurrentAngle = 0f;
+        private float scaleAngularVelocity = 0f;
+        private float scaleTargetAngle = 0f;
+        private int currentGreenDvds = 0;
+        private int currentRedDvds = 0;
+        private Sprite greenDvdSprite;
+        private Sprite redDvdSprite;
+
+        private AudioClip typeTickClip;
+        private AudioClip rowBounceClip;
+        private AudioClip impactHopeClip;
+        private AudioClip impactDespairClip;
+        private AudioClip verdictHopeClip;
+        private AudioClip verdictDespairClip;
 
         [Header("Swipe Parameters")]
         public float swipeThreshold = 120f;
@@ -227,6 +263,7 @@ namespace Story
             // 3. While ReckoningPanel is active
             if (reckoningPanel != null && reckoningPanel.activeSelf)
             {
+                UpdateScaleVisuals(Time.unscaledDeltaTime);
                 HandleReckoningInput();
             }
         }
@@ -460,6 +497,29 @@ namespace Story
 
         private void HandleReckoningInput()
         {
+            // If sequence is still animating, allow holding or clicking left mouse / Space / Enter to fast-forward
+            if (reckoningContinueButton == null || !reckoningContinueButton.gameObject.activeSelf || !reckoningContinueButton.interactable)
+            {
+                bool fastForward = false;
+                try
+                {
+                    if (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)) fastForward = true;
+                    if (Keyboard.current != null && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame)) fastForward = true;
+                }
+                catch {}
+
+                if (!fastForward)
+                {
+                    fastForward = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
+                }
+
+                if (fastForward)
+                {
+                    reckoningSpeedMultiplier = 3.5f;
+                }
+                return;
+            }
+
             Vector2 mouseScreenPos = GetMouseScreenPosition();
             Canvas canvas = GetComponent<Canvas>();
             Camera eventCam = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null;
@@ -609,7 +669,7 @@ namespace Story
         public void ShowNextEncounter(Action onComplete)
         {
             bool isEndgame = UpgradeManager.Instance != null && UpgradeManager.Instance.IsEndgameMaxed;
-            bool isDay3Finale = isEndgame && RunSaveManager.HasInstance && RunSaveManager.Instance.postMaxDaysSurvived >= 3 && !RunSaveManager.Instance.finalPhoneEncounterDone;
+            bool isDay3Finale = ForceDay3FinaleForTesting || (isEndgame && RunSaveManager.HasInstance && RunSaveManager.Instance.postMaxDaysSurvived >= 3 && !RunSaveManager.Instance.finalPhoneEncounterDone);
 
             if (isDay3Finale)
             {
@@ -656,7 +716,7 @@ namespace Story
         }
 
         // =========================================================================
-        // DAY 3 ENDGAME RECKONING / STATS SCREEN
+        // DAY 3 ENDGAME RECKONING / STATS SCREEN WITH WEIGHING SCALE & FALLING DVDS
         // =========================================================================
 
         public void ShowReckoningStatsScreen(Action onComplete)
@@ -667,8 +727,13 @@ namespace Story
             isDraggingConsequence = false;
             currentDragOffset = Vector2.zero;
 
+            ForceDay3FinaleForTesting = false;
+
             gameObject.SetActive(true);
             EnsureUIHierarchy();
+            EnsureReckoningScaleUI();
+            EnsureDvdSprites();
+            EnsureProceduralAudioClips();
             SetupScreenSpaceCamera(GetComponent<Canvas>());
             EnsureEventSystemActive();
             isCardActive = true;
@@ -687,88 +752,495 @@ namespace Story
                     reckRT.localScale = Vector3.one;
                     reckRT.anchoredPosition = Vector2.zero;
                     reckRT.localRotation = Quaternion.identity;
+                    if (reckRT.sizeDelta.y < 610f) reckRT.sizeDelta = new Vector2(620f, 620f);
                 }
                 reckoningPanel.SetActive(true);
             }
 
-            // 1. Gather stats
-            int pos = RunSaveManager.HasInstance ? RunSaveManager.Instance.positiveSecretCounter : 0;
-            int neg = RunSaveManager.HasInstance ? RunSaveManager.Instance.negativeSecretCounter : 0;
-            float depression = BarManager.Instance != null ? BarManager.Instance.currentDepression : 0f;
-            int substances = RunSaveManager.HasInstance ? RunSaveManager.Instance.substancesConsumed : 0;
+            if (reckoningAnimationRoutine != null)
+            {
+                StopCoroutine(reckoningAnimationRoutine);
+            }
+            reckoningAnimationRoutine = StartCoroutine(PlayReckoningSequenceRoutine());
+        }
 
-            // 2. Weigh values
-            float storyScore = pos - neg;
-            float selfCareScore = 0f;
+        private IEnumerator PlayReckoningSequenceRoutine()
+        {
+            reckoningSpeedMultiplier = 1f;
+            currentGreenDvds = 0;
+            currentRedDvds = 0;
 
-            if (depression <= 25f) selfCareScore += 2.0f;
-            else if (depression <= 45f) selfCareScore += 1.0f;
-            else if (depression >= 80f) selfCareScore -= 2.0f;
-            else if (depression >= 60f) selfCareScore -= 1.0f;
+            if (leftDvdContainer != null)
+            {
+                foreach (Transform child in leftDvdContainer) Destroy(child.gameObject);
+            }
+            if (rightDvdContainer != null)
+            {
+                foreach (Transform child in rightDvdContainer) Destroy(child.gameObject);
+            }
 
-            if (substances <= 2) selfCareScore += 1.5f;
-            else if (substances <= 6) selfCareScore += 0.5f;
-            else if (substances >= 18) selfCareScore -= 2.0f;
-            else if (substances >= 10) selfCareScore -= 1.0f;
+            scaleCurrentAngle = 0f;
+            scaleAngularVelocity = 0f;
+            scaleTargetAngle = 0f;
+            UpdateScaleVisuals(0.01f);
 
-            float totalScore = storyScore + selfCareScore;
-            bool isHopeful = totalScore >= 0f;
-            lastVerdictHopeful = isHopeful;
+            if (reckoningContinueButton != null)
+            {
+                reckoningContinueButton.gameObject.SetActive(false);
+                reckoningContinueButton.interactable = false;
+                CanvasGroup cg = reckoningContinueButton.GetComponent<CanvasGroup>();
+                if (cg == null) cg = reckoningContinueButton.gameObject.AddComponent<CanvasGroup>();
+                cg.alpha = 0f;
+            }
 
-            // 3. Populate texts
             if (reckoningTitleText != null) reckoningTitleText.text = "THE FINAL RECKONING";
             if (reckoningSubtitleText != null) reckoningSubtitleText.text = "DAY 3 ENDGAME TELEPHONE EVALUATION";
+            if (leftWeightText != null) leftWeightText.text = "<color=#55FF77><b>HOPE: 0</b></color>";
+            if (rightWeightText != null) rightWeightText.text = "<color=#FF5555><b>DESPAIR: 0</b></color>";
+            if (reckoningVerdictPromptText != null) reckoningVerdictPromptText.text = "WEIGHING THE BALANCE OF YOUR CHOICES...";
+
+            // 1. Gather stats from RunSaveManager and BarManager
+            int pos = RunSaveManager.HasInstance ? RunSaveManager.Instance.positiveSecretCounter : 0;
+            int neg = RunSaveManager.HasInstance ? RunSaveManager.Instance.negativeSecretCounter : 0;
+            int days = RunSaveManager.HasInstance ? Mathf.Max(1, RunSaveManager.Instance.postMaxDaysSurvived) : 3;
+            float depression = BarManager.Instance != null ? BarManager.Instance.currentDepression : 0f;
+            int substances = RunSaveManager.HasInstance ? RunSaveManager.Instance.substancesConsumed : 0;
+            int trash = RunSaveManager.HasInstance ? RunSaveManager.Instance.trashCleaned : 0;
+            float dirtiness = BarManager.Instance != null ? BarManager.Instance.currentDirtiness : 0f;
+            float missed = RunSaveManager.HasInstance ? RunSaveManager.Instance.missedStoryCounter : 0f;
+
+            bool overallHopeLeaning = (pos + (substances <= 3 ? 2 : 0) + (depression <= 40 ? 2 : 0)) >=
+                                      (neg + (substances >= 10 ? 2 : 0) + (depression >= 60 ? 2 : 0));
+
+            // 2. Typewriter Narrative
+            string fullNarrative = overallHopeLeaning
+                ? "\"The static clears into a calm voice: 'You stood firm against the darkness. Through every hour of noise and exhaustion, you kept standing. The screen doesn't own your life. Will you step into tomorrow?'\""
+                : "\"The receiver buzzes with cold, merciless feedback: 'You let the haze consume you. Running to chemicals, letting the room drown in filth and regret. The flicker has swallowed everything you were. It is time to end it.'\"";
 
             if (reckoningNarrativeText != null)
             {
-                reckoningNarrativeText.text = isHopeful
-                    ? "\"The static clears into a calm voice: 'You stood firm against the darkness. Through every hour of noise and exhaustion, you kept standing. The screen doesn't own your life anymore. Reach out.'\""
-                    : "\"The receiver buzzes with cold, merciless feedback: 'You let the haze consume you. Running to chemicals, letting the room drown in filth and regret. The flicker has swallowed everything you were. It is time to end it.'\"";
+                reckoningNarrativeText.text = "";
+                for (int c = 1; c <= fullNarrative.Length; c++)
+                {
+                    reckoningNarrativeText.text = fullNarrative.Substring(0, c);
+                    if (c % 2 == 1) PlayProceduralTick(1f + (c * 0.002f));
+                    yield return WaitReckoningTime(0.012f);
+                }
+                reckoningNarrativeText.text = fullNarrative;
+            }
+            yield return WaitReckoningTime(0.25f);
+
+            // 3. Stats list evaluation with bounce & falling DVDs
+            int posDvds = Mathf.Max(1, pos);
+            yield return AnimateStatRowEntry(reckoningPositiveChoicesText, "PHONE: HOPEFUL DECISIONS", posDvds, true, $"+{pos} Calls");
+            yield return WaitReckoningTime(0.12f);
+
+            int negDvds = Mathf.Max(1, neg);
+            yield return AnimateStatRowEntry(reckoningNegativeChoicesText, "PHONE: ESCAPIST CHOICES", negDvds, false, $"+{neg} Calls");
+            yield return WaitReckoningTime(0.12f);
+
+            yield return AnimateStatRowEntry(reckoningDaysText, "ENDGAME: DAYS SURVIVED", days, true, $"+{days} Days Endured");
+            yield return WaitReckoningTime(0.12f);
+
+            bool isClean = dirtiness < 40f || trash >= 6;
+            yield return AnimateStatRowEntry(reckoningCleanlinessText, "APARTMENT: HYGIENE & CARE", 2, isClean, isClean ? "Sanctuary Preserved" : "Drowning in Filth");
+            yield return WaitReckoningTime(0.12f);
+
+            bool isSober = substances <= 3;
+            int subDvd = isSober ? 2 : (substances <= 9 ? 2 : 4);
+            yield return AnimateStatRowEntry(reckoningSubstancesText, "SUBSTANCES: TOXICITY", subDvd, isSober, isSober ? "Restrained / Sober" : $"{substances} Consumed");
+            yield return WaitReckoningTime(0.12f);
+
+            bool isDepManaged = depression <= 40f;
+            int depDvd = isDepManaged ? 2 : (depression >= 65f ? 3 : 1);
+            yield return AnimateStatRowEntry(reckoningDepressionText, "MENTAL STATE: DEPRESSION", depDvd, isDepManaged, $"{depression:0}% ({(isDepManaged ? "Managed" : "Severe")})");
+            yield return WaitReckoningTime(0.12f);
+
+            if (missed >= 1.5f)
+            {
+                int missedDvd = Mathf.Clamp(Mathf.RoundToInt(missed), 1, 3);
+                yield return AnimateStatRowEntry(reckoningMissedCallsText, "ISOLATION: MISSED CALLS", missedDvd, false, $"{missedDvd} Disconnected");
+                yield return WaitReckoningTime(0.12f);
             }
 
-            if (reckoningPositiveChoicesText != null)
-            {
-                reckoningPositiveChoicesText.text = $"Positive Decisions: <b>{pos}</b>";
-            }
-            if (reckoningNegativeChoicesText != null)
-            {
-                reckoningNegativeChoicesText.text = $"Escapist Decisions: <b>{neg}</b>";
-            }
+            // 4. Settle scale & reveal final verdict
+            yield return WaitReckoningTime(0.75f);
 
-            if (reckoningDepressionText != null)
-            {
-                string depRating = depression <= 35f ? "Managed" : (depression <= 65f ? "Moderate" : "Critical");
-                string depColor = depression <= 35f ? "#55FF77" : (depression <= 65f ? "#FFAA44" : "#FF5555");
-                reckoningDepressionText.text = $"Depression: <color={depColor}><b>{depression:0}% ({depRating})</b></color>";
-            }
-
-            if (reckoningSubstancesText != null)
-            {
-                string subRating = substances <= 4 ? "Restrained" : (substances <= 9 ? "Moderate" : "Heavy");
-                string subColor = substances <= 4 ? "#55FF77" : (substances <= 9 ? "#FFAA44" : "#FF5555");
-                reckoningSubstancesText.text = $"Substances: <color={subColor}><b>{substances} ({subRating})</b></color>";
-            }
+            bool finalVerdict = currentGreenDvds > currentRedDvds;
+            lastVerdictHopeful = finalVerdict;
 
             if (reckoningScoreText != null)
             {
-                string scoreColor = isHopeful ? "#55FF77" : "#FF5555";
-                string tiltName = isHopeful ? "TILTED TOWARD HOPE" : "TILTED TOWARD DESPAIR";
-                reckoningScoreText.text = $"Weighing Balance: <color={scoreColor}><b>{(totalScore >= 0 ? "+" : "")}{totalScore:0.0} ({tiltName})</b></color>";
+                reckoningScoreText.text = $"FINAL WEIGHING: <color={(finalVerdict ? "#55FF77" : "#FF5555")}><b>{currentGreenDvds} HOPE vs {currentRedDvds} DESPAIR</b></color>";
             }
 
             if (reckoningVerdictPromptText != null)
             {
-                reckoningVerdictPromptText.text = isHopeful
-                    ? "<color=#55FF77><b>VERDICT: REACH OUT</b>\nYou kept your head above the water. A life awaits beyond these walls.\n<b>GO TO THE FRONT DOOR TO STEP OUTSIDE.</b></color>"
+                reckoningVerdictPromptText.text = finalVerdict
+                    ? "<color=#55FF77><b>VERDICT: REACH OUT</b>\nHope and perseverance outweigh the dark. The cycle is broken.\n<b>GO TO THE FRONT DOOR TO STEP OUTSIDE.</b></color>"
                     : "<color=#FF5555><b>VERDICT: SURRENDER</b>\nThe isolation was too heavy. The room calls you back into the dark.\n<b>GO INTO THE ROOM TO THE TELEVISION TO END IT ALL.</b></color>";
             }
 
-            UpdateAllTMPMeshGeometry();
-            PlayProceduralBeep(isHopeful ? 660f : 240f, 0.15f);
+            PlayVerdictSound(finalVerdict);
+            yield return WaitReckoningTime(0.4f);
+
+            // 5. Reveal Continue Button
+            if (reckoningContinueButton != null)
+            {
+                reckoningContinueButton.gameObject.SetActive(true);
+                CanvasGroup cg = reckoningContinueButton.GetComponent<CanvasGroup>();
+                RectTransform btnRT = reckoningContinueButton.GetComponent<RectTransform>();
+
+                float btnElapsed = 0f;
+                float btnDur = 0.35f;
+                while (btnElapsed < btnDur)
+                {
+                    btnElapsed += Time.unscaledDeltaTime;
+                    float bt = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(btnElapsed / btnDur));
+                    if (cg != null) cg.alpha = bt;
+                    if (btnRT != null)
+                    {
+                        float s = Mathf.Lerp(0.88f, 1f, bt);
+                        btnRT.localScale = new Vector3(s, s, 1f);
+                    }
+                    yield return null;
+                }
+
+                if (cg != null) cg.alpha = 1f;
+                if (btnRT != null) btnRT.localScale = Vector3.one;
+                reckoningContinueButton.interactable = true;
+            }
+
+            reckoningAnimationRoutine = null;
+        }
+
+        private IEnumerator AnimateStatRowEntry(TMP_Text textComp, string label, int dvdCount, bool isHope, string detail)
+        {
+            Transform rowTrans = textComp != null ? textComp.transform : null;
+            Image bar = rowTrans != null ? rowTrans.GetComponentInParent<Image>() : null;
+            Color baseBarColor = bar != null ? bar.color : Color.clear;
+            Color flashColor = isHope ? new Color(0.22f, 1f, 0.35f, 0.35f) : new Color(1f, 0.18f, 0.22f, 0.35f);
+            string hexColor = isHope ? "#55FF77" : "#FF5555";
+
+            if (textComp != null)
+            {
+                textComp.text = $"{label}: <b><color={hexColor}>0 DVDs</color></b>";
+            }
+
+            for (int pt = 1; pt <= dvdCount; pt++)
+            {
+                if (textComp != null)
+                {
+                    textComp.text = $"{label}: <b><color={hexColor}>+{pt} DVDs ({detail})</color></b>";
+                }
+
+                if (bar != null) bar.color = flashColor;
+                if (rowTrans != null) rowTrans.localScale = new Vector3(1.16f, 1.16f, 1f);
+
+                PlayProceduralRowBounce(1f + (pt * 0.05f));
+                StartCoroutine(DropDvdRoutine(isHope));
+
+                float pElapsed = 0f;
+                float pDur = 0.14f;
+                while (pElapsed < pDur)
+                {
+                    pElapsed += Time.unscaledDeltaTime * reckoningSpeedMultiplier;
+                    float t = Mathf.Clamp01(pElapsed / pDur);
+                    if (rowTrans != null)
+                    {
+                        float s = Mathf.Lerp(1.16f, 1f, t);
+                        rowTrans.localScale = new Vector3(s, s, 1f);
+                    }
+                    if (bar != null)
+                    {
+                        bar.color = Color.Lerp(flashColor, baseBarColor, t);
+                    }
+                    yield return null;
+                }
+
+                if (rowTrans != null) rowTrans.localScale = Vector3.one;
+                if (bar != null) bar.color = baseBarColor;
+
+                yield return WaitReckoningTime(0.22f);
+            }
+        }
+
+        private void UpdateScaleVisuals(float dt)
+        {
+            if (scaleBeam == null) return;
+
+            // Target angle based on DVD weight difference
+            float weightDiff = (float)(currentGreenDvds - currentRedDvds);
+            // Positive diff tilts counter-clockwise (left dips down, right goes up)
+            scaleTargetAngle = Mathf.Clamp(weightDiff * 2.2f, -16f, 16f);
+
+            // Spring-damper physics
+            float stiffness = 24f;
+            float damping = 5.2f;
+            float torque = (scaleTargetAngle - scaleCurrentAngle) * stiffness;
+            scaleAngularVelocity += torque * dt;
+            scaleAngularVelocity -= scaleAngularVelocity * damping * dt;
+            scaleCurrentAngle += scaleAngularVelocity * dt;
+
+            // Apply rotation to beam
+            scaleBeam.localEulerAngles = new Vector3(0f, 0f, scaleCurrentAngle);
+
+            // Calculate beam tip positions in ScaleContainer space
+            float rad = scaleCurrentAngle * Mathf.Deg2Rad;
+            float halfBeam = 175f;
+            Vector2 beamPivot = scaleBeam.anchoredPosition;
+            Vector2 leftTip = beamPivot + new Vector2(-halfBeam * Mathf.Cos(rad), -halfBeam * Mathf.Sin(rad));
+            Vector2 rightTip = beamPivot + new Vector2(halfBeam * Mathf.Cos(rad), halfBeam * Mathf.Sin(rad));
+
+            // Hang pans vertically
+            float chainDrop = 55f;
+            if (leftPan != null)
+            {
+                leftPan.anchoredPosition = new Vector2(leftTip.x, leftTip.y - chainDrop);
+                leftPan.localRotation = Quaternion.identity;
+            }
+            if (rightPan != null)
+            {
+                rightPan.anchoredPosition = new Vector2(rightTip.x, rightTip.y - chainDrop);
+                rightPan.localRotation = Quaternion.identity;
+            }
+
+            // Update chain lines connecting tips to trays
+            UpdateChainLine(leftChainA, leftTip, leftPan, -50f);
+            UpdateChainLine(leftChainB, leftTip, leftPan, 50f);
+            UpdateChainLine(rightChainA, rightTip, rightPan, -50f);
+            UpdateChainLine(rightChainB, rightTip, rightPan, 50f);
+        }
+
+        private void UpdateChainLine(RectTransform chain, Vector2 tip, RectTransform pan, float panOffsetX)
+        {
+            if (chain == null || pan == null) return;
+            Vector2 panAttach = pan.anchoredPosition + new Vector2(panOffsetX, 10f);
+            Vector2 dir = panAttach - tip;
+            float dist = dir.magnitude;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            chain.anchoredPosition = tip;
+            chain.sizeDelta = new Vector2(dist, 1.5f);
+            chain.localEulerAngles = new Vector3(0f, 0f, angle);
+        }
+
+        private IEnumerator DropDvdRoutine(bool isGreen, float dropDelay = 0f)
+        {
+            if (dropDelay > 0f) yield return WaitReckoningTime(dropDelay);
+
+            EnsureDvdSprites();
+            Sprite sprite = isGreen ? greenDvdSprite : redDvdSprite;
+            RectTransform targetPan = isGreen ? leftPan : rightPan;
+            RectTransform container = isGreen ? leftDvdContainer : rightDvdContainer;
+            if (targetPan == null || container == null) yield break;
+
+            GameObject dvdObj = new GameObject(isGreen ? "GreenDVD" : "RedDVD", typeof(RectTransform), typeof(Image));
+            dvdObj.transform.SetParent(scaleContainer, false);
+            RectTransform dvdRT = dvdObj.GetComponent<RectTransform>();
+            Image img = dvdObj.GetComponent<Image>();
+            img.sprite = sprite;
+            img.raycastTarget = false;
+            dvdRT.sizeDelta = new Vector2(48f, 26f);
+
+            float spawnX = targetPan.anchoredPosition.x + UnityEngine.Random.Range(-16f, 16f);
+            float startY = 160f;
+            dvdRT.anchoredPosition = new Vector2(spawnX, startY);
+            float randomRot = UnityEngine.Random.Range(-12f, 12f);
+            dvdRT.localEulerAngles = new Vector3(0f, 0f, randomRot);
+
+            float velY = -80f;
+            float gravity = -1200f;
+            float currentY = startY;
+
+            int countOnSide = isGreen ? currentGreenDvds : currentRedDvds;
+            float stackOffsetY = 10f + (countOnSide * 5f);
+            float stackOffsetX = UnityEngine.Random.Range(-26f, 26f);
+
+            while (true)
+            {
+                float dt = Time.unscaledDeltaTime * reckoningSpeedMultiplier;
+                velY += gravity * dt;
+                currentY += velY * dt;
+
+                float landingY = targetPan.anchoredPosition.y + stackOffsetY;
+                if (currentY <= landingY)
+                {
+                    currentY = landingY;
+                    break;
+                }
+
+                float followX = targetPan.anchoredPosition.x + stackOffsetX;
+                dvdRT.anchoredPosition = new Vector2(Mathf.Lerp(dvdRT.anchoredPosition.x, followX, dt * 10f), currentY);
+                yield return null;
+            }
+
+            dvdObj.transform.SetParent(container, true);
+            dvdRT.anchoredPosition = new Vector2(stackOffsetX, stackOffsetY);
+            dvdRT.localEulerAngles = new Vector3(0f, 0f, randomRot * 0.4f);
+
+            if (isGreen) currentGreenDvds++;
+            else currentRedDvds++;
+
+            if (leftWeightText != null) leftWeightText.text = $"<color=#55FF77><b>HOPE: {currentGreenDvds}</b></color>";
+            if (rightWeightText != null) rightWeightText.text = $"<color=#FF5555><b>DESPAIR: {currentRedDvds}</b></color>";
+
+            scaleAngularVelocity += isGreen ? 55f : -55f;
+            PlayProceduralImpactSound(isGreen);
+
+            // Squash & stretch on landing
+            float sqDur = 0.12f;
+            float sqElapsed = 0f;
+            while (sqElapsed < sqDur)
+            {
+                sqElapsed += Time.unscaledDeltaTime * reckoningSpeedMultiplier;
+                float t = Mathf.Clamp01(sqElapsed / sqDur);
+                float sx = Mathf.Lerp(1.24f, 1f, t);
+                float sy = Mathf.Lerp(0.72f, 1f, t);
+                dvdRT.localScale = new Vector3(sx, sy, 1f);
+                yield return null;
+            }
+            dvdRT.localScale = Vector3.one;
+        }
+
+        private IEnumerator WaitReckoningTime(float seconds)
+        {
+            float elapsed = 0f;
+            while (elapsed < seconds)
+            {
+                elapsed += Time.unscaledDeltaTime * reckoningSpeedMultiplier;
+                yield return null;
+            }
+        }
+
+        private void EnsureDvdSprites()
+        {
+            if (greenDvdSprite == null)
+            {
+                Color greenLetters = new Color(0.22f, 1f, 0.35f, 1f);
+                Color greenRing = new Color(0.0f, 0.80f, 0.45f, 1f);
+                greenDvdSprite = GenerateDvdLogoSprite(greenLetters, greenRing, "GreenDvdLogo");
+            }
+            if (redDvdSprite == null)
+            {
+                Color redLetters = new Color(1.0f, 0.16f, 0.22f, 1f);
+                Color redRing = new Color(0.70f, 0.05f, 0.15f, 1f);
+                redDvdSprite = GenerateDvdLogoSprite(redLetters, redRing, "RedDvdLogo");
+            }
+        }
+
+        private Sprite GenerateDvdLogoSprite(Color lettersColor, Color ringColor, string spriteName)
+        {
+            int width = 160;
+            int height = 90;
+            Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+
+            Color[] pixels = new Color[width * height];
+            Color transparent = new Color(0, 0, 0, 0);
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = transparent;
+
+            // 1. Draw Disc Ring (Torus) - Tilted Ellipse
+            float ringCenterX = width * 0.5f;
+            float ringCenterY = height * 0.52f;
+            float outerRadiusX = width * 0.44f;
+            float outerRadiusY = height * 0.30f;
+            float innerRadiusX = width * 0.28f;
+            float innerRadiusY = height * 0.17f;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    float dx = x - ringCenterX;
+                    float dy = y - ringCenterY;
+
+                    float outerDist = (dx * dx) / (outerRadiusX * outerRadiusX) + (dy * dy) / (outerRadiusY * outerRadiusY);
+                    float innerDist = (dx * dx) / (innerRadiusX * innerRadiusX) + (dy * dy) / (innerRadiusY * innerRadiusY);
+
+                    if (outerDist <= 1.0f && innerDist >= 0.75f)
+                    {
+                        float normY = (dy / outerRadiusY);
+                        float shade = Mathf.Clamp01(0.75f + normY * 0.35f);
+                        Color c = ringColor * shade;
+                        c.a = ringColor.a;
+
+                        float edgeA = Mathf.Clamp01((1.0f - outerDist) * 8f) * Mathf.Clamp01((innerDist - 0.75f) * 8f);
+                        c.a *= edgeA;
+
+                        pixels[y * width + x] = c;
+                    }
+                }
+            }
+
+            void FillRect(int rx, int ry, int rw, int rh, Color col)
+            {
+                for (int py = ry; py < ry + rh && py < height; py++)
+                {
+                    if (py < 0) continue;
+                    for (int px = rx; px < rx + rw && px < width; px++)
+                    {
+                        if (px < 0) continue;
+                        pixels[py * width + px] = col;
+                    }
+                }
+            }
+
+            // 2. Draw Bold Letters "D V D"
+            int letterY = 38;
+            int letterH = 28;
+            int thickness = 6;
+
+            void DrawLetterD(int startX)
+            {
+                int w = 24;
+                FillRect(startX, letterY, thickness, letterH, lettersColor);
+                FillRect(startX, letterY + letterH - thickness, w - 4, thickness, lettersColor);
+                FillRect(startX, letterY, w - 4, thickness, lettersColor);
+                FillRect(startX + w - thickness, letterY + 4, thickness, letterH - 8, lettersColor);
+                FillRect(startX + w - thickness - 2, letterY + letterH - thickness, 2, thickness, lettersColor);
+                FillRect(startX + w - thickness - 2, letterY, 2, thickness, lettersColor);
+            }
+
+            DrawLetterD(32);
+
+            int vx = 64;
+            int vw = 32;
+            for (int step = 0; step < letterH; step++)
+            {
+                int py = letterY + step;
+                float progress = (float)step / letterH;
+                int leftX = Mathf.RoundToInt(Mathf.Lerp(vx + (vw / 2) - 2, vx, progress));
+                int rightX = Mathf.RoundToInt(Mathf.Lerp(vx + (vw / 2), vx + vw - thickness, progress));
+
+                FillRect(leftX, py, thickness, 1, lettersColor);
+                FillRect(rightX, py, thickness, 1, lettersColor);
+            }
+
+            DrawLetterD(104);
+
+            // 3. Draw Sub-Bar "VIDEO" pill/underline
+            int barY = 22;
+            int barH = 5;
+            FillRect(36, barY, 88, barH, lettersColor);
+
+            tex.SetPixels(pixels);
+            tex.Apply();
+
+            Sprite created = Sprite.Create(tex, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 100f);
+            created.name = spriteName;
+            return created;
         }
 
         public void OnReckoningContinueClicked()
         {
+            if (reckoningAnimationRoutine != null)
+            {
+                StopCoroutine(reckoningAnimationRoutine);
+                reckoningAnimationRoutine = null;
+            }
+
             PlayProceduralBeep(440f, 0.08f);
 
             if (RunSaveManager.HasInstance)
@@ -1787,6 +2259,27 @@ namespace Story
                     Transform t = (statsBox != null ? statsBox.Find("ScoreStat") : null) ?? rpTrans.Find("ScoreStat");
                     if (t != null) reckoningScoreText = t.GetComponent<TMP_Text>();
                 }
+                if (statsBox != null)
+                {
+                    if (reckoningDaysText == null)
+                    {
+                        Transform t = statsBox.Find("DaysStat");
+                        if (t != null) reckoningDaysText = t.GetComponent<TMP_Text>();
+                        else reckoningDaysText = CreateTMPText("DaysStat", statsBox, new Vector2(0f, -80f), new Vector2(500f, 22f), 12f, TextAlignmentOptions.Left, Color.white);
+                    }
+                    if (reckoningCleanlinessText == null)
+                    {
+                        Transform t = statsBox.Find("CleanlinessStat");
+                        if (t != null) reckoningCleanlinessText = t.GetComponent<TMP_Text>();
+                        else reckoningCleanlinessText = CreateTMPText("CleanlinessStat", statsBox, new Vector2(0f, -104f), new Vector2(500f, 22f), 12f, TextAlignmentOptions.Left, Color.white);
+                    }
+                    if (reckoningMissedCallsText == null)
+                    {
+                        Transform t = statsBox.Find("MissedCallsStat");
+                        if (t != null) reckoningMissedCallsText = t.GetComponent<TMP_Text>();
+                        else reckoningMissedCallsText = CreateTMPText("MissedCallsStat", statsBox, new Vector2(0f, -128f), new Vector2(500f, 22f), 12f, TextAlignmentOptions.Left, Color.white);
+                    }
+                }
                 if (reckoningVerdictPromptText == null)
                 {
                     Transform t = rpTrans.Find("VerdictPrompt");
@@ -1802,10 +2295,254 @@ namespace Story
                     reckoningContinueButton.onClick.RemoveListener(OnReckoningContinueClicked);
                     reckoningContinueButton.onClick.AddListener(OnReckoningContinueClicked);
                 }
+
+                EnsureReckoningScaleUI();
             }
 
             // Ensure font and z=0 on all TMP texts in hierarchy
             UpdateAllTMPMeshGeometry();
+        }
+
+        private void EnsureReckoningScaleUI()
+        {
+            if (reckoningPanel == null) return;
+            Transform rpTrans = reckoningPanel.transform;
+
+            if (scaleContainer == null)
+            {
+                Transform t = rpTrans.Find("ScaleContainer");
+                if (t != null) scaleContainer = t.GetComponent<RectTransform>();
+                else
+                {
+                    GameObject scObj = new GameObject("ScaleContainer", typeof(RectTransform));
+                    scObj.transform.SetParent(rpTrans, false);
+                    scaleContainer = scObj.GetComponent<RectTransform>();
+                    scaleContainer.anchorMin = new Vector2(0.5f, 1f);
+                    scaleContainer.anchorMax = new Vector2(0.5f, 1f);
+                    scaleContainer.pivot = new Vector2(0.5f, 1f);
+                    scaleContainer.anchoredPosition = new Vector2(0f, -135f);
+                    scaleContainer.sizeDelta = new Vector2(560f, 185f);
+                    scaleContainer.localScale = Vector3.one;
+
+                    // Stand Pillar
+                    GameObject standObj = new GameObject("FulcrumStand", typeof(RectTransform), typeof(Image));
+                    standObj.transform.SetParent(scaleContainer, false);
+                    RectTransform sRT = standObj.GetComponent<RectTransform>();
+                    sRT.anchoredPosition = new Vector2(0f, -25f);
+                    sRT.sizeDelta = new Vector2(16f, 95f);
+                    standObj.GetComponent<Image>().color = new Color(0.20f, 0.25f, 0.30f, 0.95f);
+
+                    // Stand Base
+                    GameObject baseObj = new GameObject("StandBase", typeof(RectTransform), typeof(Image));
+                    baseObj.transform.SetParent(scaleContainer, false);
+                    RectTransform bRT = baseObj.GetComponent<RectTransform>();
+                    bRT.anchoredPosition = new Vector2(0f, -70f);
+                    bRT.sizeDelta = new Vector2(75f, 12f);
+                    baseObj.GetComponent<Image>().color = new Color(0.28f, 0.33f, 0.38f, 0.95f);
+
+                    // Stand Pivot Cap
+                    GameObject capObj = new GameObject("PivotCap", typeof(RectTransform), typeof(Image));
+                    capObj.transform.SetParent(scaleContainer, false);
+                    RectTransform cRT = capObj.GetComponent<RectTransform>();
+                    cRT.anchoredPosition = new Vector2(0f, 24f);
+                    cRT.sizeDelta = new Vector2(24f, 24f);
+                    capObj.GetComponent<Image>().color = new Color(0.42f, 0.48f, 0.54f, 1f);
+
+                    // Scale Beam
+                    GameObject beamObj = new GameObject("ScaleBeam", typeof(RectTransform), typeof(Image));
+                    beamObj.transform.SetParent(scaleContainer, false);
+                    scaleBeam = beamObj.GetComponent<RectTransform>();
+                    scaleBeam.anchoredPosition = new Vector2(0f, 24f);
+                    scaleBeam.pivot = new Vector2(0.5f, 0.5f);
+                    scaleBeam.sizeDelta = new Vector2(380f, 10f);
+                    beamObj.GetComponent<Image>().color = new Color(0.35f, 0.40f, 0.45f, 1f);
+
+                    // Left Pan (Hope)
+                    GameObject lpObj = new GameObject("LeftPan", typeof(RectTransform), typeof(Image));
+                    lpObj.transform.SetParent(scaleContainer, false);
+                    leftPan = lpObj.GetComponent<RectTransform>();
+                    leftPan.anchoredPosition = new Vector2(-180f, -36f);
+                    leftPan.sizeDelta = new Vector2(130f, 24f);
+                    lpObj.GetComponent<Image>().color = new Color(0.08f, 0.24f, 0.14f, 0.96f);
+
+                    // Left Pan Container for DVDs
+                    GameObject lDvdCont = new GameObject("LeftDvdContainer", typeof(RectTransform));
+                    lDvdCont.transform.SetParent(leftPan, false);
+                    leftDvdContainer = lDvdCont.GetComponent<RectTransform>();
+                    leftDvdContainer.anchoredPosition = Vector2.zero;
+                    leftDvdContainer.sizeDelta = new Vector2(130f, 100f);
+
+                    // Left Weight Label
+                    leftWeightText = CreateTMPText("LeftWeightLabel", leftPan, new Vector2(0f, -22f), new Vector2(140f, 20f), 11f, TextAlignmentOptions.Center, new Color(0.35f, 1f, 0.55f));
+                    leftWeightText.text = "<color=#55FF77><b>HOPE: 0</b></color>";
+
+                    // Right Pan (Despair)
+                    GameObject rpObj = new GameObject("RightPan", typeof(RectTransform), typeof(Image));
+                    rpObj.transform.SetParent(scaleContainer, false);
+                    rightPan = rpObj.GetComponent<RectTransform>();
+                    rightPan.anchoredPosition = new Vector2(180f, -36f);
+                    rightPan.sizeDelta = new Vector2(130f, 24f);
+                    rpObj.GetComponent<Image>().color = new Color(0.26f, 0.08f, 0.10f, 0.96f);
+
+                    // Right Pan Container for DVDs
+                    GameObject rDvdCont = new GameObject("RightDvdContainer", typeof(RectTransform));
+                    rDvdCont.transform.SetParent(rightPan, false);
+                    rightDvdContainer = rDvdCont.GetComponent<RectTransform>();
+                    rightDvdContainer.anchoredPosition = Vector2.zero;
+                    rightDvdContainer.sizeDelta = new Vector2(130f, 100f);
+
+                    // Right Weight Label
+                    rightWeightText = CreateTMPText("RightWeightLabel", rightPan, new Vector2(0f, -22f), new Vector2(140f, 20f), 11f, TextAlignmentOptions.Center, new Color(1f, 0.35f, 0.45f));
+                    rightWeightText.text = "<color=#FF5555><b>DESPAIR: 0</b></color>";
+
+                    // Chain lines
+                    leftChainA = CreateChainLine("LeftChainA", scaleContainer);
+                    leftChainB = CreateChainLine("LeftChainB", scaleContainer);
+                    rightChainA = CreateChainLine("RightChainA", scaleContainer);
+                    rightChainB = CreateChainLine("RightChainB", scaleContainer);
+                }
+            }
+            else
+            {
+                if (scaleBeam == null) { Transform t = scaleContainer.Find("ScaleBeam"); if (t != null) scaleBeam = t.GetComponent<RectTransform>(); }
+                if (leftPan == null) { Transform t = scaleContainer.Find("LeftPan"); if (t != null) leftPan = t.GetComponent<RectTransform>(); }
+                if (rightPan == null) { Transform t = scaleContainer.Find("RightPan"); if (t != null) rightPan = t.GetComponent<RectTransform>(); }
+                if (leftPan != null && leftDvdContainer == null) { Transform t = leftPan.Find("LeftDvdContainer"); if (t != null) leftDvdContainer = t.GetComponent<RectTransform>(); }
+                if (rightPan != null && rightDvdContainer == null) { Transform t = rightPan.Find("RightDvdContainer"); if (t != null) rightDvdContainer = t.GetComponent<RectTransform>(); }
+                if (leftPan != null && leftWeightText == null) { Transform t = leftPan.Find("LeftWeightLabel"); if (t != null) leftWeightText = t.GetComponent<TMP_Text>(); }
+                if (rightPan != null && rightWeightText == null) { Transform t = rightPan.Find("RightWeightLabel"); if (t != null) rightWeightText = t.GetComponent<TMP_Text>(); }
+                if (leftChainA == null) { Transform t = scaleContainer.Find("LeftChainA"); if (t != null) leftChainA = t.GetComponent<RectTransform>(); }
+                if (leftChainB == null) { Transform t = scaleContainer.Find("LeftChainB"); if (t != null) leftChainB = t.GetComponent<RectTransform>(); }
+                if (rightChainA == null) { Transform t = scaleContainer.Find("RightChainA"); if (t != null) rightChainA = t.GetComponent<RectTransform>(); }
+                if (rightChainB == null) { Transform t = scaleContainer.Find("RightChainB"); if (t != null) rightChainB = t.GetComponent<RectTransform>(); }
+            }
+        }
+
+        private RectTransform CreateChainLine(string name, Transform parent)
+        {
+            GameObject chainObj = new GameObject(name, typeof(RectTransform), typeof(Image));
+            chainObj.transform.SetParent(parent, false);
+            RectTransform rt = chainObj.GetComponent<RectTransform>();
+            rt.pivot = new Vector2(0f, 0.5f);
+            chainObj.GetComponent<Image>().color = new Color(0.55f, 0.60f, 0.65f, 0.75f);
+            return rt;
+        }
+
+        private void EnsureProceduralAudioClips()
+        {
+            if (typeTickClip == null) typeTickClip = GenerateProceduralTone(1200f, 0.015f, 0.25f, true);
+            if (rowBounceClip == null) rowBounceClip = GenerateProceduralTone(520f, 0.045f, 0.35f, false);
+            if (impactHopeClip == null) impactHopeClip = GenerateProceduralChime(560f, 280f, 0.10f, 0.45f);
+            if (impactDespairClip == null) impactDespairClip = GenerateProceduralChime(190f, 75f, 0.14f, 0.55f);
+            if (verdictHopeClip == null) verdictHopeClip = GenerateProceduralChord(new float[] { 440f, 554.37f, 659.25f }, 0.5f, 0.45f);
+            if (verdictDespairClip == null) verdictDespairClip = GenerateProceduralChord(new float[] { 330f, 277.18f, 220f }, 0.6f, 0.5f);
+        }
+
+        private void PlayProceduralTick(float pitch = 1f)
+        {
+            EnsureUIAudio();
+            EnsureProceduralAudioClips();
+            if (uiAudio != null && typeTickClip != null)
+            {
+                uiAudio.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+                uiAudio.PlayOneShot(typeTickClip, 0.35f);
+                uiAudio.pitch = 1f;
+            }
+        }
+
+        private void PlayProceduralRowBounce(float pitch = 1f)
+        {
+            EnsureUIAudio();
+            EnsureProceduralAudioClips();
+            if (uiAudio != null && rowBounceClip != null)
+            {
+                uiAudio.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+                uiAudio.PlayOneShot(rowBounceClip, 0.45f);
+                uiAudio.pitch = 1f;
+            }
+        }
+
+        private void PlayProceduralImpactSound(bool isHope)
+        {
+            EnsureUIAudio();
+            EnsureProceduralAudioClips();
+            if (uiAudio != null)
+            {
+                AudioClip clip = isHope ? impactHopeClip : impactDespairClip;
+                if (clip != null) uiAudio.PlayOneShot(clip, 0.55f);
+            }
+        }
+
+        private void PlayVerdictSound(bool isHope)
+        {
+            EnsureUIAudio();
+            EnsureProceduralAudioClips();
+            if (uiAudio != null)
+            {
+                AudioClip clip = isHope ? verdictHopeClip : verdictDespairClip;
+                if (clip != null) uiAudio.PlayOneShot(clip, 0.7f);
+            }
+        }
+
+        private AudioClip GenerateProceduralTone(float freq, float duration, float volume, bool addNoise)
+        {
+            const int sampleRate = 44100;
+            int totalSamples = (int)(sampleRate * duration);
+            float[] data = new float[totalSamples];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = 1f - (float)i / totalSamples;
+                float s = Mathf.Sin(2f * Mathf.PI * freq * t);
+                if (addNoise) s = (s * 0.7f) + (UnityEngine.Random.Range(-0.3f, 0.3f));
+                data[i] = s * env * volume;
+            }
+
+            AudioClip clip = AudioClip.Create("ProcTone", totalSamples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        private AudioClip GenerateProceduralChime(float startFreq, float endFreq, float duration, float volume)
+        {
+            const int sampleRate = 44100;
+            int totalSamples = (int)(sampleRate * duration);
+            float[] data = new float[totalSamples];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = 1f - Mathf.Pow((float)i / totalSamples, 0.7f);
+                float curFreq = Mathf.Lerp(startFreq, endFreq, (float)i / totalSamples);
+                float s = Mathf.Sin(2f * Mathf.PI * curFreq * t);
+                data[i] = s * env * volume;
+            }
+
+            AudioClip clip = AudioClip.Create("ProcChime", totalSamples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        private AudioClip GenerateProceduralChord(float[] freqs, float duration, float volume)
+        {
+            const int sampleRate = 44100;
+            int totalSamples = (int)(sampleRate * duration);
+            float[] data = new float[totalSamples];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = 1f - (float)i / totalSamples;
+                float s = 0f;
+                foreach (var f in freqs) s += Mathf.Sin(2f * Mathf.PI * f * t);
+                s /= freqs.Length;
+                data[i] = s * env * volume;
+            }
+
+            AudioClip clip = AudioClip.Create("ProcChord", totalSamples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
         }
 
         private void EnsureFontOnTMP(TMP_Text tmp)

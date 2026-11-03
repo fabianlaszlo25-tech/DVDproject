@@ -30,7 +30,7 @@ public class GridCrawlerController : MonoBehaviour
     public TextMeshProUGUI interactTextUI;
     [Tooltip("Underlay shadow text for crisp readability against any background.")]
     public TextMeshProUGUI interactTextShadowUI;
-    public float interactReach = 3f;
+    public float interactReach = 5.5f;
 
     [Header("HUD Pause Button")]
     [Tooltip("The pause button in the HUD overlay (auto-found if not assigned).")]
@@ -315,9 +315,12 @@ public class GridCrawlerController : MonoBehaviour
 
         Ray ray = cam.ScreenPointToRay(virtualMousePos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, interactReach))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactReach, ~0, QueryTriggerInteraction.Ignore))
         {
             InteractableObject interactObj = hit.collider.GetComponentInParent<InteractableObject>();
+            if (interactObj == null) interactObj = hit.collider.GetComponent<InteractableObject>();
+            if (interactObj == null) interactObj = hit.collider.GetComponentInChildren<InteractableObject>();
+
             if (interactObj != null && interactObj.enabled)
             {
                 SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects

@@ -218,12 +218,36 @@ namespace Story.Editor
                 RunSaveManager.Instance.finalPhoneEncounterDone = false;
             }
 
+            KitchenPhone.ForceDay3FinaleForTesting = true;
+            StoryCardController.ForceDay3FinaleForTesting = true;
+
             KitchenPhone phone = UnityEngine.Object.FindAnyObjectByType<KitchenPhone>(FindObjectsInactive.Include);
             if (phone == null) phone = KitchenPhone.EnsureInstanceInScene();
             if (phone != null)
             {
                 phone.ForceRingPhoneInEditor();
-                Debug.Log("[StoryHierarchySetup] Day 3 Climactic Call triggered! Telephone is ringing. Answer it to see the weighed stats reckoning screen.");
+                Debug.Log("[StoryHierarchySetup] Day 3 Climactic Call triggered! Telephone is ringing. Answer it (or press P/E) to see the weighed stats reckoning screen.");
+            }
+        }
+
+        [MenuItem("Tools/Story/Force Answer Day 3 Finale Call (Instant Test)")]
+        public static void ForceAnswerDay3FinaleCallInstant()
+        {
+            if (RunSaveManager.HasInstance)
+            {
+                RunSaveManager.Instance.postMaxDaysSurvived = 3;
+                RunSaveManager.Instance.finalPhoneEncounterDone = false;
+            }
+
+            KitchenPhone.ForceDay3FinaleForTesting = true;
+            StoryCardController.ForceDay3FinaleForTesting = true;
+
+            KitchenPhone phone = UnityEngine.Object.FindAnyObjectByType<KitchenPhone>(FindObjectsInactive.Include);
+            if (phone == null) phone = KitchenPhone.EnsureInstanceInScene();
+            if (phone != null)
+            {
+                phone.ForceStartPhoneSequenceInEditor();
+                Debug.Log("[StoryHierarchySetup] Day 3 Finale sequence started instantly! Displaying the weighed stats reckoning screen.");
             }
         }
 

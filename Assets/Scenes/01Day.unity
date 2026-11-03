@@ -49204,7 +49204,7 @@ MonoBehaviour:
   interactCrosshairImg: {fileID: 2019130249}
   interactTextUI: {fileID: 1543244545}
   interactTextShadowUI: {fileID: 0}
-  interactReach: 3
+  interactReach: 5.5
   hudPauseButton: {fileID: 1041148805}
   mouseSensitivity: 1
   virtualMousePos: {x: 0, y: 0}
@@ -67567,10 +67567,10 @@ MonoBehaviour:
   customDustPatternTexture: {fileID: 0}
   dustTintColor: {r: 0.82, g: 0.79, b: 0.72, a: 1}
   overlayFrontOffset: 0.0012
-  secondsToFullDust: 500
+  secondsToFullDust: 1000
   initialDustRatio: 0.08
   maxDustVisualAlpha: 0.78
-  minSpeedMultiplierAtFullDust: 0.5
+  minSpeedMultiplierAtFullDust: 0.282
   wipeBrushRadiusUV: 0.13
   wipeBrushFeather: 0.65
   cleanPayoffThreshold: 0.9
@@ -81448,11 +81448,26 @@ MonoBehaviour:
   reckoningNarrativeText: {fileID: 3584998183148340352}
   reckoningPositiveChoicesText: {fileID: 6303290724204815120}
   reckoningNegativeChoicesText: {fileID: 2591732120635864400}
+  reckoningDaysText: {fileID: 0}
+  reckoningCleanlinessText: {fileID: 0}
   reckoningDepressionText: {fileID: 2942326958723366127}
   reckoningSubstancesText: {fileID: 2698643102082119049}
+  reckoningMissedCallsText: {fileID: 0}
   reckoningScoreText: {fileID: 5460377452256969107}
   reckoningVerdictPromptText: {fileID: 1616499414297441495}
   reckoningContinueButton: {fileID: 8618943522355147263}
+  scaleContainer: {fileID: 0}
+  scaleBeam: {fileID: 0}
+  leftPan: {fileID: 0}
+  rightPan: {fileID: 0}
+  leftDvdContainer: {fileID: 0}
+  rightDvdContainer: {fileID: 0}
+  leftWeightText: {fileID: 0}
+  rightWeightText: {fileID: 0}
+  leftChainA: {fileID: 0}
+  leftChainB: {fileID: 0}
+  rightChainA: {fileID: 0}
+  rightChainB: {fileID: 0}
   swipeThreshold: 120
   maxCardRotation: 14
   cardReturnSpeed: 16

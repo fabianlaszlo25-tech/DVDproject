@@ -49,6 +49,8 @@ namespace Story
         [Tooltip("If true, zooms camera into the kitchen phone model. If false, keeps normal player camera view just like the death sequence.")]
         public bool zoomCameraOnCall = false;
 
+        public static bool ForceDay3FinaleForTesting = false;
+
         private InteractableObject interactable;
         private Collider phoneCollider;
         private InteractVisualizer visualizer;
@@ -168,10 +170,16 @@ namespace Story
             if (isInCall) return;
 
 #if UNITY_EDITOR
-            // In-Editor testing: Press 'P' to ring the phone (walk up to it to answer)
-            if (WasEditorPKeyPressed())
+            // In-Editor testing: Press 'P' or 'E' while ringing to answer; press 'P' while idle to ring
+            if (isRinging && (WasEditorPKeyPressed() || (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) || Input.GetKeyDown(KeyCode.E)))
             {
-                Debug.Log("[KitchenPhone] Editor debug: Telephone started ringing (P pressed). Walk up to the phone in the kitchen to answer it.");
+                Debug.Log("[KitchenPhone] Editor debug: Phone answered via shortcut key (P/E).");
+                OnPhoneInteracted();
+                return;
+            }
+            if (!isRinging && WasEditorPKeyPressed())
+            {
+                Debug.Log("[KitchenPhone] Editor debug: Telephone started ringing (P pressed). Walk up to the phone in the kitchen or press P/E again to answer.");
                 ForceRingPhoneInEditor();
                 return;
             }
@@ -221,17 +229,22 @@ namespace Story
                 visualizer.ResetGlow(keepPeriodicGlow: false);
             }
 
-            // Collider
+            // Ensure generous root BoxCollider enclosing phone and receiver
             phoneCollider = GetComponent<Collider>();
             if (phoneCollider == null)
             {
                 BoxCollider box = gameObject.AddComponent<BoxCollider>();
-                box.size = new Vector3(0.5f, 0.7f, 0.4f);
-                box.center = Vector3.zero;
+                box.size = new Vector3(1.1f, 1.3f, 0.9f);
+                box.center = new Vector3(0f, -0.22f, 0f);
                 phoneCollider = box;
             }
+            else if (phoneCollider is BoxCollider existingBox)
+            {
+                existingBox.size = new Vector3(1.1f, 1.3f, 0.9f);
+                existingBox.center = new Vector3(0f, -0.22f, 0f);
+            }
 
-            // Interactable
+            // Root InteractableObject
             interactable = GetComponent<InteractableObject>();
             if (interactable == null)
             {
@@ -241,10 +254,24 @@ namespace Story
             {
                 interactable.onClick = new UnityEngine.Events.UnityEvent();
             }
-            interactable.hoverText = "Telephone (Idle)";
+            interactable.hoverText = isRinging ? "Answer Phone" : "Telephone (Idle)";
             interactable.onClick.RemoveListener(OnPhoneInteracted);
             interactable.onClick.AddListener(OnPhoneInteracted);
-            interactable.enabled = false; // only interactable while ringing
+            interactable.enabled = isRinging;
+
+            // Wire all child colliders so raycasts hitting any part of the phone model register interaction
+            Collider[] childCols = GetComponentsInChildren<Collider>(true);
+            foreach (var col in childCols)
+            {
+                if (col == null || col == phoneCollider) continue;
+                InteractableObject childIo = col.GetComponent<InteractableObject>();
+                if (childIo == null) childIo = col.gameObject.AddComponent<InteractableObject>();
+                if (childIo.onClick == null) childIo.onClick = new UnityEngine.Events.UnityEvent();
+                childIo.hoverText = isRinging ? "Answer Phone" : "Telephone (Idle)";
+                childIo.onClick.RemoveListener(OnPhoneInteracted);
+                childIo.onClick.AddListener(OnPhoneInteracted);
+                childIo.enabled = isRinging;
+            }
 
             // AudioSource (3D spatial audio)
             if (phoneAudio == null)
@@ -288,13 +315,18 @@ namespace Story
         public void StartRinging()
         {
             if (isRinging || isInCall) return;
+            SetupComponents();
+
             isRinging = true;
             ringTimer = ringTimeoutSeconds;
 
-            if (interactable != null)
+            // Enable interactables on both root and all child colliders
+            InteractableObject[] allIos = GetComponentsInChildren<InteractableObject>(true);
+            foreach (var io in allIos)
             {
-                interactable.enabled = true;
-                interactable.hoverText = "Answer Phone";
+                if (io == null) continue;
+                io.enabled = true;
+                io.hoverText = "Answer Phone";
             }
 
             // Trigger interact visualizer swirl effect while ringing
@@ -336,10 +368,13 @@ namespace Story
                 phoneAudio.Stop();
             }
 
-            if (interactable != null)
+            // Disable interactables on both root and all child colliders
+            InteractableObject[] allIos = GetComponentsInChildren<InteractableObject>(true);
+            foreach (var io in allIos)
             {
-                interactable.enabled = false;
-                interactable.hoverText = "Telephone (Idle)";
+                if (io == null) continue;
+                io.enabled = false;
+                io.hoverText = "Telephone (Idle)";
             }
         }
 
@@ -369,6 +404,13 @@ namespace Story
             if (phoneAudio != null && pickupClip != null)
             {
                 phoneAudio.PlayOneShot(pickupClip, 0.8f);
+            }
+
+            // Forward editor debug Day 3 test flag
+            if (ForceDay3FinaleForTesting)
+            {
+                StoryCardController.ForceDay3FinaleForTesting = true;
+                ForceDay3FinaleForTesting = false;
             }
 
             // Lock movement and mouse look
@@ -403,6 +445,12 @@ namespace Story
             // Unlock and reveal cursor for UI interaction
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            if (ForceDay3FinaleForTesting)
+            {
+                StoryCardController.ForceDay3FinaleForTesting = true;
+                ForceDay3FinaleForTesting = false;
+            }
 
             StoryCardController cardController = StoryCardController.EnsureInstance();
             if (cardController != null)
@@ -545,6 +593,12 @@ namespace Story
             // Unlock and reveal cursor for UI interaction
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            if (ForceDay3FinaleForTesting)
+            {
+                StoryCardController.ForceDay3FinaleForTesting = true;
+                ForceDay3FinaleForTesting = false;
+            }
 
             StoryCardController cardController = StoryCardController.EnsureInstance();
             if (cardController != null)
