@@ -43,6 +43,12 @@ namespace Story
         public bool shakeWhileRinging = true;
         public float ringShakeIntensity = 0.008f;
 
+        [Header("Screen Effects & Camera (Match Death Sequence)")]
+        [Tooltip("If true, switches CRT shader to duringpaused.mat. If false, keeps duringgameplay.mat just like the death sequence.")]
+        public bool usePausedCrtOnCall = false;
+        [Tooltip("If true, zooms camera into the kitchen phone model. If false, keeps normal player camera view just like the death sequence.")]
+        public bool zoomCameraOnCall = false;
+
         private InteractableObject interactable;
         private Collider phoneCollider;
         private InteractVisualizer visualizer;
@@ -368,20 +374,30 @@ namespace Story
             // Lock movement and mouse look
             GridCrawlerController.InputFrozen = true;
 
-            // CRT pause/story shader effect
-            CrtPostProcessManager.SetPausedCrtActive(true);
-
-            // Zoom camera smoothly into the phone
-            if (cachedCameraFollow == null) cachedCameraFollow = FindObjectOfType<SmoothCameraFollow>();
-            if (cachedCameraFollow != null)
+            // Screen effects: match the death sequence (subtle gameplay CRT) unless paused CRT is explicitly requested
+            if (usePausedCrtOnCall)
             {
-                Vector3 phoneCenter = transform.position + Vector3.up * 0.1f;
-                Camera mainCam = Camera.main;
-                Vector3 viewDir = mainCam != null ? (mainCam.transform.position - phoneCenter).normalized : transform.forward;
-                Vector3 focusPos = phoneCenter + viewDir * 0.68f + Vector3.up * 0.06f;
-                Quaternion focusRot = Quaternion.LookRotation((phoneCenter - focusPos).normalized, Vector3.up);
+                CrtPostProcessManager.SetPausedCrtActive(true);
+            }
+            else
+            {
+                CrtPostProcessManager.SetGameplayCrtActive();
+            }
 
-                cachedCameraFollow.EnterFocusMode(focusPos, focusRot, 36f);
+            // Optional zoom camera smoothly into the phone
+            if (zoomCameraOnCall)
+            {
+                if (cachedCameraFollow == null) cachedCameraFollow = FindObjectOfType<SmoothCameraFollow>();
+                if (cachedCameraFollow != null)
+                {
+                    Vector3 phoneCenter = transform.position + Vector3.up * 0.1f;
+                    Camera mainCam = Camera.main;
+                    Vector3 viewDir = mainCam != null ? (mainCam.transform.position - phoneCenter).normalized : transform.forward;
+                    Vector3 focusPos = phoneCenter + viewDir * 0.68f + Vector3.up * 0.06f;
+                    Quaternion focusRot = Quaternion.LookRotation((phoneCenter - focusPos).normalized, Vector3.up);
+
+                    cachedCameraFollow.EnterFocusMode(focusPos, focusRot, 36f);
+                }
             }
 
             // Unlock and reveal cursor for UI interaction
@@ -404,8 +420,8 @@ namespace Story
                 phoneAudio.PlayOneShot(hangupClip, 0.8f);
             }
 
-            // Restore camera FOV and position
-            if (cachedCameraFollow != null)
+            // Restore camera FOV and position if zoomed
+            if (cachedCameraFollow != null && zoomCameraOnCall)
             {
                 cachedCameraFollow.ExitFocusMode();
             }
@@ -413,8 +429,8 @@ namespace Story
             // Unlock player input
             GridCrawlerController.InputFrozen = false;
 
-            // Restore gameplay CRT
-            CrtPostProcessManager.SetPausedCrtActive(false);
+            // Ensure normal gameplay CRT is active
+            CrtPostProcessManager.SetGameplayCrtActive();
 
             // Schedule the next encounter call
             ScheduleNextRing();
@@ -500,20 +516,30 @@ namespace Story
             // Lock movement and mouse look
             GridCrawlerController.InputFrozen = true;
 
-            // CRT pause/story shader effect
-            CrtPostProcessManager.SetPausedCrtActive(true);
-
-            // Zoom camera smoothly into the phone
-            if (cachedCameraFollow == null) cachedCameraFollow = FindObjectOfType<SmoothCameraFollow>();
-            if (cachedCameraFollow != null)
+            // Screen effects: match the death sequence (subtle gameplay CRT) unless paused CRT is explicitly requested
+            if (usePausedCrtOnCall)
             {
-                Vector3 phoneCenter = transform.position + Vector3.up * 0.1f;
-                Camera mainCam = Camera.main != null ? Camera.main : cachedCameraFollow.GetComponent<Camera>();
-                Vector3 viewDir = mainCam != null ? (mainCam.transform.position - phoneCenter).normalized : transform.forward;
-                Vector3 focusPos = phoneCenter + viewDir * 0.68f + Vector3.up * 0.06f;
-                Quaternion focusRot = Quaternion.LookRotation((phoneCenter - focusPos).normalized, Vector3.up);
+                CrtPostProcessManager.SetPausedCrtActive(true);
+            }
+            else
+            {
+                CrtPostProcessManager.SetGameplayCrtActive();
+            }
 
-                cachedCameraFollow.EnterFocusMode(focusPos, focusRot, 36f);
+            // Optional zoom camera smoothly into the phone
+            if (zoomCameraOnCall)
+            {
+                if (cachedCameraFollow == null) cachedCameraFollow = FindObjectOfType<SmoothCameraFollow>();
+                if (cachedCameraFollow != null)
+                {
+                    Vector3 phoneCenter = transform.position + Vector3.up * 0.1f;
+                    Camera mainCam = Camera.main != null ? Camera.main : cachedCameraFollow.GetComponent<Camera>();
+                    Vector3 viewDir = mainCam != null ? (mainCam.transform.position - phoneCenter).normalized : transform.forward;
+                    Vector3 focusPos = phoneCenter + viewDir * 0.68f + Vector3.up * 0.06f;
+                    Quaternion focusRot = Quaternion.LookRotation((phoneCenter - focusPos).normalized, Vector3.up);
+
+                    cachedCameraFollow.EnterFocusMode(focusPos, focusRot, 36f);
+                }
             }
 
             // Unlock and reveal cursor for UI interaction

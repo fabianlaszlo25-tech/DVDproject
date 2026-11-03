@@ -55,14 +55,12 @@ namespace Story
         {
             if (Instance != null) return Instance;
 
-            StoryCardController[] all = Resources.FindObjectsOfTypeAll<StoryCardController>();
-            foreach (var sc in all)
+            // 1. Search active scene for existing permanent StoryCardController
+            StoryCardController inScene = FindAnyObjectByType<StoryCardController>(FindObjectsInactive.Include);
+            if (inScene != null)
             {
-                if (sc != null && sc.gameObject.scene.name == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
-                {
-                    Instance = sc;
-                    return sc;
-                }
+                Instance = inScene;
+                return inScene;
             }
 
             if (StoryManager.Instance != null && StoryManager.Instance.storyCardCanvas != null)
@@ -71,15 +69,14 @@ namespace Story
                 return Instance;
             }
 
-            // Check if saved template exists in Resources
-            GameObject template = Resources.Load<GameObject>("StoryCardCanvasTemplate");
-            if (template != null)
+            StoryCardController[] all = Resources.FindObjectsOfTypeAll<StoryCardController>();
+            foreach (var sc in all)
             {
-                GameObject instantiated = Instantiate(template);
-                instantiated.name = "StoryCardCanvas";
-                StoryCardController ctrl = instantiated.GetComponent<StoryCardController>();
-                Instance = ctrl;
-                return ctrl;
+                if (sc != null && sc.gameObject.scene.name == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
+                {
+                    Instance = sc;
+                    return sc;
+                }
             }
 
             GameObject canvasObj = new GameObject("StoryCardCanvas");
@@ -634,10 +631,6 @@ namespace Story
             currentDragOffset = Vector2.zero;
             consequenceDragOffset = Vector2.zero;
 
-            transform.localScale = Vector3.one;
-            RectTransform rootRT = GetComponent<RectTransform>();
-            if (rootRT != null) rootRT.localScale = Vector3.one;
-
             gameObject.SetActive(true);
             EnsureUIHierarchy();
             SetupScreenSpaceCamera(GetComponent<Canvas>());
@@ -673,10 +666,6 @@ namespace Story
             isDragging = false;
             isDraggingConsequence = false;
             currentDragOffset = Vector2.zero;
-
-            transform.localScale = Vector3.one;
-            RectTransform rootRT = GetComponent<RectTransform>();
-            if (rootRT != null) rootRT.localScale = Vector3.one;
 
             gameObject.SetActive(true);
             EnsureUIHierarchy();
@@ -1239,13 +1228,7 @@ namespace Story
             if (canvas == null) canvas = GetComponent<Canvas>();
             if (canvas == null) return;
 
-            // CRITICAL: Always enforce scale = 1 on root canvas
-            transform.localScale = Vector3.one;
-            RectTransform rootRT = GetComponent<RectTransform>();
-            if (rootRT != null)
-            {
-                rootRT.localScale = Vector3.one;
-            }
+            // Note: Do NOT force transform.localScale = Vector3.one here; CanvasScaler dynamically adjusts scale in ScreenSpaceCamera!
 
             // 1. Check user-assigned targetCamera or canvas.worldCamera (must not be an offscreen render-texture camera like TV bouncer)
             Camera cam = null;
@@ -1314,18 +1297,9 @@ namespace Story
                 // CRITICAL FOR TEXTMESHPRO: TexCoord1 (UV2), Normal, Tangent channels
                 canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1 | AdditionalCanvasShaderChannels.Normal | AdditionalCanvasShaderChannels.Tangent;
 
-                // CRITICAL: Camera near clip is 0.05 and far clip is 25.
-                // A planeDistance of 100 is completely outside camera far clip and culled!
-                // Enforce planeDistance safely right in front of nearClipPlane (0.22m to 0.35m).
-                float safeDistance = Mathf.Clamp(cam.nearClipPlane + 0.17f, 0.20f, 0.35f);
-                if (canvas.planeDistance < cam.nearClipPlane + 0.05f || canvas.planeDistance > 2f)
-                {
-                    canvas.planeDistance = safeDistance;
-                }
-                else
-                {
-                    canvas.planeDistance = safeDistance;
-                }
+                // CRITICAL: Safe plane distance matching death sequence
+                float safeDistance = Mathf.Clamp(cam.nearClipPlane + 0.15f, 0.20f, 0.35f);
+                canvas.planeDistance = safeDistance;
 
                 int uiLayer = LayerMask.NameToLayer("UI");
                 if (uiLayer < 0) uiLayer = 5;
@@ -1378,38 +1352,38 @@ namespace Story
             }
         }
 
+        /// <summary>
+        /// Non-destructively locates or binds UI template elements.
+        /// CRITICAL: NEVER overwrites user-customized sizes, anchors, colors, or font settings at runtime!
+        /// </summary>
         public void EnsureUIHierarchy()
         {
             Canvas canvas = GetComponent<Canvas>();
             if (canvas == null) canvas = gameObject.AddComponent<Canvas>();
             SetupScreenSpaceCamera(canvas);
 
-            transform.localScale = Vector3.one;
-            RectTransform rootRT = GetComponent<RectTransform>();
-            if (rootRT != null) rootRT.localScale = Vector3.one;
-
-            // Dark CRT vignette backdrop (Full Screen Stretch)
+            // Dark CRT vignette backdrop
             Transform bgTrans = transform.Find("DarkVignetteBackdrop");
             if (bgTrans == null)
             {
                 GameObject bgObj = new GameObject("DarkVignetteBackdrop", typeof(RectTransform), typeof(Image));
                 bgObj.transform.SetParent(transform, false);
                 bgTrans = bgObj.transform;
+                RectTransform bgRT = bgTrans.GetComponent<RectTransform>();
+                bgRT.anchorMin = Vector2.zero;
+                bgRT.anchorMax = Vector2.one;
+                bgRT.pivot = new Vector2(0.5f, 0.5f);
+                bgRT.sizeDelta = Vector2.zero;
+                bgRT.anchoredPosition = Vector2.zero;
+                bgRT.localScale = Vector3.one;
+                Image bgImg = bgTrans.GetComponent<Image>();
+                if (bgImg == null) bgImg = bgTrans.gameObject.AddComponent<Image>();
+                bgImg.color = new Color(0.04f, 0.06f, 0.08f, 0.88f);
+                bgImg.raycastTarget = false;
+                bgTrans.SetAsFirstSibling();
             }
-            RectTransform bgRT = bgTrans.GetComponent<RectTransform>();
-            bgRT.anchorMin = Vector2.zero;
-            bgRT.anchorMax = Vector2.one;
-            bgRT.pivot = new Vector2(0.5f, 0.5f);
-            bgRT.sizeDelta = Vector2.zero;
-            bgRT.anchoredPosition = Vector2.zero;
-            bgRT.localScale = Vector3.one;
-            Image bgImg = bgTrans.GetComponent<Image>();
-            if (bgImg == null) bgImg = bgTrans.gameObject.AddComponent<Image>();
-            bgImg.color = new Color(0.04f, 0.06f, 0.08f, 0.88f);
-            bgImg.raycastTarget = false;
-            bgTrans.SetAsFirstSibling();
 
-            // 1. Left and Right Swipe Visual Indicators on Canvas Edges (Guiding Player to Swipe)
+            // 1. Left and Right Swipe Visual Indicators
             if (leftSwipeIndicator == null)
             {
                 Transform t = transform.Find("LeftSwipeIndicator");
@@ -1420,43 +1394,32 @@ namespace Story
                 GameObject leftObj = new GameObject("LeftSwipeIndicator", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
                 leftObj.transform.SetParent(transform, false);
                 leftSwipeIndicator = leftObj.GetComponent<RectTransform>();
-            }
+                leftSwipeIndicator.anchorMin = new Vector2(0f, 0.5f);
+                leftSwipeIndicator.anchorMax = new Vector2(0f, 0.5f);
+                leftSwipeIndicator.pivot = new Vector2(0f, 0.5f);
+                leftSwipeIndicator.sizeDelta = new Vector2(180f, 130f);
+                leftSwipeIndicator.anchoredPosition = new Vector2(40f, 0f);
+                leftSwipeIndicator.localScale = Vector3.one;
 
-            leftSwipeIndicator.anchorMin = new Vector2(0f, 0.5f);
-            leftSwipeIndicator.anchorMax = new Vector2(0f, 0.5f);
-            leftSwipeIndicator.pivot = new Vector2(0f, 0.5f);
-            leftSwipeIndicator.sizeDelta = new Vector2(180f, 130f);
-            leftSwipeIndicator.anchoredPosition = new Vector2(40f, 0f);
-            leftSwipeIndicator.localScale = Vector3.one;
-            leftSwipeIndicator.localRotation = Quaternion.identity;
+                Image leftImg = leftSwipeIndicator.GetComponent<Image>();
+                if (leftImg == null) leftImg = leftSwipeIndicator.gameObject.AddComponent<Image>();
+                leftImg.color = new Color(0.12f, 0.04f, 0.05f, 0.85f);
+                leftImg.raycastTarget = false;
 
-            Image leftImg = leftSwipeIndicator.GetComponent<Image>();
-            if (leftImg == null) leftImg = leftSwipeIndicator.gameObject.AddComponent<Image>();
-            leftImg.color = new Color(0.12f, 0.04f, 0.05f, 0.85f);
-            leftImg.raycastTarget = false;
+                leftSwipeGroup = leftSwipeIndicator.GetComponent<CanvasGroup>();
+                if (leftSwipeGroup == null) leftSwipeGroup = leftSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
+                leftSwipeGroup.alpha = 0.35f;
+                leftSwipeGroup.blocksRaycasts = false;
+                leftSwipeGroup.interactable = false;
 
-            leftSwipeGroup = leftSwipeIndicator.GetComponent<CanvasGroup>();
-            if (leftSwipeGroup == null) leftSwipeGroup = leftSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
-            leftSwipeGroup.alpha = 0.35f;
-            leftSwipeGroup.blocksRaycasts = false;
-            leftSwipeGroup.interactable = false;
-
-            if (leftSwipeText == null) leftSwipeText = leftSwipeIndicator.GetComponentInChildren<TMP_Text>(true);
-            if (leftSwipeText == null)
-            {
                 leftSwipeText = CreateTMPText("Label", leftSwipeIndicator, Vector2.zero, new Vector2(170f, 120f), 18, TextAlignmentOptions.Center, new Color(1f, 0.45f, 0.45f));
+                leftSwipeText.text = "<b>◀ REJECT</b>\n<size=12><color=#ffaaaa>[ SWIPE LEFT ]</color></size>";
             }
             else
             {
-                RectTransform lblRT = leftSwipeText.rectTransform;
-                lblRT.anchorMin = new Vector2(0.5f, 0.5f);
-                lblRT.anchorMax = new Vector2(0.5f, 0.5f);
-                lblRT.pivot = new Vector2(0.5f, 0.5f);
-                lblRT.sizeDelta = new Vector2(170f, 120f);
-                lblRT.anchoredPosition = Vector2.zero;
-                lblRT.localScale = Vector3.one;
+                if (leftSwipeGroup == null) leftSwipeGroup = leftSwipeIndicator.GetComponent<CanvasGroup>();
+                if (leftSwipeText == null) leftSwipeText = leftSwipeIndicator.GetComponentInChildren<TMP_Text>(true);
             }
-            leftSwipeText.text = "<b>◀ REJECT</b>\n<size=12><color=#ffaaaa>[ SWIPE LEFT ]</color></size>";
 
             if (rightSwipeIndicator == null)
             {
@@ -1468,45 +1431,34 @@ namespace Story
                 GameObject rightObj = new GameObject("RightSwipeIndicator", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
                 rightObj.transform.SetParent(transform, false);
                 rightSwipeIndicator = rightObj.GetComponent<RectTransform>();
-            }
+                rightSwipeIndicator.anchorMin = new Vector2(1f, 0.5f);
+                rightSwipeIndicator.anchorMax = new Vector2(1f, 0.5f);
+                rightSwipeIndicator.pivot = new Vector2(1f, 0.5f);
+                rightSwipeIndicator.sizeDelta = new Vector2(180f, 130f);
+                rightSwipeIndicator.anchoredPosition = new Vector2(-40f, 0f);
+                rightSwipeIndicator.localScale = Vector3.one;
 
-            rightSwipeIndicator.anchorMin = new Vector2(1f, 0.5f);
-            rightSwipeIndicator.anchorMax = new Vector2(1f, 0.5f);
-            rightSwipeIndicator.pivot = new Vector2(1f, 0.5f);
-            rightSwipeIndicator.sizeDelta = new Vector2(180f, 130f);
-            rightSwipeIndicator.anchoredPosition = new Vector2(-40f, 0f);
-            rightSwipeIndicator.localScale = Vector3.one;
-            rightSwipeIndicator.localRotation = Quaternion.identity;
+                Image rightImg = rightSwipeIndicator.GetComponent<Image>();
+                if (rightImg == null) rightImg = rightSwipeIndicator.gameObject.AddComponent<Image>();
+                rightImg.color = new Color(0.04f, 0.12f, 0.06f, 0.85f);
+                rightImg.raycastTarget = false;
 
-            Image rightImg = rightSwipeIndicator.GetComponent<Image>();
-            if (rightImg == null) rightImg = rightSwipeIndicator.gameObject.AddComponent<Image>();
-            rightImg.color = new Color(0.04f, 0.12f, 0.06f, 0.85f);
-            rightImg.raycastTarget = false;
+                rightSwipeGroup = rightSwipeIndicator.GetComponent<CanvasGroup>();
+                if (rightSwipeGroup == null) rightSwipeGroup = rightSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
+                rightSwipeGroup.alpha = 0.35f;
+                rightSwipeGroup.blocksRaycasts = false;
+                rightSwipeGroup.interactable = false;
 
-            rightSwipeGroup = rightSwipeIndicator.GetComponent<CanvasGroup>();
-            if (rightSwipeGroup == null) rightSwipeGroup = rightSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
-            rightSwipeGroup.alpha = 0.35f;
-            rightSwipeGroup.blocksRaycasts = false;
-            rightSwipeGroup.interactable = false;
-
-            if (rightSwipeText == null) rightSwipeText = rightSwipeIndicator.GetComponentInChildren<TMP_Text>(true);
-            if (rightSwipeText == null)
-            {
                 rightSwipeText = CreateTMPText("Label", rightSwipeIndicator, Vector2.zero, new Vector2(170f, 120f), 18, TextAlignmentOptions.Center, new Color(0.45f, 1f, 0.55f));
+                rightSwipeText.text = "<b>ACCEPT ▶</b>\n<size=12><color=#aaffaa>[ SWIPE RIGHT ]</color></size>";
             }
             else
             {
-                RectTransform lblRT = rightSwipeText.rectTransform;
-                lblRT.anchorMin = new Vector2(0.5f, 0.5f);
-                lblRT.anchorMax = new Vector2(0.5f, 0.5f);
-                lblRT.pivot = new Vector2(0.5f, 0.5f);
-                lblRT.sizeDelta = new Vector2(170f, 120f);
-                lblRT.anchoredPosition = Vector2.zero;
-                lblRT.localScale = Vector3.one;
+                if (rightSwipeGroup == null) rightSwipeGroup = rightSwipeIndicator.GetComponent<CanvasGroup>();
+                if (rightSwipeText == null) rightSwipeText = rightSwipeIndicator.GetComponentInChildren<TMP_Text>(true);
             }
-            rightSwipeText.text = "<b>ACCEPT ▶</b>\n<size=12><color=#aaffaa>[ SWIPE RIGHT ]</color></size>";
 
-            // 2. Card Container (Size 440 x 620, Centered)
+            // 2. Card Container Template
             if (cardContainer == null)
             {
                 Transform existing = transform.Find("CardContainer");
@@ -1517,109 +1469,87 @@ namespace Story
                 GameObject cardObj = new GameObject("CardContainer", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
                 cardObj.transform.SetParent(transform, false);
                 cardContainer = cardObj.GetComponent<RectTransform>();
+                cardContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                cardContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                cardContainer.pivot = new Vector2(0.5f, 0.5f);
+                cardContainer.sizeDelta = new Vector2(440f, 620f);
+                cardContainer.anchoredPosition = Vector2.zero;
+                cardContainer.localScale = Vector3.one;
+
+                Image cardBg = cardContainer.GetComponent<Image>();
+                if (cardBg == null) cardBg = cardContainer.gameObject.AddComponent<Image>();
+                cardBg.color = new Color(0.08f, 0.12f, 0.16f, 0.98f);
+                cardBg.raycastTarget = true;
             }
 
-            cardContainer.anchorMin = new Vector2(0.5f, 0.5f);
-            cardContainer.anchorMax = new Vector2(0.5f, 0.5f);
-            cardContainer.pivot = new Vector2(0.5f, 0.5f);
-            cardContainer.sizeDelta = new Vector2(440f, 620f);
-            cardContainer.anchoredPosition = Vector2.zero;
-            cardContainer.localScale = Vector3.one;
+            if (cardCanvasGroup == null && cardContainer != null)
+            {
+                cardCanvasGroup = cardContainer.GetComponent<CanvasGroup>();
+                if (cardCanvasGroup == null) cardCanvasGroup = cardContainer.gameObject.AddComponent<CanvasGroup>();
+            }
+            if (cardCanvasGroup != null)
+            {
+                cardCanvasGroup.blocksRaycasts = true;
+                cardCanvasGroup.interactable = true;
+            }
 
-            Image cardBg = cardContainer.GetComponent<Image>();
-            if (cardBg == null) cardBg = cardContainer.gameObject.AddComponent<Image>();
-            cardBg.color = new Color(0.08f, 0.12f, 0.16f, 0.98f);
-            cardBg.raycastTarget = true;
-
-            if (cardCanvasGroup == null) cardCanvasGroup = cardContainer.GetComponent<CanvasGroup>();
-            if (cardCanvasGroup == null) cardCanvasGroup = cardContainer.gameObject.AddComponent<CanvasGroup>();
-            cardCanvasGroup.blocksRaycasts = true;
-            cardCanvasGroup.interactable = true;
-
-            // HeaderPanel (Anchored to top of card container, 80px tall)
-            Transform headerTrans = cardContainer.Find("HeaderPanel");
-            if (headerTrans == null)
+            // HeaderPanel
+            Transform headerTrans = cardContainer != null ? cardContainer.Find("HeaderPanel") : null;
+            if (headerTrans == null && cardContainer != null)
             {
                 GameObject headerObj = new GameObject("HeaderPanel", typeof(RectTransform), typeof(Image));
                 headerObj.transform.SetParent(cardContainer, false);
                 headerTrans = headerObj.transform;
+                RectTransform headerRT = headerTrans.GetComponent<RectTransform>();
+                headerRT.anchorMin = new Vector2(0f, 1f);
+                headerRT.anchorMax = new Vector2(1f, 1f);
+                headerRT.pivot = new Vector2(0.5f, 1f);
+                headerRT.sizeDelta = new Vector2(0f, 80f);
+                headerRT.anchoredPosition = Vector2.zero;
+                headerRT.localScale = Vector3.one;
+
+                Image hImg = headerTrans.GetComponent<Image>();
+                if (hImg == null) hImg = headerTrans.gameObject.AddComponent<Image>();
+                hImg.color = new Color(0.12f, 0.18f, 0.24f, 1f);
+                hImg.raycastTarget = false;
             }
-            RectTransform headerRT = headerTrans.GetComponent<RectTransform>();
-            headerRT.anchorMin = new Vector2(0f, 1f);
-            headerRT.anchorMax = new Vector2(1f, 1f);
-            headerRT.pivot = new Vector2(0.5f, 1f);
-            headerRT.sizeDelta = new Vector2(0f, 80f);
-            headerRT.anchoredPosition = Vector2.zero;
-            headerRT.localScale = Vector3.one;
 
-            Image hImg = headerTrans.GetComponent<Image>();
-            if (hImg == null) hImg = headerTrans.gameObject.AddComponent<Image>();
-            hImg.color = new Color(0.12f, 0.18f, 0.24f, 1f);
-            hImg.raycastTarget = false;
-
-            if (contactTitleText == null)
+            if (contactTitleText == null && headerTrans != null)
             {
                 Transform t = headerTrans.Find("ContactTitle");
                 if (t != null) contactTitleText = t.GetComponent<TMP_Text>();
                 else contactTitleText = CreateTMPText("ContactTitle", headerTrans, new Vector2(0f, -10f), new Vector2(400f, 32f), 20f, TextAlignmentOptions.Center, new Color(0.4f, 0.95f, 0.5f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
             }
-            if (contactTitleText != null)
-            {
-                RectTransform rt = contactTitleText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(400f, 32f);
-                rt.anchoredPosition = new Vector2(0f, -10f);
-                rt.localScale = Vector3.one;
-                contactTitleText.fontStyle = FontStyles.Bold;
-                contactTitleText.fontSize = 20f;
-                contactTitleText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(contactTitleText.text)) contactTitleText.text = "CONTACT NAME";
-            }
 
-            if (contactRoleText == null)
+            if (contactRoleText == null && headerTrans != null)
             {
                 Transform t = headerTrans.Find("ContactRole");
                 if (t != null) contactRoleText = t.GetComponent<TMP_Text>();
                 else contactRoleText = CreateTMPText("ContactRole", headerTrans, new Vector2(0f, -46f), new Vector2(400f, 22f), 12f, TextAlignmentOptions.Center, new Color(0.7f, 0.8f, 0.9f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
             }
-            if (contactRoleText != null)
-            {
-                RectTransform rt = contactRoleText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(400f, 22f);
-                rt.anchoredPosition = new Vector2(0f, -46f);
-                rt.localScale = Vector3.one;
-                contactRoleText.fontSize = 12f;
-                contactRoleText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(contactRoleText.text)) contactRoleText.text = "INCOMING CALL";
-            }
 
-            // Portrait Frame & Image (Upper center of card)
-            Transform portFrameTrans = cardContainer.Find("PortraitFrame");
-            if (portFrameTrans == null)
+            // Portrait Frame & Image
+            Transform portFrameTrans = cardContainer != null ? cardContainer.Find("PortraitFrame") : null;
+            if (portFrameTrans == null && cardContainer != null)
             {
                 GameObject portraitFrame = new GameObject("PortraitFrame", typeof(RectTransform), typeof(Image));
                 portraitFrame.transform.SetParent(cardContainer, false);
                 portFrameTrans = portraitFrame.transform;
+                RectTransform portRT = portFrameTrans.GetComponent<RectTransform>();
+                portRT.anchorMin = new Vector2(0.5f, 0.5f);
+                portRT.anchorMax = new Vector2(0.5f, 0.5f);
+                portRT.pivot = new Vector2(0.5f, 0.5f);
+                portRT.sizeDelta = new Vector2(170f, 170f);
+                portRT.anchoredPosition = new Vector2(0f, 85f);
+                portRT.localScale = Vector3.one;
+
+                Image pfImg = portFrameTrans.GetComponent<Image>();
+                if (pfImg == null) pfImg = portFrameTrans.gameObject.AddComponent<Image>();
+                pfImg.color = new Color(0.04f, 0.06f, 0.08f, 1f);
+                pfImg.raycastTarget = false;
             }
-            RectTransform portRT = portFrameTrans.GetComponent<RectTransform>();
-            portRT.anchorMin = new Vector2(0.5f, 0.5f);
-            portRT.anchorMax = new Vector2(0.5f, 0.5f);
-            portRT.pivot = new Vector2(0.5f, 0.5f);
-            portRT.sizeDelta = new Vector2(170f, 170f);
-            portRT.anchoredPosition = new Vector2(0f, 85f);
-            portRT.localScale = Vector3.one;
 
-            Image pfImg = portFrameTrans.GetComponent<Image>();
-            if (pfImg == null) pfImg = portFrameTrans.gameObject.AddComponent<Image>();
-            pfImg.color = new Color(0.04f, 0.06f, 0.08f, 1f);
-            pfImg.raycastTarget = false;
-
-            if (portraitImage == null)
+            if (portraitImage == null && portFrameTrans != null)
             {
                 Transform t = portFrameTrans.Find("PortraitImage");
                 if (t != null) portraitImage = t.GetComponent<Image>();
@@ -1628,49 +1558,28 @@ namespace Story
                     GameObject portImgObj = new GameObject("PortraitImage", typeof(RectTransform), typeof(Image));
                     portImgObj.transform.SetParent(portFrameTrans, false);
                     portraitImage = portImgObj.GetComponent<Image>();
+                    RectTransform portImgRT = portraitImage.rectTransform;
+                    portImgRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    portImgRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    portImgRT.pivot = new Vector2(0.5f, 0.5f);
+                    portImgRT.sizeDelta = new Vector2(154f, 154f);
+                    portImgRT.anchoredPosition = Vector2.zero;
+                    portImgRT.localScale = Vector3.one;
+                    portraitImage.color = new Color(0.12f, 0.16f, 0.22f, 0.8f);
+                    portraitImage.raycastTarget = false;
                 }
             }
-            if (portraitImage != null)
-            {
-                RectTransform portImgRT = portraitImage.rectTransform;
-                portImgRT.anchorMin = new Vector2(0.5f, 0.5f);
-                portImgRT.anchorMax = new Vector2(0.5f, 0.5f);
-                portImgRT.pivot = new Vector2(0.5f, 0.5f);
-                portImgRT.sizeDelta = new Vector2(154f, 154f);
-                portImgRT.anchoredPosition = Vector2.zero;
-                portImgRT.localScale = Vector3.one;
-                portraitImage.color = new Color(0.12f, 0.16f, 0.22f, 0.8f);
-                portraitImage.raycastTarget = false;
-            }
 
-            // Narrative Text Body (Lower center of card, zero overlap with portrait)
-            if (narrativeBodyText == null)
+            // Narrative Text Body
+            if (narrativeBodyText == null && cardContainer != null)
             {
                 Transform t = cardContainer.Find("NarrativeText");
                 if (t != null) narrativeBodyText = t.GetComponent<TMP_Text>();
                 else narrativeBodyText = CreateTMPText("NarrativeText", cardContainer, new Vector2(0f, -120f), new Vector2(380f, 190f), 15f, TextAlignmentOptions.Center, Color.white);
             }
-            if (narrativeBodyText != null)
-            {
-                RectTransform rt = narrativeBodyText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 0.5f);
-                rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(380f, 190f);
-                rt.anchoredPosition = new Vector2(0f, -120f);
-                rt.localScale = Vector3.one;
-                narrativeBodyText.fontSize = 15f;
-                narrativeBodyText.alignment = TextAlignmentOptions.Center;
-                narrativeBodyText.raycastTarget = false;
-                narrativeBodyText.textWrappingMode = TextWrappingModes.Normal;
-                if (string.IsNullOrEmpty(narrativeBodyText.text))
-                {
-                    narrativeBodyText.text = "\"Story proposal text... Drag card left to reject or right to accept.\"";
-                }
-            }
 
-            // Stamp Badges
-            if (rejectStamp == null)
+            // Stamps
+            if (rejectStamp == null && cardContainer != null)
             {
                 Transform t = cardContainer.Find("RejectStamp");
                 if (t != null) rejectStamp = t.GetComponent<RectTransform>();
@@ -1679,20 +1588,23 @@ namespace Story
                     GameObject rejObj = new GameObject("RejectStamp", typeof(RectTransform), typeof(CanvasGroup));
                     rejObj.transform.SetParent(cardContainer, false);
                     rejectStamp = rejObj.GetComponent<RectTransform>();
+                    rejectStamp.anchorMin = new Vector2(0.5f, 0.5f);
+                    rejectStamp.anchorMax = new Vector2(0.5f, 0.5f);
+                    rejectStamp.pivot = new Vector2(0.5f, 0.5f);
+                    rejectStamp.sizeDelta = new Vector2(150f, 45f);
+                    rejectStamp.anchoredPosition = new Vector2(-110f, 170f);
+                    rejectStamp.localRotation = Quaternion.Euler(0f, 0f, 15f);
+                    rejectStamp.localScale = Vector3.one;
                     CreateTMPText("RejectLabel", rejObj.transform, Vector2.zero, new Vector2(150f, 45f), 24f, TextAlignmentOptions.Center, new Color(0.95f, 0.3f, 0.3f)).text = "[ REJECT ]";
                 }
             }
-            rejectStamp.anchorMin = new Vector2(0.5f, 0.5f);
-            rejectStamp.anchorMax = new Vector2(0.5f, 0.5f);
-            rejectStamp.pivot = new Vector2(0.5f, 0.5f);
-            rejectStamp.sizeDelta = new Vector2(150f, 45f);
-            rejectStamp.anchoredPosition = new Vector2(-110f, 170f);
-            rejectStamp.localRotation = Quaternion.Euler(0f, 0f, 15f);
-            rejectStamp.localScale = Vector3.one;
-            rejectStampGroup = rejectStamp.GetComponent<CanvasGroup>();
-            if (rejectStampGroup == null) rejectStampGroup = rejectStamp.gameObject.AddComponent<CanvasGroup>();
+            if (rejectStampGroup == null && rejectStamp != null)
+            {
+                rejectStampGroup = rejectStamp.GetComponent<CanvasGroup>();
+                if (rejectStampGroup == null) rejectStampGroup = rejectStamp.gameObject.AddComponent<CanvasGroup>();
+            }
 
-            if (acceptStamp == null)
+            if (acceptStamp == null && cardContainer != null)
             {
                 Transform t = cardContainer.Find("AcceptStamp");
                 if (t != null) acceptStamp = t.GetComponent<RectTransform>();
@@ -1701,34 +1613,32 @@ namespace Story
                     GameObject accObj = new GameObject("AcceptStamp", typeof(RectTransform), typeof(CanvasGroup));
                     accObj.transform.SetParent(cardContainer, false);
                     acceptStamp = accObj.GetComponent<RectTransform>();
+                    acceptStamp.anchorMin = new Vector2(0.5f, 0.5f);
+                    acceptStamp.anchorMax = new Vector2(0.5f, 0.5f);
+                    acceptStamp.pivot = new Vector2(0.5f, 0.5f);
+                    acceptStamp.sizeDelta = new Vector2(150f, 45f);
+                    acceptStamp.anchoredPosition = new Vector2(110f, 170f);
+                    acceptStamp.localRotation = Quaternion.Euler(0f, 0f, -15f);
+                    acceptStamp.localScale = Vector3.one;
                     CreateTMPText("AcceptLabel", accObj.transform, Vector2.zero, new Vector2(150f, 45f), 24f, TextAlignmentOptions.Center, new Color(0.3f, 0.95f, 0.4f)).text = "[ ACCEPT ]";
                 }
             }
-            acceptStamp.anchorMin = new Vector2(0.5f, 0.5f);
-            acceptStamp.anchorMax = new Vector2(0.5f, 0.5f);
-            acceptStamp.pivot = new Vector2(0.5f, 0.5f);
-            acceptStamp.sizeDelta = new Vector2(150f, 45f);
-            acceptStamp.anchoredPosition = new Vector2(110f, 170f);
-            acceptStamp.localRotation = Quaternion.Euler(0f, 0f, -15f);
-            acceptStamp.localScale = Vector3.one;
-            acceptStampGroup = acceptStamp.GetComponent<CanvasGroup>();
-            if (acceptStampGroup == null) acceptStampGroup = acceptStamp.gameObject.AddComponent<CanvasGroup>();
-
-            // Choice Buttons (Hidden because user requested call card to be swipe-only)
-            Transform leftBtnTrans = cardContainer.Find("LeftChoiceButton");
-            if (leftBtnTrans != null)
+            if (acceptStampGroup == null && acceptStamp != null)
             {
-                leftChoiceButton = leftBtnTrans.GetComponent<Button>();
-                leftChoiceButton.gameObject.SetActive(false);
-            }
-            Transform rightBtnTrans = cardContainer.Find("RightChoiceButton");
-            if (rightBtnTrans != null)
-            {
-                rightChoiceButton = rightBtnTrans.GetComponent<Button>();
-                rightChoiceButton.gameObject.SetActive(false);
+                acceptStampGroup = acceptStamp.GetComponent<CanvasGroup>();
+                if (acceptStampGroup == null) acceptStampGroup = acceptStamp.gameObject.AddComponent<CanvasGroup>();
             }
 
-            // 3. Consequence Panel (Size 540 x 460)
+            // Choice Buttons (hidden if present)
+            if (cardContainer != null)
+            {
+                Transform leftBtnTrans = cardContainer.Find("LeftChoiceButton");
+                if (leftBtnTrans != null) leftBtnTrans.gameObject.SetActive(false);
+                Transform rightBtnTrans = cardContainer.Find("RightChoiceButton");
+                if (rightBtnTrans != null) rightBtnTrans.gameObject.SetActive(false);
+            }
+
+            // 3. Consequence Panel Template
             if (consequencePanel == null)
             {
                 Transform t = transform.Find("ConsequencePanel");
@@ -1737,160 +1647,74 @@ namespace Story
                 {
                     consequencePanel = new GameObject("ConsequencePanel", typeof(RectTransform), typeof(Image));
                     consequencePanel.transform.SetParent(transform, false);
+                    RectTransform consRT = consequencePanel.GetComponent<RectTransform>();
+                    consRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    consRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    consRT.pivot = new Vector2(0.5f, 0.5f);
+                    consRT.sizeDelta = new Vector2(540f, 460f);
+                    consRT.anchoredPosition = Vector2.zero;
+                    consRT.localScale = Vector3.one;
+                    consRT.localRotation = Quaternion.identity;
+
+                    Image consImg = consequencePanel.GetComponent<Image>();
+                    if (consImg == null) consImg = consequencePanel.AddComponent<Image>();
+                    consImg.color = new Color(0.06f, 0.10f, 0.14f, 0.98f);
+                    consImg.raycastTarget = true;
                 }
             }
 
-            RectTransform consRT = consequencePanel.GetComponent<RectTransform>();
-            consRT.anchorMin = new Vector2(0.5f, 0.5f);
-            consRT.anchorMax = new Vector2(0.5f, 0.5f);
-            consRT.pivot = new Vector2(0.5f, 0.5f);
-            consRT.sizeDelta = new Vector2(540f, 460f);
-            consRT.anchoredPosition = Vector2.zero;
-            consRT.localScale = Vector3.one;
-            consRT.localRotation = Quaternion.identity;
-
-            Image consImg = consequencePanel.GetComponent<Image>();
-            if (consImg == null) consImg = consequencePanel.AddComponent<Image>();
-            consImg.color = new Color(0.06f, 0.10f, 0.14f, 0.98f);
-            consImg.raycastTarget = true;
-
-            Transform cpTrans = consequencePanel.transform;
-
-            if (consequenceTitleText == null)
+            if (consequencePanel != null)
             {
-                Transform t = cpTrans.Find("ConsTitle");
-                if (t != null) consequenceTitleText = t.GetComponent<TMP_Text>();
-                else consequenceTitleText = CreateTMPText("ConsTitle", cpTrans, new Vector2(0f, -25f), new Vector2(500f, 36f), 20f, TextAlignmentOptions.Center, Color.green, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (consequenceTitleText != null)
-            {
-                RectTransform rt = consequenceTitleText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(500f, 36f);
-                rt.anchoredPosition = new Vector2(0f, -25f);
-                rt.localScale = Vector3.one;
-                consequenceTitleText.fontSize = 20f;
-                consequenceTitleText.fontStyle = FontStyles.Bold;
-                consequenceTitleText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(consequenceTitleText.text)) consequenceTitleText.text = "CALL OUTCOME";
-            }
-
-            if (consequenceBodyText == null)
-            {
-                Transform t = cpTrans.Find("ConsBody");
-                if (t != null) consequenceBodyText = t.GetComponent<TMP_Text>();
-                else consequenceBodyText = CreateTMPText("ConsBody", cpTrans, new Vector2(0f, -75f), new Vector2(480f, 110f), 15f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (consequenceBodyText != null)
-            {
-                RectTransform rt = consequenceBodyText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(480f, 110f);
-                rt.anchoredPosition = new Vector2(0f, -75f);
-                rt.localScale = Vector3.one;
-                consequenceBodyText.fontSize = 15f;
-                consequenceBodyText.alignment = TextAlignmentOptions.Center;
-                consequenceBodyText.textWrappingMode = TextWrappingModes.Normal;
-                if (string.IsNullOrEmpty(consequenceBodyText.text)) consequenceBodyText.text = "Outcome narrative text goes here...";
-            }
-
-            if (moneyDeltaText == null)
-            {
-                Transform t = cpTrans.Find("MoneyDelta");
-                if (t != null) moneyDeltaText = t.GetComponent<TMP_Text>();
-                else moneyDeltaText = CreateTMPText("MoneyDelta", cpTrans, new Vector2(0f, -200f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (moneyDeltaText != null)
-            {
-                RectTransform rt = moneyDeltaText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(460f, 28f);
-                rt.anchoredPosition = new Vector2(0f, -200f);
-                rt.localScale = Vector3.one;
-                moneyDeltaText.fontSize = 16f;
-                moneyDeltaText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(moneyDeltaText.text)) moneyDeltaText.text = "Cash: $0";
-            }
-
-            if (depressionDeltaText == null)
-            {
-                Transform t = cpTrans.Find("DepDelta");
-                if (t != null) depressionDeltaText = t.GetComponent<TMP_Text>();
-                else depressionDeltaText = CreateTMPText("DepDelta", cpTrans, new Vector2(0f, -232f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (depressionDeltaText != null)
-            {
-                RectTransform rt = depressionDeltaText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(460f, 28f);
-                rt.anchoredPosition = new Vector2(0f, -232f);
-                rt.localScale = Vector3.one;
-                depressionDeltaText.fontSize = 16f;
-                depressionDeltaText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(depressionDeltaText.text)) depressionDeltaText.text = "Depression: Unchanged";
-            }
-
-            if (tirednessDeltaText == null)
-            {
-                Transform t = cpTrans.Find("TiredDelta");
-                if (t != null) tirednessDeltaText = t.GetComponent<TMP_Text>();
-                else tirednessDeltaText = CreateTMPText("TiredDelta", cpTrans, new Vector2(0f, -264f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (tirednessDeltaText != null)
-            {
-                RectTransform rt = tirednessDeltaText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(460f, 28f);
-                rt.anchoredPosition = new Vector2(0f, -264f);
-                rt.localScale = Vector3.one;
-                tirednessDeltaText.fontSize = 16f;
-                tirednessDeltaText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(tirednessDeltaText.text)) tirednessDeltaText.text = "Tiredness: Unchanged";
-            }
-
-            if (continueButton == null)
-            {
-                Transform t = cpTrans.Find("ContinueButton");
-                if (t != null) continueButton = t.GetComponent<Button>();
-                else
+                Transform cpTrans = consequencePanel.transform;
+                if (consequenceTitleText == null)
                 {
-                    GameObject contBtn = CreateButton("ContinueButton", cpTrans, new Vector2(0f, 25f), new Vector2(340f, 48f), new Color(0.18f, 0.35f, 0.45f), OnContinueClicked, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-                    continueButton = contBtn.GetComponent<Button>();
-                    CreateTMPText("Label", contBtn.transform, Vector2.zero, new Vector2(320f, 38f), 14f, TextAlignmentOptions.Center, Color.white).text = "[ ◀ SWIPE OR CLICK TO RETURN ▶ ]";
+                    Transform t = cpTrans.Find("ConsTitle");
+                    if (t != null) consequenceTitleText = t.GetComponent<TMP_Text>();
+                    else consequenceTitleText = CreateTMPText("ConsTitle", cpTrans, new Vector2(0f, -25f), new Vector2(500f, 36f), 20f, TextAlignmentOptions.Center, Color.green, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
                 }
-            }
-            if (continueButton != null)
-            {
-                RectTransform rt = continueButton.GetComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.5f, 0f);
-                rt.anchorMax = new Vector2(0.5f, 0f);
-                rt.pivot = new Vector2(0.5f, 0f);
-                rt.sizeDelta = new Vector2(340f, 48f);
-                rt.anchoredPosition = new Vector2(0f, 25f);
-                rt.localScale = Vector3.one;
-
-                continueButton.onClick.RemoveListener(OnContinueClicked);
-                continueButton.onClick.AddListener(OnContinueClicked);
-
-                TMP_Text btnLabel = continueButton.GetComponentInChildren<TMP_Text>(true);
-                if (btnLabel != null)
+                if (consequenceBodyText == null)
                 {
-                    EnsureFontOnTMP(btnLabel);
-                    btnLabel.text = "[ ◀ SWIPE OR CLICK TO RETURN ▶ ]";
+                    Transform t = cpTrans.Find("ConsBody");
+                    if (t != null) consequenceBodyText = t.GetComponent<TMP_Text>();
+                    else consequenceBodyText = CreateTMPText("ConsBody", cpTrans, new Vector2(0f, -75f), new Vector2(480f, 110f), 15f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
+                if (moneyDeltaText == null)
+                {
+                    Transform t = cpTrans.Find("MoneyDelta") ?? cpTrans.Find("StatsBox/MoneyDelta");
+                    if (t != null) moneyDeltaText = t.GetComponent<TMP_Text>();
+                    else moneyDeltaText = CreateTMPText("MoneyDelta", cpTrans, new Vector2(0f, -200f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
+                if (depressionDeltaText == null)
+                {
+                    Transform t = cpTrans.Find("DepDelta") ?? cpTrans.Find("StatsBox/DepDelta");
+                    if (t != null) depressionDeltaText = t.GetComponent<TMP_Text>();
+                    else depressionDeltaText = CreateTMPText("DepDelta", cpTrans, new Vector2(0f, -232f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
+                if (tirednessDeltaText == null)
+                {
+                    Transform t = cpTrans.Find("TiredDelta") ?? cpTrans.Find("StatsBox/TiredDelta");
+                    if (t != null) tirednessDeltaText = t.GetComponent<TMP_Text>();
+                    else tirednessDeltaText = CreateTMPText("TiredDelta", cpTrans, new Vector2(0f, -264f), new Vector2(460f, 28f), 16f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
+                if (continueButton == null)
+                {
+                    Transform t = cpTrans.Find("ContinueButton");
+                    if (t != null) continueButton = t.GetComponent<Button>();
+                    else
+                    {
+                        GameObject contBtn = CreateButton("ContinueButton", cpTrans, new Vector2(0f, 25f), new Vector2(340f, 48f), new Color(0.18f, 0.35f, 0.45f), OnContinueClicked, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+                        continueButton = contBtn.GetComponent<Button>();
+                        CreateTMPText("Label", contBtn.transform, Vector2.zero, new Vector2(320f, 38f), 14f, TextAlignmentOptions.Center, Color.white).text = "[ ◀ SWIPE OR CLICK TO RETURN ▶ ]";
+                    }
+                }
+                if (continueButton != null)
+                {
+                    continueButton.onClick.RemoveListener(OnContinueClicked);
+                    continueButton.onClick.AddListener(OnContinueClicked);
                 }
             }
 
-            // 4. Reckoning Panel (Size 580 x 560)
+            // 4. Reckoning Panel Template
             if (reckoningPanel == null)
             {
                 Transform t = transform.Find("ReckoningPanel");
@@ -1899,249 +1723,85 @@ namespace Story
                 {
                     reckoningPanel = new GameObject("ReckoningPanel", typeof(RectTransform), typeof(Image));
                     reckoningPanel.transform.SetParent(transform, false);
+                    RectTransform reckRT = reckoningPanel.GetComponent<RectTransform>();
+                    reckRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    reckRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    reckRT.pivot = new Vector2(0.5f, 0.5f);
+                    reckRT.sizeDelta = new Vector2(580f, 560f);
+                    reckRT.anchoredPosition = Vector2.zero;
+                    reckRT.localScale = Vector3.one;
+                    reckRT.localRotation = Quaternion.identity;
+
+                    Image reckImg = reckoningPanel.GetComponent<Image>();
+                    if (reckImg == null) reckImg = reckoningPanel.AddComponent<Image>();
+                    reckImg.color = new Color(0.06f, 0.09f, 0.13f, 0.98f);
+                    reckImg.raycastTarget = true;
                 }
             }
 
-            RectTransform reckRT = reckoningPanel.GetComponent<RectTransform>();
-            reckRT.anchorMin = new Vector2(0.5f, 0.5f);
-            reckRT.anchorMax = new Vector2(0.5f, 0.5f);
-            reckRT.pivot = new Vector2(0.5f, 0.5f);
-            reckRT.sizeDelta = new Vector2(580f, 560f);
-            reckRT.anchoredPosition = Vector2.zero;
-            reckRT.localScale = Vector3.one;
-            reckRT.localRotation = Quaternion.identity;
-
-            Image reckImg = reckoningPanel.GetComponent<Image>();
-            if (reckImg == null) reckImg = reckoningPanel.AddComponent<Image>();
-            reckImg.color = new Color(0.06f, 0.09f, 0.13f, 0.98f);
-            reckImg.raycastTarget = true;
-
-            Transform rpTrans = reckoningPanel.transform;
-
-            if (reckoningTitleText == null)
+            if (reckoningPanel != null)
             {
-                Transform t = rpTrans.Find("ReckTitle");
-                if (t != null) reckoningTitleText = t.GetComponent<TMP_Text>();
-                else reckoningTitleText = CreateTMPText("ReckTitle", rpTrans, new Vector2(0f, -20f), new Vector2(540f, 36f), 22f, TextAlignmentOptions.Center, new Color(0.35f, 0.95f, 0.75f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (reckoningTitleText != null)
-            {
-                RectTransform rt = reckoningTitleText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(540f, 36f);
-                rt.anchoredPosition = new Vector2(0f, -20f);
-                rt.localScale = Vector3.one;
-                reckoningTitleText.fontStyle = FontStyles.Bold;
-                reckoningTitleText.fontSize = 22f;
-                if (string.IsNullOrEmpty(reckoningTitleText.text)) reckoningTitleText.text = "THE FINAL RECKONING";
-            }
-
-            if (reckoningSubtitleText == null)
-            {
-                Transform t = rpTrans.Find("ReckSubtitle");
-                if (t != null) reckoningSubtitleText = t.GetComponent<TMP_Text>();
-                else reckoningSubtitleText = CreateTMPText("ReckSubtitle", rpTrans, new Vector2(0f, -58f), new Vector2(540f, 22f), 12f, TextAlignmentOptions.Center, new Color(0.6f, 0.7f, 0.8f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (reckoningSubtitleText != null)
-            {
-                RectTransform rt = reckoningSubtitleText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(540f, 22f);
-                rt.anchoredPosition = new Vector2(0f, -58f);
-                rt.localScale = Vector3.one;
-                reckoningSubtitleText.fontSize = 12f;
-                if (string.IsNullOrEmpty(reckoningSubtitleText.text)) reckoningSubtitleText.text = "DAY 3 ENDGAME TELEPHONE EVALUATION";
-            }
-
-            if (reckoningNarrativeText == null)
-            {
-                Transform t = rpTrans.Find("ReckNarrative");
-                if (t != null) reckoningNarrativeText = t.GetComponent<TMP_Text>();
-                else reckoningNarrativeText = CreateTMPText("ReckNarrative", rpTrans, new Vector2(0f, -85f), new Vector2(520f, 85f), 14f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            }
-            if (reckoningNarrativeText != null)
-            {
-                RectTransform rt = reckoningNarrativeText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 1f);
-                rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.pivot = new Vector2(0.5f, 1f);
-                rt.sizeDelta = new Vector2(520f, 85f);
-                rt.anchoredPosition = new Vector2(0f, -85f);
-                rt.localScale = Vector3.one;
-                reckoningNarrativeText.fontSize = 14f;
-                reckoningNarrativeText.textWrappingMode = TextWrappingModes.Normal;
-                if (string.IsNullOrEmpty(reckoningNarrativeText.text)) reckoningNarrativeText.text = "The receiver buzzes with static...";
-            }
-
-            // Stats Box
-            Transform statsBox = rpTrans.Find("StatsBox");
-            if (statsBox == null)
-            {
-                GameObject sbObj = new GameObject("StatsBox", typeof(RectTransform), typeof(Image));
-                sbObj.transform.SetParent(rpTrans, false);
-                statsBox = sbObj.transform;
-            }
-            RectTransform boxRT = statsBox.GetComponent<RectTransform>();
-            boxRT.anchorMin = new Vector2(0.5f, 0.5f);
-            boxRT.anchorMax = new Vector2(0.5f, 0.5f);
-            boxRT.pivot = new Vector2(0.5f, 0.5f);
-            boxRT.sizeDelta = new Vector2(520f, 130f);
-            boxRT.anchoredPosition = new Vector2(0f, 5f);
-            boxRT.localScale = Vector3.one;
-
-            Image sbImg = statsBox.GetComponent<Image>();
-            if (sbImg == null) sbImg = statsBox.gameObject.AddComponent<Image>();
-            sbImg.color = new Color(0.03f, 0.05f, 0.08f, 0.9f);
-            sbImg.raycastTarget = false;
-
-            if (reckoningPositiveChoicesText == null)
-            {
-                Transform t = statsBox.Find("PosChoices");
-                if (t != null) reckoningPositiveChoicesText = t.GetComponent<TMP_Text>();
-                else reckoningPositiveChoicesText = CreateTMPText("PosChoices", statsBox, new Vector2(20f, -15f), new Vector2(230f, 25f), 14f, TextAlignmentOptions.Left, new Color(0.35f, 0.95f, 0.45f), new Vector2(0f, 1f), new Vector2(0f, 1f));
-            }
-            if (reckoningPositiveChoicesText != null)
-            {
-                RectTransform rt = reckoningPositiveChoicesText.rectTransform;
-                rt.anchorMin = new Vector2(0f, 1f);
-                rt.anchorMax = new Vector2(0f, 1f);
-                rt.pivot = new Vector2(0f, 1f);
-                rt.sizeDelta = new Vector2(230f, 25f);
-                rt.anchoredPosition = new Vector2(20f, -15f);
-                rt.localScale = Vector3.one;
-                reckoningPositiveChoicesText.fontSize = 14f;
-                reckoningPositiveChoicesText.alignment = TextAlignmentOptions.Left;
-                if (string.IsNullOrEmpty(reckoningPositiveChoicesText.text)) reckoningPositiveChoicesText.text = "Positive Decisions: 0";
-            }
-
-            if (reckoningNegativeChoicesText == null)
-            {
-                Transform t = statsBox.Find("NegChoices");
-                if (t != null) reckoningNegativeChoicesText = t.GetComponent<TMP_Text>();
-                else reckoningNegativeChoicesText = CreateTMPText("NegChoices", statsBox, new Vector2(-20f, -15f), new Vector2(230f, 25f), 14f, TextAlignmentOptions.Right, new Color(0.95f, 0.45f, 0.35f), new Vector2(1f, 1f), new Vector2(1f, 1f));
-            }
-            if (reckoningNegativeChoicesText != null)
-            {
-                RectTransform rt = reckoningNegativeChoicesText.rectTransform;
-                rt.anchorMin = new Vector2(1f, 1f);
-                rt.anchorMax = new Vector2(1f, 1f);
-                rt.pivot = new Vector2(1f, 1f);
-                rt.sizeDelta = new Vector2(230f, 25f);
-                rt.anchoredPosition = new Vector2(-20f, -15f);
-                rt.localScale = Vector3.one;
-                reckoningNegativeChoicesText.fontSize = 14f;
-                reckoningNegativeChoicesText.alignment = TextAlignmentOptions.Right;
-                if (string.IsNullOrEmpty(reckoningNegativeChoicesText.text)) reckoningNegativeChoicesText.text = "Escapist Decisions: 0";
-            }
-
-            if (reckoningDepressionText == null)
-            {
-                Transform t = statsBox.Find("DepressionStat");
-                if (t != null) reckoningDepressionText = t.GetComponent<TMP_Text>();
-                else reckoningDepressionText = CreateTMPText("DepressionStat", statsBox, new Vector2(20f, -48f), new Vector2(230f, 25f), 14f, TextAlignmentOptions.Left, Color.white, new Vector2(0f, 1f), new Vector2(0f, 1f));
-            }
-            if (reckoningDepressionText != null)
-            {
-                RectTransform rt = reckoningDepressionText.rectTransform;
-                rt.anchorMin = new Vector2(0f, 1f);
-                rt.anchorMax = new Vector2(0f, 1f);
-                rt.pivot = new Vector2(0f, 1f);
-                rt.sizeDelta = new Vector2(230f, 25f);
-                rt.anchoredPosition = new Vector2(20f, -48f);
-                rt.localScale = Vector3.one;
-                reckoningDepressionText.fontSize = 14f;
-                reckoningDepressionText.alignment = TextAlignmentOptions.Left;
-                if (string.IsNullOrEmpty(reckoningDepressionText.text)) reckoningDepressionText.text = "Depression: 0%";
-            }
-
-            if (reckoningSubstancesText == null)
-            {
-                Transform t = statsBox.Find("SubstancesStat");
-                if (t != null) reckoningSubstancesText = t.GetComponent<TMP_Text>();
-                else reckoningSubstancesText = CreateTMPText("SubstancesStat", statsBox, new Vector2(-20f, -48f), new Vector2(230f, 25f), 14f, TextAlignmentOptions.Right, Color.white, new Vector2(1f, 1f), new Vector2(1f, 1f));
-            }
-            if (reckoningSubstancesText != null)
-            {
-                RectTransform rt = reckoningSubstancesText.rectTransform;
-                rt.anchorMin = new Vector2(1f, 1f);
-                rt.anchorMax = new Vector2(1f, 1f);
-                rt.pivot = new Vector2(1f, 1f);
-                rt.sizeDelta = new Vector2(230f, 25f);
-                rt.anchoredPosition = new Vector2(-20f, -48f);
-                rt.localScale = Vector3.one;
-                reckoningSubstancesText.fontSize = 14f;
-                reckoningSubstancesText.alignment = TextAlignmentOptions.Right;
-                if (string.IsNullOrEmpty(reckoningSubstancesText.text)) reckoningSubstancesText.text = "Substances: 0";
-            }
-
-            if (reckoningScoreText == null)
-            {
-                Transform t = statsBox.Find("ScoreStat");
-                if (t != null) reckoningScoreText = t.GetComponent<TMP_Text>();
-                else reckoningScoreText = CreateTMPText("ScoreStat", statsBox, new Vector2(0f, 12f), new Vector2(480f, 28f), 15f, TextAlignmentOptions.Center, new Color(0.9f, 0.85f, 0.4f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-            }
-            if (reckoningScoreText != null)
-            {
-                RectTransform rt = reckoningScoreText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 0f);
-                rt.anchorMax = new Vector2(0.5f, 0f);
-                rt.pivot = new Vector2(0.5f, 0f);
-                rt.sizeDelta = new Vector2(480f, 28f);
-                rt.anchoredPosition = new Vector2(0f, 12f);
-                rt.localScale = Vector3.one;
-                reckoningScoreText.fontSize = 15f;
-                reckoningScoreText.alignment = TextAlignmentOptions.Center;
-                if (string.IsNullOrEmpty(reckoningScoreText.text)) reckoningScoreText.text = "Weighing Balance: 0.0";
-            }
-
-            if (reckoningVerdictPromptText == null)
-            {
-                Transform t = rpTrans.Find("VerdictPrompt");
-                if (t != null) reckoningVerdictPromptText = t.GetComponent<TMP_Text>();
-                else reckoningVerdictPromptText = CreateTMPText("VerdictPrompt", rpTrans, new Vector2(0f, 95f), new Vector2(540f, 80f), 15f, TextAlignmentOptions.Center, Color.yellow, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-            }
-            if (reckoningVerdictPromptText != null)
-            {
-                RectTransform rt = reckoningVerdictPromptText.rectTransform;
-                rt.anchorMin = new Vector2(0.5f, 0f);
-                rt.anchorMax = new Vector2(0.5f, 0f);
-                rt.pivot = new Vector2(0.5f, 0f);
-                rt.sizeDelta = new Vector2(540f, 80f);
-                rt.anchoredPosition = new Vector2(0f, 95f);
-                rt.localScale = Vector3.one;
-                reckoningVerdictPromptText.fontSize = 15f;
-                reckoningVerdictPromptText.alignment = TextAlignmentOptions.Center;
-                reckoningVerdictPromptText.textWrappingMode = TextWrappingModes.Normal;
-                if (string.IsNullOrEmpty(reckoningVerdictPromptText.text)) reckoningVerdictPromptText.text = "VERDICT: REACH OUT - GO TO FRONT DOOR";
-            }
-
-            if (reckoningContinueButton == null)
-            {
-                Transform t = rpTrans.Find("HangupButton");
-                if (t != null) reckoningContinueButton = t.GetComponent<Button>();
-                else
+                Transform rpTrans = reckoningPanel.transform;
+                if (reckoningTitleText == null)
                 {
-                    GameObject contBtn = CreateButton("HangupButton", rpTrans, new Vector2(0f, 25f), new Vector2(300f, 50f), new Color(0.18f, 0.35f, 0.45f), OnReckoningContinueClicked, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-                    reckoningContinueButton = contBtn.GetComponent<Button>();
-                    CreateTMPText("Label", contBtn.transform, Vector2.zero, new Vector2(280f, 40f), 15f, TextAlignmentOptions.Center, Color.white).text = "[ HANG UP / HEED VERDICT ]";
+                    Transform t = rpTrans.Find("ReckTitle");
+                    if (t != null) reckoningTitleText = t.GetComponent<TMP_Text>();
+                    else reckoningTitleText = CreateTMPText("ReckTitle", rpTrans, new Vector2(0f, -20f), new Vector2(540f, 36f), 22f, TextAlignmentOptions.Center, new Color(0.35f, 0.95f, 0.75f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
                 }
-            }
-            if (reckoningContinueButton != null)
-            {
-                RectTransform rt = reckoningContinueButton.GetComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.5f, 0f);
-                rt.anchorMax = new Vector2(0.5f, 0f);
-                rt.pivot = new Vector2(0.5f, 0f);
-                rt.sizeDelta = new Vector2(300f, 50f);
-                rt.anchoredPosition = new Vector2(0f, 25f);
-                rt.localScale = Vector3.one;
+                if (reckoningSubtitleText == null)
+                {
+                    Transform t = rpTrans.Find("ReckSubtitle");
+                    if (t != null) reckoningSubtitleText = t.GetComponent<TMP_Text>();
+                    else reckoningSubtitleText = CreateTMPText("ReckSubtitle", rpTrans, new Vector2(0f, -58f), new Vector2(540f, 22f), 12f, TextAlignmentOptions.Center, new Color(0.6f, 0.7f, 0.8f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
+                if (reckoningNarrativeText == null)
+                {
+                    Transform t = rpTrans.Find("ReckNarrative");
+                    if (t != null) reckoningNarrativeText = t.GetComponent<TMP_Text>();
+                    else reckoningNarrativeText = CreateTMPText("ReckNarrative", rpTrans, new Vector2(0f, -85f), new Vector2(520f, 85f), 14f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                }
 
-                reckoningContinueButton.onClick.RemoveListener(OnReckoningContinueClicked);
-                reckoningContinueButton.onClick.AddListener(OnReckoningContinueClicked);
+                Transform statsBox = rpTrans.Find("StatsBox");
+                if (reckoningPositiveChoicesText == null)
+                {
+                    Transform t = (statsBox != null ? statsBox.Find("PosChoices") : null) ?? rpTrans.Find("PosChoices");
+                    if (t != null) reckoningPositiveChoicesText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningNegativeChoicesText == null)
+                {
+                    Transform t = (statsBox != null ? statsBox.Find("NegChoices") : null) ?? rpTrans.Find("NegChoices");
+                    if (t != null) reckoningNegativeChoicesText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningDepressionText == null)
+                {
+                    Transform t = (statsBox != null ? statsBox.Find("DepressionStat") : null) ?? rpTrans.Find("DepressionStat");
+                    if (t != null) reckoningDepressionText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningSubstancesText == null)
+                {
+                    Transform t = (statsBox != null ? statsBox.Find("SubstancesStat") : null) ?? rpTrans.Find("SubstancesStat");
+                    if (t != null) reckoningSubstancesText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningScoreText == null)
+                {
+                    Transform t = (statsBox != null ? statsBox.Find("ScoreStat") : null) ?? rpTrans.Find("ScoreStat");
+                    if (t != null) reckoningScoreText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningVerdictPromptText == null)
+                {
+                    Transform t = rpTrans.Find("VerdictPrompt");
+                    if (t != null) reckoningVerdictPromptText = t.GetComponent<TMP_Text>();
+                }
+                if (reckoningContinueButton == null)
+                {
+                    Transform t = rpTrans.Find("HangupButton");
+                    if (t != null) reckoningContinueButton = t.GetComponent<Button>();
+                }
+                if (reckoningContinueButton != null)
+                {
+                    reckoningContinueButton.onClick.RemoveListener(OnReckoningContinueClicked);
+                    reckoningContinueButton.onClick.AddListener(OnReckoningContinueClicked);
+                }
             }
 
             // Ensure font and z=0 on all TMP texts in hierarchy

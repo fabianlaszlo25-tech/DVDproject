@@ -36,6 +36,42 @@ namespace Story.Editor
                 {
                     SetupStoryHierarchy(true);
                 }
+                else if (controller != null && PrefabUtility.IsPartOfAnyPrefab(controller.gameObject))
+                {
+                    // Permanently unpack prefab instance into scene hierarchy so user modifications are permanent
+                    PrefabUtility.UnpackPrefabInstance(controller.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                    EditorUtility.SetDirty(controller.gameObject);
+                    EditorSceneManager.MarkSceneDirty(activeScene);
+                    EditorSceneManager.SaveScene(activeScene);
+                    Debug.Log("[StoryHierarchySetup] Unpacked StoryCardCanvas permanently into scene hierarchy!");
+                }
+            }
+        }
+
+        [MenuItem("Tools/Story/Unpack Canvas Templates Permanently Into Hierarchy")]
+        public static void UnpackCanvasPermanently()
+        {
+            StoryCardController controller = UnityEngine.Object.FindAnyObjectByType<StoryCardController>(FindObjectsInactive.Include);
+            if (controller != null)
+            {
+                if (PrefabUtility.IsPartOfAnyPrefab(controller.gameObject))
+                {
+                    PrefabUtility.UnpackPrefabInstance(controller.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                }
+                EditorUtility.SetDirty(controller.gameObject);
+                var activeScene = EditorSceneManager.GetActiveScene();
+                EditorSceneManager.MarkSceneDirty(activeScene);
+                EditorSceneManager.SaveScene(activeScene);
+                Debug.Log("[StoryHierarchySetup] Successfully unpacked StoryCardCanvas permanently into scene hierarchy!");
+                EditorUtility.DisplayDialog("Templates Unpacked Permanently",
+                    "StoryCardCanvas has been completely unpacked into the scene hierarchy!\n\n" +
+                    "All templates (CardContainer, ConsequencePanel, ReckoningPanel) are now permanent scene GameObjects.\n\n" +
+                    "Any visual tweaks (sizes, positions, fonts, colors) are now saved directly in the scene and will never be overwritten.",
+                    "OK");
+            }
+            else
+            {
+                SetupStoryHierarchy(true);
             }
         }
 
@@ -62,35 +98,19 @@ namespace Story.Editor
                 Directory.CreateDirectory(dir);
             }
 
-            // Ensure scale and camera setup are strictly valid
-            canvasController.transform.localScale = Vector3.one;
-            RectTransform rootRT = canvasController.GetComponent<RectTransform>();
-            if (rootRT != null) rootRT.localScale = Vector3.one;
             Canvas canvas = canvasController.GetComponent<Canvas>();
             if (canvas != null)
             {
                 canvasController.SetupScreenSpaceCamera(canvas);
             }
 
-            // Ensure references and clean layouts are wired before saving
+            // Ensure references are wired before saving
             canvasController.EnsureUIHierarchy();
 
-            // Remember current camera assignment before prefab serialization
-            Camera savedCam = canvasController.targetCamera != null ? canvasController.targetCamera : canvas.worldCamera;
-
-            // Save as prefab asset
-            GameObject savedPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(canvasController.gameObject, TemplatePrefabPath, InteractionMode.UserAction);
-
-            // Re-apply camera reference onto the scene instance (scene references are cleared in prefab assets by Unity)
-            if (savedCam != null)
-            {
-                canvasController.targetCamera = savedCam;
-                if (canvas != null) canvas.worldCamera = savedCam;
-                EditorUtility.SetDirty(canvasController);
-                if (canvas != null) EditorUtility.SetDirty(canvas);
-            }
-
+            // Save as standalone prefab asset backup without connecting scene instance
+            GameObject savedPrefab = PrefabUtility.SaveAsPrefabAsset(canvasController.gameObject, TemplatePrefabPath);
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             AssetDatabase.Refresh();
 
             Debug.Log($"[StoryHierarchySetup] Successfully saved StoryCardCanvas as template prefab at '{TemplatePrefabPath}'!");
@@ -243,8 +263,9 @@ namespace Story.Editor
                     canvasObj = (GameObject)PrefabUtility.InstantiatePrefab(templatePrefab);
                     canvasObj.name = "StoryCardCanvas";
                     Undo.RegisterCreatedObjectUndo(canvasObj, "Instantiate StoryCardCanvas from Template");
+                    PrefabUtility.UnpackPrefabInstance(canvasObj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
                     canvasController = canvasObj.GetComponent<StoryCardController>();
-                    Debug.Log("[StoryHierarchySetup] Restored 'StoryCardCanvas' from saved template prefab!");
+                    Debug.Log("[StoryHierarchySetup] Restored 'StoryCardCanvas' permanently into scene hierarchy!");
                 }
                 else
                 {
@@ -258,6 +279,12 @@ namespace Story.Editor
             else
             {
                 canvasObj = canvasController.gameObject;
+                if (PrefabUtility.IsPartOfAnyPrefab(canvasObj))
+                {
+                    PrefabUtility.UnpackPrefabInstance(canvasObj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                    modified = true;
+                    Debug.Log("[StoryHierarchySetup] Unpacked existing 'StoryCardCanvas' permanently into scene hierarchy!");
+                }
             }
 
             // 3. Ensure Screen Space Camera configuration and Hierarchy elements
@@ -303,17 +330,6 @@ namespace Story.Editor
 
             canvasController.SetupScreenSpaceCamera(canvas);
             canvasController.EnsureUIHierarchy();
-
-            // Auto-save starting prefab template if not yet created on disk
-            if (!File.Exists(TemplatePrefabPath))
-            {
-                string dir = Path.GetDirectoryName(TemplatePrefabPath);
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                PrefabUtility.SaveAsPrefabAssetAndConnect(canvasObj, TemplatePrefabPath, InteractionMode.AutomatedAction);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                Debug.Log($"[StoryHierarchySetup] Generated initial template prefab at '{TemplatePrefabPath}'.");
-            }
 
             // Link StoryManager to canvas controller
             if (manager.storyCardCanvas != canvasController)
