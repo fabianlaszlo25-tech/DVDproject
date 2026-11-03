@@ -476,11 +476,75 @@ public class UpgradeManager : MonoBehaviour
         return 0;
     }
 
+    /// <summary>Minimum price growth between consecutive tiers of the DVD Player / DVD Disc paths (exponential progression).</summary>
+    public const float MinTierCostGrowth = 1.75f;
+
+    /// <summary>
+    /// Base tier cost after enforcing an exponential progression: each tier costs at least
+    /// MinTierCostGrowth x the previous tier on the money/speed (DVD Player / DVD Disc) paths.
+    /// </summary>
+    public float GetProgressionBaseCost(UpgradeTier tier)
+    {
+        if (tier == null) return 0f;
+        for (int p = 0; p < upgradePaths.Count; p++)
+        {
+            UpgradePath path = upgradePaths[p];
+            if (path == null || path.tiers == null || path.category == UpgradeCategory.RemoteUpgrade) continue;
+            int idx = path.tiers.IndexOf(tier);
+            if (idx < 0) continue;
+
+            float cost = 0f;
+            for (int i = 1; i <= idx; i++)
+            {
+                float authored = path.tiers[i] != null ? path.tiers[i].cost : 0f;
+                float floor = i == 1 ? 1f : cost * MinTierCostGrowth;
+                cost = Mathf.Max(authored, floor);
+            }
+            return idx == 0 ? tier.cost : cost;
+        }
+        return tier.cost;
+    }
+
+    /// <summary>Total unlocked upgrade tiers (above the starter tier) across the DVD Player and DVD Disc paths.</summary>
+    public int TotalUnlockedTierCount
+    {
+        get
+        {
+            int total = 0;
+            for (int p = 0; p < upgradePaths.Count; p++)
+            {
+                UpgradePath path = upgradePaths[p];
+                if (path == null || path.category == UpgradeCategory.RemoteUpgrade || path.unlockedIndices == null) continue;
+                int highest = 0;
+                for (int i = 0; i < path.unlockedIndices.Count; i++) highest = Mathf.Max(highest, path.unlockedIndices[i]);
+                total += highest;
+            }
+            return total;
+        }
+    }
+
+    /// <summary>True when BOTH the player and DVD upgrade paths have their final tier unlocked.</summary>
+    public bool IsEndgameMaxed
+    {
+        get
+        {
+            int checkedPaths = 0;
+            for (int p = 0; p < upgradePaths.Count; p++)
+            {
+                UpgradePath path = upgradePaths[p];
+                if (path == null || path.category == UpgradeCategory.RemoteUpgrade || path.tiers == null || path.tiers.Count < 2) continue;
+                checkedPaths++;
+                if (path.unlockedIndices == null || !path.unlockedIndices.Contains(path.tiers.Count - 1)) return false;
+            }
+            return checkedPaths >= 2;
+        }
+    }
+
     public decimal GetTierCost(UpgradeTier tier)
     {
         if (tier == null) return 0m;
         float mult = BarManager.Instance != null ? BarManager.Instance.CurrentInflationMultiplier : 1f;
-        return (decimal)(tier.cost * mult);
+        return (decimal)(GetProgressionBaseCost(tier) * mult);
     }
 
     public bool TryPurchaseUpgrade(UpgradePath path, int targetIndex)

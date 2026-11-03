@@ -34,18 +34,40 @@ public class SceneTransitionOut : MonoBehaviour
         {
             originalFOV = targetCamera.fieldOfView;
         }
+
+        // Secret Good Day: Front door allows stepping outside into the light instead of going to the bar
+        if (sceneToLoad == "BarGameBarni" && RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+        {
+            var interactable = GetComponent<InteractableObject>();
+            if (interactable != null)
+            {
+                interactable.hoverText = "Go outside";
+            }
+        }
     }
 
     public void TransitionToScene()
     {
         if (!isTransitioning)
         {
+            // Secret Good Day Happy Ending Trigger
+            if (sceneToLoad == "BarGameBarni" && RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+            {
+                RunStatsSummaryUI.ShowHappyEnding();
+                return;
+            }
+
             // Check Bill restrictions
             if (BillManager.Instance != null)
             {
                 if (sceneToLoad == "KristofDreamGames" && BillManager.Instance.HasUnpaidBill)
                 {
                     BillManager.Instance.ShowBedDenyFeedback(gameObject);
+                    return;
+                }
+                if (sceneToLoad == "KristofDreamGames" && BarManager.Instance != null && !BarManager.Instance.IsTiredEnoughToSleep)
+                {
+                    BillManager.Instance.ShowCustomDenyFeedback(gameObject, "Not tired enough to sleep yet!");
                     return;
                 }
                 if (sceneToLoad == "KristofDreamGames" && BarManager.Instance != null
@@ -60,6 +82,9 @@ public class SceneTransitionOut : MonoBehaviour
                     return;
                 }
             }
+
+            // Going out to the bar is tiring
+            if (sceneToLoad == "BarGameBarni" && BarManager.Instance != null) BarManager.Instance.AddTiredness(15f);
 
             if (targetCamera == null) targetCamera = Camera.main;
             if (targetCamera != null && targetCamera.fieldOfView > zoomTargetFOV + 1f)

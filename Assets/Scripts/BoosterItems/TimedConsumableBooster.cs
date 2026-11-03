@@ -209,6 +209,9 @@ public class TimedConsumableBooster : MonoBehaviour
     [ContextMenu("Start Consumable Cycle")]
     public void StartConsumableCycle()
     {
+        // Energy drink / Zyn relieve tiredness the moment they are consumed
+        if (BarManager.Instance != null) BarManager.Instance.ApplySubstanceTirednessRelief(effectType);
+
         FindUnusedBuyablePropIfNeeded();
         EnsureEffectControllerExists();
         isLockedByCombination = false;

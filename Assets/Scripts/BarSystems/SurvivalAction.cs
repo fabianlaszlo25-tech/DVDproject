@@ -424,6 +424,14 @@ public class SurvivalAction : MonoBehaviour
             return;
         }
 
+        // Sleep gating: only possible when tired enough (tiredness >= 90%)
+        if (actionType == ActionType.Sleep && barManager != null && !barManager.IsTiredEnoughToSleep)
+        {
+            if (audioSource != null && cantAffordSound != null) audioSource.PlayOneShot(cantAffordSound);
+            if (BillManager.Instance != null) BillManager.Instance.ShowCustomDenyFeedback(gameObject, "Not tired enough to sleep yet!");
+            return;
+        }
+
         // Can't sleep while hunger / needs / dirtiness is maxed out (critical)
         if (actionType == ActionType.Sleep && barManager != null && barManager.IsCriticalBarMaxed(out string criticalReason))
         {

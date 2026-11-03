@@ -2965,9 +2965,9 @@ MonoBehaviour:
   gizmoWireColor: {r: 0.2, g: 0.9, b: 0.4, a: 0.9}
   gizmoFillColor: {r: 0.2, g: 0.9, b: 0.4, a: 0.15}
   spawnOnStart: 1
-  firstDayTrashCount: 25
-  subsequentDaysBaseTrash: 5
-  defaultTrashCount: 25
+  firstDayTrashCount: 220
+  subsequentDaysBaseTrash: 110
+  defaultTrashCount: 220
   spawnPoint: {fileID: 772581428}
   dirtiness: 100
   dirtinessPerTrash: 5
@@ -3586,6 +3586,205 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99051034}
   m_CullTransparentMesh: 0
+--- !u!1 &101931894
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 101931896}
+  - component: {fileID: 101931895}
+  m_Layer: 0
+  m_Name: StoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &101931895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101931894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e5904d9e2b4acb8e390c50d65b7192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Story.StoryManager
+  storyCardCanvas: {fileID: 1560517955}
+  targetCamera: {fileID: 1564629741}
+  calls:
+  - id: card_mom
+    contactName: MOM
+    contactRole: Incoming Call
+    narrativeText: Sweetheart, are you eating well? I transferred a little grocery
+      money to your account. Please don't spend it on anything dangerous.
+    portraitSprite: {fileID: 0}
+    leftLabel: DISMISS
+    leftChoicePrompt: I'm busy, don't worry about me
+    leftOutcomeText: You hung up cold. The empty apartment feels a little darker.
+    leftDepressionDelta: 8
+    leftTirednessDelta: 0
+    leftMoneyDelta: 0
+    leftIsPositive: 0
+    rightLabel: THANKS MOM
+    rightChoicePrompt: I promise I'm trying
+    rightOutcomeText: A rare warmth washes over you. You remember you're not completely
+      alone.
+    rightDepressionDelta: -15
+    rightTirednessDelta: 0
+    rightMoneyDelta: 50
+    rightIsPositive: 1
+  - id: card_landlord
+    contactName: LANDLORD (HENDERSON)
+    contactRole: Notice of Non-Payment
+    narrativeText: Rent is overdue. Pay an advance maintenance deposit of $120 today
+      or I'm inspecting every inch of this unit Friday morning.
+    portraitSprite: {fileID: 0}
+    leftLabel: STAND GROUND
+    leftChoicePrompt: I know my tenant rights
+    leftOutcomeText: You refuse the unlawful pressure. Heart pounding, you protect
+      your autonomy.
+    leftDepressionDelta: 8
+    leftTirednessDelta: 2
+    leftMoneyDelta: 0
+    leftIsPositive: 1
+    rightLabel: PAY MONEY
+    rightChoicePrompt: Here's the cash, leave me alone
+    rightOutcomeText: Money drains from your account. The relief is brief and bitter.
+    rightDepressionDelta: -5
+    rightTirednessDelta: 0
+    rightMoneyDelta: -120
+    rightIsPositive: 0
+  - id: card_alex
+    contactName: ALEX (OLD FRIEND)
+    contactRole: Social
+    narrativeText: Hey man! A few of us are grilling cheap burgers at the local park.
+      You haven't left your apartment in weeks. Come out into the sunshine!
+    portraitSprite: {fileID: 0}
+    leftLabel: STAY INSIDE
+    leftChoicePrompt: Can't make it, got too much to do
+    leftOutcomeText: You stay curled in the dim room, watching the TV flicker in
+      isolation.
+    leftDepressionDelta: 12
+    leftTirednessDelta: -2
+    leftMoneyDelta: 0
+    leftIsPositive: 0
+    rightLabel: GO TO PARK
+    rightChoicePrompt: I'll drop by for an hour
+    rightOutcomeText: Fresh air, friendly laughter, and daylight remind you what
+      life is like.
+    rightDepressionDelta: -25
+    rightTirednessDelta: 6
+    rightMoneyDelta: -15
+    rightIsPositive: 1
+  - id: card_debt
+    contactName: CREDIT RECOVERY CORP
+    contactRole: Automated Collector
+    narrativeText: 'Automated Notice: Settle your disputed convenience fee of $80
+      immediately to avoid negative score penalties.'
+    portraitSprite: {fileID: 0}
+    leftLabel: HANG UP
+    leftChoicePrompt: Hang up and block number
+    leftOutcomeText: You refuse to be swindled by automated extortion bots.
+    leftDepressionDelta: -5
+    leftTirednessDelta: 0
+    leftMoneyDelta: 0
+    leftIsPositive: 1
+    rightLabel: PAY PENALTY
+    rightChoicePrompt: Pay bogus fee to stop calls
+    rightOutcomeText: You surrendered your hard-earned cash to grifters. The sick
+      feeling in your stomach lingers.
+    rightDepressionDelta: 15
+    rightTirednessDelta: 0
+    rightMoneyDelta: -80
+    rightIsPositive: 0
+  - id: card_boss
+    contactName: DISPATCH SUPERVISOR
+    contactRole: Night Shift Work
+    narrativeText: Emergency shift opening! Need someone to haul graveyard freight
+      for 4 hours right now. Double wage ($150 cash).
+    portraitSprite: {fileID: 0}
+    leftLabel: DECLINE
+    leftChoicePrompt: I can't, my body needs rest
+    leftOutcomeText: You chose your health over grueling exhaustion. A quiet, needed
+      rest.
+    leftDepressionDelta: -10
+    leftTirednessDelta: -5
+    leftMoneyDelta: 0
+    leftIsPositive: 1
+    rightLabel: ACCEPT SHIFT
+    rightChoicePrompt: I'll take it, send details
+    rightOutcomeText: You grind out the brutal hours under buzzing fluorescents.
+      Your wallet is fatter, but your body is exhausted.
+    rightDepressionDelta: 18
+    rightTirednessDelta: 25
+    rightMoneyDelta: 150
+    rightIsPositive: 0
+  - id: card_vik
+    contactName: VIK
+    contactRole: Blocked Number
+    narrativeText: Got fresh imported stock delivered. Heavy stuff, guarantees you
+      forget everything for twelve hours straight. $60 special price.
+    portraitSprite: {fileID: 0}
+    leftLabel: REFUSE
+    leftChoicePrompt: Delete number, not today
+    leftOutcomeText: Your resolve holds steady. A quiet victory over the spiral.
+    leftDepressionDelta: -12
+    leftTirednessDelta: 0
+    leftMoneyDelta: 0
+    leftIsPositive: 1
+    rightLabel: BUY STOCK
+    rightChoicePrompt: Leave it outside door
+    rightOutcomeText: Temporary numbing at a steep cost to your mind and sanity.
+    rightDepressionDelta: 22
+    rightTirednessDelta: 15
+    rightMoneyDelta: -60
+    rightIsPositive: 0
+  climacticCall:
+    id: card_climactic_day3
+    contactName: THE SCREENS ECHO
+    contactRole: Electric Static
+    narrativeText: 'The receiver shrieks with harsh electrical interference: ''You
+      maxed every disc, fed every machine, yet here you stay in the dark. Are you
+      ready to let the screen consume you?'''
+    portraitSprite: {fileID: 0}
+    leftLabel: GIVE UP
+    leftChoicePrompt: Surrender to the dark
+    leftOutcomeText: You pull the wire from the wall. The silence of the apartment
+      presses down heavily upon your shoulders.
+    leftDepressionDelta: 40
+    leftTirednessDelta: 20
+    leftMoneyDelta: 0
+    leftIsPositive: 0
+    rightLabel: REACH OUT
+    rightChoicePrompt: Choose to step outside
+    rightOutcomeText: A warm tear breaks through the numbness. The weight on your
+      chest dissolves. The cycle is broken.
+    rightDepressionDelta: -40
+    rightTirednessDelta: -15
+    rightMoneyDelta: 0
+    rightIsPositive: 1
+  currentCallIndex: 0
+--- !u!4 &101931896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101931894}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &107287253
 GameObject:
   m_ObjectHideFlags: 0
@@ -6306,6 +6505,84 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030988776, guid: abc00000000001001278731117829918, type: 3}
   m_PrefabInstance: {fileID: 173460456}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &174623201
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2013433980}
+    m_Modifications:
+    - target: {fileID: 1126727634087748, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415691809008416, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_Name
+      value: UK Phone Distressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3939999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3939999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.3939999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.225
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710695
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+--- !u!4 &174623202 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
+  m_PrefabInstance: {fileID: 174623201}
+  m_PrefabAsset: {fileID: 0}
 --- !u!21 &175463289
 Material:
   serializedVersion: 8
@@ -6364,7 +6641,7 @@ Material:
     - _ColorMask: 15
     - _CullMode: 0
     - _Diffuse: 0.5
-    - _FaceDilate: 1
+    - _FaceDilate: 0.05
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
     - _GlowInner: 0.05
@@ -6375,15 +6652,15 @@ Material:
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
-    - _OutlineSoftness: 1
+    - _OutlineSoftness: 0.02
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 1
+    - _OutlineWidth: 0.28
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 0.26143792
-    - _ScaleRatioB: 0
-    - _ScaleRatioC: 0
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6354167
+    - _ScaleRatioC: 0.6354167
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -6396,10 +6673,10 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 512
     - _TextureWidth: 512
-    - _UnderlayDilate: 1
+    - _UnderlayDilate: 0.28
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: 0
-    - _UnderlaySoftness: 1
+    - _UnderlaySoftness: 0.02
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
@@ -6410,11 +6687,11 @@ Material:
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0.72}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.72}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!33 &176451231
@@ -11786,6 +12063,8 @@ MonoBehaviour:
   - {fileID: 1053706686}
   - {fileID: 1168585268}
   - {fileID: 2145264691}
+  - {fileID: 1881796032}
+  - {fileID: 509587985}
   obstacleNodes:
   - {fileID: 1327421990}
   - {fileID: 1993122390}
@@ -23535,13 +23814,23 @@ MonoBehaviour:
   trashCleaned: 0
   storyElementsEncountered: 0
   encounteredStoryElementIds: []
-  baseTrashCount: 25
-  subsequentDaysBaseTrash: 10
+  postMaxDaysSurvived: 0
+  consecutiveLowDepressionDays: 0
+  isGoodDayActive: 0
+  positiveSecretCounter: 0
+  negativeSecretCounter: 0
+  missedStoryCounter: 0
+  finalPhoneEncounterDone: 0
+  isFinalVerdictHopeful: 0
+  finalVerdictObjective: 
+  baseTrashCount: 220
+  subsequentDaysBaseTrash: 110
   dirtinessTrashMultiplier: 0.08
   depressionTrashMultiplier: 0.06
   cleanedTrashReductionFactor: 0.5
+  trashPerSubstanceYesterday: 4
   minTrashSpawn: 2
-  maxTrashSpawn: 25
+  maxTrashSpawn: 450
   baseMorningDepression: 0
   depressionSleepCarryoverFactor: 0.35
   dirtinessMorningDepressionFactor: 0.15
@@ -23558,7 +23847,7 @@ MonoBehaviour:
   storyElementsYesterday: 0
   bedtimeDirtiness: 0
   bedtimeDepression: 0
-  pendingMorningTrashCount: 25
+  pendingMorningTrashCount: 220
   pendingMorningDepression: 0
   drunkConsumedCount: 0
   caffeinatedConsumedCount: 0
@@ -35357,8 +35646,12 @@ MonoBehaviour:
   baseFoodCost: 10
   inflationRatePerDollar: 0.0001
   maxInflationPercentOfMoneyGained: 0.5
-  moneyDepressionRatePerDollar: 0.08
-  maxMoneyDepressionMultiplier: 2.5
+  perTierSurvivalScaling: 0.05
+  endgameHungerMultiplier: 2.5
+  endgameNeedsMultiplier: 2
+  endgameTirednessMultiplier: 1.8
+  endgamePerDayBonus: 0.2
+  sleepRequiredFraction: 0.9
   currentMoneyDepressionMultiplier: 1
   penaltyMultiplier: 2
 --- !u!114 &1003284029
@@ -49546,6 +49839,7 @@ MonoBehaviour:
   mode: 0
   menuSceneName: 06Menu
   roomSceneName: 01Day
+  creditsSceneName: 05End-Creds
   targetCanvas: {fileID: 1541403258}
   rootCanvasGroup: {fileID: 439471698}
   cardRect: {fileID: 1883380969}
@@ -50426,6 +50720,154 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030990401, guid: abc00000000013683327929640946525, type: 3}
   m_PrefabInstance: {fileID: 1559152276}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1560517954
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2977578011837946724, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Name
+      value: StoryCardCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2977578011837946724, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541866959980244577, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541866959980244577, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Color.b
+      value: 0.24987723
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541866959980244577, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Color.g
+      value: 0.254717
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541866959980244577, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4849475784384095282, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1564629741}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302665540679845501, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5827307580496868954, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 1564629741}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+--- !u!114 &1560517955 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5827307580496868954, guid: 7fc13e2731ab7c24ba5360eec9838ee3, type: 3}
+  m_PrefabInstance: {fileID: 1560517954}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708c89f7ae03d2146ba1b111c5839ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Story.StoryCardController
 --- !u!1 &1564629737
 GameObject:
   m_ObjectHideFlags: 0
@@ -61814,95 +62256,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030988881, guid: abc00000000003512833165389915769, type: 3}
   m_PrefabInstance: {fileID: 1893168874}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1895659388
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1051367885523900, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1126727634087748, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1197958489168852, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307960989626694, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322724522405202, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1415691809008416, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_Name
-      value: Phone
-      objectReference: {fileID: 0}
-    - target: {fileID: 1415691809008416, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1506807875963994, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 1831283146081994, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.298
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.277
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -1.953
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.00000035762784
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -180
-      objectReference: {fileID: 0}
-    - target: {fileID: 4246147441938308, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c54434b0d75014247afbb35feabfb60b, type: 3}
 --- !u!1 &1895880007
 GameObject:
   m_ObjectHideFlags: 0
@@ -68555,6 +68908,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012916357}
   m_CullTransparentMesh: 0
+--- !u!1 &2013433978
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2013433980}
+  - component: {fileID: 2013433979}
+  m_Layer: 0
+  m_Name: KitchenPhone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2013433979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013433978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63af06a65c4b974c9ac69e9fe781439, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Story.KitchenPhone
+  minRingInterval: 120
+  maxRingInterval: 240
+  endgameMinRingInterval: 45
+  endgameMaxRingInterval: 90
+  ringTimeoutSeconds: 25
+  phoneAudio: {fileID: 0}
+  ringLoopClip: {fileID: 0}
+  pickupClip: {fileID: 0}
+  hangupClip: {fileID: 0}
+  shakeWhileRinging: 1
+  ringShakeIntensity: 0.008
+--- !u!4 &2013433980
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013433978}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -5.298, y: 2.277, z: -1.953}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 174623202}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2013806278
 GameObject:
   m_ObjectHideFlags: 0
@@ -79048,4 +79457,6 @@ SceneRoots:
   - {fileID: 954990918}
   - {fileID: 988630418}
   - {fileID: 423796298}
-  - {fileID: 1895659388}
+  - {fileID: 101931896}
+  - {fileID: 2013433980}
+  - {fileID: 1560517954}

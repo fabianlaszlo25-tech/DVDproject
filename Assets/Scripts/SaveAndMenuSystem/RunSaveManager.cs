@@ -50,12 +50,26 @@ public class RunSaveManager : MonoBehaviour
     public int storyElementsEncountered;
     public List<string> encounteredStoryElementIds = new List<string>();
 
+    [Header("Story, Endgame & Good Day State")]
+    [Tooltip("Days survived after BOTH the DVD Player and DVD Disc paths reached max tier.")]
+    public int postMaxDaysSurvived = 0;
+    [Tooltip("Consecutive bedtimes with depression under 10%. 3 in a row unlocks the secret Good Day.")]
+    public int consecutiveLowDepressionDays = 0;
+    [Tooltip("True while the secret Good Day is the current day (no trash, no bills, no HUD, serene TV).")]
+    public bool isGoodDayActive = false;
+    public int positiveSecretCounter = 0;
+    public int negativeSecretCounter = 0;
+    public float missedStoryCounter = 0f;
+    public bool finalPhoneEncounterDone = false;
+    public bool isFinalVerdictHopeful = false;
+    public string finalVerdictObjective = "";
+
     [Header("Daily Trash Spawn Calculation Settings")]
     [Tooltip("Day 1 base trash count: exactly this amount of trash spawns on the very first day when a run starts.")]
-    public int baseTrashCount = 25;
+    public int baseTrashCount = 220;
 
     [Tooltip("Subsequent days base trash count: Day 2 and each following day starts with this separate number instead of the Day 1 base, then adds dirtiness/depression and subtracts cleaned trash.")]
-    public int subsequentDaysBaseTrash = 5;
+    public int subsequentDaysBaseTrash = 110;
 
     [Tooltip("Additional trash per point of bedtime dirtiness (e.g. 0.08 = +8 trash at 100 dirtiness).")]
     public float dirtinessTrashMultiplier = 0.08f;
@@ -66,11 +80,14 @@ public class RunSaveManager : MonoBehaviour
     [Tooltip("Trash spawn reduction per piece of trash cleaned yesterday (e.g. 0.5 = 2 cleaned trash reduces spawn by 1).")]
     public float cleanedTrashReductionFactor = 0.5f;
 
+    [Tooltip("Extra trash spawned the next morning per substance consumed yesterday.")]
+    public float trashPerSubstanceYesterday = 4f;
+
     [Tooltip("Minimum trash items that can spawn in a morning.")]
     public int minTrashSpawn = 2;
 
     [Tooltip("Maximum trash items that can spawn in a morning.")]
-    public int maxTrashSpawn = 25;
+    public int maxTrashSpawn = 450;
 
     [Header("Morning Depression Calculation Settings")]
     [Tooltip("Base morning depression when waking up.")]
@@ -204,7 +221,7 @@ public class RunSaveManager : MonoBehaviour
     private float savedMaxDirtiness = 100f;
     private float savedMaxDepression = 100f;
     private float savedHungerFillRate = 1f;
-    private float savedSleepFillRate = 1.5f;
+    private float savedSleepFillRate = 0.05f;
     private float savedBaseDepressionFillRate = 1f;
     private float savedFoodHungerReduction = 50f;
     private float savedToiletNeedsReduction = 100f;
@@ -214,12 +231,12 @@ public class RunSaveManager : MonoBehaviour
     private float savedToiletDirtinessIncrease = 15f;
     private float savedSleepDirtinessIncrease = 5f;
     private float savedFoodNeedsIncrease = 33.4f;
-    private float savedTrashDirtinessIncrease = 1f;
-    private float savedTrashDepressionReduction = 1f;
-    private float savedEatDepressionReduction = 5f;
+    private float savedTrashDirtinessIncrease = 1.17f;
+    private float savedTrashDepressionReduction = 2.5f;
+    private float savedEatDepressionReduction = 10f;
     private float savedToiletDepressionReduction = 2f;
-    private float savedSleepDepressionReduction = 10f;
-    private float savedCleanDepressionReduction = 15f;
+    private float savedSleepDepressionReduction = 3f;
+    private float savedCleanDepressionReduction = 25f;
     private float savedBaseFoodCost = 10f;
     private float savedInflationRatePerDollar = 0.0001f;
     private float savedPenaltyMultiplier = 2f;
@@ -306,6 +323,11 @@ public class RunSaveManager : MonoBehaviour
 
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Dense-trash balance: never below the new baselines even if an older serialized scene value exists
+        baseTrashCount = Mathf.Max(baseTrashCount, 220);
+        subsequentDaysBaseTrash = Mathf.Max(subsequentDaysBaseTrash, 110);
+        maxTrashSpawn = Mathf.Max(maxTrashSpawn, 450);
 
         if (daysSurvived == 0)
         {
@@ -511,6 +533,13 @@ public class RunSaveManager : MonoBehaviour
                 bedtimeDepression = savedDepression;
             }
 
+            // Endgame day counter + secret Good Day tracking
+            if (UpgradeManager.Instance != null && UpgradeManager.Instance.IsEndgameMaxed) postMaxDaysSurvived++;
+            float maxDep = barManager != null ? Mathf.Max(1f, barManager.maxDepression) : 100f;
+            if ((bedtimeDepression / maxDep) < 0.10f) consecutiveLowDepressionDays++;
+            else consecutiveLowDepressionDays = 0;
+            isGoodDayActive = consecutiveLowDepressionDays >= 3;
+
             // Snapshot daily metrics to yesterday counters and reset today's counters
             trashCleanedYesterday = trashCleanedThisDay;
             trashCleanedThisDay = 0;
@@ -622,6 +651,13 @@ public class RunSaveManager : MonoBehaviour
         storyElementsYesterday = 0;
         bedtimeDirtiness = 0f;
         bedtimeDepression = 0f;
+        postMaxDaysSurvived = 0;
+        consecutiveLowDepressionDays = 0;
+        isGoodDayActive = false;
+        positiveSecretCounter = 0;
+        negativeSecretCounter = 0;
+        missedStoryCounter = 0f;
+        finalPhoneEncounterDone = false;
         pendingMorningTrashCount = baseTrashCount;
         pendingMorningDepression = baseMorningDepression;
 
@@ -681,7 +717,10 @@ public class RunSaveManager : MonoBehaviour
     /// </summary>
     public int CalculateMorningTrashCount()
     {
+        if (isGoodDayActive) return 0;
+
         float rawTrash = subsequentDaysBaseTrash
+            + (substancesConsumedYesterday * trashPerSubstanceYesterday)
             + (bedtimeDirtiness * dirtinessTrashMultiplier)
             + (bedtimeDepression * depressionTrashMultiplier)
             - (trashCleanedYesterday * cleanedTrashReductionFactor);
@@ -718,6 +757,8 @@ public class RunSaveManager : MonoBehaviour
     /// </summary>
     public int GetMorningTrashCountForManager(TrashManager manager)
     {
+        if (isGoodDayActive) return 0; // Good Day: no trash at all
+
         // On Day 1 (first day of a run), spawn the Day 1 base trash count directly
         if (daysSurvived == 0)
         {
@@ -1148,6 +1189,8 @@ public class RunSaveManager : MonoBehaviour
             // 6. Restore or Reset Trash in 01Day
             if (string.Equals(sceneName, roomSceneName, StringComparison.OrdinalIgnoreCase))
             {
+                Story.KitchenPhone.EnsureInstanceInScene();
+
                 if (resetTrashOnNextRoomLoad)
                 {
                     // Waking up from dream: leave pre-placed trash intact and let TrashManagers spawn fresh day trash!

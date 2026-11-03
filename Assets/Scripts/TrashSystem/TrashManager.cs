@@ -50,12 +50,12 @@ public class TrashManager : MonoBehaviour
     [Tooltip("Spawn trash automatically on Start if not skipping.")]
     public bool spawnOnStart = true;
     [Tooltip("Day 1 base trash count: exactly this amount of trash spawns on the very first day when a run starts.")]
-    public int firstDayTrashCount = 25;
+    public int firstDayTrashCount = 220;
     [Tooltip("Subsequent days base trash count: Day 2 and each following day starts with this separate number instead of the Day 1 base, then adds dirtiness/depression and subtracts cleaned trash.")]
-    public int subsequentDaysBaseTrash = 5;
+    public int subsequentDaysBaseTrash = 110;
 
     // Legacy fields preserved for backward compatibility
-    [HideInInspector] public int defaultTrashCount = 25;
+    [HideInInspector] public int defaultTrashCount = 220;
     [HideInInspector] public Transform spawnPoint;
     [HideInInspector] public float dirtiness = 30f;
     [HideInInspector] public float dirtinessPerTrash = 10f;
@@ -72,29 +72,17 @@ public class TrashManager : MonoBehaviour
 
     private void Start()
     {
+        // Enforce high-density trash quotas
+        if (firstDayTrashCount < 180) firstDayTrashCount = 220;
+        if (subsequentDaysBaseTrash < 90) subsequentDaysBaseTrash = 110;
+
         if (RunSaveManager.HasInstance)
         {
-            // Sync with RunSaveManager so setting values in either Inspector works seamlessly
             if (RunSaveManager.Instance.daysSurvived == 0)
             {
-                if (firstDayTrashCount != 25 && RunSaveManager.Instance.baseTrashCount == 25)
-                {
-                    RunSaveManager.Instance.baseTrashCount = firstDayTrashCount;
-                }
-                else if (RunSaveManager.Instance.baseTrashCount > 0)
-                {
-                    firstDayTrashCount = RunSaveManager.Instance.baseTrashCount;
-                }
+                RunSaveManager.Instance.baseTrashCount = firstDayTrashCount;
             }
-
-            if (subsequentDaysBaseTrash != 5 && RunSaveManager.Instance.subsequentDaysBaseTrash == 5)
-            {
-                RunSaveManager.Instance.subsequentDaysBaseTrash = subsequentDaysBaseTrash;
-            }
-            else if (RunSaveManager.Instance.subsequentDaysBaseTrash > 0)
-            {
-                subsequentDaysBaseTrash = RunSaveManager.Instance.subsequentDaysBaseTrash;
-            }
+            RunSaveManager.Instance.subsequentDaysBaseTrash = subsequentDaysBaseTrash;
         }
 
         if (spawnOnStart)
@@ -147,10 +135,11 @@ public class TrashManager : MonoBehaviour
             TrashItem prefab = trashPrefabs[Random.Range(0, trashPrefabs.Count)];
             if (prefab == null) continue;
 
-            if (GetRandomSpawnPosition(out Vector3 spawnPos))
+            if (GetRandomSpawnPosition(out Vector3 spawnPos, out Transform chosenTransform, out BoxCollider chosenBox))
             {
                 Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
                 TrashItem item = Instantiate(prefab, spawnPos, rot);
+                item.SetSpawnAreaConstraint(chosenTransform, chosenBox);
                 item.Cleared += HandleTrashCleared;
                 activeTrash.Add(item);
             }
@@ -159,91 +148,172 @@ public class TrashManager : MonoBehaviour
 
     public bool GetRandomSpawnPosition(out Vector3 result)
     {
-        List<Transform> validTransforms = new List<Transform>();
-        List<BoxCollider> validColliders = new List<BoxCollider>();
+        return GetRandomSpawnPosition(out result, out _, out _);
+    }
 
+    public bool GetRandomSpawnPosition(out Vector3 result, out Transform chosenTransform, out BoxCollider chosenBox)
+    {
+        chosenTransform = null;
+        chosenBox = null;
+
+        List<Transform> validAreas = new List<Transform>();
         if (spawnAreaCubes != null)
         {
             for (int i = 0; i < spawnAreaCubes.Count; i++)
             {
-                if (spawnAreaCubes[i] != null) validTransforms.Add(spawnAreaCubes[i]);
+                if (spawnAreaCubes[i] != null && !validAreas.Contains(spawnAreaCubes[i]))
+                {
+                    validAreas.Add(spawnAreaCubes[i]);
+                }
             }
         }
-
         if (spawnAreaColliders != null)
         {
             for (int i = 0; i < spawnAreaColliders.Count; i++)
             {
-                if (spawnAreaColliders[i] != null) validColliders.Add(spawnAreaColliders[i]);
+                if (spawnAreaColliders[i] != null && !validAreas.Contains(spawnAreaColliders[i].transform))
+                {
+                    validAreas.Add(spawnAreaColliders[i].transform);
+                }
             }
         }
 
-        // Fallback: if no areas assigned, check own BoxCollider or transform
-        if (validTransforms.Count == 0 && validColliders.Count == 0)
+        if (validAreas.Count == 0)
         {
-            BoxCollider selfBox = GetComponent<BoxCollider>();
-            if (selfBox != null)
+            validAreas.Add(transform);
+        }
+
+        // Weight selection by horizontal footprint so larger floor areas get significantly more trash
+        float totalWeight = 0f;
+        float[] weights = new float[validAreas.Count];
+        for (int i = 0; i < validAreas.Count; i++)
+        {
+            Transform t = validAreas[i];
+            BoxCollider b = t.GetComponent<BoxCollider>();
+            Vector3 size = b != null ? b.size : Vector3.one;
+            Vector3 lossy = t.lossyScale;
+            float worldWidth = Mathf.Abs(size.x * lossy.x);
+            float worldDepth = Mathf.Abs(size.z * lossy.z);
+            float footprint = worldWidth * worldDepth;
+            float w = Mathf.Max(0.2f, Mathf.Sqrt(footprint) * 2f + footprint * 3f);
+            weights[i] = w;
+            totalWeight += w;
+        }
+
+        float randomWeight = Random.Range(0f, totalWeight);
+        float cumulative = 0f;
+        Transform targetArea = validAreas[0];
+        for (int i = 0; i < validAreas.Count; i++)
+        {
+            cumulative += weights[i];
+            if (randomWeight <= cumulative)
             {
-                validColliders.Add(selfBox);
+                targetArea = validAreas[i];
+                break;
+            }
+        }
+
+        BoxCollider box = targetArea.GetComponent<BoxCollider>();
+        chosenTransform = targetArea;
+        chosenBox = box;
+
+        Vector3 randomPoint;
+        Vector3 scale = targetArea.lossyScale;
+
+        if (box != null)
+        {
+            Vector3 size = box.size;
+            Vector3 center = box.center;
+            float worldWidth = Mathf.Abs(size.x * scale.x);
+            float worldDepth = Mathf.Abs(size.z * scale.z);
+
+            float padX = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.x));
+            float padZ = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.z));
+            padX = Mathf.Min(padX, size.x * 0.4f);
+            padZ = Mathf.Min(padZ, size.z * 0.4f);
+
+            float rx, rz;
+
+            // In large areas, cluster trash into tight piles/hotspots rather than spreading them far apart
+            if (worldWidth > 0.5f || worldDepth > 0.5f)
+            {
+                // Select a cluster center within the area
+                int numClusters = Mathf.Clamp(Mathf.RoundToInt(Mathf.Max(worldWidth, worldDepth) / 0.45f), 1, 3);
+                int clusterIdx = Random.Range(0, numClusters);
+                float clusterFraction = numClusters > 1 ? (float)clusterIdx / (numClusters - 1) : 0.5f;
+
+                float clusterCenterX = Mathf.Lerp(-size.x * 0.5f + padX * 1.5f, size.x * 0.5f - padX * 1.5f, clusterFraction);
+                float clusterCenterZ = 0f;
+
+                // Tightly cluster around the hotspot (0.12 - 0.22m world radius)
+                float clusterRadiusWorld = Random.Range(0.02f, 0.20f);
+                float angle = Random.Range(0f, Mathf.PI * 2f);
+
+                rx = clusterCenterX + (Mathf.Cos(angle) * clusterRadiusWorld) / Mathf.Max(0.001f, Mathf.Abs(scale.x));
+                rz = clusterCenterZ + (Mathf.Sin(angle) * clusterRadiusWorld) / Mathf.Max(0.001f, Mathf.Abs(scale.z));
             }
             else
             {
-                validTransforms.Add(transform);
+                rx = Random.Range(-size.x * 0.5f + padX, size.x * 0.5f - padX);
+                rz = Random.Range(-size.z * 0.5f + padZ, size.z * 0.5f - padZ);
             }
-        }
 
-        int totalAreas = validTransforms.Count + validColliders.Count;
-        if (totalAreas == 0)
-        {
-            result = transform.position;
-            return false;
-        }
-
-        int chosenIndex = Random.Range(0, totalAreas);
-        Vector3 randomPoint;
-
-        if (chosenIndex < validTransforms.Count)
-        {
-            Transform t = validTransforms[chosenIndex];
-            Vector3 scale = t.lossyScale;
-            float hx = Mathf.Max(0.01f, scale.x * 0.5f - cubeEdgePadding);
-            float hy = Mathf.Max(0.01f, scale.y * 0.5f);
-            float hz = Mathf.Max(0.01f, scale.z * 0.5f - cubeEdgePadding);
-
-            Vector3 localOffset = new Vector3(
-                Random.Range(-hx, hx),
-                Random.Range(-hy, hy),
-                Random.Range(-hz, hz)
-            );
-            randomPoint = t.position + t.rotation * localOffset;
+            float ry = Random.Range(-size.y * 0.5f, size.y * 0.5f);
+            randomPoint = targetArea.TransformPoint(center + new Vector3(rx, ry, rz));
         }
         else
         {
-            BoxCollider box = validColliders[chosenIndex - validTransforms.Count];
-            Vector3 size = box.size;
-            float hx = Mathf.Max(0.01f, size.x * 0.5f - cubeEdgePadding);
-            float hy = Mathf.Max(0.01f, size.y * 0.5f);
-            float hz = Mathf.Max(0.01f, size.z * 0.5f - cubeEdgePadding);
+            float padX = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.x));
+            float padZ = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.z));
+            padX = Mathf.Min(padX, 0.4f);
+            padZ = Mathf.Min(padZ, 0.4f);
 
-            Vector3 localOffset = box.center + new Vector3(
-                Random.Range(-hx, hx),
-                Random.Range(-hy, hy),
-                Random.Range(-hz, hz)
-            );
-            randomPoint = box.transform.TransformPoint(localOffset);
+            float rx = Random.Range(-0.5f + padX, 0.5f - padX);
+            float ry = Random.Range(-0.5f, 0.5f);
+            float rz = Random.Range(-0.5f + padZ, 0.5f - padZ);
+
+            randomPoint = targetArea.TransformPoint(new Vector3(rx, ry, rz));
         }
 
         if (snapToFloor)
         {
+            // Cast down from inside the cube volume so the item lands on the surface
             Vector3 rayStart = randomPoint + Vector3.up * 1f;
             if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, maxFloorRayDistance, floorMask, QueryTriggerInteraction.Ignore))
             {
-                result = hit.point + Vector3.up * floorLift;
-                return true;
+                // Small vertical stagger so dense trash stacks naturally under physics gravity
+                randomPoint = hit.point + Vector3.up * (floorLift + Random.Range(0.01f, 0.25f));
             }
         }
 
-        result = randomPoint;
+        // Strictly clamp inside the designated cube so trash piles up tightly and never scatters into walking paths
+        Vector3 local = targetArea.InverseTransformPoint(randomPoint);
+        if (box != null)
+        {
+            Vector3 size = box.size;
+            Vector3 center = box.center;
+            float padX = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.x));
+            float padZ = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.z));
+            padX = Mathf.Min(padX, size.x * 0.4f);
+            padZ = Mathf.Min(padZ, size.z * 0.4f);
+
+            local.x = Mathf.Clamp(local.x, center.x - size.x * 0.5f + padX, center.x + size.x * 0.5f - padX);
+            local.y = Mathf.Clamp(local.y, center.y - size.y * 0.5f, center.y + size.y * 0.5f);
+            local.z = Mathf.Clamp(local.z, center.z - size.z * 0.5f + padZ, center.z + size.z * 0.5f - padZ);
+        }
+        else
+        {
+            float padX = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.x));
+            float padZ = cubeEdgePadding / Mathf.Max(0.001f, Mathf.Abs(scale.z));
+            padX = Mathf.Min(padX, 0.4f);
+            padZ = Mathf.Min(padZ, 0.4f);
+
+            local.x = Mathf.Clamp(local.x, -0.5f + padX, 0.5f - padX);
+            local.y = Mathf.Clamp(local.y, -0.5f, 0.5f);
+            local.z = Mathf.Clamp(local.z, -0.5f + padZ, 0.5f - padZ);
+        }
+
+        result = targetArea.TransformPoint(local);
         return true;
     }
 
@@ -292,6 +362,7 @@ public class TrashManager : MonoBehaviour
             if (prefab == null) continue;
 
             TrashItem item = Instantiate(prefab, entry.position, entry.rotation);
+            item.SetSettledImmediate();
             item.Cleared += HandleTrashCleared;
             activeTrash.Add(item);
             if (restoredItemsSet != null)

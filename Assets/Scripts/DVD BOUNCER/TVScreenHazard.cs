@@ -87,6 +87,13 @@ public class TVScreenHazard : MonoBehaviour
 
     void Start()
     {
+        // Secret Good Day: TV operates peacefully with serene video and no static glitches
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+        {
+            enabled = false;
+            return;
+        }
+
         if (tvCasingTransform == null)
         {
             GameObject tvObj = GameObject.Find("DVDSetup/Televisor_80");

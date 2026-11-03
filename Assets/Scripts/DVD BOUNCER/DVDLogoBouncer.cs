@@ -8,6 +8,7 @@ using System.Collections.Generic;
 public class DVDLogoBouncer : MonoBehaviour
 {
     public static readonly List<DVDLogoBouncer> ActiveLogos = new List<DVDLogoBouncer>();
+    public static DVDLogoBouncer Instance { get; private set; }
 
     [Header("References")]
     public Camera renderCamera;
@@ -220,6 +221,10 @@ public class DVDLogoBouncer : MonoBehaviour
 
     void Awake()
     {
+        if (!isChildLogo)
+        {
+            Instance = this;
+        }
         initialLocalScale = transform.localScale;
         logoCollider = GetComponent<Collider>();
         if (!ActiveLogos.Contains(this))
@@ -250,6 +255,10 @@ public class DVDLogoBouncer : MonoBehaviour
 
     void OnDestroy()
     {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
         ActiveLogos.Remove(this);
         for (int i = 0; i < deformableParts.Count; i++)
         {
@@ -263,6 +272,18 @@ public class DVDLogoBouncer : MonoBehaviour
 
     void Start()
     {
+        // Secret Good Day: Disable DVD logo visual/bouncing and hide total money text
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+        {
+            if (totalMoneyText != null) totalMoneyText.gameObject.SetActive(false);
+            Renderer[] allRenderers = GetComponentsInChildren<Renderer>(true);
+            foreach (var r in allRenderers) r.enabled = false;
+            Collider[] allColliders = GetComponentsInChildren<Collider>(true);
+            foreach (var c in allColliders) c.enabled = false;
+            enabled = false;
+            return;
+        }
+
         if (renderCamera == null) renderCamera = Camera.main;
         if (logoCollider == null) logoCollider = GetComponent<Collider>();
 
@@ -1861,6 +1882,26 @@ public class DVDLogoBouncer : MonoBehaviour
         }
     }
 
+    public void AddMoney(decimal amount)
+    {
+        if (amount <= 0m) return;
+        DVDLogoBouncer master = MainBouncer;
+        master.currentMoney += amount;
+        master.allTimeMoneyEarned += amount;
+        if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(amount);
+        master.UpdateMoneyUI();
+        master.SpawnPopup(amount, false);
+    }
+
+    public void SpendMoney(decimal amount)
+    {
+        if (amount <= 0m) return;
+        DVDLogoBouncer master = MainBouncer;
+        master.currentMoney = System.Math.Max(0m, master.currentMoney - amount);
+        master.UpdateMoneyUI();
+        master.SpawnPopup(amount, true);
+    }
+
     public bool TrySpendMoney(decimal amount)
     {
         if (currentMoney >= amount)
@@ -1875,7 +1916,7 @@ public class DVDLogoBouncer : MonoBehaviour
 
     private void UpdateMoneyUI()
     {
-        if (totalMoneyText != null) totalMoneyText.text = $"${currentMoney:0.00}";
+        if (totalMoneyText != null) totalMoneyText.text = CurrencyFormatter.Format(currentMoney);
     }
 
     public void RefreshMoneyUIFromSave()

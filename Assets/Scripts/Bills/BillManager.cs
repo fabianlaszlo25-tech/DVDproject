@@ -67,6 +67,15 @@ public class BillManager : MonoBehaviour
     {
         if (billObjects == null || billObjects.Length == 0) return;
 
+        // Secret Good Day: no bills spawned or attached to the door
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+        {
+            activeBillIndex = -1;
+            isPaid = true;
+            ApplyBillStateToWorld();
+            return;
+        }
+
         bool isNewMorning = true;
         if (RunSaveManager.HasInstance)
         {

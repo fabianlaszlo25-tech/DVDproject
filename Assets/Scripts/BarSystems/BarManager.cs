@@ -42,7 +42,7 @@ public class BarManager : MonoBehaviour
 
     [Header("Automatic Fill Rates (Per Second)")]
     public float hungerFillRate = 1f;
-    public float sleepFillRate = 1.5f;
+    public float sleepFillRate = 0.05f;
     public float baseDepressionFillRate = 1f;
 
     [Header("Action Impacts: Stat Reductions")]
@@ -59,14 +59,14 @@ public class BarManager : MonoBehaviour
     public float foodNeedsIncrease = 33.4f;
 
     [Header("Action Impacts: Trash Clearing")]
-    public float trashDirtinessIncrease = 1f;
-    public float trashDepressionReduction = 1f;
+    public float trashDirtinessIncrease = 1.17f;
+    public float trashDepressionReduction = 2.5f;
 
     [Header("Action Impacts: Depression Reductions")]
-    public float eatDepressionReduction = 5f;
+    public float eatDepressionReduction = 10f;
     public float toiletDepressionReduction = 2f;
-    public float sleepDepressionReduction = 10f;
-    public float cleanDepressionReduction = 15f;
+    public float sleepDepressionReduction = 3f;
+    public float cleanDepressionReduction = 25f;
 
     [Header("Economy & Inflation")]
     public float baseFoodCost = 10f;
@@ -78,13 +78,17 @@ public class BarManager : MonoBehaviour
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
 
-    [Header("Depression From Money (Tuning & Testing)")]
-    [Tooltip("Rate at which money increases depression fill speed. Set to 0 in Inspector to completely disable money scaling during testing! (e.g. 0.00005 = +5% depression rate per $1,000; 0 = disabled).")]
-    public float moneyDepressionRatePerDollar = 0.00005f;
-    [Tooltip("Maximum multiplier money can scale depression speed to. Prevents instant runaway depression when holding large funds.")]
-    public float maxMoneyDepressionMultiplier = 2.5f;
-    [Tooltip("Current active depression multiplier driven by money (visible in real-time while testing).")]
-    public float currentMoneyDepressionMultiplier = 1f;
+    [Header("Tiredness & Endgame Pressure (runtime, read-only)")]
+    [Tooltip("Hunger/dirtiness gain per unlocked DVD Player / DVD Disc tier.")]
+    public float perTierSurvivalScaling = 0.05f;
+    public float endgameHungerMultiplier = 2.5f;
+    public float endgameNeedsMultiplier = 2.0f;
+    public float endgameTirednessMultiplier = 1.8f;
+    [Tooltip("Extra multiplier added for every day survived after both upgrade paths hit max tier (+20% each).")]
+    public float endgamePerDayBonus = 0.2f;
+    [Tooltip("Sleeping requires the tiredness bar to be at least this fraction of max.")]
+    [Range(0f, 1f)] public float sleepRequiredFraction = 0.90f;
+    public float currentMoneyDepressionMultiplier = 1f; // always 1: money no longer accelerates depression
 
     [Header("Penalty Settings")]
     public float penaltyMultiplier = 2f;
@@ -95,6 +99,7 @@ public class BarManager : MonoBehaviour
 
     void Awake()
     {
+        ApplyBalanceTuning();
         if (Instance == null) Instance = this;
         else if (Instance != this)
         {
@@ -102,6 +107,70 @@ public class BarManager : MonoBehaviour
             Instance = this;
         }
     }
+
+    /// <summary>
+    /// Forces the tuned survival numbers even if the scene instance still has older serialized values.
+    /// (Runs once on load; RunSaveManager / boosters can modify them afterwards.)
+    /// </summary>
+    private void ApplyBalanceTuning()
+    {
+        sleepFillRate = Mathf.Min(sleepFillRate, 0.05f);
+        trashDepressionReduction = 2.5f;
+        trashDirtinessIncrease = 1.17f;
+        sleepDepressionReduction = 3f;
+        cleanDepressionReduction = 25f;
+        eatDepressionReduction = 10f;
+        currentMoneyDepressionMultiplier = 1f;
+    }
+
+    // ---------------- Tier scaling & endgame pressure ----------------
+
+    private float TierSurvivalMultiplier
+    {
+        get
+        {
+            int tiers = UpgradeManager.Instance != null ? UpgradeManager.Instance.TotalUnlockedTierCount : 0;
+            return 1f + perTierSurvivalScaling * tiers;
+        }
+    }
+
+    public bool IsEndgameActive => UpgradeManager.Instance != null && UpgradeManager.Instance.IsEndgameMaxed;
+
+    private float EndgameDayFactor
+    {
+        get
+        {
+            int days = RunSaveManager.HasInstance ? RunSaveManager.Instance.postMaxDaysSurvived : 0;
+            return 1f + endgamePerDayBonus * days;
+        }
+    }
+
+    public float HungerSpeedMultiplier => TierSurvivalMultiplier * (IsEndgameActive ? endgameHungerMultiplier * EndgameDayFactor : 1f);
+    public float NeedsGainMultiplier => IsEndgameActive ? endgameNeedsMultiplier * EndgameDayFactor : 1f;
+    public float TirednessChunkMultiplier => IsEndgameActive ? endgameTirednessMultiplier * EndgameDayFactor : 1f;
+    public float DirtinessGainMultiplier => TierSurvivalMultiplier;
+
+    /// <summary>Adds tiredness (the sleep bar) from an action. Scaled up during the endgame.</summary>
+    public void AddTiredness(float amount)
+    {
+        if (amount <= 0f || hasTriggeredDepressionEnding) return;
+        currentSleep = Mathf.Clamp(currentSleep + amount * TirednessChunkMultiplier, 0, maxSleep);
+    }
+
+    public void ReduceTiredness(float amount)
+    {
+        currentSleep = Mathf.Clamp(currentSleep - Mathf.Abs(amount), 0, maxSleep);
+    }
+
+    /// <summary>Energy drink (Caffeinated) -35 tiredness, Zyn (Nicotined) -20 tiredness.</summary>
+    public void ApplySubstanceTirednessRelief(ConsumableVisualEffectType type)
+    {
+        if (type == ConsumableVisualEffectType.Caffeinated) ReduceTiredness(35f);
+        else if (type == ConsumableVisualEffectType.Nicotined) ReduceTiredness(20f);
+    }
+
+    /// <summary>True when the tiredness bar is high enough to be allowed to sleep.</summary>
+    public bool IsTiredEnoughToSleep => currentSleep >= maxSleep * sleepRequiredFraction - 0.001f;
 
     void Start()
     {
@@ -114,11 +183,25 @@ public class BarManager : MonoBehaviour
             }
         }
 
+        // Secret Good Day: Hide all survival bars, inflation, and food cost UI
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
+        {
+            if (hungerSlider != null) hungerSlider.gameObject.SetActive(false);
+            if (needsSlider != null) needsSlider.gameObject.SetActive(false);
+            if (sleepSlider != null) sleepSlider.gameObject.SetActive(false);
+            if (dirtinessSlider != null) dirtinessSlider.gameObject.SetActive(false);
+            if (depressionSlider != null) depressionSlider.gameObject.SetActive(false);
+            if (inflationText != null) inflationText.gameObject.SetActive(false);
+            if (foodCostText != null) foodCostText.gameObject.SetActive(false);
+        }
+
         UpdateUI();
     }
 
     void Update()
     {
+        if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive) return;
+
         ProcessInflation();
         ProcessBars();
         UpdateUI();
@@ -154,7 +237,7 @@ public class BarManager : MonoBehaviour
             return;
         }
 
-        currentHunger = Mathf.Clamp(currentHunger + (hungerFillRate * Time.deltaTime), 0, maxHunger);
+        currentHunger = Mathf.Clamp(currentHunger + (hungerFillRate * HungerSpeedMultiplier * Time.deltaTime), 0, maxHunger);
         currentSleep = Mathf.Clamp(currentSleep + (sleepFillRate * Time.deltaTime), 0, maxSleep);
 
         bool isHungerFull = currentHunger >= maxHunger;
@@ -162,13 +245,8 @@ public class BarManager : MonoBehaviour
         bool isSleepFull = currentSleep >= maxSleep;
         bool isDirtinessFull = currentDirtiness >= maxDirtiness;
 
-        float moneyFloat = economyBouncer != null ? (float)economyBouncer.currentMoney : 0f;
-        // Money-driven depression is slightly reduced (x0.8 on the money-scaling part, incl. its cap)
-        const float MoneyDepressionScale = 0.8f;
-        float rawMoneyBonus = moneyFloat * moneyDepressionRatePerDollar * MoneyDepressionScale;
-        float maxMoneyBonus = Mathf.Max(0f, maxMoneyDepressionMultiplier - 1f) * MoneyDepressionScale;
-        currentMoneyDepressionMultiplier = 1f + Mathf.Clamp(rawMoneyBonus, 0f, maxMoneyBonus);
-        float depressionSpeed = baseDepressionFillRate * currentMoneyDepressionMultiplier;
+        currentMoneyDepressionMultiplier = 1f;
+        float depressionSpeed = baseDepressionFillRate;
 
         if (isHungerFull) depressionSpeed *= penaltyMultiplier;
         if (isNeedsFull) depressionSpeed *= penaltyMultiplier;
@@ -224,7 +302,7 @@ public class BarManager : MonoBehaviour
         if (foodCostText && currentFoodCost != lastDisplayedFoodCost)
         {
             lastDisplayedFoodCost = currentFoodCost;
-            foodCostText.text = $"Food Cost: ${currentFoodCost:0.00}";
+            foodCostText.text = $"Food Cost: {CurrencyFormatter.Format(currentFoodCost)}";
         }
     }
 
@@ -274,8 +352,9 @@ public class BarManager : MonoBehaviour
         }
 
         currentHunger = Mathf.Clamp(currentHunger - hungerReduction, 0, maxHunger);
-        currentNeeds = Mathf.Clamp(currentNeeds + needsIncrease, 0, maxNeeds);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease, 0, maxDirtiness);
+        currentNeeds = Mathf.Clamp(currentNeeds + needsIncrease * NeedsGainMultiplier, 0, maxNeeds);
+        currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        AddTiredness(4f); // eating
         currentDepression = Mathf.Clamp(currentDepression - depressionReduction, 0, maxDepression);
         return true;
     }
@@ -288,20 +367,25 @@ public class BarManager : MonoBehaviour
     public void UseToilet()
     {
         currentNeeds = Mathf.Clamp(currentNeeds - toiletNeedsReduction, 0, maxNeeds);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + toiletDirtinessIncrease, 0, maxDirtiness);
+        currentDirtiness = Mathf.Clamp(currentDirtiness + toiletDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        AddTiredness(3f); // toilet
         currentDepression = Mathf.Clamp(currentDepression - toiletDepressionReduction, 0, maxDepression);
     }
 
     public void GoToSleep()
     {
         currentSleep = Mathf.Clamp(currentSleep - sleepReduction, 0, maxSleep);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + sleepDirtinessIncrease, 0, maxDirtiness);
+        currentDirtiness = Mathf.Clamp(currentDirtiness + sleepDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - sleepDepressionReduction, 0, maxDepression);
     }
 
+    public bool CanCleanTrash => currentDirtiness < maxDirtiness;
+
     public void CleanTrashItem()
     {
-        currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease, 0, maxDirtiness);
+        if (!CanCleanTrash) return;
+
+        currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
     }
 
@@ -309,5 +393,6 @@ public class BarManager : MonoBehaviour
     {
         currentDirtiness = Mathf.Clamp(currentDirtiness - cleanDirtinessReduction, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - cleanDepressionReduction, 0, maxDepression);
+        AddTiredness(8f); // shower / clean
     }
 }

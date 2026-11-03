@@ -454,7 +454,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
                     ? UpgradeManager.Instance.bouncer.edgeReward
                     : 0.01m;
                 decimal bounceMoney = baseEdge * (decimal)tier.multiplierValue;
-                statsText.text = $"${bounceMoney:0.00} / Bounce";
+                statsText.text = $"{CurrencyFormatter.Format(bounceMoney)} / Bounce";
             }
             else if (currentPath.category == UpgradeCategory.SpeedMultiplier)
             {
@@ -504,7 +504,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
         if (buyInteractable != null && buyInteractable.GetComponent<Collider>() != null)
             buyInteractable.GetComponent<Collider>().enabled = !isEquipped && (isUnlocked || canAfford);
-        if (priceText != null) priceText.text = $"${tierCost:0.00}";
+        if (priceText != null) priceText.text = CurrencyFormatter.Format(tierCost);
 
         if (isEquipped)
         {

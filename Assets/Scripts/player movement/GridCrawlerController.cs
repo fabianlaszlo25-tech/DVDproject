@@ -153,11 +153,25 @@ public class GridCrawlerController : MonoBehaviour
 
     void Update()
     {
+#if UNITY_EDITOR
+        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+        {
+            Story.KitchenPhone phone = Story.KitchenPhone.EnsureInstanceInScene();
+            if (phone != null)
+            {
+                Debug.Log("[GridCrawlerController] 'P' pressed in Editor: Telephone is now ringing! Walk over to the kitchen wall phone to answer it.");
+                phone.ForceRingPhoneInEditor();
+                return;
+            }
+        }
+#endif
+
         // Frozen (e.g. during the overdose hallucinations): no moving, no cursor/look movement
         if (InputFrozen) return;
 
         CalculateVirtualMousePosition();
         HandleCursorAndInteractions();
+        HandleTrashSwipeClearing();
 
         if (isActing || isInTVFocusMode) return;
         HandleMovementInputs();
@@ -308,15 +322,27 @@ public class GridCrawlerController : MonoBehaviour
             {
                 SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
 
+                TrashItem trash = hit.collider.GetComponentInParent<TrashItem>();
                 if (interactTextUI != null)
                 {
-                    interactTextUI.text = interactObj.hoverText;
+                    if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
+                    {
+                        interactTextUI.text = "Too filthy to clean! Shower first";
+                    }
+                    else
+                    {
+                        interactTextUI.text = interactObj.hoverText;
+                    }
                     textTargetScale = interactObj.hideHoverText ? Vector3.zero : Vector3.one;
                 }
 
                 if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    interactObj.onClick.Invoke();
+                    if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
+                    {
+                        return;
+                    }
+                    interactObj.onClick?.Invoke();
                 }
                 return;
             }
@@ -324,6 +350,26 @@ public class GridCrawlerController : MonoBehaviour
 
         SetCrosshairModeState(CrosshairMode.Default); // Revert to standard dot
         textTargetScale = Vector3.zero;
+    }
+
+    /// <summary>While left click is held, anything trash under the cursor is cleared instantly (swipe cleaning).</summary>
+    private void HandleTrashSwipeClearing()
+    {
+        if (isInTVFocusMode || PauseManager.IsGamePaused) return;
+        if (Mouse.current == null || !Mouse.current.leftButton.isPressed) return;
+
+        // Cannot clean trash if at max dirtiness
+        if (BarManager.Instance != null && !BarManager.Instance.CanCleanTrash) return;
+
+        Camera cam = cameraScript != null ? cameraScript.GetComponent<Camera>() : Camera.main;
+        if (cam == null) return;
+
+        Ray ray = cam.ScreenPointToRay(virtualMousePos);
+        if (Physics.Raycast(ray, out RaycastHit hit, interactReach))
+        {
+            TrashItem trash = hit.collider.GetComponentInParent<TrashItem>();
+            if (trash != null && !trash.IsClearedOrPoofing) trash.SwipeClear();
+        }
     }
 
     private void SetCrosshairState(CrosshairMode mode)
@@ -381,6 +427,7 @@ public class GridCrawlerController : MonoBehaviour
                 yield return null;
             }
             transform.position = targetPos.Value;
+            if (BarManager.Instance != null) BarManager.Instance.AddTiredness(0.8f); // forward step
         }
         else
         {
@@ -429,6 +476,7 @@ public class GridCrawlerController : MonoBehaviour
             yield return null;
         }
         transform.rotation = targetRot;
+        if (BarManager.Instance != null) BarManager.Instance.AddTiredness(0.3f); // turn
 
         if (cameraScript != null) cameraScript.isAutoCentering = false;
         yield return new WaitForSeconds(postActionCooldown);

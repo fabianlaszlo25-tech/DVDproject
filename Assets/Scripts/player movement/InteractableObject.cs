@@ -7,7 +7,7 @@ public class InteractableObject : MonoBehaviour
     public string hoverText = "Interact";
 
     [Tooltip("Drag the script/functions you want to trigger here.")]
-    public UnityEvent onClick;
+    public UnityEvent onClick = new UnityEvent();
 
     /// <summary>Set by other scripts (e.g. while holding a click) to hide the hover text.</summary>
     [HideInInspector] public bool hideHoverText = false;
