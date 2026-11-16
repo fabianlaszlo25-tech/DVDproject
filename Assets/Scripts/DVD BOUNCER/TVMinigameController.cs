@@ -364,17 +364,18 @@ public class TVMinigameController : MonoBehaviour
         {
             if (rootObj == null) return;
             Vector3 offset = isCircularWheel ? Vector3.zero : (baseCenterOffset * overallScaleFactor);
+            Vector3 rotatedOffset = rootObj.transform.rotation * offset;
             rootObj.transform.position = new Vector3(
-                worldCenterPos.x - offset.x,
-                worldCenterPos.y - offset.y,
-                worldCenterPos.z);
+                worldCenterPos.x - rotatedOffset.x,
+                worldCenterPos.y - rotatedOffset.y,
+                worldCenterPos.z - rotatedOffset.z);
         }
 
         public Vector3 GetCenterPosition()
         {
             if (rootObj == null) return Vector3.zero;
             Vector3 offset = isCircularWheel ? Vector3.zero : (baseCenterOffset * overallScaleFactor);
-            return rootObj.transform.position + offset;
+            return rootObj.transform.position + (rootObj.transform.rotation * offset);
         }
 
         public float EffectiveHalfWidth => baseHalfSize.x * overallScaleFactor * shapeWidthScale * Mathf.Max(1f, shapeTopTaper);
@@ -436,8 +437,8 @@ public class TVMinigameController : MonoBehaviour
                 }
             }
 
-            float parallelScale = Mathf.Clamp(1f - deform, 0.45f, 1.65f);
-            float perpScale = 1f / parallelScale;
+            float parallelScale = isCircularWheel ? 1f : Mathf.Clamp(1f - deform, 0.45f, 1.65f);
+            float perpScale = isCircularWheel ? 1f : (1f / parallelScale);
 
             Vector2 n = squashNormal.sqrMagnitude > 0.0001f ? squashNormal.normalized : Vector2.up;
             Vector2 t = new Vector2(-n.y, n.x);
@@ -948,7 +949,8 @@ public class TVMinigameController : MonoBehaviour
 
     private void Update()
     {
-        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused))
+        if (Time.timeScale <= 0.0001f || (PauseManager.HasInstance && PauseManager.IsGamePaused) ||
+            DVDLogoBouncer.GlobalStaticHalt || (TVScreenHazard.Instance != null && TVScreenHazard.Instance.IsStaticActive))
         {
             return;
         }
@@ -4360,9 +4362,13 @@ public class TVMinigameController : MonoBehaviour
         public float heightOrtho;      // physical height in ortho units at player scale
         public bool collectedOrHit;
         public float spinAngle;
+        public DeformableLogoPiece piece;
+        public float baseScale = 0.5f;
+        public GameObject shadowObj;
     }
 
     private GameObject subwayTrackRoot;
+    private GameObject subwayPlayerShadowObj;
     private readonly List<Transform> subwayRailSegments = new List<Transform>();
     private readonly List<Transform> subwaySleeperSegments = new List<Transform>();
     private readonly List<SubwayEntity> subwayEntities = new List<SubwayEntity>();
@@ -4380,9 +4386,12 @@ public class TVMinigameController : MonoBehaviour
     private int subwayLastTrainLane = -99;
     private bool subwaySwipeHeldPrev = false;
     private Vector2 subwaySwipeAnchor = Vector2.zero;
-    private const float SubwayPlayerDepth01 = 0.88f;
+    private const float SubwayPlayerDepth01 = 0.82f;
     private const float SubwaySmallObstacleHeight = 0.85f;
-    private const float SubwayTrainHeight = 2.10f;
+    private const float SubwayTrainHeight = 2.60f; // "big" red DVD obstacle: taller than any jump
+    private int subwayCoinStreak = 0;
+    private int subwaySwipesInCurrentGesture = 0;
+    private float subwaySwipeCooldown = 0f;
 
     private void EnterSubwayRunnerMode()
     {
@@ -4396,6 +4405,9 @@ public class TVMinigameController : MonoBehaviour
         ClearSubwayEntities();
         DestroySubwayTrackVisuals();
 
+        subwayCoinStreak = 0;
+        subwaySwipesInCurrentGesture = 0;
+        subwaySwipeCooldown = 0f;
         subwayTargetLane = 0;
         subwayCurrentLaneFloat = 0f;
         subwayPlayerHeight = 0f;
@@ -4411,9 +4423,18 @@ public class TVMinigameController : MonoBehaviour
 
         BuildSubwayTrackVisuals();
 
+        subwayPlayerShadowObj = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        subwayPlayerShadowObj.name = "SubwayPlayerShadow";
+        subwayPlayerShadowObj.layer = mainBouncer.gameObject.layer;
+        Collider pShadowCol = subwayPlayerShadowObj.GetComponent<Collider>();
+        if (pShadowCol != null) Destroy(pShadowCol);
+        Renderer pShadowRend = subwayPlayerShadowObj.GetComponent<Renderer>();
+        if (pShadowRend != null) pShadowRend.sharedMaterial = CreateUnlitColorMaterial(new Color(0f, 0f, 0f, 0.45f), true);
+        if (subwayTrackRoot != null) subwayPlayerShadowObj.transform.SetParent(subwayTrackRoot.transform, false);
+
         Color pCol = new Color(0.20f, 0.95f, 1.00f, 1f);
         Color sCol = new Color(1.00f, 0.32f, 0.78f, 1f);
-        subwayPlayerPiece = CreateDeformableLogoClone("SubwayPlayer_DVD", 0.56f, pCol, sCol);
+        subwayPlayerPiece = CreateDeformableLogoClone("SubwayPlayer_DVD", 0.56f, pCol, sCol, shapeHeight: 1.25f);
         if (subwayPlayerPiece != null)
         {
             subwayPlayerPiece.TriggerPop(0.32f, 0.30f);
@@ -4428,6 +4449,12 @@ public class TVMinigameController : MonoBehaviour
     {
         ClearSubwayEntities();
         DestroySubwayTrackVisuals();
+
+        if (subwayPlayerShadowObj != null)
+        {
+            Destroy(subwayPlayerShadowObj);
+            subwayPlayerShadowObj = null;
+        }
 
         if (subwayPlayerPiece != null)
         {
@@ -4457,8 +4484,8 @@ public class TVMinigameController : MonoBehaviour
         Material railMat = CreateUnlitColorMaterial(new Color(0.28f, 0.85f, 1.0f, 0.55f), true);
         Material sleeperMat = CreateUnlitColorMaterial(new Color(0.95f, 0.75f, 0.25f, 0.38f), true);
 
-        // 4 lane divider rails (-1.5, -0.5, +0.5, +1.5), each with 14 segments along the curved globe
-        const int segsPerRail = 14;
+        // 4 lane divider rails (-1.5, -0.5, +0.5, +1.5), each with 16 segments extending past the bottom screen edge
+        const int segsPerRail = 16;
         for (int r = 0; r < 4; r++)
         {
             for (int s = 0; s < segsPerRail; s++)
@@ -4475,10 +4502,10 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
-        // 3 lanes x 9 scrolling horizontal sleepers
+        // 3 lanes x 10 scrolling horizontal sleepers extending smoothly off the bottom screen edge
         for (int lane = 0; lane < 3; lane++)
         {
-            for (int k = 0; k < 9; k++)
+            for (int k = 0; k < 10; k++)
             {
                 GameObject tie = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 tie.name = $"SubwayTie_{lane}_{k}";
@@ -4508,9 +4535,23 @@ public class TVMinigameController : MonoBehaviour
     {
         for (int i = 0; i < subwayEntities.Count; i++)
         {
-            if (subwayEntities[i] != null && subwayEntities[i].rootObj != null)
+            if (subwayEntities[i] != null)
             {
-                Destroy(subwayEntities[i].rootObj);
+                if (subwayEntities[i].shadowObj != null)
+                {
+                    Destroy(subwayEntities[i].shadowObj);
+                    subwayEntities[i].shadowObj = null;
+                }
+                if (subwayEntities[i].piece != null)
+                {
+                    subwayEntities[i].piece.DestroyPiece();
+                    subwayEntities[i].piece = null;
+                }
+                if (subwayEntities[i].rootObj != null)
+                {
+                    Destroy(subwayEntities[i].rootObj);
+                    subwayEntities[i].rootObj = null;
+                }
             }
         }
         subwayEntities.Clear();
@@ -4528,16 +4569,16 @@ public class TVMinigameController : MonoBehaviour
         float spanH = camMaxY - camMinY;
         float baseZ = mainBouncer != null ? mainBouncer.transform.position.z : 0f;
 
-        float d = Mathf.Clamp(depth01, 0f, 1.25f);
+        float d = Mathf.Clamp(depth01, 0f, 1.8f);
         // Non-linear globe curvature: compressed near the top horizon, accelerating toward the camera
         float curvedDepth = Mathf.Pow(Mathf.Max(0.001f, d), 1.48f);
-        perspScale = Mathf.Lerp(0.20f, 1.08f, curvedDepth);
+        perspScale = Mathf.LerpUnclamped(0.20f, 1.15f, curvedDepth);
 
-        // Horizon sits at 78% screen height; foreground sits at 14% screen height, with a subtle globe arch in the middle
+        // Horizon sits at 78% screen height; foreground sits deeply below bottom screen edge (-22%) so track leaves the screen completely!
         float horizonY = camMinY + spanH * 0.78f;
-        float nearY = camMinY + spanH * 0.13f;
-        float globeArch = Mathf.Sin(Mathf.Clamp01(d) * Mathf.PI) * (spanH * 0.065f);
-        float trackY = Mathf.Lerp(horizonY, nearY, curvedDepth) + globeArch;
+        float nearY = camMinY - spanH * 0.22f;
+        float globeArch = Mathf.Sin(Mathf.Clamp01(d) * Mathf.PI) * (spanH * 0.055f);
+        float trackY = Mathf.LerpUnclamped(horizonY, nearY, curvedDepth) + globeArch;
 
         // Curved inward bend from afar (oscillates gently as the track scrolls)
         float farFactor = 1f - Mathf.Clamp01(d);
@@ -4565,14 +4606,19 @@ public class TVMinigameController : MonoBehaviour
             {
                 subwaySwipeHeldPrev = true;
                 subwaySwipeAnchor = targetCursorOrthoPos;
+                subwaySwipesInCurrentGesture = 0;
+                subwaySwipeCooldown = 0f;
             }
             else
             {
+                if (subwaySwipeCooldown > 0f) subwaySwipeCooldown -= dt;
+
                 Vector2 delta = targetCursorOrthoPos - subwaySwipeAnchor;
-                const float swipeHorizontalThreshold = 0.78f;
+                // 1st swipe requires 0.95f; a 2nd swipe in the SAME continuous gesture requires a much larger deliberate distance (2.60f) + cooldown!
+                float horizontalThreshold = subwaySwipesInCurrentGesture == 0 ? 0.95f : 2.60f;
                 const float swipeVerticalThreshold = 0.72f;
 
-                if (Mathf.Abs(delta.x) >= swipeHorizontalThreshold && Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) * 0.85f)
+                if (subwaySwipeCooldown <= 0f && Mathf.Abs(delta.x) >= horizontalThreshold && Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) * 0.85f)
                 {
                     int dir = delta.x > 0f ? 1 : -1;
                     int nextLane = Mathf.Clamp(subwayTargetLane + dir, -1, 1);
@@ -4582,6 +4628,8 @@ public class TVMinigameController : MonoBehaviour
                         subwayPlayerPiece.TriggerSquash(Vector2.right, 0.22f, 0.32f);
                         PlaySound(jumpSound, 1.12f);
                     }
+                    subwaySwipesInCurrentGesture++;
+                    subwaySwipeCooldown = 0.28f;
                     subwaySwipeAnchor = targetCursorOrthoPos;
                 }
                 else if (delta.y >= swipeVerticalThreshold)
@@ -4601,13 +4649,15 @@ public class TVMinigameController : MonoBehaviour
         else
         {
             subwaySwipeHeldPrev = false;
+            subwaySwipesInCurrentGesture = 0;
+            subwaySwipeCooldown = 0f;
         }
 
         // 2. Smooth lane interpolation & gradual track speed build-up
         subwayCurrentLaneFloat = Mathf.Lerp(subwayCurrentLaneFloat, subwayTargetLane, Mathf.Clamp01(dt * 15f));
         subwayCurrentTrackSpeed = Mathf.Min(0.46f, subwayCurrentTrackSpeed + 0.0042f * dt);
         float trackSpeed = subwayCurrentTrackSpeed;
-        subwayScrollPhase = (subwayScrollPhase + dt * trackSpeed * 9f) % 1f;
+        subwayScrollPhase = (subwayScrollPhase + dt * trackSpeed * 10f) % 1f;
         subwayCurvePhase += dt * 0.55f;
 
         UpdateSubwayTrackGeometry();
@@ -4621,46 +4671,9 @@ public class TVMinigameController : MonoBehaviour
             SpawnSubwayPatternAtDepth(0.02f);
         }
 
-        // 4. Determine active support floor under player (0 = ground, small obstacle top if stepping on one, or train roof!)
+        // 4. Obstacles are never stood upon any more: the floor is always the ground
         float activeSupportFloor = 0f;
         bool onRampNow = false;
-
-        for (int i = 0; i < subwayEntities.Count; i++)
-        {
-            SubwayEntity ent = subwayEntities[i];
-            if (ent == null || ent.collectedOrHit) continue;
-            if (Mathf.Abs(subwayCurrentLaneFloat - ent.laneIndex) > 0.42f) continue;
-
-            float frontDepth = ent.depth01 + ent.depthLength * 0.5f;
-            float backDepth = ent.depth01 - ent.depthLength * 0.5f;
-
-            if (SubwayPlayerDepth01 >= backDepth - 0.04f && SubwayPlayerDepth01 <= frontDepth + 0.04f)
-            {
-                if (ent.type == SubwayEntityType.Ramp)
-                {
-                    onRampNow = true;
-                    float rampProgress = Mathf.InverseLerp(frontDepth, backDepth, SubwayPlayerDepth01);
-                    float rampTop = Mathf.Lerp(0.2f, SubwayTrainHeight, Mathf.Clamp01(rampProgress));
-                    if (rampTop > activeSupportFloor) activeSupportFloor = rampTop;
-                }
-                else if (ent.type == SubwayEntityType.Train)
-                {
-                    // Can ONLY stand/ride on top of the train if elevated onto it via a Ramp or double-jump off a SmallObstacle!
-                    if (subwayPlayerHeight >= SubwayTrainHeight - 0.22f)
-                    {
-                        activeSupportFloor = Mathf.Max(activeSupportFloor, SubwayTrainHeight);
-                    }
-                }
-                else if (ent.type == SubwayEntityType.SmallObstacle)
-                {
-                    // Can land on top of a small obstacle and jump again from there onto a train!
-                    if (subwayPlayerHeight >= SubwaySmallObstacleHeight - 0.28f && subwayVerticalVel <= 2.2f)
-                    {
-                        activeSupportFloor = Mathf.Max(activeSupportFloor, SubwaySmallObstacleHeight);
-                    }
-                }
-            }
-        }
 
         // 5. Update vertical jump physics
         if (onRampNow && subwayPlayerHeight < activeSupportFloor)
@@ -4671,12 +4684,12 @@ public class TVMinigameController : MonoBehaviour
         }
         else
         {
-            subwayVerticalVel -= 26.5f * dt;
+            subwayVerticalVel -= 15.0f * dt;
             subwayPlayerHeight += subwayVerticalVel * dt;
 
             if (subwayPlayerHeight <= activeSupportFloor)
             {
-                bool wasAirborne = !subwayIsGrounded && subwayVerticalVel < -3f;
+                bool wasAirborne = !subwayIsGrounded && subwayVerticalVel < -2f;
                 subwayPlayerHeight = activeSupportFloor;
                 subwayVerticalVel = 0f;
                 subwayIsGrounded = true;
@@ -4701,11 +4714,21 @@ public class TVMinigameController : MonoBehaviour
                 continue;
             }
 
-            ent.depth01 += trackSpeed * dt;
-            float trailingEdge = ent.depth01 - ent.depthLength * 0.35f;
-            if (trailingEdge > SubwayPlayerDepth01 + 0.045f)
+            // Maintain exact gameplay timing ahead of the player; once past player, smoothly accelerate exit speed so it never slows down at the end!
+            float currentEntSpeed = trackSpeed;
+            if (ent.depth01 > SubwayPlayerDepth01)
             {
-                Destroy(ent.rootObj);
+                float pastPlayer = ent.depth01 - SubwayPlayerDepth01;
+                currentEntSpeed *= (1f + pastPlayer * 8.5f + pastPlayer * pastPlayer * 25f);
+            }
+            ent.depth01 += currentEntSpeed * dt;
+
+            // Obstacles & coins ride the track all the way off the bottom of the screen naturally!
+            if (ent.depth01 > 1.25f)
+            {
+                if (ent.shadowObj != null) { Destroy(ent.shadowObj); ent.shadowObj = null; }
+                if (ent.piece != null) { ent.piece.DestroyPiece(); ent.piece = null; }
+                if (ent.rootObj != null) { Destroy(ent.rootObj); ent.rootObj = null; }
                 subwayEntities.RemoveAt(i);
                 continue;
             }
@@ -4728,39 +4751,49 @@ public class TVMinigameController : MonoBehaviour
                     if (subwayPlayerHeight >= coinBottom && subwayPlayerHeight <= coinTop)
                     {
                         ent.collectedOrHit = true;
+                        subwayCoinStreak++;
+                        float coinMult = 1.0f + (subwayCoinStreak - 1) * 0.15f;
                         Vector3 coinWorldPos = ent.rootObj.transform.position;
-                        mainBouncer.AwardMinigameCornerReward(
-                            1,
+                        mainBouncer.AwardMinigameScaledCornerReward(
+                            coinMult,
                             coinWorldPos,
                             new Color(1f, 0.88f, 0.18f, 1f),
-                            new Color(1f, 0.55f, 0.10f, 1f));
+                            new Color(1f, 0.55f, 0.10f, 1f),
+                            spawnParticles: true,
+                            tvBounceIntensity: 0.20f);
                         subwayPlayerPiece.TriggerPop(0.18f, 0.22f);
                         PlaySound(enemyPassSound, 1.25f);
-                        Destroy(ent.rootObj);
+                        if (ent.shadowObj != null) { Destroy(ent.shadowObj); ent.shadowObj = null; }
+                        if (ent.piece != null) { ent.piece.DestroyPiece(); ent.piece = null; }
+                        if (ent.rootObj != null) { Destroy(ent.rootObj); ent.rootObj = null; }
                         subwayEntities.RemoveAt(i);
                         continue;
                     }
                 }
                 else if (ent.type == SubwayEntityType.SmallObstacle)
                 {
-                    // Safe if jumped cleanly over OR landed on top of it as a stepping stone
-                    if (subwayPlayerHeight < SubwaySmallObstacleHeight - 0.24f)
+                    // Safe if jumped cleanly over
+                    if (subwayPlayerHeight < SubwaySmallObstacleHeight - 0.20f)
                     {
                         ent.collectedOrHit = true;
                         TriggerSubwayObstacleHit(ent);
-                        Destroy(ent.rootObj);
+                        if (ent.shadowObj != null) { Destroy(ent.shadowObj); ent.shadowObj = null; }
+                        if (ent.piece != null) { ent.piece.DestroyPiece(); ent.piece = null; }
+                        if (ent.rootObj != null) { Destroy(ent.rootObj); ent.rootObj = null; }
                         subwayEntities.RemoveAt(i);
                         continue;
                     }
                 }
                 else if (ent.type == SubwayEntityType.Train)
                 {
-                    // Safe ONLY if riding on top of the train (reached via Ramp or SmallObstacle double-jump)!
-                    if (subwayPlayerHeight < SubwayTrainHeight - 0.22f)
+                    // Big red DVD obstacle cannot be jumped over! Must switch lanes!
+                    if (subwayPlayerHeight < SubwayTrainHeight - 0.20f)
                     {
                         ent.collectedOrHit = true;
                         TriggerSubwayObstacleHit(ent);
-                        Destroy(ent.rootObj);
+                        if (ent.shadowObj != null) { Destroy(ent.shadowObj); ent.shadowObj = null; }
+                        if (ent.piece != null) { ent.piece.DestroyPiece(); ent.piece = null; }
+                        if (ent.rootObj != null) { Destroy(ent.rootObj); ent.rootObj = null; }
                         subwayEntities.RemoveAt(i);
                         continue;
                     }
@@ -4768,25 +4801,34 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
-        // 7. Position & deform player DVD logo
+        // 7. Position & deform player DVD logo with 3D pitch/banking and track floor drop shadow!
         ProjectSubwayPoint(subwayCurrentLaneFloat, SubwayPlayerDepth01, subwayPlayerHeight + 0.36f, out Vector3 playerWorldPos, out float playerPersp);
         playerWorldPos.z -= 0.12f;
         subwayPlayerPiece.overallScaleFactor = 0.54f * playerPersp;
         subwayPlayerPiece.SetCenterPosition(playerWorldPos);
-        float tiltZ = (subwayCurrentLaneFloat - subwayTargetLane) * 18f;
-        subwayPlayerPiece.rootObj.transform.localRotation = mainBouncer.transform.localRotation * Quaternion.Euler(0f, 0f, tiltZ);
+        subwayPlayerPiece.rootObj.transform.localRotation = mainBouncer.transform.localRotation;
         subwayPlayerPiece.UpdateVisuals(dt);
+
+        if (subwayPlayerShadowObj != null)
+        {
+            ProjectSubwayPoint(subwayCurrentLaneFloat, SubwayPlayerDepth01, 0.02f, out Vector3 pShadowPos, out float psPersp);
+            pShadowPos.z -= 0.04f;
+            subwayPlayerShadowObj.transform.position = pShadowPos;
+            float jumpHeightRatio = Mathf.Clamp01(subwayPlayerHeight / 2.0f);
+            float pShadowScale = Mathf.Lerp(1.0f, 0.55f, jumpHeightRatio) * psPersp * 0.75f;
+            subwayPlayerShadowObj.transform.localScale = new Vector3(pShadowScale * 1.45f, pShadowScale * 0.58f, 1f);
+            subwayPlayerShadowObj.transform.localRotation = Quaternion.Euler(75f, 0f, 0f);
+        }
     }
 
     private void TriggerSubwayJump()
     {
         if (subwayIsGrounded)
         {
-            // Peak jump height = (8.4^2)/(2*26.5) = 1.33f:
-            // - High enough to jump over or land on a SmallObstacle (0.85f)
-            // - NOT high enough to jump onto a Train (2.10f) from flat ground!
-            // - Jumping again from the top of a SmallObstacle reaches 0.85 + 1.33 = 2.18f >= 2.10f (Train roof)!
-            subwayVerticalVel = 8.4f;
+            // Peak jump height = (7.6^2)/(2*15.0) = 1.92f:
+            // - Generous, natural hang time (1.01s air time) easily sailing over SmallObstacle (0.85f)
+            // - Safely below tall Train / Big Obstacle (2.60f)
+            subwayVerticalVel = 7.6f;
             subwayIsGrounded = false;
             if (subwayPlayerPiece != null)
             {
@@ -4799,6 +4841,7 @@ public class TVMinigameController : MonoBehaviour
     private void TriggerSubwayObstacleHit(SubwayEntity ent)
     {
         if (mainBouncer == null) return;
+        subwayCoinStreak = 0;
         Vector3 hitPos = ent != null && ent.rootObj != null ? ent.rootObj.transform.position : Vector3.zero;
         mainBouncer.ApplyMinigameCornerPenalty(3, hitPos);
         mainBouncer.TriggerHitParticlesWithColors(
@@ -4817,7 +4860,8 @@ public class TVMinigameController : MonoBehaviour
     {
         if (subwayTrackRoot == null) return;
 
-        const int segsPerRail = 14;
+        const int segsPerRail = 16;
+        const float maxTrackDepth = 1.30f;
         float[] railLanes = new float[] { -1.5f, -0.5f, 0.5f, 1.5f };
 
         int segIdx = 0;
@@ -4828,8 +4872,8 @@ public class TVMinigameController : MonoBehaviour
             {
                 if (segIdx >= subwayRailSegments.Count) break;
                 Transform seg = subwayRailSegments[segIdx++];
-                float d0 = s / (float)segsPerRail;
-                float d1 = (s + 1) / (float)segsPerRail;
+                float d0 = (s / (float)segsPerRail) * maxTrackDepth;
+                float d1 = ((s + 1) / (float)segsPerRail) * maxTrackDepth;
                 ProjectSubwayPoint(railLane, d0, 0f, out Vector3 p0, out float sc0);
                 ProjectSubwayPoint(railLane, d1, 0f, out Vector3 p1, out float sc1);
 
@@ -4850,11 +4894,11 @@ public class TVMinigameController : MonoBehaviour
         for (int lane = 0; lane < 3; lane++)
         {
             float laneVal = lane - 1;
-            for (int k = 0; k < 9; k++)
+            for (int k = 0; k < 10; k++)
             {
                 if (tieIdx >= subwaySleeperSegments.Count) break;
                 Transform tie = subwaySleeperSegments[tieIdx++];
-                float d = ((k + subwayScrollPhase) / 9f);
+                float d = ((k + subwayScrollPhase) / 10f) * maxTrackDepth;
                 ProjectSubwayPoint(laneVal, d, 0f, out Vector3 pos, out float sc);
                 pos.z += 0.06f;
                 tie.position = pos;
@@ -4871,8 +4915,7 @@ public class TVMinigameController : MonoBehaviour
         int waveIdx = subwayWaveCounter++;
         int pattern = waveIdx % 5;
 
-        // Avoid spawning a train in the exact same lane twice in a row
-        int PickTrainLane()
+        int PickObstacleLane()
         {
             int l = Random.Range(-1, 2);
             if (l == subwayLastTrainLane) l = (l == 1) ? -1 : (l + 1);
@@ -4882,87 +4925,68 @@ public class TVMinigameController : MonoBehaviour
 
         if (pattern == 0)
         {
-            // Single 3D hurdle in one lane + clear coin line in adjacent lane
-            int hurdleLane = Random.Range(-1, 2);
-            int coinLane = hurdleLane == 0 ? (Random.value > 0.5f ? -1 : 1) : 0;
-            CreateSubwayEntity(SubwayEntityType.SmallObstacle, hurdleLane, startDepth + 0.04f, 0.07f, 0f);
-            CreateSubwayEntity(SubwayEntityType.Coin, hurdleLane, startDepth + 0.04f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
+            // Single small jumpable red DVD logo with a floating coin above it + coin trail in adjacent lane
+            int obsLane = PickObstacleLane();
+            int coinLane = obsLane == 0 ? (Random.value > 0.5f ? -1 : 1) : 0;
+            CreateSubwayEntity(SubwayEntityType.SmallObstacle, obsLane, startDepth, 0.08f, 0f);
+            CreateSubwayEntity(SubwayEntityType.Coin, obsLane, startDepth, 0.05f, SubwaySmallObstacleHeight + 0.45f);
             CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth - 0.04f, 0.05f, 0.35f);
             CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.05f, 0.05f, 0.35f);
             CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.14f, 0.05f, 0.35f);
         }
         else if (pattern == 1)
         {
-            // Longer 3D Train in one lane with a 3D Ramp in front of it + coins along the roof!
-            int trainLane = PickTrainLane();
-            CreateSubwayEntity(SubwayEntityType.Train, trainLane, startDepth, 0.42f, 0f);
-            CreateSubwayEntity(SubwayEntityType.Ramp, trainLane, startDepth + 0.26f, 0.11f, 0f);
+            // Big red DVD logo (non-jumpable, lane switch required) + coin trail in an open lane
+            int bigLane = PickObstacleLane();
+            CreateSubwayEntity(SubwayEntityType.Train, bigLane, startDepth, 0.12f, 0f);
 
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.14f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.04f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.16f, 0.05f, SubwayTrainHeight + 0.38f);
-
-            int sideLane = trainLane == 0 ? 1 : 0;
-            CreateSubwayEntity(SubwayEntityType.SmallObstacle, sideLane, startDepth + 0.08f, 0.07f, 0f);
+            int coinLane = bigLane == 0 ? 1 : 0;
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth - 0.04f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.06f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.16f, 0.05f, 0.35f);
         }
         else if (pattern == 2)
         {
-            // Two small jumpable 3D hurdles + open lane with coins
+            // Two small jumpable red DVD logos in two lanes, remaining lane has coins
             int freeLane = Random.Range(-1, 2);
             for (int lane = -1; lane <= 1; lane++)
             {
                 if (lane == freeLane)
                 {
-                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth, 0.05f, 0.35f);
-                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.09f, 0.05f, 0.35f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth - 0.02f, 0.05f, 0.35f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.07f, 0.05f, 0.35f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.16f, 0.05f, 0.35f);
                 }
                 else
                 {
-                    CreateSubwayEntity(SubwayEntityType.SmallObstacle, lane, startDepth + 0.04f, 0.07f, 0f);
-                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.04f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
+                    CreateSubwayEntity(SubwayEntityType.SmallObstacle, lane, startDepth + 0.03f, 0.08f, 0f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.03f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
                 }
             }
         }
         else if (pattern == 3)
         {
-            // Longer 3D Train with a small stepping-stone obstacle in front so player can jump onto the small obstacle and jump again onto the train!
-            int trainLane = PickTrainLane();
-            CreateSubwayEntity(SubwayEntityType.Train, trainLane, startDepth - 0.02f, 0.42f, 0f);
-            CreateSubwayEntity(SubwayEntityType.SmallObstacle, trainLane, startDepth + 0.26f, 0.08f, 0f);
+            // One Big non-jumpable red DVD + one Small jumpable red DVD + one free lane with coins
+            int bigLane = PickObstacleLane();
+            int smallLane = (bigLane == 0) ? (Random.value > 0.5f ? -1 : 1) : 0;
+            int freeLane = -bigLane - smallLane;
 
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.15f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.05f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.05f, 0.05f, SubwayTrainHeight + 0.38f);
-            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.15f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Train, bigLane, startDepth, 0.12f, 0f);
+            CreateSubwayEntity(SubwayEntityType.SmallObstacle, smallLane, startDepth + 0.04f, 0.08f, 0f);
+            CreateSubwayEntity(SubwayEntityType.Coin, smallLane, startDepth + 0.04f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
 
-            int otherLane = trainLane == -1 ? 1 : -1;
-            CreateSubwayEntity(SubwayEntityType.Coin, otherLane, startDepth + 0.02f, 0.05f, 0.35f);
-            CreateSubwayEntity(SubwayEntityType.Coin, otherLane, startDepth + 0.12f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, freeLane, startDepth - 0.03f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, freeLane, startDepth + 0.06f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, freeLane, startDepth + 0.15f, 0.05f, 0.35f);
         }
         else
         {
-            // Two parallel longer trains (only after early warm-up waves) with a ramp on one and stepping-stone hurdle in middle
-            if (waveIdx < 4)
-            {
-                CreateSubwayEntity(SubwayEntityType.Coin, -1, startDepth + 0.10f, 0.05f, 0.35f);
-                CreateSubwayEntity(SubwayEntityType.Coin, 0, startDepth + 0.04f, 0.05f, 0.35f);
-                CreateSubwayEntity(SubwayEntityType.Coin, 1, startDepth - 0.02f, 0.05f, 0.35f);
-                CreateSubwayEntity(SubwayEntityType.SmallObstacle, 0, startDepth - 0.08f, 0.07f, 0f);
-            }
-            else
-            {
-                int rampTrainLane = Random.value > 0.5f ? -1 : 1;
-                int secondTrainLane = -rampTrainLane;
-                CreateSubwayEntity(SubwayEntityType.Train, rampTrainLane, startDepth, 0.42f, 0f);
-                CreateSubwayEntity(SubwayEntityType.Ramp, rampTrainLane, startDepth + 0.26f, 0.11f, 0f);
-                CreateSubwayEntity(SubwayEntityType.Train, secondTrainLane, startDepth, 0.42f, 0f);
-                CreateSubwayEntity(SubwayEntityType.SmallObstacle, 0, startDepth + 0.24f, 0.08f, 0f);
-                CreateSubwayEntity(SubwayEntityType.Coin, rampTrainLane, startDepth - 0.08f, 0.05f, SubwayTrainHeight + 0.38f);
-                CreateSubwayEntity(SubwayEntityType.Coin, rampTrainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
-                CreateSubwayEntity(SubwayEntityType.Coin, secondTrainLane, startDepth - 0.08f, 0.05f, SubwayTrainHeight + 0.38f);
-                CreateSubwayEntity(SubwayEntityType.Coin, secondTrainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
-            }
+            // Pattern 4: Big red DVD in center, side lanes have coins
+            CreateSubwayEntity(SubwayEntityType.Train, 0, startDepth, 0.12f, 0f);
+            CreateSubwayEntity(SubwayEntityType.Coin, -1, startDepth - 0.04f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, -1, startDepth + 0.06f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, 1, startDepth - 0.04f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, 1, startDepth + 0.06f, 0.05f, 0.35f);
         }
     }
 
@@ -4987,17 +5011,22 @@ public class TVMinigameController : MonoBehaviour
         if (subwayTrackRoot == null || mainBouncer == null) return;
         int layer = mainBouncer.gameObject.layer;
 
-        GameObject root = new GameObject($"Subway_{type}");
-        root.layer = layer;
-        root.transform.SetParent(subwayTrackRoot.transform, false);
-
+        GameObject root = null;
         float heightOrtho = 0.5f;
+        DeformableLogoPiece dvdPiece = null;
+        float baseScale = 0.5f;
 
         if (type == SubwayEntityType.Coin)
         {
+            root = new GameObject("Subway_Coin");
+            root.layer = layer;
+            root.transform.SetParent(subwayTrackRoot.transform, false);
+
             heightOrtho = 0.55f;
+            baseScale = 0.45f;
             // Thick 3D golden coin with outer rim + brighter inner emblem
             GameObject disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            disc.name = "CoinRim";
             disc.layer = layer;
             disc.transform.SetParent(root.transform, false);
             disc.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
@@ -5011,41 +5040,45 @@ public class TVMinigameController : MonoBehaviour
         }
         else if (type == SubwayEntityType.SmallObstacle)
         {
+            // Small red-ish DVD logo obstacle (jumpable!)
             heightOrtho = SubwaySmallObstacleHeight;
-            // Multi-part 3D Roadblock Hurdle: Left/Right dark 3D posts + 3D Main Beam + Bright Top Cap + Side Depth Caps + Hazard Stripes
-            CreateSubwayBoxPart("LeftPost", root.transform, layer, new Vector3(-0.52f, 0.42f, 0f), new Vector3(0.18f, 0.84f, 0.42f), new Color(0.22f, 0.25f, 0.32f, 1f));
-            CreateSubwayBoxPart("RightPost", root.transform, layer, new Vector3(0.52f, 0.42f, 0f), new Vector3(0.18f, 0.84f, 0.42f), new Color(0.22f, 0.25f, 0.32f, 1f));
-            CreateSubwayBoxPart("MainBeamBody", root.transform, layer, new Vector3(0f, 0.54f, 0f), new Vector3(1.30f, 0.44f, 0.46f), new Color(0.95f, 0.34f, 0.12f, 1f));
-            CreateSubwayBoxPart("TopBrightBevel", root.transform, layer, new Vector3(0f, 0.80f, -0.01f), new Vector3(1.34f, 0.14f, 0.48f), new Color(1.0f, 0.88f, 0.22f, 1f));
-            CreateSubwayBoxPart("FrontHazardStripeL", root.transform, layer, new Vector3(-0.30f, 0.54f, -0.24f), new Vector3(0.22f, 0.38f, 0.04f), new Color(1.0f, 0.92f, 0.28f, 1f));
-            CreateSubwayBoxPart("FrontHazardStripeR", root.transform, layer, new Vector3(0.30f, 0.54f, -0.24f), new Vector3(0.22f, 0.38f, 0.04f), new Color(1.0f, 0.92f, 0.28f, 1f));
-            CreateSubwayBoxPart("SideShadeWall", root.transform, layer, new Vector3(0.66f, 0.54f, 0f), new Vector3(0.05f, 0.44f, 0.46f), new Color(0.62f, 0.18f, 0.06f, 1f));
+            baseScale = 0.44f;
+            Color primaryRed = new Color(1.0f, 0.24f, 0.20f, 1f);
+            Color ringOrange = new Color(1.0f, 0.62f, 0.32f, 1f);
+            dvdPiece = CreateDeformableLogoClone("SubwaySmallObstacle_DVD", baseScale, primaryRed, ringOrange, shapeHeight: 1.30f);
+            if (dvdPiece != null && dvdPiece.rootObj != null)
+            {
+                root = dvdPiece.rootObj;
+                root.transform.SetParent(subwayTrackRoot.transform, false);
+            }
         }
-        else if (type == SubwayEntityType.Ramp)
+        else // SubwayEntityType.Train: Large red DVD logo obstacle (non-jumpable; must dodge by switching lanes!)
         {
             heightOrtho = SubwayTrainHeight;
-            // 3D Sloped Boarding Ramp with distinct side walls, bright sloped deck, and chevron boost strips
-            CreateSubwayBoxPart("RampBase", root.transform, layer, new Vector3(0f, 0.42f, 0.12f), new Vector3(1.26f, 0.82f, 0.95f), new Color(0.12f, 0.56f, 0.36f, 1f));
-            CreateSubwayBoxPart("RampSlopeDeck", root.transform, layer, new Vector3(0f, 0.88f, 0f), new Vector3(1.24f, 0.22f, 1.38f), new Color(0.26f, 0.98f, 0.58f, 1f), new Vector3(-34f, 0f, 0f));
-            CreateSubwayBoxPart("RampLeftRail", root.transform, layer, new Vector3(-0.62f, 0.96f, 0f), new Vector3(0.10f, 0.34f, 1.40f), new Color(0.16f, 0.76f, 0.45f, 1f), new Vector3(-34f, 0f, 0f));
-            CreateSubwayBoxPart("RampRightRail", root.transform, layer, new Vector3(0.62f, 0.96f, 0f), new Vector3(0.10f, 0.34f, 1.40f), new Color(0.16f, 0.76f, 0.45f, 1f), new Vector3(-34f, 0f, 0f));
-            CreateSubwayBoxPart("RampStripe1", root.transform, layer, new Vector3(0f, 0.65f, -0.32f), new Vector3(0.88f, 0.08f, 0.18f), new Color(0.88f, 1.0f, 0.42f, 1f), new Vector3(-34f, 0f, 0f));
-            CreateSubwayBoxPart("RampStripe2", root.transform, layer, new Vector3(0f, 1.12f, 0.22f), new Vector3(0.88f, 0.08f, 0.18f), new Color(0.88f, 1.0f, 0.42f, 1f), new Vector3(-34f, 0f, 0f));
+            baseScale = 0.90f;
+            Color primaryDarkRed = new Color(0.85f, 0.08f, 0.12f, 1f);
+            Color ringBrightRed = new Color(1.0f, 0.32f, 0.32f, 1f);
+            dvdPiece = CreateDeformableLogoClone("SubwayBigObstacle_DVD", baseScale, primaryDarkRed, ringBrightRed, shapeHeight: 1.80f);
+            if (dvdPiece != null && dvdPiece.rootObj != null)
+            {
+                root = dvdPiece.rootObj;
+                root.transform.SetParent(subwayTrackRoot.transform, false);
+            }
         }
-        else if (type == SubwayEntityType.Train)
+
+        if (root == null) return;
+
+        GameObject obsShadow = null;
+        if (type == SubwayEntityType.SmallObstacle || type == SubwayEntityType.Train)
         {
-            heightOrtho = SubwayTrainHeight;
-            // Long, straight-aligned 3D Subway Train Car: Shaded Side Trim, Long Bright Roof Deck, Front Cab Face, Bumper, Headlights!
-            CreateSubwayBoxPart("TrainMainHull", root.transform, layer, new Vector3(0f, 1.05f, 0.42f), new Vector3(1.36f, 1.88f, 2.85f), new Color(0.20f, 0.44f, 0.86f, 1f));
-            CreateSubwayBoxPart("TrainSideWallL", root.transform, layer, new Vector3(-0.69f, 1.05f, 0.42f), new Vector3(0.06f, 1.86f, 2.84f), new Color(0.13f, 0.30f, 0.64f, 1f));
-            CreateSubwayBoxPart("TrainSideWallR", root.transform, layer, new Vector3(0.69f, 1.05f, 0.42f), new Vector3(0.06f, 1.86f, 2.84f), new Color(0.13f, 0.30f, 0.64f, 1f));
-            CreateSubwayBoxPart("TrainRoofDeck", root.transform, layer, new Vector3(0f, 2.02f, 0.40f), new Vector3(1.42f, 0.22f, 2.88f), new Color(0.58f, 0.84f, 1.0f, 1f));
-            CreateSubwayBoxPart("TrainRoofStripe", root.transform, layer, new Vector3(0f, 2.14f, 0.40f), new Vector3(0.52f, 0.06f, 2.65f), new Color(0.82f, 0.94f, 1.0f, 1f));
-            CreateSubwayBoxPart("TrainFrontCab", root.transform, layer, new Vector3(0f, 1.02f, -1.02f), new Vector3(1.34f, 1.82f, 0.14f), new Color(0.28f, 0.56f, 0.96f, 1f));
-            CreateSubwayBoxPart("TrainWindshield", root.transform, layer, new Vector3(0f, 1.38f, -1.10f), new Vector3(1.06f, 0.54f, 0.06f), new Color(0.95f, 0.98f, 0.52f, 1f));
-            CreateSubwayBoxPart("TrainBumper", root.transform, layer, new Vector3(0f, 0.26f, -1.12f), new Vector3(1.40f, 0.28f, 0.14f), new Color(0.85f, 0.22f, 0.22f, 1f));
-            CreateSubwayBoxPart("HeadlightL", root.transform, layer, new Vector3(-0.42f, 0.60f, -1.11f), new Vector3(0.24f, 0.18f, 0.06f), new Color(1.0f, 0.95f, 0.35f, 1f));
-            CreateSubwayBoxPart("HeadlightR", root.transform, layer, new Vector3(0.42f, 0.60f, -1.11f), new Vector3(0.24f, 0.18f, 0.06f), new Color(1.0f, 0.95f, 0.35f, 1f));
+            obsShadow = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            obsShadow.name = "SubwayObstacleShadow";
+            obsShadow.layer = layer;
+            Collider sc = obsShadow.GetComponent<Collider>();
+            if (sc != null) Destroy(sc);
+            Renderer sr = obsShadow.GetComponent<Renderer>();
+            if (sr != null) sr.sharedMaterial = CreateUnlitColorMaterial(new Color(0f, 0f, 0f, 0.40f), true);
+            if (subwayTrackRoot != null) obsShadow.transform.SetParent(subwayTrackRoot.transform, false);
         }
 
         SubwayEntity ent = new SubwayEntity
@@ -5058,7 +5091,10 @@ public class TVMinigameController : MonoBehaviour
             elevationOffset = elevationOffset,
             heightOrtho = heightOrtho,
             collectedOrHit = false,
-            spinAngle = Random.Range(0f, 360f)
+            spinAngle = Random.Range(0f, 360f),
+            piece = dvdPiece,
+            baseScale = baseScale,
+            shadowObj = obsShadow
         };
         subwayEntities.Add(ent);
         UpdateSubwayEntityVisualTransform(ent, 0f);
@@ -5070,27 +5106,34 @@ public class TVMinigameController : MonoBehaviour
         ProjectSubwayPoint(ent.laneIndex, ent.depth01, ent.elevationOffset, out Vector3 worldPos, out float sc);
         worldPos.z -= ent.depth01 * 0.06f;
 
-        // Rapidly scale down right as the entity passes the player so it leaves the screen cleanly without lingering!
-        float passFade = 1f;
-        float passThreshold = SubwayPlayerDepth01 + ent.depthLength * 0.15f;
-        if (ent.depth01 > passThreshold)
+        if (ent.shadowObj != null)
         {
-            passFade = Mathf.Clamp01(1f - (ent.depth01 - passThreshold) / 0.06f);
+            ProjectSubwayPoint(ent.laneIndex, ent.depth01, 0.02f, out Vector3 shadowPos, out float sPersp);
+            shadowPos.z -= 0.04f;
+            ent.shadowObj.transform.position = shadowPos;
+            float shadowScale = (ent.type == SubwayEntityType.Train ? 1.35f : 0.78f) * sPersp;
+            ent.shadowObj.transform.localScale = new Vector3(shadowScale * 1.4f, shadowScale * 0.55f, 1f);
+            ent.shadowObj.transform.localRotation = Quaternion.Euler(75f, 0f, 0f);
         }
-
-        ent.rootObj.transform.position = worldPos;
-        ent.rootObj.transform.localScale = Vector3.one * (sc * passFade);
 
         if (ent.type == SubwayEntityType.Coin)
         {
+            ent.rootObj.transform.position = worldPos;
+            ent.rootObj.transform.localScale = Vector3.one * sc;
             ent.spinAngle += dt * 210f;
             ent.rootObj.transform.localRotation = Quaternion.Euler(0f, ent.spinAngle, 0f);
         }
-        else
+        else if (ent.piece != null)
         {
-            // Keep obstacles, ramps, and trains aligned straight forward down the lane (zero yaw/roll twist)
-            // with a clean forward pitch so both the front face and 3D top roof are clearly visible in the Ortho camera!
-            ent.rootObj.transform.localRotation = Quaternion.Euler(22f, 0f, 0f);
+            // Position obstacle logo cleanly at track floor + half-height of logo, facing camera flat without pitch distortion!
+            ent.piece.overallScaleFactor = ent.baseScale * sc;
+            // Cap scale factor for center offset past the player so perspective scale does not push the object upwards against exit motion
+            float offsetSc = Mathf.Min(sc, 1.05f);
+            float centerOffsetY = (ent.type == SubwayEntityType.Train ? 0.92f : 0.42f) * offsetSc;
+            worldPos.y += centerOffsetY;
+            ent.piece.SetCenterPosition(worldPos);
+            ent.piece.rootObj.transform.localRotation = mainBouncer.transform.localRotation;
+            ent.piece.UpdateVisuals(dt);
         }
     }
 
@@ -5127,10 +5170,32 @@ public class TVMinigameController : MonoBehaviour
     private bool hillCarGrounded = true;
     private float hillNextCoinSpawnX = 6f;
     private float hillWheelSpinAngle = 0f;
+    private float hillBaseOrthoSize = -1f;
+    private float hillRoofCrashCooldown = 0f;
+    private int hillCoinStreak = 0;
+    private float hillWorldZoomScale = 1.0f;
+    private float hillFrontWheelSuspensionOffset = 0f;
+    private float hillRearWheelSuspensionOffset = 0f;
+    private float hillFrontWheelSuspVel = 0f;
+    private float hillRearWheelSuspVel = 0f;
 
     private void EnterHillClimbMode()
     {
         if (mainBouncer == null || orthoCamera == null) return;
+
+        if (hillBaseOrthoSize <= 0f)
+        {
+            hillBaseOrthoSize = orthoCamera.orthographicSize;
+        }
+        else
+        {
+            orthoCamera.orthographicSize = hillBaseOrthoSize;
+        }
+        hillWorldZoomScale = 1.0f;
+        hillFrontWheelSuspensionOffset = 0f;
+        hillRearWheelSuspensionOffset = 0f;
+        hillFrontWheelSuspVel = 0f;
+        hillRearWheelSuspVel = 0f;
 
         StopAnyActiveConvergeAnimation();
         mainBouncer.DespawnAllChildLogosForMinigame();
@@ -5139,6 +5204,8 @@ public class TVMinigameController : MonoBehaviour
 
         DestroyHillClimbVisuals();
 
+        hillCoinStreak = 0;
+        hillRoofCrashCooldown = 0f;
         hillCarTrackX = 0f;
         hillCarVelX = 0f;
         hillCarVelY = 0f;
@@ -5148,7 +5215,7 @@ public class TVMinigameController : MonoBehaviour
         hillCarGrounded = true;
         hillNextCoinSpawnX = 4.5f;
         hillWheelSpinAngle = 0f;
-        hillCarWorldY = SampleHillTerrainY(hillCarTrackX) + 0.55f;
+        hillCarWorldY = SampleHillTerrainY(hillCarTrackX) + 0.48f;
 
         BuildHillClimbVisuals();
     }
@@ -5156,6 +5223,12 @@ public class TVMinigameController : MonoBehaviour
     private void ExitHillClimbMode()
     {
         DestroyHillClimbVisuals();
+
+        if (orthoCamera != null && hillBaseOrthoSize > 0f)
+        {
+            orthoCamera.orthographicSize = hillBaseOrthoSize;
+        }
+        hillWorldZoomScale = 1.0f;
 
         if (mainBouncer != null)
         {
@@ -5213,10 +5286,10 @@ public class TVMinigameController : MonoBehaviour
             new Color(1.0f, 0.26f, 0.22f, 1f),
             new Color(1.0f, 0.88f, 0.22f, 1f));
 
-        // Create two circularly-distorted original DVD logo wheels!
+        // Create two circularly-distorted original DVD logo wheels tucked tightly under the chassis
         hillFrontWheelPiece = CreateDeformableLogoClone(
             "HillFrontWheel_DVD",
-            0.34f,
+            0.26f,
             new Color(0.88f, 0.94f, 1.0f, 1f),
             new Color(0.24f, 0.82f, 0.98f, 1f));
         if (hillFrontWheelPiece != null)
@@ -5227,7 +5300,7 @@ public class TVMinigameController : MonoBehaviour
 
         hillRearWheelPiece = CreateDeformableLogoClone(
             "HillRearWheel_DVD",
-            0.34f,
+            0.26f,
             new Color(0.88f, 0.94f, 1.0f, 1f),
             new Color(0.24f, 0.82f, 0.98f, 1f));
         if (hillRearWheelPiece != null)
@@ -5330,7 +5403,28 @@ public class TVMinigameController : MonoBehaviour
     {
         if (mainBouncer == null || orthoCamera == null || hillCarPiece == null) return;
 
+        if (hillRoofCrashCooldown > 0f) hillRoofCrashCooldown -= dt;
+
         GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+
+        // Keep orthoCamera.orthographicSize fixed at hillBaseOrthoSize so TV background video NEVER shrinks!
+        if (orthoCamera != null && hillBaseOrthoSize > 0f)
+        {
+            orthoCamera.orthographicSize = hillBaseOrthoSize;
+        }
+
+        // Dynamic minigame world zoom: zoom out smoothly when driving fast, launching high, OR dipping into deep ditches!
+        float speedRatio = Mathf.Clamp01(Mathf.Abs(hillCarVelX) / 14f);
+        float speedZoomOut = speedRatio * 0.18f;
+        float groundYUnderCar = SampleHillTerrainY(hillCarTrackX);
+        float heightAboveGround = Mathf.Max(0f, hillCarWorldY - groundYUnderCar);
+        float airZoomOut = Mathf.Clamp(heightAboveGround - 0.3f, 0f, 6.0f) * 0.05f;
+        float topOverflow = Mathf.Max(0f, hillCarWorldY - (camMaxY - 1.2f)) * 0.08f;
+        float bottomOverflow = Mathf.Max(0f, (camMinY + 1.35f) - hillCarWorldY) * 0.16f;
+        float ditchZoom = Mathf.Clamp(bottomOverflow, 0f, 0.40f);
+        float targetZoom = Mathf.Clamp(1.0f - speedZoomOut - airZoomOut - topOverflow - ditchZoom, 0.52f, 1.0f);
+        hillWorldZoomScale = Mathf.Lerp(hillWorldZoomScale, targetZoom, Mathf.Clamp01(3.5f * dt));
+
         float baseZ = mainBouncer.transform.position.z;
         float screenMidX = (camMinX + camMaxX) * 0.5f;
 
@@ -5368,98 +5462,125 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
-        float wheelBase = 1.12f;
+        float wheelBase = 0.80f;
         float halfWheelBase = wheelBase * 0.5f;
-        const float rideClearance = 0.50f;
+        const float wheelRadius = 0.18f;
+        const float wheelOffsetY = 0.38f;
 
-        float rearSampleX = hillCarTrackX - halfWheelBase;
-        float frontSampleX = hillCarTrackX + halfWheelBase;
-        float hRear = SampleHillTerrainY(rearSampleX);
-        float hFront = SampleHillTerrainY(frontSampleX);
+        float carAngleRad = hillCarAngleDeg * Mathf.Deg2Rad;
+        float cosAng = Mathf.Cos(carAngleRad);
+        float sinAng = Mathf.Sin(carAngleRad);
 
-        float terrainAngleRad = Mathf.Atan2(hFront - hRear, wheelBase);
-        float terrainAngleDeg = terrainAngleRad * Mathf.Rad2Deg;
-        float groundCenterY = (hRear + hFront) * 0.5f + rideClearance;
+        float rearWheelTrackX = hillCarTrackX - halfWheelBase * cosAng + wheelOffsetY * sinAng;
+        float frontWheelTrackX = hillCarTrackX + halfWheelBase * cosAng + wheelOffsetY * sinAng;
+        float rearGroundY = SampleHillTerrainY(rearWheelTrackX);
+        float frontGroundY = SampleHillTerrainY(frontWheelTrackX);
+
+        float twoWheelSlopeRad = Mathf.Atan2(frontGroundY - rearGroundY, Mathf.Max(0.1f, frontWheelTrackX - rearWheelTrackX));
+        float twoWheelSlopeDeg = twoWheelSlopeRad * Mathf.Rad2Deg;
+
+        float supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+        float supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+        float groundSupportCenterY = Mathf.Max(supportYFromRear, supportYFromFront);
 
         if (hillCarGrounded)
         {
             // Drive along curved hill
             float driveAccel = 0f;
-            if (gasHeld) driveAccel += 14.5f;
-            if (brakeHeld) driveAccel -= 12.5f;
+            if (gasHeld) driveAccel += 15.5f;
+            if (brakeHeld) driveAccel -= 13.5f;
 
             // Gravity component along slope
-            float slopeGravity = -16.5f * Mathf.Sin(terrainAngleRad);
-            hillCarVelX += (driveAccel * Mathf.Cos(terrainAngleRad) + slopeGravity) * dt;
-            hillCarVelX *= Mathf.Pow(0.66f, dt); // Smooth rolling resistance
-            hillCarVelX = Mathf.Clamp(hillCarVelX, -10.5f, 14.5f);
+            float slopeGravity = -14.5f * Mathf.Sin(twoWheelSlopeRad);
+            hillCarVelX += (driveAccel * Mathf.Cos(twoWheelSlopeRad) + slopeGravity) * dt;
+            hillCarVelX *= Mathf.Pow(0.70f, dt); // Smooth rolling resistance
+            hillCarVelX = Mathf.Clamp(hillCarVelX, -11.0f, 16.0f);
 
-            // Realistic wheelie & flip pitch torque! Holding gas on steep hills can wheelie & flip the car!
-            float angleDiffFromSlope = Mathf.DeltaAngle(terrainAngleDeg, hillCarAngleDeg);
-            float throttleTorque = 0f;
-            if (gasHeld) throttleTorque += 205f + Mathf.Max(0f, Mathf.Sin(terrainAngleRad)) * 85f;
-            if (brakeHeld) throttleTorque -= 205f + Mathf.Max(0f, -Mathf.Sin(terrainAngleRad)) * 85f;
+            // Stiff, critically damped chassis suspension:
+            // Chassis is firmly locked to the terrain slope defined by both wheels,
+            // with subtle dynamic pitch on acceleration/braking for tactile feedback without oscillation!
+            float dynamicPitch = 0f;
+            if (gasHeld && hillCarVelX > 0.5f) dynamicPitch += Mathf.Clamp(hillCarVelX * 0.35f, 0f, 4.5f);
+            if (brakeHeld && hillCarVelX > 0.5f) dynamicPitch -= Mathf.Clamp(hillCarVelX * 0.30f, 0f, 4.0f);
 
-            // Suspension spring smoothly aligns wheels to slope within normal wheelie range (< 58 deg)
-            float suspensionRestore = 0f;
-            if (Mathf.Abs(angleDiffFromSlope) < 58f && !gasHeld && !brakeHeld)
-            {
-                suspensionRestore = -angleDiffFromSlope * 11.0f;
-            }
-            else if (Mathf.Abs(angleDiffFromSlope) < 44f)
-            {
-                suspensionRestore = -angleDiffFromSlope * 4.2f;
-            }
-
-            hillCarAngularVelDeg += (throttleTorque + suspensionRestore) * dt;
-            hillCarAngularVelDeg *= Mathf.Pow(0.15f, dt);
-            hillCarAngleDeg += hillCarAngularVelDeg * dt;
+            float targetGroundedAngle = twoWheelSlopeDeg + dynamicPitch;
+            hillCarAngleDeg = Mathf.LerpAngle(hillCarAngleDeg, targetGroundedAngle, Mathf.Clamp01(26f * dt));
+            hillCarAngularVelDeg = 0f;
 
             // Check if the car flipped upside-down onto its roof while on the ground!
-            if (Mathf.Abs(Mathf.DeltaAngle(hillCarAngleDeg, terrainAngleDeg)) > 108f)
+            if (Mathf.Abs(Mathf.DeltaAngle(hillCarAngleDeg, twoWheelSlopeDeg)) > 85f)
             {
-                TriggerHillRoofCrash(camMinX, camMaxX, baseZ, terrainAngleDeg);
+                TriggerHillRoofCrash(camMinX, camMaxX, camMinY, camMaxY, baseZ, twoWheelSlopeDeg);
             }
 
             float slopeBefore = SampleHillTerrainSlope(hillCarTrackX);
             hillCarTrackX += hillCarVelX * dt;
             float slopeAfter = SampleHillTerrainSlope(hillCarTrackX);
 
-            float nextHRear = SampleHillTerrainY(hillCarTrackX - halfWheelBase);
-            float nextHFront = SampleHillTerrainY(hillCarTrackX + halfWheelBase);
-            float nextGroundY = (nextHRear + nextHFront) * 0.5f + rideClearance;
-            float analyticalVelY = hillCarVelX * slopeAfter;
+            // Recompute ground support at new track position
+            carAngleRad = hillCarAngleDeg * Mathf.Deg2Rad;
+            cosAng = Mathf.Cos(carAngleRad);
+            sinAng = Mathf.Sin(carAngleRad);
+            rearWheelTrackX = hillCarTrackX - halfWheelBase * cosAng + wheelOffsetY * sinAng;
+            frontWheelTrackX = hillCarTrackX + halfWheelBase * cosAng + wheelOffsetY * sinAng;
+            rearGroundY = SampleHillTerrainY(rearWheelTrackX);
+            frontGroundY = SampleHillTerrainY(frontWheelTrackX);
+            supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            float nextGroundSupportY = Mathf.Max(supportYFromRear, supportYFromFront);
 
-            // Smooth crest launch detection using analytical curvature (never glitches on frame dt spikes!)
-            float downwardCurvatureDrop = (hillCarVelX * slopeBefore) - analyticalVelY;
-            if ((Mathf.Abs(hillCarVelX) > 6.4f && downwardCurvatureDrop > 1.85f && slopeBefore > 0.15f) || Mathf.Abs(angleDiffFromSlope) > 68f)
+            float analyticalVelY = hillCarVelX * slopeAfter;
+            float slopeDrop = slopeBefore - slopeAfter;
+
+            // Natural crest launch detection: satisfying air time when cresting hills at speed!
+            bool crestLaunch = (hillCarVelX > 2.8f && slopeBefore > 0.08f && slopeDrop > 0.035f);
+            if (crestLaunch)
             {
                 hillCarGrounded = false;
                 hillAirFlipAccumDeg = 0f;
-                hillCarVelY = hillCarVelX * slopeBefore + 0.65f;
-                hillCarWorldY = nextGroundY + 0.04f;
+                hillCarVelY = Mathf.Clamp(hillCarVelX * slopeBefore, 1.8f, 6.2f);
+                hillCarWorldY = nextGroundSupportY + 0.06f;
             }
             else
             {
-                hillCarWorldY = nextGroundY;
+                // Car chassis strictly stays on ground support - never sinks under wheels!
+                hillCarWorldY = nextGroundSupportY;
                 hillCarVelY = analyticalVelY;
             }
         }
         else
         {
-            // Airborne physics: full 360-degree flips!
-            if (gasHeld) hillCarAngularVelDeg += 290f * dt;
-            if (brakeHeld) hillCarAngularVelDeg -= 290f * dt;
-            hillCarAngularVelDeg = Mathf.Clamp(hillCarAngularVelDeg, -420f, 420f);
+            // Airborne physics: full 360-degree flips with responsive air control!
+            if (gasHeld) hillCarAngularVelDeg += 460f * dt;
+            if (brakeHeld) hillCarAngularVelDeg -= 460f * dt;
+            else if (!gasHeld && !brakeHeld) hillCarAngularVelDeg *= Mathf.Pow(0.35f, dt);
+            hillCarAngularVelDeg = Mathf.Clamp(hillCarAngularVelDeg, -560f, 560f);
             float stepAng = hillCarAngularVelDeg * dt;
             hillCarAngleDeg += stepAng;
             hillAirFlipAccumDeg += stepAng;
+
+            // When gas is not pressed in the air, lose forward momentum faster!
+            if (!gasHeld)
+            {
+                hillCarVelX *= Mathf.Pow(0.52f, dt);
+            }
+            else
+            {
+                hillCarVelX *= Mathf.Pow(0.92f, dt);
+            }
+            if (brakeHeld)
+            {
+                hillCarVelX *= Mathf.Pow(0.32f, dt);
+            }
 
             // Award flip bonus if player completes a full 360-degree flip in the air!
             if (Mathf.Abs(hillAirFlipAccumDeg) >= 325f)
             {
                 hillAirFlipAccumDeg = 0f;
-                Vector3 flipPos = new Vector3(Mathf.Lerp(camMinX, camMaxX, 0.32f), hillCarWorldY + 0.5f, baseZ);
+                float bLineY = Mathf.Lerp(camMinY, camMaxY, 0.30f);
+                float cSX = Mathf.Lerp(camMinX, camMaxX, 0.32f);
+                float cSY = bLineY + (hillCarWorldY - bLineY) * hillWorldZoomScale;
+                Vector3 flipPos = new Vector3(cSX, cSY + 0.5f, baseZ);
                 mainBouncer.AwardMinigameCornerReward(
                     2,
                     flipPos,
@@ -5469,48 +5590,60 @@ public class TVMinigameController : MonoBehaviour
                 PlaySound(suikaMergeSound, 1.22f);
             }
 
-            hillCarVelY -= 18.5f * dt;
+            hillCarVelY -= 12.5f * dt; // Floaty, natural airborne gravity
             hillCarTrackX += hillCarVelX * dt;
             hillCarWorldY += hillCarVelY * dt;
 
-            float nextHRear = SampleHillTerrainY(hillCarTrackX - halfWheelBase);
-            float nextHFront = SampleHillTerrainY(hillCarTrackX + halfWheelBase);
-            groundCenterY = (nextHRear + nextHFront) * 0.5f + rideClearance;
-            terrainAngleRad = Mathf.Atan2(nextHFront - nextHRear, wheelBase);
-            terrainAngleDeg = terrainAngleRad * Mathf.Rad2Deg;
+            // Recompute ground support for touchdown
+            carAngleRad = hillCarAngleDeg * Mathf.Deg2Rad;
+            cosAng = Mathf.Cos(carAngleRad);
+            sinAng = Mathf.Sin(carAngleRad);
+            rearWheelTrackX = hillCarTrackX - halfWheelBase * cosAng + wheelOffsetY * sinAng;
+            frontWheelTrackX = hillCarTrackX + halfWheelBase * cosAng + wheelOffsetY * sinAng;
+            rearGroundY = SampleHillTerrainY(rearWheelTrackX);
+            frontGroundY = SampleHillTerrainY(frontWheelTrackX);
+            supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            groundSupportCenterY = Mathf.Max(supportYFromRear, supportYFromFront);
 
-            if (hillCarWorldY <= groundCenterY)
+            float terrainSlopeAtCar = SampleHillTerrainSlope(hillCarTrackX);
+            float terrainAngleDeg = Mathf.Atan2(terrainSlopeAtCar, 1f) * Mathf.Rad2Deg;
+
+            if (hillCarWorldY <= groundSupportCenterY)
             {
-                hillCarWorldY = groundCenterY;
+                hillCarWorldY = groundSupportCenterY;
                 hillCarGrounded = true;
                 hillAirFlipAccumDeg = 0f;
 
                 // Check if car landed upside-down (roof crash!)
                 float angleDiff = Mathf.Abs(Mathf.DeltaAngle(hillCarAngleDeg, terrainAngleDeg));
-                if (angleDiff > 100f)
+                if (angleDiff > 85f)
                 {
-                    TriggerHillRoofCrash(camMinX, camMaxX, baseZ, terrainAngleDeg);
+                    TriggerHillRoofCrash(camMinX, camMaxX, camMinY, camMaxY, baseZ, terrainAngleDeg);
                 }
                 else
                 {
                     float impact = Mathf.Clamp(Mathf.Abs(hillCarVelY) * 0.025f, 0.10f, 0.30f);
                     hillCarPiece.TriggerSquash(Vector2.up, impact, 0.35f);
-                    if (hillFrontWheelPiece != null) hillFrontWheelPiece.TriggerSquash(Vector2.up, impact * 0.8f, 0.30f);
-                    if (hillRearWheelPiece != null) hillRearWheelPiece.TriggerSquash(Vector2.up, impact * 0.8f, 0.30f);
-                    hillCarAngleDeg = Mathf.LerpAngle(hillCarAngleDeg, terrainAngleDeg, 0.72f);
-                    hillCarAngularVelDeg *= 0.20f;
+                    hillCarAngularVelDeg = 0f;
                     PlaySound(towerLandSound, 1.05f);
+
+                    float suspImpulse = Mathf.Clamp(Mathf.Abs(hillCarVelY) * 1.6f, 4.0f, 10.0f);
+                    hillFrontWheelSuspVel = suspImpulse;
+                    hillRearWheelSuspVel = suspImpulse;
                 }
-                hillCarVelY = hillCarVelX * SampleHillTerrainSlope(hillCarTrackX);
+                hillCarVelY = hillCarVelX * terrainSlopeAtCar;
             }
         }
 
-        // Camera X follows car with car positioned at 32% from left of screen
+        // Camera and screen coordinates scaled smoothly with hillWorldZoomScale
+        float baseLineY = Mathf.Lerp(camMinY, camMaxY, 0.30f);
         float carScreenX = Mathf.Lerp(camMinX, camMaxX, 0.32f);
-        float trackToWorldOffsetX = carScreenX - hillCarTrackX;
+        float carScreenY = baseLineY + (hillCarWorldY - baseLineY) * hillWorldZoomScale;
+        Vector3 carWorldCenter = new Vector3(carScreenX, carScreenY, baseZ - 0.08f);
 
         // Spawn coins ahead on the hill
-        float visibleMaxTrackX = hillCarTrackX + (camMaxX - carScreenX) + 3f;
+        float visibleMaxTrackX = hillCarTrackX + ((camMaxX - carScreenX) + 4f) / hillWorldZoomScale;
         while (hillNextCoinSpawnX < visibleMaxTrackX)
         {
             SpawnHillCoinCluster(hillNextCoinSpawnX);
@@ -5519,22 +5652,22 @@ public class TVMinigameController : MonoBehaviour
 
         // Update curved hill line segments & vertical struts anchored in world track coordinates so struts scroll smoothly with the terrain!
         int segCount = hillLineSegments.Count;
-        float spanW = (camMaxX - camMinX) + 2.0f;
+        float spanW = ((camMaxX - camMinX) + 2.5f) / hillWorldZoomScale;
         float stepX = spanW / segCount;
-        float leftWorldTrackX = (camMinX - 1.0f) - trackToWorldOffsetX;
+        float leftWorldTrackX = hillCarTrackX - (carScreenX - (camMinX - 1.2f)) / hillWorldZoomScale;
         float snappedStartTrackX = Mathf.Floor(leftWorldTrackX / stepX) * stepX;
 
         for (int i = 0; i < segCount; i++)
         {
             float tx0 = snappedStartTrackX + i * stepX;
             float tx1 = tx0 + stepX;
-            float sx0 = tx0 + trackToWorldOffsetX;
-            float sx1 = tx1 + trackToWorldOffsetX;
-            float y0 = SampleHillTerrainY(tx0);
-            float y1 = SampleHillTerrainY(tx1);
+            float sx0 = carScreenX + (tx0 - hillCarTrackX) * hillWorldZoomScale;
+            float sy0 = baseLineY + (SampleHillTerrainY(tx0) - baseLineY) * hillWorldZoomScale;
+            float sx1 = carScreenX + (tx1 - hillCarTrackX) * hillWorldZoomScale;
+            float sy1 = baseLineY + (SampleHillTerrainY(tx1) - baseLineY) * hillWorldZoomScale;
 
-            Vector3 p0 = new Vector3(sx0, y0, baseZ + 0.04f);
-            Vector3 p1 = new Vector3(sx1, y1, baseZ + 0.04f);
+            Vector3 p0 = new Vector3(sx0, sy0, baseZ + 0.04f);
+            Vector3 p1 = new Vector3(sx1, sy1, baseZ + 0.04f);
             Vector3 mid = (p0 + p1) * 0.5f;
             Vector3 diff = p1 - p0;
             float len = diff.magnitude;
@@ -5543,7 +5676,7 @@ public class TVMinigameController : MonoBehaviour
             Transform seg = hillLineSegments[i];
             seg.position = mid;
             seg.rotation = Quaternion.Euler(0f, 0f, ang);
-            seg.localScale = new Vector3(0.13f, len + 0.04f, 1f);
+            seg.localScale = new Vector3(0.13f * hillWorldZoomScale, len + 0.04f, 1f);
         }
 
         float strutSpacing = stepX * 2f;
@@ -5552,17 +5685,16 @@ public class TVMinigameController : MonoBehaviour
         {
             Transform strut = hillStrutSegments[s];
             float stx = snappedStrutStartTrackX + s * strutSpacing;
-            float ssx = stx + trackToWorldOffsetX;
-            float sy = SampleHillTerrainY(stx);
+            float ssx = carScreenX + (stx - hillCarTrackX) * hillWorldZoomScale;
+            float sy = baseLineY + (SampleHillTerrainY(stx) - baseLineY) * hillWorldZoomScale;
             float bottomY = camMinY - 0.5f;
             float h = Mathf.Max(0.1f, sy - bottomY);
             strut.position = new Vector3(ssx, bottomY + h * 0.5f, baseZ + 0.08f);
             strut.rotation = Quaternion.identity;
-            strut.localScale = new Vector3(0.05f, h, 1f);
+            strut.localScale = new Vector3(0.05f * hillWorldZoomScale, h, 1f);
         }
 
         // Update & collect hill coins
-        Vector3 carWorldCenter = new Vector3(carScreenX, hillCarWorldY, baseZ - 0.08f);
         for (int i = hillCoins.Count - 1; i >= 0; i--)
         {
             HillPickupCoin coin = hillCoins[i];
@@ -5572,24 +5704,27 @@ public class TVMinigameController : MonoBehaviour
                 continue;
             }
 
-            if (coin.worldTrackX < hillCarTrackX - 10f)
+            if (coin.worldTrackX < hillCarTrackX - 12f)
             {
                 Destroy(coin.obj);
                 hillCoins.RemoveAt(i);
                 continue;
             }
 
-            float coinScreenX = coin.worldTrackX + trackToWorldOffsetX;
-            float coinY = SampleHillTerrainY(coin.worldTrackX) + coin.heightOffset;
+            float coinScreenX = carScreenX + (coin.worldTrackX - hillCarTrackX) * hillWorldZoomScale;
+            float coinY = baseLineY + (SampleHillTerrainY(coin.worldTrackX) + coin.heightOffset - baseLineY) * hillWorldZoomScale;
             Vector3 coinPos = new Vector3(coinScreenX, coinY, baseZ - 0.05f);
             coin.obj.transform.position = coinPos;
+            coin.obj.transform.localScale = new Vector3(0.55f * hillWorldZoomScale, 0.07f * hillWorldZoomScale, 0.55f * hillWorldZoomScale);
             coin.spinAngle += dt * 200f;
             coin.obj.transform.localRotation = Quaternion.Euler(0f, coin.spinAngle, 0f) * Quaternion.Euler(90f, 0f, 0f);
 
-            if (Vector2.Distance(new Vector2(carWorldCenter.x, carWorldCenter.y), new Vector2(coinPos.x, coinPos.y)) <= 1.05f)
+            if (Vector2.Distance(new Vector2(carWorldCenter.x, carWorldCenter.y), new Vector2(coinPos.x, coinPos.y)) <= 1.05f * hillWorldZoomScale)
             {
-                mainBouncer.AwardMinigameCornerReward(
-                    1,
+                hillCoinStreak++;
+                float hillCoinMult = 1.0f + (hillCoinStreak - 1) * 0.15f;
+                mainBouncer.AwardMinigameScaledCornerReward(
+                    hillCoinMult,
                     coinPos,
                     new Color(1f, 0.88f, 0.18f, 1f),
                     new Color(0.35f, 1f, 0.52f, 1f));
@@ -5600,36 +5735,128 @@ public class TVMinigameController : MonoBehaviour
             }
         }
 
-        // Update Car Visuals & Circularly-Distorted DVD Logo Wheels (spinning cleanly in place around their geometric center!)
+        // Update Car Visuals & Circularly-Distorted DVD Logo Wheels (locked rigidly to chassis and spinning cleanly on axle!)
         Quaternion carRot = Quaternion.Euler(0f, 0f, hillCarAngleDeg);
+        Quaternion fullCarRot = mainBouncer.transform.localRotation * carRot;
+
+        hillCarPiece.overallScaleFactor = 0.54f * hillWorldZoomScale;
+        hillCarPiece.rootObj.transform.localRotation = fullCarRot;
         hillCarPiece.SetCenterPosition(carWorldCenter);
-        hillCarPiece.rootObj.transform.localRotation = mainBouncer.transform.localRotation * carRot;
         hillCarPiece.UpdateVisuals(dt);
 
         hillWheelSpinAngle -= hillCarVelX * dt * 250f;
-        Quaternion wheelSpinRot = mainBouncer.transform.localRotation * Quaternion.Euler(0f, 0f, hillWheelSpinAngle);
-        Vector3 rightDir = carRot * Vector3.right;
-        Vector3 upDir = carRot * Vector3.up;
+        Quaternion wheelSpinRot = fullCarRot * Quaternion.Euler(0f, 0f, hillWheelSpinAngle);
+        Vector3 rightDir = fullCarRot * Vector3.right;
+        Vector3 upDir = fullCarRot * Vector3.up;
+
+        float renderHalfWheelBase = halfWheelBase * hillWorldZoomScale;
+        float renderWheelOffsetY = wheelOffsetY * hillWorldZoomScale;
+
+        // Chassis wheel mount anchors
+        Vector3 fwMount = carWorldCenter + rightDir * renderHalfWheelBase - upDir * renderWheelOffsetY;
+        Vector3 rwMount = carWorldCenter - rightDir * renderHalfWheelBase - upDir * renderWheelOffsetY;
+
+        // Dynamic suspension travel with ample visible movement, strictly bounded around chassis anchors
+        float maxSuspTravel = 0.32f * hillWorldZoomScale;
+        float fwTargetOffset = 0f;
+        float rwTargetOffset = 0f;
+
+        if (hillCarGrounded)
+        {
+            // Dynamic terrain slope curvature reaction
+            float carSlope = SampleHillTerrainSlope(hillCarTrackX);
+            float fwSlope = SampleHillTerrainSlope(frontWheelTrackX);
+            float rwSlope = SampleHillTerrainSlope(rearWheelTrackX);
+            float speedFactor = Mathf.Clamp(Mathf.Abs(hillCarVelX) * 0.16f, 0.4f, 2.0f);
+            fwTargetOffset += (fwSlope - carSlope) * (0.20f * speedFactor * hillWorldZoomScale);
+            rwTargetOffset += (carSlope - rwSlope) * (0.20f * speedFactor * hillWorldZoomScale);
+
+            // Speed-based road chatter and bump vibration (clearly visible bounce!)
+            float speedChirp = Mathf.Clamp01(Mathf.Abs(hillCarVelX) / 1.5f);
+            float roadBumpF = (Mathf.Sin(frontWheelTrackX * 6.2f) * 0.11f + Mathf.Sin(frontWheelTrackX * 12.5f) * 0.06f) * speedChirp * hillWorldZoomScale;
+            float roadBumpR = (Mathf.Sin(rearWheelTrackX * 6.2f) * 0.11f + Mathf.Sin(rearWheelTrackX * 12.5f) * 0.06f) * speedChirp * hillWorldZoomScale;
+            fwTargetOffset += roadBumpF;
+            rwTargetOffset += roadBumpR;
+
+            // Pronounced dynamic squat on acceleration & dive on braking
+            if (gasHeld)
+            {
+                rwTargetOffset += 0.19f * hillWorldZoomScale;
+                fwTargetOffset -= 0.17f * hillWorldZoomScale;
+            }
+            if (brakeHeld)
+            {
+                fwTargetOffset += 0.19f * hillWorldZoomScale;
+                rwTargetOffset -= 0.17f * hillWorldZoomScale;
+            }
+        }
+        else
+        {
+            // In the air, wheels extend visibly downwards under gravity (droop)
+            fwTargetOffset = -maxSuspTravel * 0.70f;
+            rwTargetOffset = -maxSuspTravel * 0.70f;
+
+            if (gasHeld)
+            {
+                rwTargetOffset += 0.09f * hillWorldZoomScale;
+                fwTargetOffset -= 0.09f * hillWorldZoomScale;
+            }
+            if (brakeHeld)
+            {
+                fwTargetOffset += 0.09f * hillWorldZoomScale;
+                rwTargetOffset -= 0.09f * hillWorldZoomScale;
+            }
+        }
+
+        // Strictly clamp targets within travel bounds
+        fwTargetOffset = Mathf.Clamp(fwTargetOffset, -maxSuspTravel, maxSuspTravel);
+        rwTargetOffset = Mathf.Clamp(rwTargetOffset, -maxSuspTravel, maxSuspTravel);
+
+        // Fluid 2nd-order damped spring-mass suspension simulation (lively & responsive!)
+        const float kSusp = 110f;
+        const float cSusp = 8.5f;
+
+        float fForce = -kSusp * (hillFrontWheelSuspensionOffset - fwTargetOffset) - cSusp * hillFrontWheelSuspVel;
+        hillFrontWheelSuspVel += fForce * dt;
+        hillFrontWheelSuspensionOffset += hillFrontWheelSuspVel * dt;
+        hillFrontWheelSuspensionOffset = Mathf.Clamp(hillFrontWheelSuspensionOffset, -maxSuspTravel, maxSuspTravel);
+
+        float rForce = -kSusp * (hillRearWheelSuspensionOffset - rwTargetOffset) - cSusp * hillRearWheelSuspVel;
+        hillRearWheelSuspVel += rForce * dt;
+        hillRearWheelSuspensionOffset += hillRearWheelSuspVel * dt;
+        hillRearWheelSuspensionOffset = Mathf.Clamp(hillRearWheelSuspensionOffset, -maxSuspTravel, maxSuspTravel);
+
+        Vector3 fwDisp = Vector3.ClampMagnitude(upDir * hillFrontWheelSuspensionOffset, maxSuspTravel);
+        Vector3 rwDisp = Vector3.ClampMagnitude(upDir * hillRearWheelSuspensionOffset, maxSuspTravel);
 
         if (hillFrontWheelPiece != null && hillFrontWheelPiece.rootObj != null)
         {
-            Vector3 fwPos = carWorldCenter + rightDir * halfWheelBase - upDir * 0.28f + new Vector3(0f, 0f, -0.05f);
-            hillFrontWheelPiece.SetCenterPosition(fwPos);
+            Vector3 fwPos = fwMount + fwDisp + new Vector3(0f, 0f, -0.05f);
+            hillFrontWheelPiece.overallScaleFactor = 0.26f * hillWorldZoomScale;
             hillFrontWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
+            hillFrontWheelPiece.SetCenterPosition(fwPos);
             hillFrontWheelPiece.UpdateVisuals(dt);
         }
         if (hillRearWheelPiece != null && hillRearWheelPiece.rootObj != null)
         {
-            Vector3 rwPos = carWorldCenter - rightDir * halfWheelBase - upDir * 0.28f + new Vector3(0f, 0f, -0.05f);
-            hillRearWheelPiece.SetCenterPosition(rwPos);
+            Vector3 rwPos = rwMount + rwDisp + new Vector3(0f, 0f, -0.05f);
+            hillRearWheelPiece.overallScaleFactor = 0.26f * hillWorldZoomScale;
             hillRearWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
+            hillRearWheelPiece.SetCenterPosition(rwPos);
             hillRearWheelPiece.UpdateVisuals(dt);
         }
     }
 
-    private void TriggerHillRoofCrash(float camMinX, float camMaxX, float baseZ, float terrainAngleDeg)
+    private void TriggerHillRoofCrash(float camMinX, float camMaxX, float camMinY, float camMaxY, float baseZ, float terrainAngleDeg)
     {
-        Vector3 crashWorldPos = new Vector3(Mathf.Lerp(camMinX, camMaxX, 0.32f), hillCarWorldY, baseZ);
+        if (hillRoofCrashCooldown > 0f) return;
+        hillRoofCrashCooldown = 1.0f;
+        hillCoinStreak = 0;
+
+        float baseLineY = Mathf.Lerp(camMinY, camMaxY, 0.30f);
+        float carScreenX = Mathf.Lerp(camMinX, camMaxX, 0.32f);
+        float carScreenY = baseLineY + (hillCarWorldY - baseLineY) * hillWorldZoomScale;
+        Vector3 crashWorldPos = new Vector3(carScreenX, carScreenY, baseZ);
         mainBouncer.ApplyMinigameCornerPenalty(3, crashWorldPos);
         mainBouncer.TriggerHitParticlesWithColors(
             crashWorldPos,
@@ -5637,12 +5864,15 @@ public class TVMinigameController : MonoBehaviour
             new Color(1f, 0.85f, 0.2f, 1f));
         TriggerScreenRedFlash(screenRedFlashDuration, screenRedFlashMaxAlpha);
         hillCarPiece.TriggerSquash(Vector2.up, 0.38f, 0.48f);
-        if (hillFrontWheelPiece != null) hillFrontWheelPiece.TriggerPop(0.25f, 0.30f);
-        if (hillRearWheelPiece != null) hillRearWheelPiece.TriggerPop(0.25f, 0.30f);
         PlaySound(damageHitSound, 0.78f);
-        hillCarVelX *= 0.20f;
+
+        // Flips back upright immediately after taking 1 tick of damage & money lost!
         hillCarAngleDeg = terrainAngleDeg;
         hillCarAngularVelDeg = 0f;
+        hillCarGrounded = true;
+        hillCarWorldY = SampleHillTerrainY(hillCarTrackX) + 0.48f;
+        hillCarVelX *= 0.35f;
+        hillCarPiece.TriggerPop(0.35f, 0.30f);
     }
 
     private void SpawnHillCoinCluster(float startTrackX)
@@ -5711,6 +5941,7 @@ public class TVMinigameController : MonoBehaviour
     private GameObject colorShooterRoot;
     private readonly List<ColorShooterNode> floatingPileNodes = new List<ColorShooterNode>();
     private readonly List<Transform> shooterAimDots = new List<Transform>();
+    private Material shooterAimDotMaterial;
     private DeformableLogoPiece shooterLoadedPiece;
     private int shooterLoadedColorIndex = 0;
     private bool isDraggingSlingshot = false;
@@ -5802,7 +6033,7 @@ public class TVMinigameController : MonoBehaviour
         slingshotAnchorPos = new Vector2((camMinX + camMaxX) * 0.5f, camMinY + (camMaxY - camMinY) * 0.18f);
 
         // Create aim line dots
-        Material dotMat = CreateUnlitColorMaterial(new Color(1f, 1f, 1f, 0.85f), true);
+        shooterAimDotMaterial = CreateUnlitColorMaterial(new Color(1f, 1f, 1f, 0.85f), true);
         for (int i = 0; i < 14; i++)
         {
             GameObject dot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -5812,7 +6043,7 @@ public class TVMinigameController : MonoBehaviour
             Collider col = dot.GetComponent<Collider>();
             if (col != null) Destroy(col);
             Renderer r = dot.GetComponent<Renderer>();
-            if (r != null) r.sharedMaterial = dotMat;
+            if (r != null) r.sharedMaterial = shooterAimDotMaterial;
             dot.SetActive(false);
             shooterAimDots.Add(dot.transform);
         }
@@ -5860,6 +6091,12 @@ public class TVMinigameController : MonoBehaviour
             shooterLoadedPiece = null;
         }
 
+        if (shooterAimDotMaterial != null)
+        {
+            Destroy(shooterAimDotMaterial);
+            shooterAimDotMaterial = null;
+        }
+
         if (colorShooterRoot != null)
         {
             Destroy(colorShooterRoot);
@@ -5888,6 +6125,16 @@ public class TVMinigameController : MonoBehaviour
 
         Color pCol = ColorShooterPalette[shooterLoadedColorIndex, 0];
         Color sCol = ColorShooterPalette[shooterLoadedColorIndex, 1];
+
+        // Tint shooting direction indicator aim dots to match the loaded DVD logo color!
+        if (shooterAimDotMaterial != null)
+        {
+            Color aimCol = pCol;
+            aimCol.a = 0.85f;
+            if (shooterAimDotMaterial.HasProperty("_BaseColor")) shooterAimDotMaterial.SetColor("_BaseColor", aimCol);
+            if (shooterAimDotMaterial.HasProperty("_Color")) shooterAimDotMaterial.SetColor("_Color", aimCol);
+        }
+
         shooterLoadedPiece = CreateDeformableLogoClone("SlingshotLoaded_DVD", ColorShooterLogoScale, pCol, sCol);
         if (shooterLoadedPiece != null)
         {
@@ -5994,8 +6241,15 @@ public class TVMinigameController : MonoBehaviour
             shooterLoadedPiece.shapeHeightScale = 1f - power01 * 0.14f;
             shooterLoadedPiece.UpdateVisuals(dt);
 
-            // Update Aim Line Dots (length and spacing reflect launch strength!)
+            // Update Aim Line Dots (length and spacing reflect launch strength, color matches loaded DVD logo!)
             float previewLength = Mathf.Lerp(1.2f, 6.2f, power01);
+            if (shooterAimDotMaterial != null)
+            {
+                Color aimCol = ColorShooterPalette[shooterLoadedColorIndex, 0];
+                aimCol.a = 0.85f;
+                if (shooterAimDotMaterial.HasProperty("_BaseColor")) shooterAimDotMaterial.SetColor("_BaseColor", aimCol);
+                if (shooterAimDotMaterial.HasProperty("_Color")) shooterAimDotMaterial.SetColor("_Color", aimCol);
+            }
             for (int i = 0; i < shooterAimDots.Count; i++)
             {
                 Transform dot = shooterAimDots[i];

@@ -2042,7 +2042,7 @@ public class DVDLogoBouncer : MonoBehaviour
         AwardMinigameScaledCornerReward((float)Mathf.Max(1, cornerMultiplier), orthoPos, particleColorA, particleColorB, spawnParticles);
     }
 
-    public void AwardMinigameScaledCornerReward(float cornerMultiplier, Vector3 orthoPos, Color particleColorA, Color particleColorB, bool spawnParticles = true)
+    public void AwardMinigameScaledCornerReward(float cornerMultiplier, Vector3 orthoPos, Color particleColorA, Color particleColorB, bool spawnParticles = true, float tvBounceIntensity = 1.0f)
     {
         DVDLogoBouncer master = MainBouncer;
         decimal amount = System.Math.Round(GetCornerHitRewardAmount() * (decimal)Mathf.Max(0.1f, cornerMultiplier), 2);
@@ -2052,7 +2052,8 @@ public class DVDLogoBouncer : MonoBehaviour
         if (RunSaveManager.HasInstance) RunSaveManager.Instance.RecordMoneyEarned(amount);
         master.UpdateMoneyUI();
         master.SpawnPopup(amount, false);
-        master.TriggerVisualBounce(master.cornerBounceMultiplier);
+        float bounceScale = 1f + (master.cornerBounceMultiplier - 1f) * Mathf.Clamp01(tvBounceIntensity);
+        master.TriggerVisualBounce(bounceScale);
         if (spawnParticles)
         {
             TriggerHitParticlesWithColors(orthoPos, particleColorA, particleColorB);

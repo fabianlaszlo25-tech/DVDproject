@@ -46,7 +46,7 @@ namespace Story
     /// Operates in ScreenSpaceCamera render mode so CRT post-processing and fullscreen shaders apply directly.
     /// Uses the actual 3D TV DVD Logo mesh (dvd + Torus) with Suika-style bouncy physics and vertex squash-and-stretch on the reckoning scale.
     /// </summary>
-    public class StoryCardController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class StoryCardController : MonoBehaviour
     {
         public static StoryCardController Instance { get; private set; }
 
@@ -206,8 +206,12 @@ namespace Story
         private Image phoneVirtualCursorRingImg;
         private Sprite cachedDefaultCursorSprite;
         private Sprite cachedInteractCursorSprite;
-        private Vector2 cachedDefaultCursorSize = new Vector2(28f, 28f);
-        private Vector2 cachedInteractCursorSize = new Vector2(36f, 36f);
+        private Vector2 cachedDefaultCursorSize = new Vector2(20.7f, 31.8f);
+        private Vector2 cachedInteractCursorSize = new Vector2(51f, 51f);
+        private Vector2 internalPhoneCursorScreenPos = Vector2.zero;
+        private Vector2 currentFrameMouseDelta = Vector2.zero;
+        private float cardInputCooldown = 0f;
+        private bool isExitingConsequence = false;
 
         private int savedCameraCullingMask = -1;
         private CameraClearFlags savedCameraClearFlags;
@@ -388,6 +392,44 @@ namespace Story
                 if (Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
                 if (Cursor.visible) Cursor.visible = false;
             }
+            GridCrawlerController.InputFrozen = true;
+
+            // Read raw mouse delta directly every frame so swiping and the virtual cursor NEVER stall
+            Vector2 rawDelta = Vector2.zero;
+            try
+            {
+                if (Mouse.current != null) rawDelta = Mouse.current.delta.ReadValue();
+            }
+            catch { }
+            if (rawDelta.sqrMagnitude < 0.0001f)
+            {
+                try
+                {
+                    rawDelta = new Vector2(Input.GetAxisRaw("Mouse X") * 12f, Input.GetAxisRaw("Mouse Y") * 12f);
+                }
+                catch { }
+            }
+            float sens = GlobalAudioSettings.MouseSensitivity > 0.05f ? GlobalAudioSettings.MouseSensitivity : 1.0f;
+            currentFrameMouseDelta = rawDelta * sens;
+
+            if (internalPhoneCursorScreenPos.sqrMagnitude < 1f)
+            {
+                internalPhoneCursorScreenPos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            }
+            internalPhoneCursorScreenPos += currentFrameMouseDelta;
+            internalPhoneCursorScreenPos.x = Mathf.Clamp(internalPhoneCursorScreenPos.x, 0f, Screen.width);
+            internalPhoneCursorScreenPos.y = Mathf.Clamp(internalPhoneCursorScreenPos.y, 0f, Screen.height);
+
+            GridCrawlerController crawler = FindObjectOfType<GridCrawlerController>();
+            if (crawler != null)
+            {
+                crawler.virtualMousePos = internalPhoneCursorScreenPos;
+            }
+
+            if (cardInputCooldown > 0f)
+            {
+                cardInputCooldown -= Time.unscaledDeltaTime;
+            }
 
             UpdatePhoneVirtualCursor();
 
@@ -399,7 +441,13 @@ namespace Story
 
                 if (!isDragging)
                 {
-                    currentDragOffset = Vector2.Lerp(currentDragOffset, Vector2.zero, Time.unscaledDeltaTime * cardReturnSpeed);
+                    float cursorBias = 0f;
+                    if (Screen.width > 20)
+                    {
+                        cursorBias = Mathf.Clamp((internalPhoneCursorScreenPos.x - Screen.width * 0.5f) / (Screen.width * 0.35f), -1f, 1f);
+                    }
+                    Vector2 targetOffset = new Vector2(cursorBias * 95f, -Mathf.Abs(cursorBias) * 10f);
+                    currentDragOffset = Vector2.Lerp(currentDragOffset, targetOffset, Time.unscaledDeltaTime * 14f);
                     ApplyCardTransform(currentDragOffset);
                 }
 
@@ -417,8 +465,12 @@ namespace Story
 
                 if (!leftPressed && !rightPressed)
                 {
-                    leftPressed = Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
-                    rightPressed = Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
+                    try
+                    {
+                        leftPressed = Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
+                        rightPressed = Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
+                    }
+                    catch { }
                 }
 
                 if (leftPressed) ChooseLeft();
@@ -465,23 +517,35 @@ namespace Story
                     if (crawler.defaultCrosshairImg != null && crawler.defaultCrosshairImg.sprite != null)
                     {
                         cachedDefaultCursorSprite = crawler.defaultCrosshairImg.sprite;
-                        cachedDefaultCursorSize = crawler.defaultCrosshairImg.rectTransform.sizeDelta;
-                        if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(28f, 28f);
+                        RectTransform rt = crawler.defaultCrosshairImg.rectTransform;
+                        cachedDefaultCursorSize = new Vector2(
+                            rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                            rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                        if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(20.7f, 31.8f);
                     }
                     if (crawler.interactCrosshairImg != null && crawler.interactCrosshairImg.sprite != null)
                     {
                         cachedInteractCursorSprite = crawler.interactCrosshairImg.sprite;
-                        cachedInteractCursorSize = crawler.interactCrosshairImg.rectTransform.sizeDelta;
-                        if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(36f, 36f);
+                        RectTransform rt = crawler.interactCrosshairImg.rectTransform;
+                        cachedInteractCursorSize = new Vector2(
+                            rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                            rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                        if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(51f, 51f);
                     }
                 }
             }
 
             bool isHoveringButton = false;
-            if (consequencePanel != null && consequencePanel.activeSelf && continueButton != null && continueButton.gameObject.activeInHierarchy)
+            if (cardContainer != null && cardContainer.gameObject.activeSelf && !hasChosen)
             {
-                if (RectTransformUtility.RectangleContainsScreenPoint(continueButton.GetComponent<RectTransform>(), vPos, eventCam))
+                if (leftSwipeIndicator != null && RectTransformUtility.RectangleContainsScreenPoint(leftSwipeIndicator, vPos, eventCam))
                     isHoveringButton = true;
+                else if (rightSwipeIndicator != null && RectTransformUtility.RectangleContainsScreenPoint(rightSwipeIndicator, vPos, eventCam))
+                    isHoveringButton = true;
+            }
+            if (consequencePanel != null && consequencePanel.activeSelf)
+            {
+                isHoveringButton = true;
             }
             if (reckoningPanel != null && reckoningPanel.activeSelf && reckoningContinueButton != null && reckoningContinueButton.gameObject.activeInHierarchy && reckoningContinueButton.interactable)
             {
@@ -490,6 +554,7 @@ namespace Story
             }
 
             bool useInteractSprite = isDragging || isDraggingConsequence || isHoveringButton;
+            phoneVirtualCursorRect.pivot = useInteractSprite ? new Vector2(0.5f, 0.5f) : new Vector2(0.28f, 0.82f);
             if (phoneVirtualCursorRingImg != null)
             {
                 Sprite targetSprite = useInteractSprite && cachedInteractCursorSprite != null
@@ -498,13 +563,13 @@ namespace Story
                 if (targetSprite != null)
                 {
                     phoneVirtualCursorRingImg.sprite = targetSprite;
-                    phoneVirtualCursorRingImg.color = Color.white;
+                    phoneVirtualCursorRingImg.color = new Color(1f, 0.953f, 0.918f, 1f);
                     phoneVirtualCursorRect.sizeDelta = useInteractSprite ? cachedInteractCursorSize : cachedDefaultCursorSize;
                 }
                 else
                 {
                     phoneVirtualCursorRingImg.color = Color.white;
-                    phoneVirtualCursorRect.sizeDelta = new Vector2(20f, 20f);
+                    phoneVirtualCursorRect.sizeDelta = new Vector2(21.2f, 31.8f);
                 }
             }
             phoneVirtualCursorRect.localScale = Vector3.one;
@@ -517,45 +582,41 @@ namespace Story
             if (!leftSwipeIndicator.gameObject.activeSelf) leftSwipeIndicator.gameObject.SetActive(true);
             if (!rightSwipeIndicator.gameObject.activeSelf) rightSwipeIndicator.gameObject.SetActive(true);
 
-            if (isDragging)
+            // Normalized cursor horizontal bias (-1 on left, +1 on right)
+            float cursorBias = 0f;
+            if (Screen.width > 20)
             {
-                float leftRatio = Mathf.Clamp01(-currentDragOffset.x / swipeThreshold);
-                float rightRatio = Mathf.Clamp01(currentDragOffset.x / swipeThreshold);
-
-                if (leftRatio > 0.01f)
-                {
-                    if (leftSwipeGroup != null) leftSwipeGroup.alpha = Mathf.Lerp(0.55f, 1.0f, leftRatio);
-                    leftSwipeIndicator.localScale = Vector3.one * Mathf.Lerp(1.0f, 1.20f, leftRatio);
-
-                    if (rightSwipeGroup != null) rightSwipeGroup.alpha = Mathf.Lerp(0.55f, 0.18f, leftRatio);
-                    rightSwipeIndicator.localScale = Vector3.one * Mathf.Lerp(1.0f, 0.92f, leftRatio);
-                }
-                else if (rightRatio > 0.01f)
-                {
-                    if (rightSwipeGroup != null) rightSwipeGroup.alpha = Mathf.Lerp(0.55f, 1.0f, rightRatio);
-                    rightSwipeIndicator.localScale = Vector3.one * Mathf.Lerp(1.0f, 1.20f, rightRatio);
-
-                    if (leftSwipeGroup != null) leftSwipeGroup.alpha = Mathf.Lerp(0.55f, 0.18f, rightRatio);
-                    leftSwipeIndicator.localScale = Vector3.one * Mathf.Lerp(1.0f, 0.92f, rightRatio);
-                }
-                else
-                {
-                    float idleAlpha = Mathf.PingPong(Time.unscaledTime * 1.6f, 0.22f) + 0.52f;
-                    if (leftSwipeGroup != null) leftSwipeGroup.alpha = idleAlpha;
-                    if (rightSwipeGroup != null) rightSwipeGroup.alpha = idleAlpha;
-                    leftSwipeIndicator.localScale = Vector3.one;
-                    rightSwipeIndicator.localScale = Vector3.one;
-                }
+                cursorBias = Mathf.Clamp((internalPhoneCursorScreenPos.x - Screen.width * 0.5f) / (Screen.width * 0.35f), -1f, 1f);
             }
-            else
+
+            float dragBias = Mathf.Clamp(currentDragOffset.x / 40f, -1f, 1f);
+            float activeBias = isDragging ? dragBias : (cursorBias * 0.85f);
+
+            float leftStrength = Mathf.Clamp01(-activeBias);
+            float rightStrength = Mathf.Clamp01(activeBias);
+
+            // Continuous rich pulsing animations that run ALWAYS, independent of holding click!
+            float time = Time.unscaledTime;
+            float leftPulse = Mathf.Sin(time * 3.6f) * 0.06f;
+            float rightPulse = Mathf.Sin(time * 3.6f + 1.5f) * 0.06f;
+            float leftChevronWiggle = Mathf.PingPong(time * 2.8f, 12f) - 6f;
+            float rightChevronWiggle = -Mathf.PingPong(time * 2.8f, 12f) + 6f;
+
+            if (leftSwipeGroup != null)
             {
-                float idleAlpha = Mathf.PingPong(Time.unscaledTime * 1.6f, 0.22f) + 0.52f;
-                float idlePulse = 1.0f + Mathf.Sin(Time.unscaledTime * 3.2f) * 0.03f;
-                if (leftSwipeGroup != null) leftSwipeGroup.alpha = idleAlpha;
-                if (rightSwipeGroup != null) rightSwipeGroup.alpha = idleAlpha;
-                leftSwipeIndicator.localScale = Vector3.one * idlePulse;
-                rightSwipeIndicator.localScale = Vector3.one * idlePulse;
+                float baseLeftAlpha = 0.65f + leftPulse * 1.5f;
+                leftSwipeGroup.alpha = Mathf.Lerp(baseLeftAlpha, 1.0f, leftStrength);
             }
+            leftSwipeIndicator.localScale = Vector3.one * (1.0f + leftPulse + leftStrength * 0.22f);
+            leftSwipeIndicator.anchoredPosition = new Vector2(54f + (leftStrength > 0.05f ? -8f * leftStrength : leftChevronWiggle), 0f);
+
+            if (rightSwipeGroup != null)
+            {
+                float baseRightAlpha = 0.65f + rightPulse * 1.5f;
+                rightSwipeGroup.alpha = Mathf.Lerp(baseRightAlpha, 1.0f, rightStrength);
+            }
+            rightSwipeIndicator.localScale = Vector3.one * (1.0f + rightPulse + rightStrength * 0.22f);
+            rightSwipeIndicator.anchoredPosition = new Vector2(-54f + (rightStrength > 0.05f ? 8f * rightStrength : rightChevronWiggle), 0f);
         }
 
         private void HideSideIndicators()
@@ -566,98 +627,39 @@ namespace Story
 
         private void HandleDirectMouseSwipe()
         {
-            Vector2 mouseScreenPos = GetMouseScreenPosition();
+            if (cardInputCooldown > 0f) return;
 
-            bool leftDown = GetMouseButtonDown();
-            bool leftHeld = GetMouseButtonHeld();
-            bool leftUp = GetMouseButtonUp();
+            bool leftJustPressed = GetMouseButtonDown();
+            bool leftReleased = GetMouseButtonUp();
 
-            // Allow clicking and dragging ANYWHERE on the screen to swipe the call card effortlessly!
-            if (leftDown && !isDragging)
+            // Direct Click: clicking anywhere on left side chooses Left, right side chooses Right!
+            if (leftJustPressed || leftReleased)
             {
-                isDragging = true;
-                dragStartPos = mouseScreenPos;
-                PlayProceduralTick(1.1f);
-            }
-            else if (isDragging && leftHeld)
-            {
-                currentDragOffset = mouseScreenPos - dragStartPos;
-                ApplyCardTransform(currentDragOffset);
-            }
-            else if (isDragging && leftUp)
-            {
-                isDragging = false;
-                if (currentDragOffset.x < -swipeThreshold)
+                if (internalPhoneCursorScreenPos.x < Screen.width * 0.5f)
                 {
                     ChooseLeft();
                 }
-                else if (currentDragOffset.x > swipeThreshold)
+                else
                 {
                     ChooseRight();
                 }
+                return;
             }
         }
 
         private void HandleConsequenceSwipeAndInput()
         {
-            Vector2 mouseScreenPos = GetMouseScreenPosition();
-            Canvas canvas = GetComponent<Canvas>();
-            Camera eventCam = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null;
+            if (isExitingConsequence) return;
+            if (cardInputCooldown > 0f) return;
 
-            bool leftDown = GetMouseButtonDown();
-            bool leftHeld = GetMouseButtonHeld();
-            bool leftUp = GetMouseButtonUp();
+            bool leftJustPressed = GetMouseButtonDown();
+            bool leftReleased = GetMouseButtonUp();
 
-            RectTransform consRT = consequencePanel != null ? consequencePanel.GetComponent<RectTransform>() : null;
-
-            // Keep side indicators visible during consequence so the player clearly sees they can swipe left or right to hang up!
-            if (leftSwipeIndicator != null && rightSwipeIndicator != null)
+            // Click anywhere or release to dismiss and hang up!
+            if (leftJustPressed || leftReleased)
             {
-                if (!leftSwipeIndicator.gameObject.activeSelf) leftSwipeIndicator.gameObject.SetActive(true);
-                if (!rightSwipeIndicator.gameObject.activeSelf) rightSwipeIndicator.gameObject.SetActive(true);
-                float dragRatio = Mathf.Clamp01(Mathf.Abs(consequenceDragOffset.x) / (swipeThreshold * 0.7f));
-                float a = Mathf.Lerp(0.55f, 1.0f, dragRatio);
-                if (leftSwipeGroup != null) leftSwipeGroup.alpha = consequenceDragOffset.x <= 0f ? a : 0.35f;
-                if (rightSwipeGroup != null) rightSwipeGroup.alpha = consequenceDragOffset.x >= 0f ? a : 0.35f;
-                leftSwipeIndicator.localScale = Vector3.one * (consequenceDragOffset.x < -10f ? Mathf.Lerp(1f, 1.18f, dragRatio) : 1f);
-                rightSwipeIndicator.localScale = Vector3.one * (consequenceDragOffset.x > 10f ? Mathf.Lerp(1f, 1.18f, dragRatio) : 1f);
-            }
-
-            if (leftDown && !isDraggingConsequence)
-            {
-                if (continueButton != null && RectTransformUtility.RectangleContainsScreenPoint(continueButton.GetComponent<RectTransform>(), mouseScreenPos, eventCam))
-                {
-                    OnContinueClicked();
-                    return;
-                }
-
-                // Allow dragging anywhere on screen to swipe the consequence results card away!
-                isDraggingConsequence = true;
-                consequenceDragStart = mouseScreenPos;
-                PlayProceduralTick(1.05f);
-            }
-            else if (isDraggingConsequence && leftHeld)
-            {
-                consequenceDragOffset = mouseScreenPos - consequenceDragStart;
-                if (consRT != null)
-                {
-                    consRT.anchoredPosition = new Vector2(consequenceDragOffset.x, consequenceDragOffset.y * 0.22f);
-                    consRT.localRotation = Quaternion.Euler(0f, 0f, Mathf.Clamp(-consequenceDragOffset.x * 0.035f, -16f, 16f));
-                    float pullScale = 1.0f + Mathf.Clamp01(Mathf.Abs(consequenceDragOffset.x) / swipeThreshold) * 0.04f;
-                    consRT.localScale = new Vector3(pullScale, pullScale, 1f);
-                }
-            }
-            else if (isDraggingConsequence && leftUp)
-            {
-                isDraggingConsequence = false;
-                if (Mathf.Abs(consequenceDragOffset.x) > swipeThreshold * 0.65f)
-                {
-                    StartCoroutine(AnimateConsequenceExit(consequenceDragOffset.x > 0));
-                }
-                else if (consRT != null)
-                {
-                    StartCoroutine(ReturnConsequenceToCenter(consRT));
-                }
+                StartCoroutine(AnimateConsequenceExit(true));
+                return;
             }
 
             bool dismissKey = false;
@@ -679,22 +681,33 @@ namespace Story
 
             if (!dismissKey)
             {
-                dismissKey = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) ||
-                             Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape);
+                try
+                {
+                    dismissKey = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) ||
+                                 Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) ||
+                                 Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
+                                 Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D);
+                }
+                catch { }
             }
 
             if (dismissKey)
             {
-                OnContinueClicked();
+                StartCoroutine(AnimateConsequenceExit(true));
             }
         }
 
         private IEnumerator AnimateConsequenceExit(bool toRight)
         {
+            if (isExitingConsequence) yield break;
+            isExitingConsequence = true;
+
             RectTransform consRT = consequencePanel != null ? consequencePanel.GetComponent<RectTransform>() : null;
             if (consRT == null)
             {
-                OnContinueClicked();
+                isExitingConsequence = false;
+                isExitingConsequence = false;
+            OnContinueClicked();
                 yield break;
             }
 
@@ -716,6 +729,7 @@ namespace Story
                 yield return null;
             }
 
+            isExitingConsequence = false;
             OnContinueClicked();
         }
 
@@ -761,7 +775,11 @@ namespace Story
 
                 if (!fastForward)
                 {
-                    fastForward = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
+                    try
+                    {
+                        fastForward = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
+                    }
+                    catch { }
                 }
 
                 if (fastForward)
@@ -776,9 +794,11 @@ namespace Story
             Camera eventCam = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null;
 
             bool leftDown = GetMouseButtonDown();
-            if (leftDown && reckoningContinueButton != null)
+            bool leftUp = GetMouseButtonUp();
+            if ((leftDown || leftUp) && reckoningContinueButton != null)
             {
-                if (RectTransformUtility.RectangleContainsScreenPoint(reckoningContinueButton.GetComponent<RectTransform>(), mouseScreenPos, eventCam))
+                if (RectTransformUtility.RectangleContainsScreenPoint(reckoningContinueButton.GetComponent<RectTransform>(), mouseScreenPos, eventCam)
+                    || mouseScreenPos.y < Screen.height * 0.25f)
                 {
                     OnReckoningContinueClicked();
                     return;
@@ -799,7 +819,11 @@ namespace Story
 
             if (!dismissKey)
             {
-                dismissKey = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E);
+                try
+                {
+                    dismissKey = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E);
+                }
+                catch { }
             }
 
             if (dismissKey)
@@ -810,6 +834,10 @@ namespace Story
 
         private Vector2 GetMouseScreenPosition()
         {
+            if (internalPhoneCursorScreenPos.sqrMagnitude > 1f)
+            {
+                return internalPhoneCursorScreenPos;
+            }
             return GridCrawlerController.GetActiveVirtualScreenPos();
         }
 
@@ -817,83 +845,45 @@ namespace Story
         {
             try
             {
-                if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) return true;
+                if (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)) return true;
             }
             catch { }
-            return Input.GetMouseButtonDown(0);
+            try
+            {
+                return Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1);
+            }
+            catch { }
+            return false;
         }
 
         private bool GetMouseButtonHeld()
         {
             try
             {
-                if (Mouse.current != null && Mouse.current.leftButton.isPressed) return true;
+                if (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed)) return true;
             }
             catch { }
-            return Input.GetMouseButton(0);
+            try
+            {
+                return Input.GetMouseButton(0) || Input.GetMouseButton(1);
+            }
+            catch { }
+            return false;
         }
 
         private bool GetMouseButtonUp()
         {
             try
             {
-                if (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame) return true;
+                if (Mouse.current != null && (Mouse.current.leftButton.wasReleasedThisFrame || Mouse.current.rightButton.wasReleasedThisFrame)) return true;
             }
             catch { }
-            return Input.GetMouseButtonUp(0);
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            if (!isCardActive || hasChosen || cardContainer == null || !cardContainer.gameObject.activeSelf) return;
-            isDragging = true;
-            dragStartPos = GetMouseScreenPosition();
-        }
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            if (!isCardActive || hasChosen || cardContainer == null || !cardContainer.gameObject.activeSelf) return;
-            if (isDragging)
+            try
             {
-                isDragging = false;
-                if (currentDragOffset.x < -swipeThreshold)
-                {
-                    ChooseLeft();
-                }
-                else if (currentDragOffset.x > swipeThreshold)
-                {
-                    ChooseRight();
-                }
+                return Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1);
             }
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            if (!isCardActive || hasChosen || cardContainer == null || !cardContainer.gameObject.activeSelf) return;
-            isDragging = true;
-            dragStartPos = GetMouseScreenPosition();
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (!isCardActive || hasChosen || cardContainer == null || !cardContainer.gameObject.activeSelf) return;
-            currentDragOffset = GetMouseScreenPosition() - dragStartPos;
-            ApplyCardTransform(currentDragOffset);
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            if (!isCardActive || hasChosen || cardContainer == null || !cardContainer.gameObject.activeSelf) return;
-            isDragging = false;
-
-            if (currentDragOffset.x < -swipeThreshold)
-            {
-                ChooseLeft();
-            }
-            else if (currentDragOffset.x > swipeThreshold)
-            {
-                ChooseRight();
-            }
+            catch { }
+            return false;
         }
 
         private void ApplyCardTransform(Vector2 offset)
@@ -968,6 +958,10 @@ namespace Story
             isDraggingConsequence = false;
             currentDragOffset = Vector2.zero;
             consequenceDragOffset = Vector2.zero;
+            isExitingConsequence = false;
+            internalPhoneCursorScreenPos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            cardInputCooldown = 0.15f;
+            GridCrawlerController.InputFrozen = true;
 
             // Always use normal gameplay CRT (never darker pause CRT)
             CrtPostProcessManager.SetGameplayCrtActive();
@@ -1826,20 +1820,16 @@ namespace Story
 
             if (leftSwipeText != null)
             {
-                leftSwipeText.text = $"<b>◀ {lLabel}</b>\n<size=15><color=#ffb8b8>{lPrompt}</color></size>\n<size=13><color=#ff7777>[ DRAG LEFT ]</color></size>";
+                leftSwipeText.text = $"<size=30><b>◀ ◀</b></size>\n<size=22><b>{lLabel}</b></size>\n<size=15><color=#ffb8b8>{lPrompt}</color></size>";
             }
             if (rightSwipeText != null)
             {
-                rightSwipeText.text = $"<b>{rLabel} ▶</b>\n<size=15><color=#b8ffcc>{rPrompt}</color></size>\n<size=13><color=#66ff99>[ DRAG RIGHT ]</color></size>";
+                rightSwipeText.text = $"<size=30><b>▶ ▶</b></size>\n<size=22><b>{rLabel}</b></size>\n<size=15><color=#b8ffcc>{rPrompt}</color></size>";
             }
 
-            if (leftBottomPillText != null)
+            if (swipeHintFooterText != null)
             {
-                leftBottomPillText.text = $"<b>◀ {lLabel}</b>\n<size=13>{lPrompt}</size>";
-            }
-            if (rightBottomPillText != null)
-            {
-                rightBottomPillText.text = $"<b>{rLabel} ▶</b>\n<size=13>{rPrompt}</size>";
+                swipeHintFooterText.text = $"◀ SWIPE LEFT: {lLabel}    •    SWIPE RIGHT: {rLabel} ▶";
             }
 
             if (portraitImage != null)
@@ -1911,6 +1901,8 @@ namespace Story
         private void DisplayConsequence(bool isLeft)
         {
             if (currentCard == null) return;
+            isExitingConsequence = false;
+            cardInputCooldown = 0.12f;
 
             string outcomeText = isLeft ? currentCard.leftOutcomeText : currentCard.rightOutcomeText;
             decimal moneyDelta = (decimal)(isLeft ? currentCard.leftMoneyDelta : currentCard.rightMoneyDelta);
@@ -1946,17 +1938,8 @@ namespace Story
                 else if (tiredDelta < 0f) BarManager.Instance.ReduceTiredness(Mathf.Abs(tiredDelta));
             }
 
-            // Update side swipe indicators so the player sees they can swipe left or right to dismiss the consequence results!
-            if (leftSwipeText != null)
-            {
-                leftSwipeText.text = "<b>◀ HANG UP</b>\n<size=14><color=#ffaaaa>[ SWIPE LEFT ]</color></size>";
-            }
-            if (rightSwipeText != null)
-            {
-                rightSwipeText.text = "<b>HANG UP ▶</b>\n<size=14><color=#aaffaa>[ SWIPE RIGHT ]</color></size>";
-            }
-            if (leftSwipeIndicator != null) leftSwipeIndicator.gameObject.SetActive(true);
-            if (rightSwipeIndicator != null) rightSwipeIndicator.gameObject.SetActive(true);
+            // Hide answer/reject side indicators on the consequence screen so only the consequence results are shown!
+            HideSideIndicators();
 
             if (consequencePanel != null)
             {
@@ -2125,6 +2108,7 @@ namespace Story
             isDraggingConsequence = false;
             currentDragOffset = Vector2.zero;
             consequenceDragOffset = Vector2.zero;
+            isExitingConsequence = false;
 
             ClearScaleDvdPieces();
             HideSideIndicators();
@@ -2424,10 +2408,13 @@ namespace Story
             leftSwipeIndicator.localScale = Vector3.one;
             Image leftImg = leftSwipeIndicator.GetComponent<Image>() ?? leftSwipeIndicator.gameObject.AddComponent<Image>();
             leftImg.color = new Color(0.28f, 0.07f, 0.11f, 0.94f);
-            leftImg.raycastTarget = false;
+            leftImg.raycastTarget = true;
             leftSwipeGroup = leftSwipeIndicator.GetComponent<CanvasGroup>() ?? leftSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
-            leftSwipeGroup.blocksRaycasts = false;
-            leftSwipeGroup.interactable = false;
+            leftSwipeGroup.blocksRaycasts = true;
+            leftSwipeGroup.interactable = true;
+            Button leftBtn = leftSwipeIndicator.GetComponent<Button>() ?? leftSwipeIndicator.gameObject.AddComponent<Button>();
+            leftBtn.onClick.RemoveAllListeners();
+            leftBtn.onClick.AddListener(() => ChooseLeft());
             leftSwipeText = CreateTMPText("Label", leftSwipeIndicator, Vector2.zero, new Vector2(256f, 160f), 22f, TextAlignmentOptions.Center, new Color(1f, 0.48f, 0.48f));
             leftSwipeText.rectTransform.sizeDelta = new Vector2(256f, 160f);
             leftSwipeText.rectTransform.anchoredPosition = Vector2.zero;
@@ -2451,10 +2438,13 @@ namespace Story
             rightSwipeIndicator.localScale = Vector3.one;
             Image rightImg = rightSwipeIndicator.GetComponent<Image>() ?? rightSwipeIndicator.gameObject.AddComponent<Image>();
             rightImg.color = new Color(0.07f, 0.28f, 0.14f, 0.94f);
-            rightImg.raycastTarget = false;
+            rightImg.raycastTarget = true;
             rightSwipeGroup = rightSwipeIndicator.GetComponent<CanvasGroup>() ?? rightSwipeIndicator.gameObject.AddComponent<CanvasGroup>();
-            rightSwipeGroup.blocksRaycasts = false;
-            rightSwipeGroup.interactable = false;
+            rightSwipeGroup.blocksRaycasts = true;
+            rightSwipeGroup.interactable = true;
+            Button rightBtn = rightSwipeIndicator.GetComponent<Button>() ?? rightSwipeIndicator.gameObject.AddComponent<Button>();
+            rightBtn.onClick.RemoveAllListeners();
+            rightBtn.onClick.AddListener(() => ChooseRight());
             rightSwipeText = CreateTMPText("Label", rightSwipeIndicator, Vector2.zero, new Vector2(256f, 160f), 22f, TextAlignmentOptions.Center, new Color(0.48f, 1f, 0.58f));
             rightSwipeText.rectTransform.sizeDelta = new Vector2(256f, 160f);
             rightSwipeText.rectTransform.anchoredPosition = Vector2.zero;
@@ -2479,11 +2469,11 @@ namespace Story
             cardContainer.localScale = Vector3.one;
             Image cardBg = cardContainer.GetComponent<Image>() ?? cardContainer.gameObject.AddComponent<Image>();
             cardBg.color = new Color(0.10f, 0.15f, 0.23f, 0.98f);
-            cardBg.raycastTarget = true;
+            cardBg.raycastTarget = false;
 
             cardCanvasGroup = cardContainer.GetComponent<CanvasGroup>() ?? cardContainer.gameObject.AddComponent<CanvasGroup>();
-            cardCanvasGroup.blocksRaycasts = true;
-            cardCanvasGroup.interactable = true;
+            cardCanvasGroup.blocksRaycasts = false;
+            cardCanvasGroup.interactable = false;
 
             // Outer Glowing Frame on CardContainer
             Transform glowBorderT = cardContainer.Find("CardOuterGlowBorder");
@@ -2590,7 +2580,7 @@ namespace Story
             narrativeBodyText.rectTransform.anchoredPosition = new Vector2(0f, -88f);
             narrativeBodyText.rectTransform.sizeDelta = new Vector2(510f, 185f);
 
-            // Bottom Dual-Choice Swipe Preview Pills on CardContainer
+            // Bottom Dual-Choice Swipe Guidance on CardContainer (SWIPE ONLY - No Buttons!)
             Transform bottomBarT = cardContainer.Find("BottomSwipePreviewBar");
             if (bottomBarT == null)
             {
@@ -2602,53 +2592,24 @@ namespace Story
             bBarRT.anchorMin = new Vector2(0f, 0f);
             bBarRT.anchorMax = new Vector2(1f, 0f);
             bBarRT.pivot = new Vector2(0.5f, 0f);
-            bBarRT.sizeDelta = new Vector2(0f, 118f);
-            bBarRT.anchoredPosition = new Vector2(0f, 12f);
+            bBarRT.sizeDelta = new Vector2(0f, 75f);
+            bBarRT.anchoredPosition = new Vector2(0f, 16f);
 
             Transform lPillT = bottomBarT.Find("LeftPreviewPill");
-            if (lPillT == null)
-            {
-                GameObject lpObj = new GameObject("LeftPreviewPill", typeof(RectTransform), typeof(Image));
-                lpObj.transform.SetParent(bottomBarT, false);
-                lPillT = lpObj.transform;
-            }
-            leftBottomPillRect = lPillT.GetComponent<RectTransform>();
-            leftBottomPillRect.anchorMin = new Vector2(0f, 0.5f);
-            leftBottomPillRect.anchorMax = new Vector2(0f, 0.5f);
-            leftBottomPillRect.pivot = new Vector2(0f, 0.5f);
-            leftBottomPillRect.sizeDelta = new Vector2(262f, 74f);
-            leftBottomPillRect.anchoredPosition = new Vector2(22f, 14f);
-            leftBottomPillImg = lPillT.GetComponent<Image>() ?? lPillT.gameObject.AddComponent<Image>();
-            leftBottomPillImg.color = new Color(0.24f, 0.08f, 0.12f, 0.94f);
-            leftBottomPillImg.raycastTarget = false;
-            leftBottomPillText = CreateTMPText("Label", leftBottomPillRect, Vector2.zero, new Vector2(246f, 66f), 17f, TextAlignmentOptions.Center, new Color(1f, 0.58f, 0.58f));
-            leftBottomPillText.rectTransform.sizeDelta = new Vector2(246f, 66f);
-            leftBottomPillText.rectTransform.anchoredPosition = Vector2.zero;
-
+            if (lPillT != null) Destroy(lPillT.gameObject);
             Transform rPillT = bottomBarT.Find("RightPreviewPill");
-            if (rPillT == null)
-            {
-                GameObject rpObj = new GameObject("RightPreviewPill", typeof(RectTransform), typeof(Image));
-                rpObj.transform.SetParent(bottomBarT, false);
-                rPillT = rpObj.transform;
-            }
-            rightBottomPillRect = rPillT.GetComponent<RectTransform>();
-            rightBottomPillRect.anchorMin = new Vector2(1f, 0.5f);
-            rightBottomPillRect.anchorMax = new Vector2(1f, 0.5f);
-            rightBottomPillRect.pivot = new Vector2(1f, 0.5f);
-            rightBottomPillRect.sizeDelta = new Vector2(262f, 74f);
-            rightBottomPillRect.anchoredPosition = new Vector2(-22f, 14f);
-            rightBottomPillImg = rPillT.GetComponent<Image>() ?? rPillT.gameObject.AddComponent<Image>();
-            rightBottomPillImg.color = new Color(0.08f, 0.24f, 0.14f, 0.94f);
-            rightBottomPillImg.raycastTarget = false;
-            rightBottomPillText = CreateTMPText("Label", rightBottomPillRect, Vector2.zero, new Vector2(246f, 66f), 17f, TextAlignmentOptions.Center, new Color(0.58f, 1f, 0.68f));
-            rightBottomPillText.rectTransform.sizeDelta = new Vector2(246f, 66f);
-            rightBottomPillText.rectTransform.anchoredPosition = Vector2.zero;
+            if (rPillT != null) Destroy(rPillT.gameObject);
+            leftBottomPillRect = null;
+            leftBottomPillImg = null;
+            leftBottomPillText = null;
+            rightBottomPillRect = null;
+            rightBottomPillImg = null;
+            rightBottomPillText = null;
 
-            swipeHintFooterText = CreateTMPText("SwipeHintFooter", bottomBarT, new Vector2(0f, -38f), new Vector2(540f, 24f), 14f, TextAlignmentOptions.Center, new Color(0.65f, 0.86f, 1.0f, 0.85f));
-            swipeHintFooterText.rectTransform.anchoredPosition = new Vector2(0f, -38f);
-            swipeHintFooterText.rectTransform.sizeDelta = new Vector2(540f, 24f);
-            swipeHintFooterText.text = "◀ HOLD CLICK & DRAG LEFT OR RIGHT TO CHOOSE ▶";
+            swipeHintFooterText = CreateTMPText("SwipeHintFooter", bottomBarT, Vector2.zero, new Vector2(560f, 54f), 18f, TextAlignmentOptions.Center, new Color(0.72f, 0.90f, 1.0f, 0.95f));
+            swipeHintFooterText.rectTransform.anchoredPosition = Vector2.zero;
+            swipeHintFooterText.rectTransform.sizeDelta = new Vector2(560f, 54f);
+            swipeHintFooterText.text = "◀ SWIPE LEFT TO DECLINE    •    SWIPE RIGHT TO ACCEPT ▶";
 
             // Stamps
             Transform rejT = cardContainer.Find("RejectStamp");
@@ -2709,7 +2670,7 @@ namespace Story
             if (!isDraggingConsequence) consRT.anchoredPosition = Vector2.zero;
             Image consImg = consequencePanel.GetComponent<Image>() ?? consequencePanel.AddComponent<Image>();
             consImg.color = new Color(0.10f, 0.15f, 0.23f, 0.98f);
-            consImg.raycastTarget = true;
+            consImg.raycastTarget = false;
 
             Transform cpTrans = consequencePanel.transform;
             consequenceTitleText = CreateTMPText("ConsTitle", cpTrans, new Vector2(0f, -26f), new Vector2(640f, 44f), 27f, TextAlignmentOptions.Center, new Color(0.42f, 1f, 0.58f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
@@ -2749,18 +2710,21 @@ namespace Story
                 tirednessDeltaText = CreateTMPText("TiredDelta", cpTrans, new Vector2(0f, -341f), new Vector2(580f, 34f), 20f, TextAlignmentOptions.Center, Color.white, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
             }
 
-            GameObject contBtnObj = CreateButton("ContinueButton", cpTrans, new Vector2(0f, 28f), new Vector2(520f, 58f), new Color(0.18f, 0.44f, 0.58f, 1f), OnContinueClicked, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+            GameObject contBtnObj = CreateButton("ContinueButton", cpTrans, new Vector2(0f, 28f), new Vector2(560f, 54f), Color.clear, OnContinueClicked, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
             RectTransform contBtnRT = contBtnObj.GetComponent<RectTransform>();
             contBtnRT.anchorMin = new Vector2(0.5f, 0f);
             contBtnRT.anchorMax = new Vector2(0.5f, 0f);
             contBtnRT.pivot = new Vector2(0.5f, 0f);
             contBtnRT.anchoredPosition = new Vector2(0f, 28f);
-            contBtnRT.sizeDelta = new Vector2(520f, 58f);
+            contBtnRT.sizeDelta = new Vector2(560f, 54f);
             continueButton = contBtnObj.GetComponent<Button>();
-            TMP_Text contBtnLabel = CreateTMPText("Label", contBtnObj.transform, Vector2.zero, new Vector2(500f, 50f), 18f, TextAlignmentOptions.Center, Color.white);
-            contBtnLabel.rectTransform.sizeDelta = new Vector2(500f, 50f);
+            if (continueButton != null) Destroy(continueButton);
+            Image contBtnImg = contBtnObj.GetComponent<Image>();
+            if (contBtnImg != null) { contBtnImg.color = Color.clear; contBtnImg.raycastTarget = false; }
+            TMP_Text contBtnLabel = CreateTMPText("Label", contBtnObj.transform, Vector2.zero, new Vector2(540f, 48f), 18f, TextAlignmentOptions.Center, new Color(0.72f, 0.90f, 1.0f));
+            contBtnLabel.rectTransform.sizeDelta = new Vector2(540f, 48f);
             contBtnLabel.rectTransform.anchoredPosition = Vector2.zero;
-            contBtnLabel.text = "[ ◀ SWIPE RESULTS LEFT / RIGHT OR CLICK TO HANG UP ▶ ]";
+            contBtnLabel.text = "◀ CLICK ANYWHERE OR PRESS SPACE TO HANG UP ▶";
 
             // 4. Reckoning Panel Template (Full 1680 x 940 Two-Column Layout — Zero Overlap!)
             if (reckoningPanel == null)
@@ -2824,25 +2788,33 @@ namespace Story
                 if (crawler.defaultCrosshairImg != null && crawler.defaultCrosshairImg.sprite != null)
                 {
                     cachedDefaultCursorSprite = crawler.defaultCrosshairImg.sprite;
-                    cachedDefaultCursorSize = crawler.defaultCrosshairImg.rectTransform.sizeDelta;
-                    if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(28f, 28f);
+                    RectTransform rt = crawler.defaultCrosshairImg.rectTransform;
+                    cachedDefaultCursorSize = new Vector2(
+                        rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                        rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                    if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(20.7f, 31.8f);
                 }
                 if (crawler.interactCrosshairImg != null && crawler.interactCrosshairImg.sprite != null)
                 {
                     cachedInteractCursorSprite = crawler.interactCrosshairImg.sprite;
-                    cachedInteractCursorSize = crawler.interactCrosshairImg.rectTransform.sizeDelta;
-                    if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(36f, 36f);
+                    RectTransform rt = crawler.interactCrosshairImg.rectTransform;
+                    cachedInteractCursorSize = new Vector2(
+                        rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                        rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                    if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(51f, 51f);
                 }
             }
 
+            phoneVirtualCursorRect.pivot = new Vector2(0.28f, 0.82f);
             if (cachedDefaultCursorSprite != null)
             {
                 phoneVirtualCursorRingImg.sprite = cachedDefaultCursorSprite;
+                phoneVirtualCursorRingImg.color = new Color(1f, 0.953f, 0.918f, 1f);
                 phoneVirtualCursorRect.sizeDelta = cachedDefaultCursorSize;
             }
             else
             {
-                phoneVirtualCursorRect.sizeDelta = new Vector2(20f, 20f);
+                phoneVirtualCursorRect.sizeDelta = new Vector2(21.2f, 31.8f);
             }
         }
 

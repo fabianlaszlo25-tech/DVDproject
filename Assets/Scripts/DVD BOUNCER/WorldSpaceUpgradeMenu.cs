@@ -314,14 +314,20 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
                 if (crawler.defaultCrosshairImg != null && crawler.defaultCrosshairImg.sprite != null)
                 {
                     cachedDefaultCursorSprite = crawler.defaultCrosshairImg.sprite;
-                    cachedDefaultCursorSize = crawler.defaultCrosshairImg.rectTransform.sizeDelta;
-                    if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(28f, 28f);
+                    RectTransform rt = crawler.defaultCrosshairImg.rectTransform;
+                    cachedDefaultCursorSize = new Vector2(
+                        rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                        rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                    if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(20.7f, 31.8f);
                 }
                 if (crawler.interactCrosshairImg != null && crawler.interactCrosshairImg.sprite != null)
                 {
                     cachedInteractCursorSprite = crawler.interactCrosshairImg.sprite;
-                    cachedInteractCursorSize = crawler.interactCrosshairImg.rectTransform.sizeDelta;
-                    if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(36f, 36f);
+                    RectTransform rt = crawler.interactCrosshairImg.rectTransform;
+                    cachedInteractCursorSize = new Vector2(
+                        rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                        rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                    if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(51f, 51f);
                 }
             }
         }
@@ -331,16 +337,18 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             Sprite targetSprite = hoveringInteractive && cachedInteractCursorSprite != null
                 ? cachedInteractCursorSprite
                 : cachedDefaultCursorSprite;
+            // Align pivot with the pointer tip when showing the arrow cursor so button hitboxes match the visual tip 1:1!
+            shopVirtualCursorRect.pivot = hoveringInteractive ? new Vector2(0.5f, 0.5f) : new Vector2(0.28f, 0.82f);
             if (targetSprite != null)
             {
                 shopVirtualCursorRingImg.sprite = targetSprite;
-                shopVirtualCursorRingImg.color = Color.white;
+                shopVirtualCursorRingImg.color = new Color(1f, 0.953f, 0.918f, 1f);
                 shopVirtualCursorRect.sizeDelta = hoveringInteractive ? cachedInteractCursorSize : cachedDefaultCursorSize;
             }
             else
             {
                 shopVirtualCursorRingImg.color = Color.white;
-                shopVirtualCursorRect.sizeDelta = new Vector2(20f, 20f);
+                shopVirtualCursorRect.sizeDelta = new Vector2(21.2f, 31.8f);
             }
             shopVirtualCursorRect.localScale = Vector3.one;
         }
@@ -1199,25 +1207,33 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             if (crawler.defaultCrosshairImg != null && crawler.defaultCrosshairImg.sprite != null)
             {
                 cachedDefaultCursorSprite = crawler.defaultCrosshairImg.sprite;
-                cachedDefaultCursorSize = crawler.defaultCrosshairImg.rectTransform.sizeDelta;
-                if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(28f, 28f);
+                RectTransform rt = crawler.defaultCrosshairImg.rectTransform;
+                cachedDefaultCursorSize = new Vector2(
+                    rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                    rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                if (cachedDefaultCursorSize.sqrMagnitude < 16f) cachedDefaultCursorSize = new Vector2(20.7f, 31.8f);
             }
             if (crawler.interactCrosshairImg != null && crawler.interactCrosshairImg.sprite != null)
             {
                 cachedInteractCursorSprite = crawler.interactCrosshairImg.sprite;
-                cachedInteractCursorSize = crawler.interactCrosshairImg.rectTransform.sizeDelta;
-                if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(36f, 36f);
+                RectTransform rt = crawler.interactCrosshairImg.rectTransform;
+                cachedInteractCursorSize = new Vector2(
+                    rt.sizeDelta.x * Mathf.Abs(rt.localScale.x) * 1.061f,
+                    rt.sizeDelta.y * Mathf.Abs(rt.localScale.y) * 1.061f);
+                if (cachedInteractCursorSize.sqrMagnitude < 16f) cachedInteractCursorSize = new Vector2(51f, 51f);
             }
         }
 
+        shopVirtualCursorRect.pivot = new Vector2(0.28f, 0.82f);
         if (cachedDefaultCursorSprite != null)
         {
             shopVirtualCursorRingImg.sprite = cachedDefaultCursorSprite;
+            shopVirtualCursorRingImg.color = new Color(1f, 0.953f, 0.918f, 1f);
             shopVirtualCursorRect.sizeDelta = cachedDefaultCursorSize;
         }
         else
         {
-            shopVirtualCursorRect.sizeDelta = new Vector2(20f, 20f);
+            shopVirtualCursorRect.sizeDelta = new Vector2(21.2f, 31.8f);
         }
     }
 
