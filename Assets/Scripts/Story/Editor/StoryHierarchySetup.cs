@@ -13,6 +13,7 @@ namespace Story.Editor
     {
         private const string SceneName = "01Day";
         public const string TemplatePrefabPath = "Assets/Resources/StoryCardCanvasTemplate.prefab";
+        public const string ShopPrefabPath = "Assets/Resources/FullscreenUpgradeShopCanvas.prefab";
 
         static StoryHierarchySetup()
         {
@@ -31,8 +32,23 @@ namespace Story.Editor
             {
                 StoryManager manager = UnityEngine.Object.FindAnyObjectByType<StoryManager>(FindObjectsInactive.Include);
                 StoryCardController controller = UnityEngine.Object.FindAnyObjectByType<StoryCardController>(FindObjectsInactive.Include);
+                WorldSpaceUpgradeMenu upgradeMenu = UnityEngine.Object.FindAnyObjectByType<WorldSpaceUpgradeMenu>(FindObjectsInactive.Include);
 
-                if (manager == null || controller == null)
+                bool hasShopCanvas = false;
+                if (upgradeMenu != null)
+                {
+                    Canvas[] allCanvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var c in allCanvases)
+                    {
+                        if (c != null && c.gameObject.name == "FullscreenUpgradeShopCanvas")
+                        {
+                            hasShopCanvas = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (manager == null || controller == null || (upgradeMenu != null && !hasShopCanvas))
                 {
                     SetupStoryHierarchy(true);
                 }
@@ -225,7 +241,10 @@ namespace Story.Editor
             if (phone == null) phone = KitchenPhone.EnsureInstanceInScene();
             if (phone != null)
             {
+                phone.pendingForceFinaleCall = true;
+                phone.pendingRingOnStart = true;
                 phone.ForceRingPhoneInEditor();
+                EditorUtility.SetDirty(phone);
                 Debug.Log("[StoryHierarchySetup] Day 3 Climactic Call triggered! Telephone is ringing. Answer it (or press P/E) to see the weighed stats reckoning screen.");
             }
         }
@@ -413,14 +432,90 @@ namespace Story.Editor
                 Debug.Log("[StoryHierarchySetup] Created 'KitchenPhone' in kitchen wall position.");
             }
 
+            // 6. Ensure FullscreenUpgradeShopCanvas exists in the scene hierarchy (inactive by default) & saved as prefab
+            WorldSpaceUpgradeMenu upgradeMenu = UnityEngine.Object.FindAnyObjectByType<WorldSpaceUpgradeMenu>(FindObjectsInactive.Include);
+            if (upgradeMenu != null)
+            {
+                Canvas shopCanvas = upgradeMenu.EnsureFullscreenShopCanvasBuilt();
+                if (shopCanvas != null)
+                {
+                    if (PrefabUtility.IsPartOfAnyPrefab(shopCanvas.gameObject))
+                    {
+                        PrefabUtility.UnpackPrefabInstance(shopCanvas.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                    }
+                    if (shopCanvas.gameObject.activeSelf)
+                    {
+                        shopCanvas.gameObject.SetActive(false);
+                        modified = true;
+                    }
+                    EditorUtility.SetDirty(shopCanvas.gameObject);
+
+                    if (!File.Exists(ShopPrefabPath))
+                    {
+                        string dir = Path.GetDirectoryName(ShopPrefabPath);
+                        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                        PrefabUtility.SaveAsPrefabAsset(shopCanvas.gameObject, ShopPrefabPath);
+                    }
+                }
+            }
+
+            if (!File.Exists(TemplatePrefabPath) && canvasObj != null)
+            {
+                string dir = Path.GetDirectoryName(TemplatePrefabPath);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                PrefabUtility.SaveAsPrefabAsset(canvasObj, TemplatePrefabPath);
+            }
+
             if (modified || forceSave)
             {
                 EditorSceneManager.MarkSceneDirty(activeScene);
                 if (forceSave)
                 {
                     EditorSceneManager.SaveScene(activeScene);
-                    Debug.Log($"[StoryHierarchySetup] Scene '{activeScene.name}' saved with Story hierarchy in ScreenSpaceCamera mode!");
+                    Debug.Log($"[StoryHierarchySetup] Scene '{activeScene.name}' saved with Story & Upgrade Shop hierarchy in ScreenSpaceCamera mode!");
                 }
+            }
+        }
+
+        [MenuItem("Tools/Upgrade Shop/Toggle Upgrade Shop Canvas Visible")]
+        public static void ToggleUpgradeShopCanvasVisible()
+        {
+            WorldSpaceUpgradeMenu upgradeMenu = UnityEngine.Object.FindAnyObjectByType<WorldSpaceUpgradeMenu>(FindObjectsInactive.Include);
+            if (upgradeMenu == null)
+            {
+                Debug.LogWarning("[StoryHierarchySetup] WorldSpaceUpgradeMenu not found in scene.");
+                return;
+            }
+            Canvas shopCanvas = upgradeMenu.EnsureFullscreenShopCanvasBuilt();
+            if (shopCanvas != null)
+            {
+                bool nextState = !shopCanvas.gameObject.activeSelf;
+                shopCanvas.gameObject.SetActive(nextState);
+                Selection.activeGameObject = shopCanvas.gameObject;
+                Debug.Log($"[StoryHierarchySetup] FullscreenUpgradeShopCanvas is now {(nextState ? "ACTIVE (Visible for editing in Scene/Game view)" : "INACTIVE (Hidden for gameplay)")}.");
+            }
+        }
+
+        [MenuItem("Tools/Upgrade Shop/Save Current Upgrade Shop As Prefab")]
+        public static void SaveUpgradeShopAsPrefab()
+        {
+            WorldSpaceUpgradeMenu upgradeMenu = UnityEngine.Object.FindAnyObjectByType<WorldSpaceUpgradeMenu>(FindObjectsInactive.Include);
+            if (upgradeMenu == null)
+            {
+                EditorUtility.DisplayDialog("Save Failed", "WorldSpaceUpgradeMenu not found in active scene.", "OK");
+                return;
+            }
+            Canvas shopCanvas = upgradeMenu.EnsureFullscreenShopCanvasBuilt();
+            if (shopCanvas != null)
+            {
+                string dir = Path.GetDirectoryName(ShopPrefabPath);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                PrefabUtility.SaveAsPrefabAsset(shopCanvas.gameObject, ShopPrefabPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                EditorUtility.DisplayDialog("Upgrade Shop Prefab Saved",
+                    $"Saved FullscreenUpgradeShopCanvas to '{ShopPrefabPath}'.\n\nAll visual edits made in the scene hierarchy are also preserved automatically at runtime!",
+                    "OK");
             }
         }
     }

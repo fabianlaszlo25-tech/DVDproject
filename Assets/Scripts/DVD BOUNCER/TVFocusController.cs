@@ -293,7 +293,7 @@ public class TVFocusController : MonoBehaviour
         if (screenReticleRenderer == null) return;
 
         int activeTier = upgradeManager != null ? upgradeManager.ActiveRemoteTier : 0;
-        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeTier == 10);
+        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeTier == 13);
 
         bool isDirectClickMode = (activeTier == 0 || activeTier == 1 || activeTier == 2 || activeTier == 3 || isOmni);
         float targetAlpha = isDirectClickMode ? 1.0f : 0.30f;
@@ -586,6 +586,8 @@ public class TVFocusController : MonoBehaviour
     // FOCUS CURSOR & SCREEN INTERACTION (CALLED BY GRIDCRAWLERCONTROLLER)
     // =========================================================================
 
+    private bool isHoldingMinigameScreenInput = false;
+
     public void HandleFocusCursorAndInput(Camera cam)
     {
         if (!IsInFocusMode || cam == null) return;
@@ -594,6 +596,7 @@ public class TVFocusController : MonoBehaviour
         {
             SetScreenReticleVisible(false);
             SetHoverTowelVisible(false);
+            isHoldingMinigameScreenInput = false;
             return;
         }
 
@@ -603,6 +606,7 @@ public class TVFocusController : MonoBehaviour
 
         Ray ray = cam.ScreenPointToRay(cursorPos);
         bool leftHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        bool rightHeld = Mouse.current != null && Mouse.current.rightButton.isPressed;
         bool leftClickedThisFrame = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
 
         // If the player is currently holding/shaking a grabbed DVD logo, lock the cursor inside the TV screen!
@@ -619,12 +623,31 @@ public class TVFocusController : MonoBehaviour
             }
         }
 
+        bool isMinigameRemote = CurrentTool == HeldTool.Remote && upgradeManager != null && upgradeManager.IsCurrentRemoteMinigame;
+        if (!leftHeld && !rightHeld)
+        {
+            isHoldingMinigameScreenInput = false;
+        }
+
         bool hitScreen = false;
         RaycastHit screenHit = default;
 
         if (tvScreenCollider != null)
         {
             hitScreen = tvScreenCollider.Raycast(ray, out screenHit, 10f);
+        }
+
+        if (hitScreen && isMinigameRemote && (leftHeld || rightHeld))
+        {
+            isHoldingMinigameScreenInput = true;
+        }
+
+        // Keep cursor locked onto the TV screen plane while actively dragging/holding in a minigame (e.g. slingshot drag, swipe, gas/brake)
+        if (!hitScreen && isHoldingMinigameScreenInput && isMinigameRemote)
+        {
+            hitScreen = true;
+            screenHit.point = ProjectRayOntoScreenPlane(ray);
+            screenHit.normal = -Vector3.forward;
         }
 
         isCursorOnScreen = hitScreen;
@@ -861,7 +884,7 @@ public class TVFocusController : MonoBehaviour
         // 9 = Tier 10: Block Blast Remote (Full-screen 8x8 DVD Block Blast Grid while holding remote)
         // 10 = Tier 11: Omni-Remote 9000 (Ultimate Remote: Direct Hit + Mitosis Split + Pinball Bumpers!)
 
-        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeRemoteTier == 10);
+        bool isOmni = upgradeManager != null ? upgradeManager.IsCurrentRemoteOmni : (activeRemoteTier == 13);
         bool isGrabShakeRemote = (activeRemoteTier == 2) || (isOmni && ultimateIncludesGrabShake);
         bool canMitosisSplit = (activeRemoteTier == 1) || isOmni;
         bool canSpawnBumpers = (activeRemoteTier == 3) || isOmni;

@@ -358,6 +358,11 @@ public class BuyableBoosterProp : MonoBehaviour
         state = State.Purchased;
         transform.position = shakeAnchor;
 
+        if (RunSaveManager.HasInstance)
+        {
+            RunSaveManager.Instance.RecordItemPurchased();
+        }
+
         if (visualizer != null) visualizer.HideImmediate();
         shakeSource.Stop();
 

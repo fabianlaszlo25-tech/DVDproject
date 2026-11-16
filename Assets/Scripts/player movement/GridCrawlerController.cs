@@ -166,10 +166,17 @@ public class GridCrawlerController : MonoBehaviour
         }
 #endif
 
-        // Frozen (e.g. during the overdose hallucinations): no moving, no cursor/look movement
-        if (InputFrozen) return;
+        if (!PauseManager.IsGamePaused)
+        {
+            if (Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
+            if (Cursor.visible) Cursor.visible = false;
+        }
 
         CalculateVirtualMousePosition();
+
+        // Frozen (e.g. during fullscreen shop, phone UI, or hallucinations): virtual cursor still updates, but no room movement/raycasts
+        if (InputFrozen) return;
+
         HandleCursorAndInteractions();
         HandleTrashSwipeClearing();
 
@@ -177,13 +184,35 @@ public class GridCrawlerController : MonoBehaviour
         HandleMovementInputs();
     }
 
+    public static Vector2 GetActiveVirtualScreenPos()
+    {
+        GridCrawlerController inst = FindObjectOfType<GridCrawlerController>();
+        if (inst != null)
+        {
+            return inst.virtualMousePos;
+        }
+        return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+    }
+
+    public void SetHudCropPanelVisible(bool visible)
+    {
+        if (cropPanel != null && cropPanel.gameObject.activeSelf != visible)
+        {
+            cropPanel.gameObject.SetActive(visible);
+        }
+    }
+
     private void CalculateVirtualMousePosition()
     {
         if (PauseManager.IsGamePaused) return;
 
-        if (cropPanel != null)
+        // When InputFrozen is active (e.g. during Fullscreen Upgrade Shop, Phone Call UI, or Ending Evaluation),
+        // or when cropPanel is hidden, update virtualMousePos directly in full screen coordinates so UI swiping
+        // and button clicking work smoothly across the entire 1920x1080 screen regardless of camera FOV or cropPanel!
+        if (!InputFrozen && cropPanel != null && cropPanel.gameObject.activeInHierarchy)
         {
-            Camera uiCam = cropPanel.GetComponentInParent<Canvas>().worldCamera;
+            Canvas parentCanvas = cropPanel.GetComponentInParent<Canvas>();
+            Camera uiCam = parentCanvas != null ? parentCanvas.worldCamera : null;
             Rect rect = cropPanel.rect;
 
             if (!hasInitializedVirtualMouse)
@@ -195,7 +224,7 @@ public class GridCrawlerController : MonoBehaviour
                 hasInitializedVirtualMouse = true;
             }
 
-            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
+            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : new Vector2(Input.GetAxisRaw("Mouse X") * 12f, Input.GetAxisRaw("Mouse Y") * 12f);
             virtualCursorLocalPos += delta * mouseSensitivity;
 
             virtualCursorLocalPos.x = Mathf.Clamp(virtualCursorLocalPos.x, rect.xMin, rect.xMax);
@@ -206,13 +235,13 @@ public class GridCrawlerController : MonoBehaviour
         }
         else
         {
-            if (!hasInitializedVirtualMouse)
+            if (!hasInitializedVirtualMouse || virtualMousePos.sqrMagnitude < 1f)
             {
-                virtualMousePos = Mouse.current != null ? Mouse.current.position.ReadValue() : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                virtualMousePos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
                 hasInitializedVirtualMouse = true;
             }
 
-            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
+            Vector2 delta = Mouse.current != null ? Mouse.current.delta.ReadValue() : new Vector2(Input.GetAxisRaw("Mouse X") * 12f, Input.GetAxisRaw("Mouse Y") * 12f);
             virtualMousePos += delta * mouseSensitivity;
             virtualMousePos.x = Mathf.Clamp(virtualMousePos.x, 0f, Screen.width);
             virtualMousePos.y = Mathf.Clamp(virtualMousePos.y, 0f, Screen.height);
@@ -315,44 +344,103 @@ public class GridCrawlerController : MonoBehaviour
 
         Ray ray = cam.ScreenPointToRay(virtualMousePos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, interactReach, ~0, QueryTriggerInteraction.Ignore))
+        if (TryFindHoveredInteractable(ray, out InteractableObject interactObj, out RaycastHit hit))
         {
-            InteractableObject interactObj = hit.collider.GetComponentInParent<InteractableObject>();
-            if (interactObj == null) interactObj = hit.collider.GetComponent<InteractableObject>();
-            if (interactObj == null) interactObj = hit.collider.GetComponentInChildren<InteractableObject>();
+            SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
 
-            if (interactObj != null && interactObj.enabled)
+            TrashItem trash = hit.collider != null ? hit.collider.GetComponentInParent<TrashItem>() : null;
+            if (interactTextUI != null)
             {
-                SetCrosshairModeState(CrosshairMode.Interact); // Show interact sprite for 3D objects
-
-                TrashItem trash = hit.collider.GetComponentInParent<TrashItem>();
-                if (interactTextUI != null)
+                if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
                 {
-                    if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
-                    {
-                        interactTextUI.text = "Too filthy to clean! Shower first";
-                    }
-                    else
-                    {
-                        interactTextUI.text = interactObj.hoverText;
-                    }
-                    textTargetScale = interactObj.hideHoverText ? Vector3.zero : Vector3.one;
+                    interactTextUI.text = "Too filthy to clean! Shower first";
                 }
-
-                if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                else
                 {
-                    if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
-                    {
-                        return;
-                    }
-                    interactObj.onClick?.Invoke();
+                    interactTextUI.text = interactObj.hoverText;
                 }
-                return;
+                textTargetScale = interactObj.hideHoverText ? Vector3.zero : Vector3.one;
             }
+
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                if (trash != null && BarManager.Instance != null && !BarManager.Instance.CanCleanTrash)
+                {
+                    return;
+                }
+                interactObj.onClick?.Invoke();
+            }
+            return;
         }
 
         SetCrosshairModeState(CrosshairMode.Default); // Revert to standard dot
         textTargetScale = Vector3.zero;
+    }
+
+    private bool TryFindHoveredInteractable(Ray ray, out InteractableObject bestInteractable, out RaycastHit bestHit)
+    {
+        bestInteractable = null;
+        bestHit = default;
+        float bestDist = float.MaxValue;
+
+        // 1. Priority check: if the KitchenPhone is ringing and the player aims at it within kitchen range,
+        // never let walls, counters, or reach limits block answering the phone!
+        if (Story.KitchenPhone.Instance != null && Story.KitchenPhone.Instance.IsRinging)
+        {
+            Bounds phoneBounds = Story.KitchenPhone.Instance.GetPhoneWorldBounds();
+            phoneBounds.Expand(0.38f);
+            if (phoneBounds.IntersectRay(ray, out float phoneDist) && phoneDist <= Mathf.Max(interactReach * 2.4f, 7.5f))
+            {
+                InteractableObject phoneIo = Story.KitchenPhone.Instance.GetPrimaryInteractable();
+                if (phoneIo != null)
+                {
+                    bestInteractable = phoneIo;
+                    bestDist = phoneDist;
+                }
+            }
+        }
+
+        // 2. RaycastAll through the scene so non-interactable colliders (walls/counters/zones) never occlude an InteractableObject behind them
+        RaycastHit[] hits = Physics.RaycastAll(ray, interactReach, ~0, QueryTriggerInteraction.Collide);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider col = hits[i].collider;
+            if (col == null) continue;
+
+            InteractableObject io = col.GetComponentInParent<InteractableObject>();
+            if (io == null) io = col.GetComponent<InteractableObject>();
+            if (io == null) io = col.GetComponentInChildren<InteractableObject>();
+
+            if (io != null && io.enabled && hits[i].distance < bestDist)
+            {
+                bestDist = hits[i].distance;
+                bestInteractable = io;
+                bestHit = hits[i];
+            }
+        }
+
+        if (bestInteractable != null) return true;
+
+        // 3. Forgiving SphereCast fallback for thin wall-mounted props
+        RaycastHit[] sphereHits = Physics.SphereCastAll(ray, 0.14f, interactReach, ~0, QueryTriggerInteraction.Collide);
+        for (int i = 0; i < sphereHits.Length; i++)
+        {
+            Collider col = sphereHits[i].collider;
+            if (col == null) continue;
+
+            InteractableObject io = col.GetComponentInParent<InteractableObject>();
+            if (io == null) io = col.GetComponent<InteractableObject>();
+            if (io == null) io = col.GetComponentInChildren<InteractableObject>();
+
+            if (io != null && io.enabled && sphereHits[i].distance < bestDist)
+            {
+                bestDist = sphereHits[i].distance;
+                bestInteractable = io;
+                bestHit = sphereHits[i];
+            }
+        }
+
+        return bestInteractable != null;
     }
 
     /// <summary>While left click is held, anything trash under the cursor is cleared instantly (swipe cleaning).</summary>

@@ -119,11 +119,17 @@ public class RunSaveManager : MonoBehaviour
     [SerializeField] private int trashCleanedYesterday;
     [SerializeField] private int substancesConsumedThisDay;
     [SerializeField] private int substancesConsumedYesterday;
+    [SerializeField] private int foodEatenThisDay;
+    [SerializeField] private int foodEatenYesterday;
+    [SerializeField] private int itemsBoughtThisDay;
+    [SerializeField] private int itemsBoughtYesterday;
+    [SerializeField] private float timeSpentAwakeThisDay;
+    [SerializeField] private float timeSpentAwakeYesterday;
     [SerializeField] private int storyElementsThisDay;
     [SerializeField] private int storyElementsYesterday;
     [SerializeField] private float bedtimeDirtiness;
     [SerializeField] private float bedtimeDepression;
-    [SerializeField] private int pendingMorningTrashCount = 5;
+    [SerializeField] private int pendingMorningTrashCount = 220;
     [SerializeField] private float pendingMorningDepression = 0f;
 
     [Header("Per-Substance Breakdown (For Future Dream World Generation)")]
@@ -324,14 +330,22 @@ public class RunSaveManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        // Dense-trash balance: never below the new baselines even if an older serialized scene value exists
+        // Dense-trash balance: base trash spawning is the same on subsequent days as the first day
         baseTrashCount = Mathf.Max(baseTrashCount, 220);
-        subsequentDaysBaseTrash = Mathf.Max(subsequentDaysBaseTrash, 110);
+        subsequentDaysBaseTrash = baseTrashCount;
         maxTrashSpawn = Mathf.Max(maxTrashSpawn, 450);
 
         if (daysSurvived == 0)
         {
             pendingMorningTrashCount = baseTrashCount;
+        }
+    }
+
+    private void Update()
+    {
+        if (Time.timeScale > 0.01f && IsGameplayScene(SceneManager.GetActiveScene().name))
+        {
+            timeSpentAwakeThisDay += Time.deltaTime;
         }
     }
 
@@ -457,6 +471,16 @@ public class RunSaveManager : MonoBehaviour
         trashCleanedThisDay++;
     }
 
+    public void RecordFoodEaten()
+    {
+        foodEatenThisDay++;
+    }
+
+    public void RecordItemPurchased()
+    {
+        itemsBoughtThisDay++;
+    }
+
     public void RecordStoryElementEncountered(string storyElementId = "")
     {
         if (!string.IsNullOrWhiteSpace(storyElementId))
@@ -546,6 +570,15 @@ public class RunSaveManager : MonoBehaviour
 
             substancesConsumedYesterday = substancesConsumedThisDay;
             substancesConsumedThisDay = 0;
+
+            foodEatenYesterday = foodEatenThisDay;
+            foodEatenThisDay = 0;
+
+            itemsBoughtYesterday = itemsBoughtThisDay;
+            itemsBoughtThisDay = 0;
+
+            timeSpentAwakeYesterday = timeSpentAwakeThisDay;
+            timeSpentAwakeThisDay = 0f;
 
             storyElementsYesterday = storyElementsThisDay;
             storyElementsThisDay = 0;
@@ -647,6 +680,12 @@ public class RunSaveManager : MonoBehaviour
         trashCleanedYesterday = 0;
         substancesConsumedThisDay = 0;
         substancesConsumedYesterday = 0;
+        foodEatenThisDay = 0;
+        foodEatenYesterday = 0;
+        itemsBoughtThisDay = 0;
+        itemsBoughtYesterday = 0;
+        timeSpentAwakeThisDay = 0f;
+        timeSpentAwakeYesterday = 0f;
         storyElementsThisDay = 0;
         storyElementsYesterday = 0;
         bedtimeDirtiness = 0f;
@@ -711,21 +750,26 @@ public class RunSaveManager : MonoBehaviour
     // =========================================================================
 
     /// <summary>
-    /// Calculates the number of trash items that will spawn for Day 2 and subsequent days.
-    /// Uses subsequentDaysBaseTrash (a separate tunable number), plus bedtime dirtiness and depression,
-    /// minus trash cleaned yesterday.
+    /// Calculates the number of trash items that will spawn for Day 2 and subsequent days:
+    /// - Base trash spawning = same as the first day (baseTrashCount)
+    /// - 2 trash cleaned yesterday = -1 next day
+    /// - Being above 50% dirty when sleeping = +10; being clean (<= 50%) when sleeping = -10
+    /// - Every other thing adds +1 each: eating food, buying items/upgrades, using substances, and minutes spent awake.
     /// </summary>
     public int CalculateMorningTrashCount()
     {
         if (isGoodDayActive) return 0;
 
-        float rawTrash = subsequentDaysBaseTrash
-            + (substancesConsumedYesterday * trashPerSubstanceYesterday)
-            + (bedtimeDirtiness * dirtinessTrashMultiplier)
-            + (bedtimeDepression * depressionTrashMultiplier)
-            - (trashCleanedYesterday * cleanedTrashReductionFactor);
+        int firstDayBase = Mathf.Max(220, baseTrashCount);
+        subsequentDaysBaseTrash = firstDayBase;
 
-        return Mathf.Clamp(Mathf.RoundToInt(rawTrash), minTrashSpawn, maxTrashSpawn);
+        int cleanedReduction = trashCleanedYesterday / 2; // 2 trash cleaned -> -1 next day
+        int sleepHygieneDelta = (bedtimeDirtiness > 50f) ? 10 : -10; // >50% dirty -> +10, clean -> -10
+        int awakeMinutesBonus = Mathf.Max(0, Mathf.FloorToInt(timeSpentAwakeYesterday / 60f)); // +1 per minute spent awake
+        int otherActionsBonus = foodEatenYesterday + itemsBoughtYesterday + substancesConsumedYesterday + awakeMinutesBonus;
+
+        int totalTrash = firstDayBase - cleanedReduction + sleepHygieneDelta + otherActionsBonus;
+        return Mathf.Clamp(totalTrash, minTrashSpawn, maxTrashSpawn);
     }
 
     /// <summary>
@@ -770,6 +814,12 @@ public class RunSaveManager : MonoBehaviour
             }
             pendingMorningTrashCount = count;
             return count;
+        }
+
+        // On Day 2+, ensure pendingMorningTrashCount is freshly calculated if it was still at an old serialized value
+        if (pendingMorningTrashCount <= minTrashSpawn)
+        {
+            pendingMorningTrashCount = CalculateMorningTrashCount();
         }
 
         TrashManager[] managers = FindObjectsOfType<TrashManager>(false);

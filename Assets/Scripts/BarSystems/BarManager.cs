@@ -356,6 +356,10 @@ public class BarManager : MonoBehaviour
         currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
         AddTiredness(4f); // eating
         currentDepression = Mathf.Clamp(currentDepression - depressionReduction, 0, maxDepression);
+        if (RunSaveManager.HasInstance)
+        {
+            RunSaveManager.Instance.RecordFoodEaten();
+        }
         return true;
     }
 
@@ -387,6 +391,7 @@ public class BarManager : MonoBehaviour
 
         currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
+        currentSleep = Mathf.Clamp(currentSleep + 1f, 0f, maxSleep); // +1 tiredness per trash cleaned
     }
 
     public void CleanSelf()

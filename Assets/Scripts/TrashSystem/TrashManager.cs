@@ -72,17 +72,14 @@ public class TrashManager : MonoBehaviour
 
     private void Start()
     {
-        // Enforce high-density trash quotas
+        // Enforce high-density trash quotas (same base count on Day 1 and subsequent days)
         if (firstDayTrashCount < 180) firstDayTrashCount = 220;
-        if (subsequentDaysBaseTrash < 90) subsequentDaysBaseTrash = 110;
+        subsequentDaysBaseTrash = firstDayTrashCount;
 
         if (RunSaveManager.HasInstance)
         {
-            if (RunSaveManager.Instance.daysSurvived == 0)
-            {
-                RunSaveManager.Instance.baseTrashCount = firstDayTrashCount;
-            }
-            RunSaveManager.Instance.subsequentDaysBaseTrash = subsequentDaysBaseTrash;
+            RunSaveManager.Instance.baseTrashCount = firstDayTrashCount;
+            RunSaveManager.Instance.subsequentDaysBaseTrash = firstDayTrashCount;
         }
 
         if (spawnOnStart)

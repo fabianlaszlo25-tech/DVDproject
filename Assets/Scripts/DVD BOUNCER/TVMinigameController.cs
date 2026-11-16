@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Manages the 4 Remote-activated TV Minigames inside the SCREENTRANSFER RenderTexture:
@@ -39,7 +40,10 @@ public class TVMinigameController : MonoBehaviour
         SuikaMerge = 3,
         TowerStack = 4,
         FishFrenzy = 5,
-        BlockBlast = 6
+        BlockBlast = 6,
+        SubwayRunner = 7,
+        HillClimb = 8,
+        ColorShooter = 9
     }
 
     [Header("References")]
@@ -59,6 +63,12 @@ public class TVMinigameController : MonoBehaviour
     public int fishFrenzyRemoteTier = 8;
     [Tooltip("Remote tier index that activates the Block Blast DVD Grid game when held in TV Focus Mode.")]
     public int blockBlastRemoteTier = 9;
+    [Tooltip("Remote tier index that activates the 3-Lane Curved Subway Runner when held in TV Focus Mode.")]
+    public int subwayRunnerRemoteTier = 10;
+    [Tooltip("Remote tier index that activates the Hill Climb Racing game when held in TV Focus Mode.")]
+    public int hillClimbRemoteTier = 11;
+    [Tooltip("Remote tier index that activates the Slingshot DVD Color Shooter game when held in TV Focus Mode.")]
+    public int colorShooterRemoteTier = 12;
 
     [Header("Minigame 1: Dino & Bird Runner Settings")]
     [Tooltip("Optional custom 3D prefab for ground obstacles (cacti/blocks). Uses procedural primitive cactus if left empty.")]
@@ -231,12 +241,18 @@ public class TVMinigameController : MonoBehaviour
     public bool IsTowerActive => currentMode == MinigameMode.TowerStack;
     public bool IsFishFrenzyActive => currentMode == MinigameMode.FishFrenzy;
     public bool IsBlockBlastActive => currentMode == MinigameMode.BlockBlast;
+    public bool IsSubwayRunnerActive => currentMode == MinigameMode.SubwayRunner;
+    public bool IsHillClimbActive => currentMode == MinigameMode.HillClimb;
+    public bool IsColorShooterActive => currentMode == MinigameMode.ColorShooter;
     public bool OverridesMainLogoMovement =>
         currentMode == MinigameMode.DinoRunner ||
         currentMode == MinigameMode.SuikaMerge ||
         currentMode == MinigameMode.TowerStack ||
         currentMode == MinigameMode.FishFrenzy ||
-        currentMode == MinigameMode.BlockBlast;
+        currentMode == MinigameMode.BlockBlast ||
+        currentMode == MinigameMode.SubwayRunner ||
+        currentMode == MinigameMode.HillClimb ||
+        currentMode == MinigameMode.ColorShooter;
 
     // Dino Runner runtime state
     private float dinoVerticalVelocity = 0f;
@@ -299,6 +315,7 @@ public class TVMinigameController : MonoBehaviour
         public float shapeHeightScale = 1f;
         public float shapeTopTaper = 1f;
         public float shapeSkewX = 0f;
+        public bool isCircularWheel = false;
 
         // Dynamic squash & stretch state
         public float squashTimer = -1f;
@@ -346,7 +363,7 @@ public class TVMinigameController : MonoBehaviour
         public void SetCenterPosition(Vector3 worldCenterPos)
         {
             if (rootObj == null) return;
-            Vector3 offset = baseCenterOffset * overallScaleFactor;
+            Vector3 offset = isCircularWheel ? Vector3.zero : (baseCenterOffset * overallScaleFactor);
             rootObj.transform.position = new Vector3(
                 worldCenterPos.x - offset.x,
                 worldCenterPos.y - offset.y,
@@ -356,7 +373,8 @@ public class TVMinigameController : MonoBehaviour
         public Vector3 GetCenterPosition()
         {
             if (rootObj == null) return Vector3.zero;
-            return rootObj.transform.position + baseCenterOffset * overallScaleFactor;
+            Vector3 offset = isCircularWheel ? Vector3.zero : (baseCenterOffset * overallScaleFactor);
+            return rootObj.transform.position + offset;
         }
 
         public float EffectiveHalfWidth => baseHalfSize.x * overallScaleFactor * shapeWidthScale * Mathf.Max(1f, shapeTopTaper);
@@ -447,13 +465,33 @@ public class TVMinigameController : MonoBehaviour
                     float shapedDx = dx * shapeWidthScale * taper + dy * shapeSkewX;
                     float shapedDy = dy * shapeHeightScale;
 
+                    if (isCircularWheel)
+                    {
+                        float halfW = Mathf.Max(0.05f, baseHalfSize.x / Mathf.Max(0.01f, baseTransformScale.x));
+                        float halfH = Mathf.Max(0.05f, baseHalfSize.y / Mathf.Max(0.01f, baseTransformScale.y));
+                        float nx = Mathf.Clamp(dx / halfW, -1.15f, 1.15f);
+                        float ny = Mathf.Clamp(dy / halfH, -1.15f, 1.15f);
+                        float nxClamped = Mathf.Clamp(nx, -1f, 1f);
+                        float nyClamped = Mathf.Clamp(ny, -1f, 1f);
+                        float discU = nx * Mathf.Sqrt(Mathf.Max(0.15f, 1f - 0.45f * nyClamped * nyClamped));
+                        float discV = ny * Mathf.Sqrt(Mathf.Max(0.15f, 1f - 0.45f * nxClamped * nxClamped));
+                        float wheelRadius = Mathf.Sqrt(halfW * halfH) * 0.96f;
+                        shapedDx = discU * wheelRadius * shapeWidthScale;
+                        shapedDy = discV * wheelRadius * shapeHeightScale;
+                    }
+
                     // 2. Apply dynamic impact squash & stretch along squashNormal
                     float dn = (shapedDx * n.x + shapedDy * n.y) * parallelScale;
                     float dtProj = (shapedDx * t.x + shapedDy * t.y) * perpScale;
 
+                    // When used as a circular wheel, center deformed vertices directly at root origin (0,0)
+                    // so rotating rootObj.transform.localRotation spins the wheel in place without orbiting off-center!
+                    float centerX = isCircularWheel ? 0f : rootDeformCenter.x;
+                    float centerY = isCircularWheel ? 0f : rootDeformCenter.y;
+
                     Vector3 deformedRoot = new Vector3(
-                        rootDeformCenter.x + n.x * dn + t.x * dtProj,
-                        rootDeformCenter.y + n.y * dn + t.y * dtProj,
+                        centerX + n.x * dn + t.x * dtProj,
+                        centerY + n.y * dn + t.y * dtProj,
                         rv.z);
 
                     defVerts[i] = rootToPart.MultiplyPoint3x4(deformedRoot);
@@ -950,6 +988,18 @@ public class TVMinigameController : MonoBehaviour
         {
             UpdateBlockBlast(dt);
         }
+        else if (currentMode == MinigameMode.SubwayRunner)
+        {
+            UpdateSubwayRunner(dt);
+        }
+        else if (currentMode == MinigameMode.HillClimb)
+        {
+            UpdateHillClimb(dt);
+        }
+        else if (currentMode == MinigameMode.ColorShooter)
+        {
+            UpdateColorShooter(dt);
+        }
     }
 
     private MinigameMode DetermineDesiredMinigameMode()
@@ -966,6 +1016,9 @@ public class TVMinigameController : MonoBehaviour
         if (tier == towerRemoteTier) return MinigameMode.TowerStack;
         if (tier == fishFrenzyRemoteTier) return MinigameMode.FishFrenzy;
         if (tier == blockBlastRemoteTier) return MinigameMode.BlockBlast;
+        if (tier == subwayRunnerRemoteTier) return MinigameMode.SubwayRunner;
+        if (tier == hillClimbRemoteTier) return MinigameMode.HillClimb;
+        if (tier == colorShooterRemoteTier) return MinigameMode.ColorShooter;
 
         return MinigameMode.None;
     }
@@ -997,6 +1050,18 @@ public class TVMinigameController : MonoBehaviour
         {
             ExitBlockBlastMode();
         }
+        else if (currentMode == MinigameMode.SubwayRunner)
+        {
+            ExitSubwayRunnerMode();
+        }
+        else if (currentMode == MinigameMode.HillClimb)
+        {
+            ExitHillClimbMode();
+        }
+        else if (currentMode == MinigameMode.ColorShooter)
+        {
+            ExitColorShooterMode();
+        }
 
         currentMode = nextMode;
 
@@ -1024,6 +1089,18 @@ public class TVMinigameController : MonoBehaviour
         else if (currentMode == MinigameMode.BlockBlast)
         {
             EnterBlockBlastMode();
+        }
+        else if (currentMode == MinigameMode.SubwayRunner)
+        {
+            EnterSubwayRunnerMode();
+        }
+        else if (currentMode == MinigameMode.HillClimb)
+        {
+            EnterHillClimbMode();
+        }
+        else if (currentMode == MinigameMode.ColorShooter)
+        {
+            EnterColorShooterMode();
         }
     }
 
@@ -1080,6 +1157,13 @@ public class TVMinigameController : MonoBehaviour
         if (currentMode == MinigameMode.BlockBlast)
         {
             TryPlaceCurrentBlockBlastShape();
+            return true;
+        }
+
+        if (currentMode == MinigameMode.SubwayRunner ||
+            currentMode == MinigameMode.HillClimb ||
+            currentMode == MinigameMode.ColorShooter)
+        {
             return true;
         }
 
@@ -4251,6 +4335,2019 @@ public class TVMinigameController : MonoBehaviour
 
         piece.ComputeVerticalSpan();
         return piece;
+    }
+
+    // =========================================================================
+    // MINIGAME 7: SUBWAY RUNNER (3 CURVED GLOBE LANES, HOLD-SWIPE, TRAINS)
+    // =========================================================================
+
+    private enum SubwayEntityType
+    {
+        Coin,
+        SmallObstacle,
+        Ramp,
+        Train
+    }
+
+    private class SubwayEntity
+    {
+        public SubwayEntityType type;
+        public GameObject rootObj;
+        public int laneIndex;          // -1, 0, +1
+        public float depth01;          // 0 (horizon) -> 1 (player at 0.88) -> 1.2 (offscreen)
+        public float depthLength;      // depth span along track (e.g. 0.28 for trains)
+        public float elevationOffset;  // e.g. coins placed on top of trains
+        public float heightOrtho;      // physical height in ortho units at player scale
+        public bool collectedOrHit;
+        public float spinAngle;
+    }
+
+    private GameObject subwayTrackRoot;
+    private readonly List<Transform> subwayRailSegments = new List<Transform>();
+    private readonly List<Transform> subwaySleeperSegments = new List<Transform>();
+    private readonly List<SubwayEntity> subwayEntities = new List<SubwayEntity>();
+    private DeformableLogoPiece subwayPlayerPiece;
+    private int subwayTargetLane = 0;        // -1, 0, 1
+    private float subwayCurrentLaneFloat = 0f;
+    private float subwayPlayerHeight = 0f;   // Height above track floor (0 = ground, ~0.95 = small obstacle top, ~1.95 = train roof)
+    private float subwayVerticalVel = 0f;
+    private bool subwayIsGrounded = true;
+    private float subwayScrollPhase = 0f;
+    private float subwayCurvePhase = 0f;
+    private float subwayCurrentTrackSpeed = 0.21f;
+    private float subwayDistanceSinceLastWave = 0f;
+    private int subwayWaveCounter = 0;
+    private int subwayLastTrainLane = -99;
+    private bool subwaySwipeHeldPrev = false;
+    private Vector2 subwaySwipeAnchor = Vector2.zero;
+    private const float SubwayPlayerDepth01 = 0.88f;
+    private const float SubwaySmallObstacleHeight = 0.85f;
+    private const float SubwayTrainHeight = 2.10f;
+
+    private void EnterSubwayRunnerMode()
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        StopAnyActiveConvergeAnimation();
+        mainBouncer.DespawnAllChildLogosForMinigame();
+        mainBouncer.SetMainLogoRenderersVisible(false);
+        savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
+
+        ClearSubwayEntities();
+        DestroySubwayTrackVisuals();
+
+        subwayTargetLane = 0;
+        subwayCurrentLaneFloat = 0f;
+        subwayPlayerHeight = 0f;
+        subwayVerticalVel = 0f;
+        subwayIsGrounded = true;
+        subwayScrollPhase = 0f;
+        subwayCurvePhase = 0f;
+        subwayCurrentTrackSpeed = 0.21f; // Starts slower and builds up smoothly over time!
+        subwayDistanceSinceLastWave = 0f;
+        subwayWaveCounter = 0;
+        subwayLastTrainLane = -99;
+        subwaySwipeHeldPrev = false;
+
+        BuildSubwayTrackVisuals();
+
+        Color pCol = new Color(0.20f, 0.95f, 1.00f, 1f);
+        Color sCol = new Color(1.00f, 0.32f, 0.78f, 1f);
+        subwayPlayerPiece = CreateDeformableLogoClone("SubwayPlayer_DVD", 0.56f, pCol, sCol);
+        if (subwayPlayerPiece != null)
+        {
+            subwayPlayerPiece.TriggerPop(0.32f, 0.30f);
+        }
+
+        // Pre-seed two well-spaced opening waves so the track starts readable and fair
+        SpawnSubwayPatternAtDepth(0.10f);
+        SpawnSubwayPatternAtDepth(0.44f);
+    }
+
+    private void ExitSubwayRunnerMode()
+    {
+        ClearSubwayEntities();
+        DestroySubwayTrackVisuals();
+
+        if (subwayPlayerPiece != null)
+        {
+            subwayPlayerPiece.DestroyPiece();
+            subwayPlayerPiece = null;
+        }
+
+        if (mainBouncer != null)
+        {
+            mainBouncer.SetMainLogoRenderersVisible(true);
+            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+        }
+    }
+
+    private void BuildSubwayTrackVisuals()
+    {
+        if (mainBouncer == null) return;
+        int layer = mainBouncer.gameObject.layer;
+
+        subwayTrackRoot = new GameObject("SubwayCurvedTrackRoot");
+        subwayTrackRoot.layer = layer;
+        if (mainBouncer.transform.parent != null)
+        {
+            subwayTrackRoot.transform.SetParent(mainBouncer.transform.parent, false);
+        }
+
+        Material railMat = CreateUnlitColorMaterial(new Color(0.28f, 0.85f, 1.0f, 0.55f), true);
+        Material sleeperMat = CreateUnlitColorMaterial(new Color(0.95f, 0.75f, 0.25f, 0.38f), true);
+
+        // 4 lane divider rails (-1.5, -0.5, +0.5, +1.5), each with 14 segments along the curved globe
+        const int segsPerRail = 14;
+        for (int r = 0; r < 4; r++)
+        {
+            for (int s = 0; s < segsPerRail; s++)
+            {
+                GameObject seg = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                seg.name = $"SubwayRail_{r}_{s}";
+                seg.layer = layer;
+                seg.transform.SetParent(subwayTrackRoot.transform, false);
+                Collider col = seg.GetComponent<Collider>();
+                if (col != null) Destroy(col);
+                Renderer rend = seg.GetComponent<Renderer>();
+                if (rend != null) rend.sharedMaterial = railMat;
+                subwayRailSegments.Add(seg.transform);
+            }
+        }
+
+        // 3 lanes x 9 scrolling horizontal sleepers
+        for (int lane = 0; lane < 3; lane++)
+        {
+            for (int k = 0; k < 9; k++)
+            {
+                GameObject tie = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                tie.name = $"SubwayTie_{lane}_{k}";
+                tie.layer = layer;
+                tie.transform.SetParent(subwayTrackRoot.transform, false);
+                Collider col = tie.GetComponent<Collider>();
+                if (col != null) Destroy(col);
+                Renderer rend = tie.GetComponent<Renderer>();
+                if (rend != null) rend.sharedMaterial = sleeperMat;
+                subwaySleeperSegments.Add(tie.transform);
+            }
+        }
+    }
+
+    private void DestroySubwayTrackVisuals()
+    {
+        subwayRailSegments.Clear();
+        subwaySleeperSegments.Clear();
+        if (subwayTrackRoot != null)
+        {
+            Destroy(subwayTrackRoot);
+            subwayTrackRoot = null;
+        }
+    }
+
+    private void ClearSubwayEntities()
+    {
+        for (int i = 0; i < subwayEntities.Count; i++)
+        {
+            if (subwayEntities[i] != null && subwayEntities[i].rootObj != null)
+            {
+                Destroy(subwayEntities[i].rootObj);
+            }
+        }
+        subwayEntities.Clear();
+    }
+
+    /// <summary>
+    /// Projects a (laneFloat, depth01, elevationOrtho) coordinate onto the curved 3-lane globe track.
+    /// depth01 = 0 is the curved horizon at the top; depth01 = 1 is the foreground bottom.
+    /// </summary>
+    private void ProjectSubwayPoint(float laneFloat, float depth01, float elevationOrtho, out Vector3 worldPos, out float perspScale)
+    {
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float centerX = (camMinX + camMaxX) * 0.5f;
+        float spanW = camMaxX - camMinX;
+        float spanH = camMaxY - camMinY;
+        float baseZ = mainBouncer != null ? mainBouncer.transform.position.z : 0f;
+
+        float d = Mathf.Clamp(depth01, 0f, 1.25f);
+        // Non-linear globe curvature: compressed near the top horizon, accelerating toward the camera
+        float curvedDepth = Mathf.Pow(Mathf.Max(0.001f, d), 1.48f);
+        perspScale = Mathf.Lerp(0.20f, 1.08f, curvedDepth);
+
+        // Horizon sits at 78% screen height; foreground sits at 14% screen height, with a subtle globe arch in the middle
+        float horizonY = camMinY + spanH * 0.78f;
+        float nearY = camMinY + spanH * 0.13f;
+        float globeArch = Mathf.Sin(Mathf.Clamp01(d) * Mathf.PI) * (spanH * 0.065f);
+        float trackY = Mathf.Lerp(horizonY, nearY, curvedDepth) + globeArch;
+
+        // Curved inward bend from afar (oscillates gently as the track scrolls)
+        float farFactor = 1f - Mathf.Clamp01(d);
+        float horizonBendX = Mathf.Sin(subwayCurvePhase) * (spanW * 0.14f) * (farFactor * farFactor);
+
+        float laneSpacingNear = spanW * 0.23f;
+        float laneSpacing = laneSpacingNear * perspScale;
+
+        float x = centerX + horizonBendX + laneFloat * laneSpacing;
+        float y = trackY + elevationOrtho * perspScale;
+        float z = baseZ + (1f - d) * 0.08f;
+
+        worldPos = new Vector3(x, y, z);
+    }
+
+    private void UpdateSubwayRunner(float dt)
+    {
+        if (mainBouncer == null || orthoCamera == null || subwayPlayerPiece == null) return;
+
+        // 1. Handle Hold-to-Swipe Input (ONLY detects swipes while left-click is held!)
+        bool leftHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        if (leftHeld)
+        {
+            if (!subwaySwipeHeldPrev)
+            {
+                subwaySwipeHeldPrev = true;
+                subwaySwipeAnchor = targetCursorOrthoPos;
+            }
+            else
+            {
+                Vector2 delta = targetCursorOrthoPos - subwaySwipeAnchor;
+                const float swipeHorizontalThreshold = 0.78f;
+                const float swipeVerticalThreshold = 0.72f;
+
+                if (Mathf.Abs(delta.x) >= swipeHorizontalThreshold && Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) * 0.85f)
+                {
+                    int dir = delta.x > 0f ? 1 : -1;
+                    int nextLane = Mathf.Clamp(subwayTargetLane + dir, -1, 1);
+                    if (nextLane != subwayTargetLane)
+                    {
+                        subwayTargetLane = nextLane;
+                        subwayPlayerPiece.TriggerSquash(Vector2.right, 0.22f, 0.32f);
+                        PlaySound(jumpSound, 1.12f);
+                    }
+                    subwaySwipeAnchor = targetCursorOrthoPos;
+                }
+                else if (delta.y >= swipeVerticalThreshold)
+                {
+                    TriggerSubwayJump();
+                    subwaySwipeAnchor = targetCursorOrthoPos;
+                }
+                else if (delta.y <= -swipeVerticalThreshold && !subwayIsGrounded)
+                {
+                    // Fast drop when swiping down in mid-air
+                    subwayVerticalVel = Mathf.Min(subwayVerticalVel, -16f);
+                    subwayPlayerPiece.TriggerSquash(Vector2.up, 0.20f, 0.28f);
+                    subwaySwipeAnchor = targetCursorOrthoPos;
+                }
+            }
+        }
+        else
+        {
+            subwaySwipeHeldPrev = false;
+        }
+
+        // 2. Smooth lane interpolation & gradual track speed build-up
+        subwayCurrentLaneFloat = Mathf.Lerp(subwayCurrentLaneFloat, subwayTargetLane, Mathf.Clamp01(dt * 15f));
+        subwayCurrentTrackSpeed = Mathf.Min(0.46f, subwayCurrentTrackSpeed + 0.0042f * dt);
+        float trackSpeed = subwayCurrentTrackSpeed;
+        subwayScrollPhase = (subwayScrollPhase + dt * trackSpeed * 9f) % 1f;
+        subwayCurvePhase += dt * 0.55f;
+
+        UpdateSubwayTrackGeometry();
+
+        // 3. Structured distance-based wave spawning (consistent spacing, never too crowded or too sparse!)
+        subwayDistanceSinceLastWave += trackSpeed * dt;
+        const float waveSpacingDepth = 0.48f;
+        if (subwayDistanceSinceLastWave >= waveSpacingDepth)
+        {
+            subwayDistanceSinceLastWave -= waveSpacingDepth;
+            SpawnSubwayPatternAtDepth(0.02f);
+        }
+
+        // 4. Determine active support floor under player (0 = ground, small obstacle top if stepping on one, or train roof!)
+        float activeSupportFloor = 0f;
+        bool onRampNow = false;
+
+        for (int i = 0; i < subwayEntities.Count; i++)
+        {
+            SubwayEntity ent = subwayEntities[i];
+            if (ent == null || ent.collectedOrHit) continue;
+            if (Mathf.Abs(subwayCurrentLaneFloat - ent.laneIndex) > 0.42f) continue;
+
+            float frontDepth = ent.depth01 + ent.depthLength * 0.5f;
+            float backDepth = ent.depth01 - ent.depthLength * 0.5f;
+
+            if (SubwayPlayerDepth01 >= backDepth - 0.04f && SubwayPlayerDepth01 <= frontDepth + 0.04f)
+            {
+                if (ent.type == SubwayEntityType.Ramp)
+                {
+                    onRampNow = true;
+                    float rampProgress = Mathf.InverseLerp(frontDepth, backDepth, SubwayPlayerDepth01);
+                    float rampTop = Mathf.Lerp(0.2f, SubwayTrainHeight, Mathf.Clamp01(rampProgress));
+                    if (rampTop > activeSupportFloor) activeSupportFloor = rampTop;
+                }
+                else if (ent.type == SubwayEntityType.Train)
+                {
+                    // Can ONLY stand/ride on top of the train if elevated onto it via a Ramp or double-jump off a SmallObstacle!
+                    if (subwayPlayerHeight >= SubwayTrainHeight - 0.22f)
+                    {
+                        activeSupportFloor = Mathf.Max(activeSupportFloor, SubwayTrainHeight);
+                    }
+                }
+                else if (ent.type == SubwayEntityType.SmallObstacle)
+                {
+                    // Can land on top of a small obstacle and jump again from there onto a train!
+                    if (subwayPlayerHeight >= SubwaySmallObstacleHeight - 0.28f && subwayVerticalVel <= 2.2f)
+                    {
+                        activeSupportFloor = Mathf.Max(activeSupportFloor, SubwaySmallObstacleHeight);
+                    }
+                }
+            }
+        }
+
+        // 5. Update vertical jump physics
+        if (onRampNow && subwayPlayerHeight < activeSupportFloor)
+        {
+            subwayPlayerHeight = activeSupportFloor;
+            subwayVerticalVel = Mathf.Max(subwayVerticalVel, 4.5f);
+            subwayIsGrounded = true;
+        }
+        else
+        {
+            subwayVerticalVel -= 26.5f * dt;
+            subwayPlayerHeight += subwayVerticalVel * dt;
+
+            if (subwayPlayerHeight <= activeSupportFloor)
+            {
+                bool wasAirborne = !subwayIsGrounded && subwayVerticalVel < -3f;
+                subwayPlayerHeight = activeSupportFloor;
+                subwayVerticalVel = 0f;
+                subwayIsGrounded = true;
+                if (wasAirborne)
+                {
+                    subwayPlayerPiece.TriggerSquash(Vector2.up, 0.16f, 0.28f);
+                }
+            }
+            else
+            {
+                subwayIsGrounded = false;
+            }
+        }
+
+        // 6. Update entities & check collisions (despawning immediately once past the player!)
+        for (int i = subwayEntities.Count - 1; i >= 0; i--)
+        {
+            SubwayEntity ent = subwayEntities[i];
+            if (ent == null || ent.rootObj == null)
+            {
+                subwayEntities.RemoveAt(i);
+                continue;
+            }
+
+            ent.depth01 += trackSpeed * dt;
+            float trailingEdge = ent.depth01 - ent.depthLength * 0.35f;
+            if (trailingEdge > SubwayPlayerDepth01 + 0.045f)
+            {
+                Destroy(ent.rootObj);
+                subwayEntities.RemoveAt(i);
+                continue;
+            }
+
+            UpdateSubwayEntityVisualTransform(ent, dt);
+
+            if (ent.collectedOrHit) continue;
+
+            // Check overlap with player
+            float laneDist = Mathf.Abs(subwayCurrentLaneFloat - ent.laneIndex);
+            float halfDepth = Mathf.Max(0.045f, ent.depthLength * 0.5f);
+            bool depthOverlap = Mathf.Abs(ent.depth01 - SubwayPlayerDepth01) <= halfDepth;
+
+            if (laneDist < 0.42f && depthOverlap)
+            {
+                if (ent.type == SubwayEntityType.Coin)
+                {
+                    float coinBottom = ent.elevationOffset - 0.45f;
+                    float coinTop = ent.elevationOffset + 0.75f;
+                    if (subwayPlayerHeight >= coinBottom && subwayPlayerHeight <= coinTop)
+                    {
+                        ent.collectedOrHit = true;
+                        Vector3 coinWorldPos = ent.rootObj.transform.position;
+                        mainBouncer.AwardMinigameCornerReward(
+                            1,
+                            coinWorldPos,
+                            new Color(1f, 0.88f, 0.18f, 1f),
+                            new Color(1f, 0.55f, 0.10f, 1f));
+                        subwayPlayerPiece.TriggerPop(0.18f, 0.22f);
+                        PlaySound(enemyPassSound, 1.25f);
+                        Destroy(ent.rootObj);
+                        subwayEntities.RemoveAt(i);
+                        continue;
+                    }
+                }
+                else if (ent.type == SubwayEntityType.SmallObstacle)
+                {
+                    // Safe if jumped cleanly over OR landed on top of it as a stepping stone
+                    if (subwayPlayerHeight < SubwaySmallObstacleHeight - 0.24f)
+                    {
+                        ent.collectedOrHit = true;
+                        TriggerSubwayObstacleHit(ent);
+                        Destroy(ent.rootObj);
+                        subwayEntities.RemoveAt(i);
+                        continue;
+                    }
+                }
+                else if (ent.type == SubwayEntityType.Train)
+                {
+                    // Safe ONLY if riding on top of the train (reached via Ramp or SmallObstacle double-jump)!
+                    if (subwayPlayerHeight < SubwayTrainHeight - 0.22f)
+                    {
+                        ent.collectedOrHit = true;
+                        TriggerSubwayObstacleHit(ent);
+                        Destroy(ent.rootObj);
+                        subwayEntities.RemoveAt(i);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // 7. Position & deform player DVD logo
+        ProjectSubwayPoint(subwayCurrentLaneFloat, SubwayPlayerDepth01, subwayPlayerHeight + 0.36f, out Vector3 playerWorldPos, out float playerPersp);
+        playerWorldPos.z -= 0.12f;
+        subwayPlayerPiece.overallScaleFactor = 0.54f * playerPersp;
+        subwayPlayerPiece.SetCenterPosition(playerWorldPos);
+        float tiltZ = (subwayCurrentLaneFloat - subwayTargetLane) * 18f;
+        subwayPlayerPiece.rootObj.transform.localRotation = mainBouncer.transform.localRotation * Quaternion.Euler(0f, 0f, tiltZ);
+        subwayPlayerPiece.UpdateVisuals(dt);
+    }
+
+    private void TriggerSubwayJump()
+    {
+        if (subwayIsGrounded)
+        {
+            // Peak jump height = (8.4^2)/(2*26.5) = 1.33f:
+            // - High enough to jump over or land on a SmallObstacle (0.85f)
+            // - NOT high enough to jump onto a Train (2.10f) from flat ground!
+            // - Jumping again from the top of a SmallObstacle reaches 0.85 + 1.33 = 2.18f >= 2.10f (Train roof)!
+            subwayVerticalVel = 8.4f;
+            subwayIsGrounded = false;
+            if (subwayPlayerPiece != null)
+            {
+                subwayPlayerPiece.TriggerSquash(Vector2.right, 0.20f, 0.32f);
+            }
+            PlaySound(jumpSound, 1.0f);
+        }
+    }
+
+    private void TriggerSubwayObstacleHit(SubwayEntity ent)
+    {
+        if (mainBouncer == null) return;
+        Vector3 hitPos = ent != null && ent.rootObj != null ? ent.rootObj.transform.position : Vector3.zero;
+        mainBouncer.ApplyMinigameCornerPenalty(3, hitPos);
+        mainBouncer.TriggerHitParticlesWithColors(
+            hitPos,
+            new Color(1f, 0.2f, 0.2f, 1f),
+            new Color(1f, 0.65f, 0.15f, 1f));
+        TriggerScreenRedFlash(screenRedFlashDuration, screenRedFlashMaxAlpha);
+        if (subwayPlayerPiece != null)
+        {
+            subwayPlayerPiece.TriggerSquash(Vector2.up, 0.32f, 0.44f);
+        }
+        PlaySound(damageHitSound, 0.82f);
+    }
+
+    private void UpdateSubwayTrackGeometry()
+    {
+        if (subwayTrackRoot == null) return;
+
+        const int segsPerRail = 14;
+        float[] railLanes = new float[] { -1.5f, -0.5f, 0.5f, 1.5f };
+
+        int segIdx = 0;
+        for (int r = 0; r < 4; r++)
+        {
+            float railLane = railLanes[r];
+            for (int s = 0; s < segsPerRail; s++)
+            {
+                if (segIdx >= subwayRailSegments.Count) break;
+                Transform seg = subwayRailSegments[segIdx++];
+                float d0 = s / (float)segsPerRail;
+                float d1 = (s + 1) / (float)segsPerRail;
+                ProjectSubwayPoint(railLane, d0, 0f, out Vector3 p0, out float sc0);
+                ProjectSubwayPoint(railLane, d1, 0f, out Vector3 p1, out float sc1);
+
+                Vector3 mid = (p0 + p1) * 0.5f;
+                mid.z += 0.05f;
+                Vector3 dir = p1 - p0;
+                float len = dir.magnitude;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+                float thickness = Mathf.Lerp(0.035f, 0.11f, (sc0 + sc1) * 0.5f);
+
+                seg.position = mid;
+                seg.rotation = Quaternion.Euler(0f, 0f, angle);
+                seg.localScale = new Vector3(thickness, len + 0.02f, 1f);
+            }
+        }
+
+        int tieIdx = 0;
+        for (int lane = 0; lane < 3; lane++)
+        {
+            float laneVal = lane - 1;
+            for (int k = 0; k < 9; k++)
+            {
+                if (tieIdx >= subwaySleeperSegments.Count) break;
+                Transform tie = subwaySleeperSegments[tieIdx++];
+                float d = ((k + subwayScrollPhase) / 9f);
+                ProjectSubwayPoint(laneVal, d, 0f, out Vector3 pos, out float sc);
+                pos.z += 0.06f;
+                tie.position = pos;
+                tie.rotation = Quaternion.identity;
+                tie.localScale = new Vector3(1.15f * sc, 0.08f * sc, 1f);
+            }
+        }
+    }
+
+    private void SpawnSubwayPatternAtDepth(float startDepth)
+    {
+        if (subwayTrackRoot == null) return;
+
+        int waveIdx = subwayWaveCounter++;
+        int pattern = waveIdx % 5;
+
+        // Avoid spawning a train in the exact same lane twice in a row
+        int PickTrainLane()
+        {
+            int l = Random.Range(-1, 2);
+            if (l == subwayLastTrainLane) l = (l == 1) ? -1 : (l + 1);
+            subwayLastTrainLane = l;
+            return l;
+        }
+
+        if (pattern == 0)
+        {
+            // Single 3D hurdle in one lane + clear coin line in adjacent lane
+            int hurdleLane = Random.Range(-1, 2);
+            int coinLane = hurdleLane == 0 ? (Random.value > 0.5f ? -1 : 1) : 0;
+            CreateSubwayEntity(SubwayEntityType.SmallObstacle, hurdleLane, startDepth + 0.04f, 0.07f, 0f);
+            CreateSubwayEntity(SubwayEntityType.Coin, hurdleLane, startDepth + 0.04f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth - 0.04f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.05f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, coinLane, startDepth + 0.14f, 0.05f, 0.35f);
+        }
+        else if (pattern == 1)
+        {
+            // Longer 3D Train in one lane with a 3D Ramp in front of it + coins along the roof!
+            int trainLane = PickTrainLane();
+            CreateSubwayEntity(SubwayEntityType.Train, trainLane, startDepth, 0.42f, 0f);
+            CreateSubwayEntity(SubwayEntityType.Ramp, trainLane, startDepth + 0.26f, 0.11f, 0f);
+
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.14f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.04f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.16f, 0.05f, SubwayTrainHeight + 0.38f);
+
+            int sideLane = trainLane == 0 ? 1 : 0;
+            CreateSubwayEntity(SubwayEntityType.SmallObstacle, sideLane, startDepth + 0.08f, 0.07f, 0f);
+        }
+        else if (pattern == 2)
+        {
+            // Two small jumpable 3D hurdles + open lane with coins
+            int freeLane = Random.Range(-1, 2);
+            for (int lane = -1; lane <= 1; lane++)
+            {
+                if (lane == freeLane)
+                {
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth, 0.05f, 0.35f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.09f, 0.05f, 0.35f);
+                }
+                else
+                {
+                    CreateSubwayEntity(SubwayEntityType.SmallObstacle, lane, startDepth + 0.04f, 0.07f, 0f);
+                    CreateSubwayEntity(SubwayEntityType.Coin, lane, startDepth + 0.04f, 0.05f, SubwaySmallObstacleHeight + 0.45f);
+                }
+            }
+        }
+        else if (pattern == 3)
+        {
+            // Longer 3D Train with a small stepping-stone obstacle in front so player can jump onto the small obstacle and jump again onto the train!
+            int trainLane = PickTrainLane();
+            CreateSubwayEntity(SubwayEntityType.Train, trainLane, startDepth - 0.02f, 0.42f, 0f);
+            CreateSubwayEntity(SubwayEntityType.SmallObstacle, trainLane, startDepth + 0.26f, 0.08f, 0f);
+
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.15f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth - 0.05f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.05f, 0.05f, SubwayTrainHeight + 0.38f);
+            CreateSubwayEntity(SubwayEntityType.Coin, trainLane, startDepth + 0.15f, 0.05f, SubwayTrainHeight + 0.38f);
+
+            int otherLane = trainLane == -1 ? 1 : -1;
+            CreateSubwayEntity(SubwayEntityType.Coin, otherLane, startDepth + 0.02f, 0.05f, 0.35f);
+            CreateSubwayEntity(SubwayEntityType.Coin, otherLane, startDepth + 0.12f, 0.05f, 0.35f);
+        }
+        else
+        {
+            // Two parallel longer trains (only after early warm-up waves) with a ramp on one and stepping-stone hurdle in middle
+            if (waveIdx < 4)
+            {
+                CreateSubwayEntity(SubwayEntityType.Coin, -1, startDepth + 0.10f, 0.05f, 0.35f);
+                CreateSubwayEntity(SubwayEntityType.Coin, 0, startDepth + 0.04f, 0.05f, 0.35f);
+                CreateSubwayEntity(SubwayEntityType.Coin, 1, startDepth - 0.02f, 0.05f, 0.35f);
+                CreateSubwayEntity(SubwayEntityType.SmallObstacle, 0, startDepth - 0.08f, 0.07f, 0f);
+            }
+            else
+            {
+                int rampTrainLane = Random.value > 0.5f ? -1 : 1;
+                int secondTrainLane = -rampTrainLane;
+                CreateSubwayEntity(SubwayEntityType.Train, rampTrainLane, startDepth, 0.42f, 0f);
+                CreateSubwayEntity(SubwayEntityType.Ramp, rampTrainLane, startDepth + 0.26f, 0.11f, 0f);
+                CreateSubwayEntity(SubwayEntityType.Train, secondTrainLane, startDepth, 0.42f, 0f);
+                CreateSubwayEntity(SubwayEntityType.SmallObstacle, 0, startDepth + 0.24f, 0.08f, 0f);
+                CreateSubwayEntity(SubwayEntityType.Coin, rampTrainLane, startDepth - 0.08f, 0.05f, SubwayTrainHeight + 0.38f);
+                CreateSubwayEntity(SubwayEntityType.Coin, rampTrainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
+                CreateSubwayEntity(SubwayEntityType.Coin, secondTrainLane, startDepth - 0.08f, 0.05f, SubwayTrainHeight + 0.38f);
+                CreateSubwayEntity(SubwayEntityType.Coin, secondTrainLane, startDepth + 0.06f, 0.05f, SubwayTrainHeight + 0.38f);
+            }
+        }
+    }
+
+    private GameObject CreateSubwayBoxPart(string name, Transform parent, int layer, Vector3 localPos, Vector3 localScale, Color color, Vector3 localEuler = default)
+    {
+        GameObject part = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        part.name = name;
+        part.layer = layer;
+        part.transform.SetParent(parent, false);
+        part.transform.localPosition = localPos;
+        part.transform.localRotation = Quaternion.Euler(localEuler);
+        part.transform.localScale = localScale;
+        Collider col = part.GetComponent<Collider>();
+        if (col != null) Destroy(col);
+        Renderer r = part.GetComponent<Renderer>();
+        if (r != null) r.sharedMaterial = CreateUnlitColorMaterial(color);
+        return part;
+    }
+
+    private void CreateSubwayEntity(SubwayEntityType type, int laneIndex, float depth01, float depthLength, float elevationOffset)
+    {
+        if (subwayTrackRoot == null || mainBouncer == null) return;
+        int layer = mainBouncer.gameObject.layer;
+
+        GameObject root = new GameObject($"Subway_{type}");
+        root.layer = layer;
+        root.transform.SetParent(subwayTrackRoot.transform, false);
+
+        float heightOrtho = 0.5f;
+
+        if (type == SubwayEntityType.Coin)
+        {
+            heightOrtho = 0.55f;
+            // Thick 3D golden coin with outer rim + brighter inner emblem
+            GameObject disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            disc.layer = layer;
+            disc.transform.SetParent(root.transform, false);
+            disc.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            disc.transform.localScale = new Vector3(0.64f, 0.12f, 0.64f);
+            Collider col = disc.GetComponent<Collider>();
+            if (col != null) Destroy(col);
+            Renderer r = disc.GetComponent<Renderer>();
+            if (r != null) r.sharedMaterial = CreateUnlitColorMaterial(new Color(1.0f, 0.84f, 0.12f, 1f));
+
+            CreateSubwayBoxPart("CoinCore", root.transform, layer, Vector3.zero, new Vector3(0.32f, 0.32f, 0.28f), new Color(1.0f, 0.96f, 0.55f, 1f), new Vector3(0f, 0f, 45f));
+        }
+        else if (type == SubwayEntityType.SmallObstacle)
+        {
+            heightOrtho = SubwaySmallObstacleHeight;
+            // Multi-part 3D Roadblock Hurdle: Left/Right dark 3D posts + 3D Main Beam + Bright Top Cap + Side Depth Caps + Hazard Stripes
+            CreateSubwayBoxPart("LeftPost", root.transform, layer, new Vector3(-0.52f, 0.42f, 0f), new Vector3(0.18f, 0.84f, 0.42f), new Color(0.22f, 0.25f, 0.32f, 1f));
+            CreateSubwayBoxPart("RightPost", root.transform, layer, new Vector3(0.52f, 0.42f, 0f), new Vector3(0.18f, 0.84f, 0.42f), new Color(0.22f, 0.25f, 0.32f, 1f));
+            CreateSubwayBoxPart("MainBeamBody", root.transform, layer, new Vector3(0f, 0.54f, 0f), new Vector3(1.30f, 0.44f, 0.46f), new Color(0.95f, 0.34f, 0.12f, 1f));
+            CreateSubwayBoxPart("TopBrightBevel", root.transform, layer, new Vector3(0f, 0.80f, -0.01f), new Vector3(1.34f, 0.14f, 0.48f), new Color(1.0f, 0.88f, 0.22f, 1f));
+            CreateSubwayBoxPart("FrontHazardStripeL", root.transform, layer, new Vector3(-0.30f, 0.54f, -0.24f), new Vector3(0.22f, 0.38f, 0.04f), new Color(1.0f, 0.92f, 0.28f, 1f));
+            CreateSubwayBoxPart("FrontHazardStripeR", root.transform, layer, new Vector3(0.30f, 0.54f, -0.24f), new Vector3(0.22f, 0.38f, 0.04f), new Color(1.0f, 0.92f, 0.28f, 1f));
+            CreateSubwayBoxPart("SideShadeWall", root.transform, layer, new Vector3(0.66f, 0.54f, 0f), new Vector3(0.05f, 0.44f, 0.46f), new Color(0.62f, 0.18f, 0.06f, 1f));
+        }
+        else if (type == SubwayEntityType.Ramp)
+        {
+            heightOrtho = SubwayTrainHeight;
+            // 3D Sloped Boarding Ramp with distinct side walls, bright sloped deck, and chevron boost strips
+            CreateSubwayBoxPart("RampBase", root.transform, layer, new Vector3(0f, 0.42f, 0.12f), new Vector3(1.26f, 0.82f, 0.95f), new Color(0.12f, 0.56f, 0.36f, 1f));
+            CreateSubwayBoxPart("RampSlopeDeck", root.transform, layer, new Vector3(0f, 0.88f, 0f), new Vector3(1.24f, 0.22f, 1.38f), new Color(0.26f, 0.98f, 0.58f, 1f), new Vector3(-34f, 0f, 0f));
+            CreateSubwayBoxPart("RampLeftRail", root.transform, layer, new Vector3(-0.62f, 0.96f, 0f), new Vector3(0.10f, 0.34f, 1.40f), new Color(0.16f, 0.76f, 0.45f, 1f), new Vector3(-34f, 0f, 0f));
+            CreateSubwayBoxPart("RampRightRail", root.transform, layer, new Vector3(0.62f, 0.96f, 0f), new Vector3(0.10f, 0.34f, 1.40f), new Color(0.16f, 0.76f, 0.45f, 1f), new Vector3(-34f, 0f, 0f));
+            CreateSubwayBoxPart("RampStripe1", root.transform, layer, new Vector3(0f, 0.65f, -0.32f), new Vector3(0.88f, 0.08f, 0.18f), new Color(0.88f, 1.0f, 0.42f, 1f), new Vector3(-34f, 0f, 0f));
+            CreateSubwayBoxPart("RampStripe2", root.transform, layer, new Vector3(0f, 1.12f, 0.22f), new Vector3(0.88f, 0.08f, 0.18f), new Color(0.88f, 1.0f, 0.42f, 1f), new Vector3(-34f, 0f, 0f));
+        }
+        else if (type == SubwayEntityType.Train)
+        {
+            heightOrtho = SubwayTrainHeight;
+            // Long, straight-aligned 3D Subway Train Car: Shaded Side Trim, Long Bright Roof Deck, Front Cab Face, Bumper, Headlights!
+            CreateSubwayBoxPart("TrainMainHull", root.transform, layer, new Vector3(0f, 1.05f, 0.42f), new Vector3(1.36f, 1.88f, 2.85f), new Color(0.20f, 0.44f, 0.86f, 1f));
+            CreateSubwayBoxPart("TrainSideWallL", root.transform, layer, new Vector3(-0.69f, 1.05f, 0.42f), new Vector3(0.06f, 1.86f, 2.84f), new Color(0.13f, 0.30f, 0.64f, 1f));
+            CreateSubwayBoxPart("TrainSideWallR", root.transform, layer, new Vector3(0.69f, 1.05f, 0.42f), new Vector3(0.06f, 1.86f, 2.84f), new Color(0.13f, 0.30f, 0.64f, 1f));
+            CreateSubwayBoxPart("TrainRoofDeck", root.transform, layer, new Vector3(0f, 2.02f, 0.40f), new Vector3(1.42f, 0.22f, 2.88f), new Color(0.58f, 0.84f, 1.0f, 1f));
+            CreateSubwayBoxPart("TrainRoofStripe", root.transform, layer, new Vector3(0f, 2.14f, 0.40f), new Vector3(0.52f, 0.06f, 2.65f), new Color(0.82f, 0.94f, 1.0f, 1f));
+            CreateSubwayBoxPart("TrainFrontCab", root.transform, layer, new Vector3(0f, 1.02f, -1.02f), new Vector3(1.34f, 1.82f, 0.14f), new Color(0.28f, 0.56f, 0.96f, 1f));
+            CreateSubwayBoxPart("TrainWindshield", root.transform, layer, new Vector3(0f, 1.38f, -1.10f), new Vector3(1.06f, 0.54f, 0.06f), new Color(0.95f, 0.98f, 0.52f, 1f));
+            CreateSubwayBoxPart("TrainBumper", root.transform, layer, new Vector3(0f, 0.26f, -1.12f), new Vector3(1.40f, 0.28f, 0.14f), new Color(0.85f, 0.22f, 0.22f, 1f));
+            CreateSubwayBoxPart("HeadlightL", root.transform, layer, new Vector3(-0.42f, 0.60f, -1.11f), new Vector3(0.24f, 0.18f, 0.06f), new Color(1.0f, 0.95f, 0.35f, 1f));
+            CreateSubwayBoxPart("HeadlightR", root.transform, layer, new Vector3(0.42f, 0.60f, -1.11f), new Vector3(0.24f, 0.18f, 0.06f), new Color(1.0f, 0.95f, 0.35f, 1f));
+        }
+
+        SubwayEntity ent = new SubwayEntity
+        {
+            type = type,
+            rootObj = root,
+            laneIndex = laneIndex,
+            depth01 = depth01,
+            depthLength = depthLength,
+            elevationOffset = elevationOffset,
+            heightOrtho = heightOrtho,
+            collectedOrHit = false,
+            spinAngle = Random.Range(0f, 360f)
+        };
+        subwayEntities.Add(ent);
+        UpdateSubwayEntityVisualTransform(ent, 0f);
+    }
+
+    private void UpdateSubwayEntityVisualTransform(SubwayEntity ent, float dt)
+    {
+        if (ent == null || ent.rootObj == null) return;
+        ProjectSubwayPoint(ent.laneIndex, ent.depth01, ent.elevationOffset, out Vector3 worldPos, out float sc);
+        worldPos.z -= ent.depth01 * 0.06f;
+
+        // Rapidly scale down right as the entity passes the player so it leaves the screen cleanly without lingering!
+        float passFade = 1f;
+        float passThreshold = SubwayPlayerDepth01 + ent.depthLength * 0.15f;
+        if (ent.depth01 > passThreshold)
+        {
+            passFade = Mathf.Clamp01(1f - (ent.depth01 - passThreshold) / 0.06f);
+        }
+
+        ent.rootObj.transform.position = worldPos;
+        ent.rootObj.transform.localScale = Vector3.one * (sc * passFade);
+
+        if (ent.type == SubwayEntityType.Coin)
+        {
+            ent.spinAngle += dt * 210f;
+            ent.rootObj.transform.localRotation = Quaternion.Euler(0f, ent.spinAngle, 0f);
+        }
+        else
+        {
+            // Keep obstacles, ramps, and trains aligned straight forward down the lane (zero yaw/roll twist)
+            // with a clean forward pitch so both the front face and 3D top roof are clearly visible in the Ortho camera!
+            ent.rootObj.transform.localRotation = Quaternion.Euler(22f, 0f, 0f);
+        }
+    }
+
+    // =========================================================================
+    // MINIGAME 8: HILL CLIMB RACING (RIGHT SCREEN GAS / LEFT SCREEN BRAKE, 360 FLIPS, CIRCULAR DVD WHEELS)
+    // =========================================================================
+
+    private class HillPickupCoin
+    {
+        public GameObject obj;
+        public float worldTrackX;
+        public float heightOffset;
+        public float spinAngle;
+    }
+
+    private GameObject hillRootObj;
+    private readonly List<Transform> hillLineSegments = new List<Transform>();
+    private readonly List<Transform> hillStrutSegments = new List<Transform>();
+    private readonly List<HillPickupCoin> hillCoins = new List<HillPickupCoin>();
+    private DeformableLogoPiece hillCarPiece;
+    private DeformableLogoPiece hillFrontWheelPiece;
+    private DeformableLogoPiece hillRearWheelPiece;
+    private Transform hillBrakePedalBar;
+    private Transform hillGasPedalBar;
+    private Renderer hillBrakePedalRend;
+    private Renderer hillGasPedalRend;
+    private float hillCarTrackX = 0f;
+    private float hillCarWorldY = 0f;
+    private float hillCarVelX = 0f;
+    private float hillCarVelY = 0f;
+    private float hillCarAngleDeg = 0f;
+    private float hillCarAngularVelDeg = 0f;
+    private float hillAirFlipAccumDeg = 0f;
+    private bool hillCarGrounded = true;
+    private float hillNextCoinSpawnX = 6f;
+    private float hillWheelSpinAngle = 0f;
+
+    private void EnterHillClimbMode()
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        StopAnyActiveConvergeAnimation();
+        mainBouncer.DespawnAllChildLogosForMinigame();
+        mainBouncer.SetMainLogoRenderersVisible(false);
+        savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
+
+        DestroyHillClimbVisuals();
+
+        hillCarTrackX = 0f;
+        hillCarVelX = 0f;
+        hillCarVelY = 0f;
+        hillCarAngleDeg = 0f;
+        hillCarAngularVelDeg = 0f;
+        hillAirFlipAccumDeg = 0f;
+        hillCarGrounded = true;
+        hillNextCoinSpawnX = 4.5f;
+        hillWheelSpinAngle = 0f;
+        hillCarWorldY = SampleHillTerrainY(hillCarTrackX) + 0.55f;
+
+        BuildHillClimbVisuals();
+    }
+
+    private void ExitHillClimbMode()
+    {
+        DestroyHillClimbVisuals();
+
+        if (mainBouncer != null)
+        {
+            mainBouncer.SetMainLogoRenderersVisible(true);
+            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+        }
+    }
+
+    private void BuildHillClimbVisuals()
+    {
+        if (mainBouncer == null) return;
+        int layer = mainBouncer.gameObject.layer;
+
+        hillRootObj = new GameObject("HillClimbRoot");
+        hillRootObj.layer = layer;
+        if (mainBouncer.transform.parent != null)
+        {
+            hillRootObj.transform.SetParent(mainBouncer.transform.parent, false);
+        }
+
+        Material lineMat = CreateUnlitColorMaterial(new Color(0.35f, 1.0f, 0.52f, 0.95f));
+        Material strutMat = CreateUnlitColorMaterial(new Color(0.18f, 0.68f, 0.38f, 0.28f), true);
+
+        const int segCount = 48;
+        for (int i = 0; i < segCount; i++)
+        {
+            GameObject seg = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            seg.name = $"HillLineSeg_{i}";
+            seg.layer = layer;
+            seg.transform.SetParent(hillRootObj.transform, false);
+            Collider col = seg.GetComponent<Collider>();
+            if (col != null) Destroy(col);
+            Renderer r = seg.GetComponent<Renderer>();
+            if (r != null) r.sharedMaterial = lineMat;
+            hillLineSegments.Add(seg.transform);
+
+            if (i % 2 == 0)
+            {
+                GameObject strut = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                strut.name = $"HillStrut_{i}";
+                strut.layer = layer;
+                strut.transform.SetParent(hillRootObj.transform, false);
+                Collider c2 = strut.GetComponent<Collider>();
+                if (c2 != null) Destroy(c2);
+                Renderer r2 = strut.GetComponent<Renderer>();
+                if (r2 != null) r2.sharedMaterial = strutMat;
+                hillStrutSegments.Add(strut.transform);
+            }
+        }
+
+        // Create deformable DVD logo car body
+        hillCarPiece = CreateDeformableLogoClone(
+            "HillClimbCar_DVD",
+            0.54f,
+            new Color(1.0f, 0.26f, 0.22f, 1f),
+            new Color(1.0f, 0.88f, 0.22f, 1f));
+
+        // Create two circularly-distorted original DVD logo wheels!
+        hillFrontWheelPiece = CreateDeformableLogoClone(
+            "HillFrontWheel_DVD",
+            0.34f,
+            new Color(0.88f, 0.94f, 1.0f, 1f),
+            new Color(0.24f, 0.82f, 0.98f, 1f));
+        if (hillFrontWheelPiece != null)
+        {
+            hillFrontWheelPiece.isCircularWheel = true;
+            hillFrontWheelPiece.UpdateVisuals(0f);
+        }
+
+        hillRearWheelPiece = CreateDeformableLogoClone(
+            "HillRearWheel_DVD",
+            0.34f,
+            new Color(0.88f, 0.94f, 1.0f, 1f),
+            new Color(0.24f, 0.82f, 0.98f, 1f));
+        if (hillRearWheelPiece != null)
+        {
+            hillRearWheelPiece.isCircularWheel = true;
+            hillRearWheelPiece.UpdateVisuals(0f);
+        }
+
+        // Visual Left (Brake) and Right (Gas) Pedal Indicators at bottom corners of the TV screen
+        GameObject brakeObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        brakeObj.name = "HillLeftBrakePedal";
+        brakeObj.layer = layer;
+        brakeObj.transform.SetParent(hillRootObj.transform, false);
+        Collider bc = brakeObj.GetComponent<Collider>();
+        if (bc != null) Destroy(bc);
+        hillBrakePedalRend = brakeObj.GetComponent<Renderer>();
+        if (hillBrakePedalRend != null) hillBrakePedalRend.sharedMaterial = CreateUnlitColorMaterial(new Color(0.95f, 0.28f, 0.28f, 0.45f), true);
+        hillBrakePedalBar = brakeObj.transform;
+
+        GameObject gasObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        gasObj.name = "HillRightGasPedal";
+        gasObj.layer = layer;
+        gasObj.transform.SetParent(hillRootObj.transform, false);
+        Collider gc = gasObj.GetComponent<Collider>();
+        if (gc != null) Destroy(gc);
+        hillGasPedalRend = gasObj.GetComponent<Renderer>();
+        if (hillGasPedalRend != null) hillGasPedalRend.sharedMaterial = CreateUnlitColorMaterial(new Color(0.25f, 0.96f, 0.48f, 0.45f), true);
+        hillGasPedalBar = gasObj.transform;
+    }
+
+    private void DestroyHillClimbVisuals()
+    {
+        hillLineSegments.Clear();
+        hillStrutSegments.Clear();
+        for (int i = 0; i < hillCoins.Count; i++)
+        {
+            if (hillCoins[i] != null && hillCoins[i].obj != null)
+            {
+                Destroy(hillCoins[i].obj);
+            }
+        }
+        hillCoins.Clear();
+
+        if (hillCarPiece != null)
+        {
+            hillCarPiece.DestroyPiece();
+            hillCarPiece = null;
+        }
+        if (hillFrontWheelPiece != null)
+        {
+            hillFrontWheelPiece.DestroyPiece();
+            hillFrontWheelPiece = null;
+        }
+        if (hillRearWheelPiece != null)
+        {
+            hillRearWheelPiece.DestroyPiece();
+            hillRearWheelPiece = null;
+        }
+
+        if (hillRootObj != null)
+        {
+            Destroy(hillRootObj);
+            hillRootObj = null;
+        }
+        hillBrakePedalBar = null;
+        hillGasPedalBar = null;
+        hillBrakePedalRend = null;
+        hillGasPedalRend = null;
+    }
+
+    /// <summary>
+    /// Procedural curved hill height at track coordinate x.
+    /// Smoothly blends rolling hills with steeper crests as the player drives further.
+    /// </summary>
+    private float SampleHillTerrainY(float trackX)
+    {
+        GetOrthoBounds(out _, out _, out float camMinY, out float camMaxY);
+        float baseLineY = Mathf.Lerp(camMinY, camMaxY, 0.30f);
+
+        float difficultyAmp = 1f + Mathf.Clamp01(Mathf.Abs(trackX) / 80f) * 0.72f;
+        float h =
+            Mathf.Sin(trackX * 0.44f) * 1.22f +
+            Mathf.Sin(trackX * 0.19f + 1.3f) * 0.88f +
+            Mathf.Cos(trackX * 0.84f - 0.6f) * 0.38f;
+
+        return baseLineY + h * difficultyAmp;
+    }
+
+    private float SampleHillTerrainSlope(float trackX)
+    {
+        float difficultyAmp = 1f + Mathf.Clamp01(Mathf.Abs(trackX) / 80f) * 0.72f;
+        float dh =
+            Mathf.Cos(trackX * 0.44f) * (1.22f * 0.44f) +
+            Mathf.Cos(trackX * 0.19f + 1.3f) * (0.88f * 0.19f) -
+            Mathf.Sin(trackX * 0.84f - 0.6f) * (0.38f * 0.84f);
+        return dh * difficultyAmp;
+    }
+
+    private void UpdateHillClimb(float dt)
+    {
+        if (mainBouncer == null || orthoCamera == null || hillCarPiece == null) return;
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float baseZ = mainBouncer.transform.position.z;
+        float screenMidX = (camMinX + camMaxX) * 0.5f;
+
+        // Controls: Holding click on Right side of screen = Gas (Speed Up + Pitch Up / Backflip torque)
+        //           Holding click on Left side of screen (or Right-Click) = Brake / Reverse (Brake + Pitch Down / Frontflip torque)
+        bool leftMouseHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        bool rightMouseHeld = Mouse.current != null && Mouse.current.rightButton.isPressed;
+
+        bool gasHeld = leftMouseHeld && targetCursorOrthoPos.x >= screenMidX;
+        bool brakeHeld = (leftMouseHeld && targetCursorOrthoPos.x < screenMidX) || rightMouseHeld;
+
+        // Update visual pedal bars at bottom-left and bottom-right of screen
+        if (hillBrakePedalBar != null)
+        {
+            float pScaleY = brakeHeld ? 0.18f : 0.30f;
+            hillBrakePedalBar.position = new Vector3(Mathf.Lerp(camMinX, screenMidX, 0.38f), camMinY + 0.34f, baseZ - 0.06f);
+            hillBrakePedalBar.localScale = new Vector3((camMaxX - camMinX) * 0.28f, pScaleY, 0.1f);
+            if (hillBrakePedalRend != null && hillBrakePedalRend.sharedMaterial != null)
+            {
+                Color c = brakeHeld ? new Color(1.0f, 0.25f, 0.25f, 0.88f) : new Color(0.85f, 0.22f, 0.22f, 0.32f);
+                if (hillBrakePedalRend.sharedMaterial.HasProperty("_BaseColor")) hillBrakePedalRend.sharedMaterial.SetColor("_BaseColor", c);
+                if (hillBrakePedalRend.sharedMaterial.HasProperty("_Color")) hillBrakePedalRend.sharedMaterial.SetColor("_Color", c);
+            }
+        }
+        if (hillGasPedalBar != null)
+        {
+            float pScaleY = gasHeld ? 0.18f : 0.30f;
+            hillGasPedalBar.position = new Vector3(Mathf.Lerp(screenMidX, camMaxX, 0.62f), camMinY + 0.34f, baseZ - 0.06f);
+            hillGasPedalBar.localScale = new Vector3((camMaxX - camMinX) * 0.28f, pScaleY, 0.1f);
+            if (hillGasPedalRend != null && hillGasPedalRend.sharedMaterial != null)
+            {
+                Color c = gasHeld ? new Color(0.25f, 1.0f, 0.48f, 0.88f) : new Color(0.20f, 0.78f, 0.38f, 0.32f);
+                if (hillGasPedalRend.sharedMaterial.HasProperty("_BaseColor")) hillGasPedalRend.sharedMaterial.SetColor("_BaseColor", c);
+                if (hillGasPedalRend.sharedMaterial.HasProperty("_Color")) hillGasPedalRend.sharedMaterial.SetColor("_Color", c);
+            }
+        }
+
+        float wheelBase = 1.12f;
+        float halfWheelBase = wheelBase * 0.5f;
+        const float rideClearance = 0.50f;
+
+        float rearSampleX = hillCarTrackX - halfWheelBase;
+        float frontSampleX = hillCarTrackX + halfWheelBase;
+        float hRear = SampleHillTerrainY(rearSampleX);
+        float hFront = SampleHillTerrainY(frontSampleX);
+
+        float terrainAngleRad = Mathf.Atan2(hFront - hRear, wheelBase);
+        float terrainAngleDeg = terrainAngleRad * Mathf.Rad2Deg;
+        float groundCenterY = (hRear + hFront) * 0.5f + rideClearance;
+
+        if (hillCarGrounded)
+        {
+            // Drive along curved hill
+            float driveAccel = 0f;
+            if (gasHeld) driveAccel += 14.5f;
+            if (brakeHeld) driveAccel -= 12.5f;
+
+            // Gravity component along slope
+            float slopeGravity = -16.5f * Mathf.Sin(terrainAngleRad);
+            hillCarVelX += (driveAccel * Mathf.Cos(terrainAngleRad) + slopeGravity) * dt;
+            hillCarVelX *= Mathf.Pow(0.66f, dt); // Smooth rolling resistance
+            hillCarVelX = Mathf.Clamp(hillCarVelX, -10.5f, 14.5f);
+
+            // Realistic wheelie & flip pitch torque! Holding gas on steep hills can wheelie & flip the car!
+            float angleDiffFromSlope = Mathf.DeltaAngle(terrainAngleDeg, hillCarAngleDeg);
+            float throttleTorque = 0f;
+            if (gasHeld) throttleTorque += 205f + Mathf.Max(0f, Mathf.Sin(terrainAngleRad)) * 85f;
+            if (brakeHeld) throttleTorque -= 205f + Mathf.Max(0f, -Mathf.Sin(terrainAngleRad)) * 85f;
+
+            // Suspension spring smoothly aligns wheels to slope within normal wheelie range (< 58 deg)
+            float suspensionRestore = 0f;
+            if (Mathf.Abs(angleDiffFromSlope) < 58f && !gasHeld && !brakeHeld)
+            {
+                suspensionRestore = -angleDiffFromSlope * 11.0f;
+            }
+            else if (Mathf.Abs(angleDiffFromSlope) < 44f)
+            {
+                suspensionRestore = -angleDiffFromSlope * 4.2f;
+            }
+
+            hillCarAngularVelDeg += (throttleTorque + suspensionRestore) * dt;
+            hillCarAngularVelDeg *= Mathf.Pow(0.15f, dt);
+            hillCarAngleDeg += hillCarAngularVelDeg * dt;
+
+            // Check if the car flipped upside-down onto its roof while on the ground!
+            if (Mathf.Abs(Mathf.DeltaAngle(hillCarAngleDeg, terrainAngleDeg)) > 108f)
+            {
+                TriggerHillRoofCrash(camMinX, camMaxX, baseZ, terrainAngleDeg);
+            }
+
+            float slopeBefore = SampleHillTerrainSlope(hillCarTrackX);
+            hillCarTrackX += hillCarVelX * dt;
+            float slopeAfter = SampleHillTerrainSlope(hillCarTrackX);
+
+            float nextHRear = SampleHillTerrainY(hillCarTrackX - halfWheelBase);
+            float nextHFront = SampleHillTerrainY(hillCarTrackX + halfWheelBase);
+            float nextGroundY = (nextHRear + nextHFront) * 0.5f + rideClearance;
+            float analyticalVelY = hillCarVelX * slopeAfter;
+
+            // Smooth crest launch detection using analytical curvature (never glitches on frame dt spikes!)
+            float downwardCurvatureDrop = (hillCarVelX * slopeBefore) - analyticalVelY;
+            if ((Mathf.Abs(hillCarVelX) > 6.4f && downwardCurvatureDrop > 1.85f && slopeBefore > 0.15f) || Mathf.Abs(angleDiffFromSlope) > 68f)
+            {
+                hillCarGrounded = false;
+                hillAirFlipAccumDeg = 0f;
+                hillCarVelY = hillCarVelX * slopeBefore + 0.65f;
+                hillCarWorldY = nextGroundY + 0.04f;
+            }
+            else
+            {
+                hillCarWorldY = nextGroundY;
+                hillCarVelY = analyticalVelY;
+            }
+        }
+        else
+        {
+            // Airborne physics: full 360-degree flips!
+            if (gasHeld) hillCarAngularVelDeg += 290f * dt;
+            if (brakeHeld) hillCarAngularVelDeg -= 290f * dt;
+            hillCarAngularVelDeg = Mathf.Clamp(hillCarAngularVelDeg, -420f, 420f);
+            float stepAng = hillCarAngularVelDeg * dt;
+            hillCarAngleDeg += stepAng;
+            hillAirFlipAccumDeg += stepAng;
+
+            // Award flip bonus if player completes a full 360-degree flip in the air!
+            if (Mathf.Abs(hillAirFlipAccumDeg) >= 325f)
+            {
+                hillAirFlipAccumDeg = 0f;
+                Vector3 flipPos = new Vector3(Mathf.Lerp(camMinX, camMaxX, 0.32f), hillCarWorldY + 0.5f, baseZ);
+                mainBouncer.AwardMinigameCornerReward(
+                    2,
+                    flipPos,
+                    new Color(0.25f, 1.0f, 0.88f, 1f),
+                    new Color(1.0f, 0.88f, 0.22f, 1f));
+                hillCarPiece.TriggerPop(0.26f, 0.28f);
+                PlaySound(suikaMergeSound, 1.22f);
+            }
+
+            hillCarVelY -= 18.5f * dt;
+            hillCarTrackX += hillCarVelX * dt;
+            hillCarWorldY += hillCarVelY * dt;
+
+            float nextHRear = SampleHillTerrainY(hillCarTrackX - halfWheelBase);
+            float nextHFront = SampleHillTerrainY(hillCarTrackX + halfWheelBase);
+            groundCenterY = (nextHRear + nextHFront) * 0.5f + rideClearance;
+            terrainAngleRad = Mathf.Atan2(nextHFront - nextHRear, wheelBase);
+            terrainAngleDeg = terrainAngleRad * Mathf.Rad2Deg;
+
+            if (hillCarWorldY <= groundCenterY)
+            {
+                hillCarWorldY = groundCenterY;
+                hillCarGrounded = true;
+                hillAirFlipAccumDeg = 0f;
+
+                // Check if car landed upside-down (roof crash!)
+                float angleDiff = Mathf.Abs(Mathf.DeltaAngle(hillCarAngleDeg, terrainAngleDeg));
+                if (angleDiff > 100f)
+                {
+                    TriggerHillRoofCrash(camMinX, camMaxX, baseZ, terrainAngleDeg);
+                }
+                else
+                {
+                    float impact = Mathf.Clamp(Mathf.Abs(hillCarVelY) * 0.025f, 0.10f, 0.30f);
+                    hillCarPiece.TriggerSquash(Vector2.up, impact, 0.35f);
+                    if (hillFrontWheelPiece != null) hillFrontWheelPiece.TriggerSquash(Vector2.up, impact * 0.8f, 0.30f);
+                    if (hillRearWheelPiece != null) hillRearWheelPiece.TriggerSquash(Vector2.up, impact * 0.8f, 0.30f);
+                    hillCarAngleDeg = Mathf.LerpAngle(hillCarAngleDeg, terrainAngleDeg, 0.72f);
+                    hillCarAngularVelDeg *= 0.20f;
+                    PlaySound(towerLandSound, 1.05f);
+                }
+                hillCarVelY = hillCarVelX * SampleHillTerrainSlope(hillCarTrackX);
+            }
+        }
+
+        // Camera X follows car with car positioned at 32% from left of screen
+        float carScreenX = Mathf.Lerp(camMinX, camMaxX, 0.32f);
+        float trackToWorldOffsetX = carScreenX - hillCarTrackX;
+
+        // Spawn coins ahead on the hill
+        float visibleMaxTrackX = hillCarTrackX + (camMaxX - carScreenX) + 3f;
+        while (hillNextCoinSpawnX < visibleMaxTrackX)
+        {
+            SpawnHillCoinCluster(hillNextCoinSpawnX);
+            hillNextCoinSpawnX += Random.Range(4.8f, 8.2f);
+        }
+
+        // Update curved hill line segments & vertical struts anchored in world track coordinates so struts scroll smoothly with the terrain!
+        int segCount = hillLineSegments.Count;
+        float spanW = (camMaxX - camMinX) + 2.0f;
+        float stepX = spanW / segCount;
+        float leftWorldTrackX = (camMinX - 1.0f) - trackToWorldOffsetX;
+        float snappedStartTrackX = Mathf.Floor(leftWorldTrackX / stepX) * stepX;
+
+        for (int i = 0; i < segCount; i++)
+        {
+            float tx0 = snappedStartTrackX + i * stepX;
+            float tx1 = tx0 + stepX;
+            float sx0 = tx0 + trackToWorldOffsetX;
+            float sx1 = tx1 + trackToWorldOffsetX;
+            float y0 = SampleHillTerrainY(tx0);
+            float y1 = SampleHillTerrainY(tx1);
+
+            Vector3 p0 = new Vector3(sx0, y0, baseZ + 0.04f);
+            Vector3 p1 = new Vector3(sx1, y1, baseZ + 0.04f);
+            Vector3 mid = (p0 + p1) * 0.5f;
+            Vector3 diff = p1 - p0;
+            float len = diff.magnitude;
+            float ang = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90f;
+
+            Transform seg = hillLineSegments[i];
+            seg.position = mid;
+            seg.rotation = Quaternion.Euler(0f, 0f, ang);
+            seg.localScale = new Vector3(0.13f, len + 0.04f, 1f);
+        }
+
+        float strutSpacing = stepX * 2f;
+        float snappedStrutStartTrackX = Mathf.Floor(leftWorldTrackX / strutSpacing) * strutSpacing;
+        for (int s = 0; s < hillStrutSegments.Count; s++)
+        {
+            Transform strut = hillStrutSegments[s];
+            float stx = snappedStrutStartTrackX + s * strutSpacing;
+            float ssx = stx + trackToWorldOffsetX;
+            float sy = SampleHillTerrainY(stx);
+            float bottomY = camMinY - 0.5f;
+            float h = Mathf.Max(0.1f, sy - bottomY);
+            strut.position = new Vector3(ssx, bottomY + h * 0.5f, baseZ + 0.08f);
+            strut.rotation = Quaternion.identity;
+            strut.localScale = new Vector3(0.05f, h, 1f);
+        }
+
+        // Update & collect hill coins
+        Vector3 carWorldCenter = new Vector3(carScreenX, hillCarWorldY, baseZ - 0.08f);
+        for (int i = hillCoins.Count - 1; i >= 0; i--)
+        {
+            HillPickupCoin coin = hillCoins[i];
+            if (coin == null || coin.obj == null)
+            {
+                hillCoins.RemoveAt(i);
+                continue;
+            }
+
+            if (coin.worldTrackX < hillCarTrackX - 10f)
+            {
+                Destroy(coin.obj);
+                hillCoins.RemoveAt(i);
+                continue;
+            }
+
+            float coinScreenX = coin.worldTrackX + trackToWorldOffsetX;
+            float coinY = SampleHillTerrainY(coin.worldTrackX) + coin.heightOffset;
+            Vector3 coinPos = new Vector3(coinScreenX, coinY, baseZ - 0.05f);
+            coin.obj.transform.position = coinPos;
+            coin.spinAngle += dt * 200f;
+            coin.obj.transform.localRotation = Quaternion.Euler(0f, coin.spinAngle, 0f) * Quaternion.Euler(90f, 0f, 0f);
+
+            if (Vector2.Distance(new Vector2(carWorldCenter.x, carWorldCenter.y), new Vector2(coinPos.x, coinPos.y)) <= 1.05f)
+            {
+                mainBouncer.AwardMinigameCornerReward(
+                    1,
+                    coinPos,
+                    new Color(1f, 0.88f, 0.18f, 1f),
+                    new Color(0.35f, 1f, 0.52f, 1f));
+                hillCarPiece.TriggerPop(0.16f, 0.22f);
+                PlaySound(enemyPassSound, 1.2f);
+                Destroy(coin.obj);
+                hillCoins.RemoveAt(i);
+            }
+        }
+
+        // Update Car Visuals & Circularly-Distorted DVD Logo Wheels (spinning cleanly in place around their geometric center!)
+        Quaternion carRot = Quaternion.Euler(0f, 0f, hillCarAngleDeg);
+        hillCarPiece.SetCenterPosition(carWorldCenter);
+        hillCarPiece.rootObj.transform.localRotation = mainBouncer.transform.localRotation * carRot;
+        hillCarPiece.UpdateVisuals(dt);
+
+        hillWheelSpinAngle -= hillCarVelX * dt * 250f;
+        Quaternion wheelSpinRot = mainBouncer.transform.localRotation * Quaternion.Euler(0f, 0f, hillWheelSpinAngle);
+        Vector3 rightDir = carRot * Vector3.right;
+        Vector3 upDir = carRot * Vector3.up;
+
+        if (hillFrontWheelPiece != null && hillFrontWheelPiece.rootObj != null)
+        {
+            Vector3 fwPos = carWorldCenter + rightDir * halfWheelBase - upDir * 0.28f + new Vector3(0f, 0f, -0.05f);
+            hillFrontWheelPiece.SetCenterPosition(fwPos);
+            hillFrontWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
+            hillFrontWheelPiece.UpdateVisuals(dt);
+        }
+        if (hillRearWheelPiece != null && hillRearWheelPiece.rootObj != null)
+        {
+            Vector3 rwPos = carWorldCenter - rightDir * halfWheelBase - upDir * 0.28f + new Vector3(0f, 0f, -0.05f);
+            hillRearWheelPiece.SetCenterPosition(rwPos);
+            hillRearWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
+            hillRearWheelPiece.UpdateVisuals(dt);
+        }
+    }
+
+    private void TriggerHillRoofCrash(float camMinX, float camMaxX, float baseZ, float terrainAngleDeg)
+    {
+        Vector3 crashWorldPos = new Vector3(Mathf.Lerp(camMinX, camMaxX, 0.32f), hillCarWorldY, baseZ);
+        mainBouncer.ApplyMinigameCornerPenalty(3, crashWorldPos);
+        mainBouncer.TriggerHitParticlesWithColors(
+            crashWorldPos,
+            new Color(1f, 0.25f, 0.2f, 1f),
+            new Color(1f, 0.85f, 0.2f, 1f));
+        TriggerScreenRedFlash(screenRedFlashDuration, screenRedFlashMaxAlpha);
+        hillCarPiece.TriggerSquash(Vector2.up, 0.38f, 0.48f);
+        if (hillFrontWheelPiece != null) hillFrontWheelPiece.TriggerPop(0.25f, 0.30f);
+        if (hillRearWheelPiece != null) hillRearWheelPiece.TriggerPop(0.25f, 0.30f);
+        PlaySound(damageHitSound, 0.78f);
+        hillCarVelX *= 0.20f;
+        hillCarAngleDeg = terrainAngleDeg;
+        hillCarAngularVelDeg = 0f;
+    }
+
+    private void SpawnHillCoinCluster(float startTrackX)
+    {
+        if (hillRootObj == null || mainBouncer == null) return;
+        int layer = mainBouncer.gameObject.layer;
+        Material coinMat = CreateUnlitColorMaterial(new Color(1.0f, 0.86f, 0.16f, 1f));
+
+        int count = Random.Range(3, 6);
+        for (int i = 0; i < count; i++)
+        {
+            float tx = startTrackX + i * 0.95f;
+            GameObject cObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cObj.name = "HillMoneyCoin";
+            cObj.layer = layer;
+            cObj.transform.SetParent(hillRootObj.transform, false);
+            cObj.transform.localScale = new Vector3(0.55f, 0.07f, 0.55f);
+            Collider col = cObj.GetComponent<Collider>();
+            if (col != null) Destroy(col);
+            Renderer r = cObj.GetComponent<Renderer>();
+            if (r != null) r.sharedMaterial = coinMat;
+
+            hillCoins.Add(new HillPickupCoin
+            {
+                obj = cObj,
+                worldTrackX = tx,
+                heightOffset = 0.68f,
+                spinAngle = i * 35f
+            });
+        }
+    }
+
+    // =========================================================================
+    // MINIGAME 9: COLOR MATCHER / SLINGSHOT SHOOTER (SUIKA JIGGLE & POP)
+    // =========================================================================
+
+    private class ColorShooterNode
+    {
+        public DeformableLogoPiece visual;
+        public int colorIndex;
+        public int mergedCount = 1;
+        public Vector2 pos;
+        public Vector2 vel;
+        public float baseRadiusX;
+        public float baseRadiusY;
+        public float radiusX;
+        public float radiusY;
+        public bool isShotProjectile;
+        public float shotImpactEnergyTimer;
+        public float age;
+    }
+
+    private const int ColorShooterPaletteCount = 8;
+    private static readonly Color[,] ColorShooterPalette = new Color[,]
+    {
+        { new Color(1.00f, 0.22f, 0.28f, 1f), new Color(1.00f, 0.72f, 0.20f, 1f) }, // 0: Crimson Red / Gold
+        { new Color(0.18f, 0.95f, 0.42f, 1f), new Color(0.82f, 1.00f, 0.25f, 1f) }, // 1: Emerald Green / Lime
+        { new Color(0.20f, 0.62f, 1.00f, 1f), new Color(0.28f, 0.98f, 0.96f, 1f) }, // 2: Cobalt Blue / Cyan
+        { new Color(0.95f, 0.28f, 0.92f, 1f), new Color(0.56f, 0.25f, 1.00f, 1f) }, // 3: Neon Magenta / Violet
+        { new Color(1.00f, 0.88f, 0.16f, 1f), new Color(1.00f, 0.46f, 0.10f, 1f) }, // 4: Solar Yellow / Amber
+        { new Color(0.15f, 0.96f, 0.88f, 1f), new Color(0.18f, 0.48f, 0.92f, 1f) }, // 5: Electric Mint / Deep Azure
+        { new Color(1.00f, 0.48f, 0.16f, 1f), new Color(0.95f, 0.18f, 0.52f, 1f) }, // 6: Tangerine Orange / Hot Pink
+        { new Color(0.94f, 0.96f, 1.00f, 1f), new Color(0.45f, 0.58f, 0.78f, 1f) }  // 7: Pure White / Frosted Silver
+    };
+
+    private GameObject colorShooterRoot;
+    private readonly List<ColorShooterNode> floatingPileNodes = new List<ColorShooterNode>();
+    private readonly List<Transform> shooterAimDots = new List<Transform>();
+    private DeformableLogoPiece shooterLoadedPiece;
+    private int shooterLoadedColorIndex = 0;
+    private bool isDraggingSlingshot = false;
+    private Vector2 slingshotAnchorPos;
+    private float shooterReplenishTimer = 0f;
+    private const float ColorShooterLogoScale = 0.48f;
+    private const int TargetFloatingPileCount = 16;
+
+    /// <summary>
+    /// Graph-coloring / anti-neighbor spawn algorithm:
+    /// Examines all existing nodes within neighborRadius of spawnPos and picks a color from the 8-color palette
+    /// that does NOT match any nearby neighbor (with only a rare ~3.5% chance on replenish of allowing a neighbor color).
+    /// </summary>
+    private int PickSmartNonMatchingPileColor(Vector2 spawnPos, bool allowRareMatch)
+    {
+        if (allowRareMatch && floatingPileNodes.Count > 0 && Random.value < 0.035f)
+        {
+            return floatingPileNodes[Random.Range(0, floatingPileNodes.Count)].colorIndex;
+        }
+
+        const float neighborCheckRadius = 2.45f;
+        int[] nearbyCounts = new int[ColorShooterPaletteCount];
+        int[] totalCounts = new int[ColorShooterPaletteCount];
+
+        for (int i = 0; i < floatingPileNodes.Count; i++)
+        {
+            ColorShooterNode n = floatingPileNodes[i];
+            if (n == null) continue;
+            int c = Mathf.Clamp(n.colorIndex, 0, ColorShooterPaletteCount - 1);
+            totalCounts[c]++;
+            if (Vector2.Distance(spawnPos, n.pos) <= neighborCheckRadius)
+            {
+                nearbyCounts[c]++;
+            }
+        }
+
+        // Collect all colors that have ZERO nearby neighbors
+        List<int> safeColors = new List<int>(ColorShooterPaletteCount);
+        for (int c = 0; c < ColorShooterPaletteCount; c++)
+        {
+            if (nearbyCounts[c] == 0)
+            {
+                safeColors.Add(c);
+            }
+        }
+
+        if (safeColors.Count > 0)
+        {
+            // Prefer colors that are least represented in the overall pile so all 8 colors stay balanced
+            safeColors.Sort((a, b) => totalCounts[a].CompareTo(totalCounts[b]));
+            int poolSize = Mathf.Min(3, safeColors.Count);
+            return safeColors[Random.Range(0, poolSize)];
+        }
+
+        // Fallback: pick the color with the minimum nearby count
+        int bestColor = 0;
+        int bestNear = int.MaxValue;
+        for (int c = 0; c < ColorShooterPaletteCount; c++)
+        {
+            if (nearbyCounts[c] < bestNear)
+            {
+                bestNear = nearbyCounts[c];
+                bestColor = c;
+            }
+        }
+        return bestColor;
+    }
+
+    private void EnterColorShooterMode()
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        StopAnyActiveConvergeAnimation();
+        mainBouncer.DespawnAllChildLogosForMinigame();
+        mainBouncer.SetMainLogoRenderersVisible(false);
+        savedLogoDirectionBeforeRunner = mainBouncer.GetDirectionVector();
+
+        ClearColorShooterState();
+
+        int layer = mainBouncer.gameObject.layer;
+        colorShooterRoot = new GameObject("ColorShooterRoot");
+        colorShooterRoot.layer = layer;
+        if (mainBouncer.transform.parent != null)
+        {
+            colorShooterRoot.transform.SetParent(mainBouncer.transform.parent, false);
+        }
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        slingshotAnchorPos = new Vector2((camMinX + camMaxX) * 0.5f, camMinY + (camMaxY - camMinY) * 0.18f);
+
+        // Create aim line dots
+        Material dotMat = CreateUnlitColorMaterial(new Color(1f, 1f, 1f, 0.85f), true);
+        for (int i = 0; i < 14; i++)
+        {
+            GameObject dot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            dot.name = $"SlingshotAimDot_{i}";
+            dot.layer = layer;
+            dot.transform.SetParent(colorShooterRoot.transform, false);
+            Collider col = dot.GetComponent<Collider>();
+            if (col != null) Destroy(col);
+            Renderer r = dot.GetComponent<Renderer>();
+            if (r != null) r.sharedMaterial = dotMat;
+            dot.SetActive(false);
+            shooterAimDots.Add(dot.transform);
+        }
+
+        // Spawn initial floating pile of DVD logos in upper/middle screen using non-adjacent color placement
+        Vector2 pileCenter = new Vector2((camMinX + camMaxX) * 0.5f, Mathf.Lerp(camMinY, camMaxY, 0.64f));
+        for (int i = 0; i < TargetFloatingPileCount; i++)
+        {
+            float angle = i * (Mathf.PI * 2f / TargetFloatingPileCount) + Random.Range(-0.15f, 0.15f);
+            float dist = (i < 5) ? Random.Range(0.55f, 1.25f) : Random.Range(1.45f, 2.85f);
+            Vector2 spawnPos = pileCenter + new Vector2(Mathf.Cos(angle) * dist * 1.35f, Mathf.Sin(angle) * dist * 0.75f);
+            int smartColor = PickSmartNonMatchingPileColor(spawnPos, false);
+            SpawnFloatingPileLogo(spawnPos, smartColor, false);
+        }
+
+        SpawnNextSlingshotLogo();
+    }
+
+    private void ExitColorShooterMode()
+    {
+        ClearColorShooterState();
+
+        if (mainBouncer != null)
+        {
+            mainBouncer.SetMainLogoRenderersVisible(true);
+            mainBouncer.EnsureValidBounceDirectionAfterMinigame(savedLogoDirectionBeforeRunner);
+        }
+    }
+
+    private void ClearColorShooterState()
+    {
+        for (int i = 0; i < floatingPileNodes.Count; i++)
+        {
+            if (floatingPileNodes[i] != null && floatingPileNodes[i].visual != null)
+            {
+                floatingPileNodes[i].visual.DestroyPiece();
+            }
+        }
+        floatingPileNodes.Clear();
+        shooterAimDots.Clear();
+
+        if (shooterLoadedPiece != null)
+        {
+            shooterLoadedPiece.DestroyPiece();
+            shooterLoadedPiece = null;
+        }
+
+        if (colorShooterRoot != null)
+        {
+            Destroy(colorShooterRoot);
+            colorShooterRoot = null;
+        }
+        isDraggingSlingshot = false;
+    }
+
+    private void SpawnNextSlingshotLogo()
+    {
+        if (shooterLoadedPiece != null)
+        {
+            shooterLoadedPiece.DestroyPiece();
+            shooterLoadedPiece = null;
+        }
+
+        // Pick a color present in the floating pile so the player always has valid matches
+        if (floatingPileNodes.Count > 0)
+        {
+            shooterLoadedColorIndex = floatingPileNodes[Random.Range(0, floatingPileNodes.Count)].colorIndex;
+        }
+        else
+        {
+            shooterLoadedColorIndex = Random.Range(0, ColorShooterPaletteCount);
+        }
+
+        Color pCol = ColorShooterPalette[shooterLoadedColorIndex, 0];
+        Color sCol = ColorShooterPalette[shooterLoadedColorIndex, 1];
+        shooterLoadedPiece = CreateDeformableLogoClone("SlingshotLoaded_DVD", ColorShooterLogoScale, pCol, sCol);
+        if (shooterLoadedPiece != null)
+        {
+            float baseZ = mainBouncer != null ? mainBouncer.transform.position.z - 0.1f : 0f;
+            shooterLoadedPiece.SetCenterPosition(new Vector3(slingshotAnchorPos.x, slingshotAnchorPos.y, baseZ));
+            shooterLoadedPiece.TriggerPop(0.28f, 0.26f);
+        }
+    }
+
+    private ColorShooterNode SpawnFloatingPileLogo(Vector2 pos, int colorIdx, bool isProjectile)
+    {
+        colorIdx = Mathf.Clamp(colorIdx, 0, ColorShooterPaletteCount - 1);
+        Color pCol = ColorShooterPalette[colorIdx, 0];
+        Color sCol = ColorShooterPalette[colorIdx, 1];
+        DeformableLogoPiece piece = CreateDeformableLogoClone($"ColorPile_DVD_{colorIdx}", ColorShooterLogoScale, pCol, sCol);
+        if (piece == null) return null;
+
+        float baseZ = mainBouncer != null ? mainBouncer.transform.position.z - 0.06f : 0f;
+        piece.SetCenterPosition(new Vector3(pos.x, pos.y, baseZ));
+        piece.TriggerPop(0.22f, 0.25f);
+
+        float baseRx = Mathf.Max(0.45f, piece.EffectiveHalfWidth * 0.92f);
+        float baseRy = Mathf.Max(0.28f, piece.EffectiveHalfHeight * 0.92f);
+        ColorShooterNode node = new ColorShooterNode
+        {
+            visual = piece,
+            colorIndex = colorIdx,
+            mergedCount = 1,
+            pos = pos,
+            vel = Vector2.zero,
+            baseRadiusX = baseRx,
+            baseRadiusY = baseRy,
+            radiusX = baseRx,
+            radiusY = baseRy,
+            isShotProjectile = isProjectile,
+            shotImpactEnergyTimer = isProjectile ? 0.55f : 0f,
+            age = 0f
+        };
+        floatingPileNodes.Add(node);
+        return node;
+    }
+
+    private void ApplyMergedScaleToColorNode(ColorShooterNode node)
+    {
+        if (node == null || node.visual == null) return;
+        int count = Mathf.Max(1, node.mergedCount);
+        float growthMult = Mathf.Min(2.35f, 1f + 0.24f * Mathf.Sqrt(count - 1));
+        node.visual.overallScaleFactor = ColorShooterLogoScale * growthMult;
+        node.radiusX = node.baseRadiusX * growthMult;
+        node.radiusY = node.baseRadiusY * growthMult;
+    }
+
+    private int GetTotalFloatingPileOriginalUnitCount()
+    {
+        int totalUnits = 0;
+        for (int i = 0; i < floatingPileNodes.Count; i++)
+        {
+            ColorShooterNode n = floatingPileNodes[i];
+            if (n == null || n.visual == null) continue;
+            totalUnits += Mathf.Max(1, n.mergedCount);
+        }
+        return totalUnits;
+    }
+
+    private void UpdateColorShooter(float dt)
+    {
+        if (mainBouncer == null || orthoCamera == null) return;
+
+        GetOrthoBounds(out float camMinX, out float camMaxX, out float camMinY, out float camMaxY);
+        float baseZ = mainBouncer.transform.position.z - 0.06f;
+        slingshotAnchorPos = new Vector2((camMinX + camMaxX) * 0.5f, camMinY + (camMaxY - camMinY) * 0.19f);
+
+        // 1. Slingshot Hold-Drag Down Aiming & Shooting
+        bool leftHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        if (shooterLoadedPiece == null)
+        {
+            SpawnNextSlingshotLogo();
+        }
+
+        if (leftHeld && shooterLoadedPiece != null)
+        {
+            if (!isDraggingSlingshot)
+            {
+                isDraggingSlingshot = true;
+            }
+
+            // Compute pull vector from anchor to cursor (dragging downward pulls the slingshot back to aim upward!)
+            Vector2 pullVec = slingshotAnchorPos - targetCursorOrthoPos;
+            // Ensure pulling down shoots upward into the floating pile
+            if (pullVec.y < 0.15f)
+            {
+                pullVec.y = Mathf.Max(0.25f, Mathf.Abs(pullVec.y));
+            }
+
+            float maxPullDist = 2.6f;
+            float pullDist = Mathf.Clamp(pullVec.magnitude, 0.15f, maxPullDist);
+            float power01 = Mathf.Clamp01(pullDist / maxPullDist);
+            Vector2 aimDir = pullVec.normalized;
+
+            // Visually displace the loaded DVD logo slightly along the pullback vector & squash it with tension
+            Vector2 loadedVisualPos = slingshotAnchorPos - aimDir * (power01 * 0.65f);
+            shooterLoadedPiece.SetCenterPosition(new Vector3(loadedVisualPos.x, loadedVisualPos.y, baseZ - 0.05f));
+            shooterLoadedPiece.shapeWidthScale = 1f + power01 * 0.16f;
+            shooterLoadedPiece.shapeHeightScale = 1f - power01 * 0.14f;
+            shooterLoadedPiece.UpdateVisuals(dt);
+
+            // Update Aim Line Dots (length and spacing reflect launch strength!)
+            float previewLength = Mathf.Lerp(1.2f, 6.2f, power01);
+            for (int i = 0; i < shooterAimDots.Count; i++)
+            {
+                Transform dot = shooterAimDots[i];
+                if (dot == null) continue;
+                dot.gameObject.SetActive(true);
+                float t = (i + 1) / (float)shooterAimDots.Count;
+                Vector2 dotPos = loadedVisualPos + aimDir * (previewLength * t);
+                dot.position = new Vector3(dotPos.x, dotPos.y, baseZ - 0.08f);
+                float dotScale = Mathf.Lerp(0.18f, 0.07f, t) * (0.7f + 0.5f * power01);
+                dot.localScale = Vector3.one * dotScale;
+            }
+        }
+        else if (isDraggingSlingshot && !leftHeld && shooterLoadedPiece != null)
+        {
+            // Release Slingshot -> Shoot the DVD Logo into the floating pile!
+            isDraggingSlingshot = false;
+            for (int i = 0; i < shooterAimDots.Count; i++)
+            {
+                if (shooterAimDots[i] != null) shooterAimDots[i].gameObject.SetActive(false);
+            }
+
+            Vector2 pullVec = slingshotAnchorPos - targetCursorOrthoPos;
+            if (pullVec.y < 0.15f) pullVec.y = Mathf.Max(0.35f, Mathf.Abs(pullVec.y));
+            float maxPullDist = 2.6f;
+            float power01 = Mathf.Clamp01(pullVec.magnitude / maxPullDist);
+            Vector2 aimDir = pullVec.sqrMagnitude > 0.001f ? pullVec.normalized : Vector2.up;
+            float launchSpeed = Mathf.Lerp(7.5f, 19.5f, power01);
+
+            shooterLoadedPiece.shapeWidthScale = 1f;
+            shooterLoadedPiece.shapeHeightScale = 1f;
+            shooterLoadedPiece.TriggerSquash(aimDir, 0.28f, 0.38f);
+
+            float shotBaseRx = Mathf.Max(0.45f, shooterLoadedPiece.EffectiveHalfWidth * 0.92f);
+            float shotBaseRy = Mathf.Max(0.28f, shooterLoadedPiece.EffectiveHalfHeight * 0.92f);
+            ColorShooterNode shotNode = new ColorShooterNode
+            {
+                visual = shooterLoadedPiece,
+                colorIndex = shooterLoadedColorIndex,
+                mergedCount = 1,
+                pos = slingshotAnchorPos,
+                vel = aimDir * launchSpeed,
+                baseRadiusX = shotBaseRx,
+                baseRadiusY = shotBaseRy,
+                radiusX = shotBaseRx,
+                radiusY = shotBaseRy,
+                isShotProjectile = true,
+                shotImpactEnergyTimer = 0.65f,
+                age = 0f
+            };
+            floatingPileNodes.Add(shotNode);
+            shooterLoadedPiece = null;
+            PlaySound(jumpSound, 1.18f);
+            SpawnNextSlingshotLogo();
+        }
+        else if (shooterLoadedPiece != null)
+        {
+            shooterLoadedPiece.shapeWidthScale = 1f;
+            shooterLoadedPiece.shapeHeightScale = 1f;
+            shooterLoadedPiece.SetCenterPosition(new Vector3(slingshotAnchorPos.x, slingshotAnchorPos.y, baseZ - 0.05f));
+            shooterLoadedPiece.UpdateVisuals(dt);
+        }
+
+        // 2. Replenish floating pile based on TOTAL original units (so combining doesn't add new ones,
+        //    and destroying a combined logo of N original logos replenishes all N back to TargetFloatingPileCount!)
+        shooterReplenishTimer -= dt;
+        int currentTotalUnits = GetTotalFloatingPileOriginalUnitCount();
+        if (currentTotalUnits < TargetFloatingPileCount && shooterReplenishTimer <= 0f)
+        {
+            int deficit = TargetFloatingPileCount - currentTotalUnits;
+            shooterReplenishTimer = deficit > 2 ? 0.16f : 0.45f;
+            float spawnX = Random.Range(camMinX + 1.6f, camMaxX - 1.6f);
+            float spawnY = camMaxY - 0.85f;
+            Vector2 repPos = new Vector2(spawnX, spawnY);
+            int smartColor = PickSmartNonMatchingPileColor(repPos, true);
+            ColorShooterNode added = SpawnFloatingPileLogo(repPos, smartColor, false);
+            if (added != null)
+            {
+                added.vel = new Vector2(Random.Range(-0.9f, 0.9f), Random.Range(-1.2f, -0.5f));
+            }
+        }
+
+        // 3. Physics & Suika Jiggle / Same-Color Pop Solver for the Floating Pile
+        Vector2 pileAttractor = new Vector2((camMinX + camMaxX) * 0.5f, Mathf.Lerp(camMinY, camMaxY, 0.65f));
+        float minPileY = camMinY + (camMaxY - camMinY) * 0.34f;
+
+        for (int i = 0; i < floatingPileNodes.Count; i++)
+        {
+            ColorShooterNode n = floatingPileNodes[i];
+            if (n == null || n.visual == null) continue;
+            n.age += dt;
+            if (n.shotImpactEnergyTimer > 0f)
+            {
+                n.shotImpactEnergyTimer = Mathf.Max(0f, n.shotImpactEnergyTimer - dt);
+                if (n.shotImpactEnergyTimer <= 0f) n.isShotProjectile = false;
+            }
+
+            // Gentle floating attraction toward the upper-middle cluster center
+            Vector2 toCenter = pileAttractor - n.pos;
+            float attractStrength = n.isShotProjectile && n.age < 0.45f ? 0.5f : 2.6f;
+            n.vel += toCenter * (attractStrength * dt);
+
+            // Damping so the pile settles after impacts
+            float damping = (n.isShotProjectile && n.age < 0.35f) ? 0.92f : 0.14f;
+            n.vel *= Mathf.Pow(damping, dt);
+
+            n.pos += n.vel * dt;
+
+            // Wall bounces (Left, Right, Top, and lower floating boundary)
+            if (n.pos.x - n.radiusX < camMinX + 0.25f)
+            {
+                n.pos.x = camMinX + 0.25f + n.radiusX;
+                n.vel.x = Mathf.Abs(n.vel.x) * 0.78f;
+                n.visual.TriggerSquash(Vector2.right, 0.16f, 0.32f);
+            }
+            else if (n.pos.x + n.radiusX > camMaxX - 0.25f)
+            {
+                n.pos.x = camMaxX - 0.25f - n.radiusX;
+                n.vel.x = -Mathf.Abs(n.vel.x) * 0.78f;
+                n.visual.TriggerSquash(Vector2.right, 0.16f, 0.32f);
+            }
+
+            if (n.pos.y + n.radiusY > camMaxY - 0.25f)
+            {
+                n.pos.y = camMaxY - 0.25f - n.radiusY;
+                n.vel.y = -Mathf.Abs(n.vel.y) * 0.78f;
+                n.visual.TriggerSquash(Vector2.up, 0.16f, 0.32f);
+            }
+            else if (n.pos.y - n.radiusY < minPileY && (!n.isShotProjectile || n.age > 0.35f))
+            {
+                n.pos.y = minPileY + n.radiusY;
+                n.vel.y = Mathf.Abs(n.vel.y) * 0.65f;
+                n.isShotProjectile = false;
+            }
+        }
+
+        // Pairwise collision:
+        // - Same-color + shotDriven -> Pop/Destroy each other!
+        // - Same-color + NOT shotDriven -> Combine into a larger node (grow in size, do NOT pop, do NOT add new one)!
+        // - Different-color -> Push & Suika Jiggle!
+        HashSet<int> indicesToDestroy = null;
+        HashSet<int> indicesAbsorbedByMerge = null;
+
+        for (int iter = 0; iter < 3; iter++)
+        {
+            int count = floatingPileNodes.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(i)) continue;
+                ColorShooterNode a = floatingPileNodes[i];
+                if (a == null || a.visual == null) continue;
+
+                for (int j = i + 1; j < count; j++)
+                {
+                    if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(j)) continue;
+                    ColorShooterNode b = floatingPileNodes[j];
+                    if (b == null || b.visual == null) continue;
+
+                    float sumRx = (a.radiusX + b.radiusX) * 0.94f;
+                    float sumRy = (a.radiusY + b.radiusY) * 0.94f;
+                    Vector2 delta = b.pos - a.pos;
+                    float nx = delta.x / Mathf.Max(0.001f, sumRx);
+                    float ny = delta.y / Mathf.Max(0.001f, sumRy);
+                    float normDistSq = nx * nx + ny * ny;
+
+                    if (normDistSq < 1f)
+                    {
+                        bool shotDriven = a.isShotProjectile || b.isShotProjectile || a.shotImpactEnergyTimer > 0f || b.shotImpactEnergyTimer > 0f;
+
+                        if (a.colorIndex == b.colorIndex)
+                        {
+                            if (shotDriven)
+                            {
+                                // Shot hits same-color -> Pop/Destroy!
+                                if (indicesToDestroy == null) indicesToDestroy = new HashSet<int>();
+                                indicesToDestroy.Add(i);
+                                indicesToDestroy.Add(j);
+                            }
+                            else
+                            {
+                                // Touching same-color in the pile without being shot -> Combine & grow!
+                                int totalMerged = a.mergedCount + b.mergedCount;
+                                a.pos = (a.pos * a.mergedCount + b.pos * b.mergedCount) / Mathf.Max(1, totalMerged);
+                                a.vel = (a.vel * a.mergedCount + b.vel * b.mergedCount) / Mathf.Max(1, totalMerged);
+                                a.mergedCount = totalMerged;
+                                ApplyMergedScaleToColorNode(a);
+                                Vector2 mergeNormal = delta.sqrMagnitude > 0.0001f ? delta.normalized : Vector2.up;
+                                a.visual.TriggerSquash(mergeNormal, 0.22f, 0.36f);
+                                a.visual.TriggerPop(0.28f, 0.28f);
+                                PlaySound(towerLandSound, 1.18f);
+
+                                if (indicesAbsorbedByMerge == null) indicesAbsorbedByMerge = new HashSet<int>();
+                                indicesAbsorbedByMerge.Add(j);
+                                if (indicesToDestroy != null && indicesToDestroy.Remove(j))
+                                {
+                                    indicesToDestroy.Add(i);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Different color: Suika-style push apart + squash jiggle!
+                            float normDist = Mathf.Sqrt(Mathf.Max(0.0001f, normDistSq));
+                            Vector2 normal = delta.sqrMagnitude > 0.0001f ? delta.normalized : Vector2.up;
+                            float avgRadius = (sumRx + sumRy) * 0.5f;
+                            float penetration = (1f - normDist) * avgRadius;
+
+                            a.pos -= normal * (penetration * 0.52f);
+                            b.pos += normal * (penetration * 0.52f);
+
+                            Vector2 relVel = b.vel - a.vel;
+                            float velAlongNormal = Vector2.Dot(relVel, normal);
+                            if (velAlongNormal < 0f)
+                            {
+                                float restitution = 0.72f;
+                                float impulseMag = -(1f + restitution) * velAlongNormal * 0.5f;
+                                Vector2 impulse = normal * impulseMag;
+                                a.vel -= impulse;
+                                b.vel += impulse;
+
+                                // If a shot projectile slammed into a different-color node hard, transfer a brief knock timer so skill bank-shots work!
+                                if (shotDriven && Mathf.Abs(velAlongNormal) > 3.8f)
+                                {
+                                    a.shotImpactEnergyTimer = Mathf.Max(a.shotImpactEnergyTimer, 0.22f);
+                                    b.shotImpactEnergyTimer = Mathf.Max(b.shotImpactEnergyTimer, 0.22f);
+                                }
+
+                                if (Mathf.Abs(velAlongNormal) > 1.3f)
+                                {
+                                    float jiggle = Mathf.Clamp(Mathf.Abs(velAlongNormal) * 0.032f, 0.08f, 0.32f);
+                                    a.visual.TriggerSquash(normal, jiggle, 0.42f);
+                                    b.visual.TriggerSquash(-normal, jiggle, 0.42f);
+                                    if (Mathf.Abs(velAlongNormal) > 3.5f)
+                                    {
+                                        PlaySound(towerLandSound, Random.Range(0.95f, 1.15f));
+                                    }
+                                }
+                            }
+                            a.isShotProjectile = false;
+                            b.isShotProjectile = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove nodes that were absorbed into a larger combined same-color node
+        if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Count > 0)
+        {
+            // If we also have indicesToDestroy, we'll clean up absorbed nodes right after or remap indices
+            if (indicesToDestroy == null || indicesToDestroy.Count == 0)
+            {
+                for (int i = floatingPileNodes.Count - 1; i >= 0; i--)
+                {
+                    if (!indicesAbsorbedByMerge.Contains(i)) continue;
+                    ColorShooterNode absorbed = floatingPileNodes[i];
+                    if (absorbed != null && absorbed.visual != null)
+                    {
+                        absorbed.visual.DestroyPiece();
+                    }
+                    floatingPileNodes.RemoveAt(i);
+                }
+            }
+        }
+
+        // Expand same-color shot pop chain reaction to any directly touching neighbors of the same color!
+        if (indicesToDestroy != null && indicesToDestroy.Count > 0)
+        {
+            bool addedMore = true;
+            while (addedMore)
+            {
+                addedMore = false;
+                for (int i = 0; i < floatingPileNodes.Count; i++)
+                {
+                    if (!indicesToDestroy.Contains(i)) continue;
+                    if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(i)) continue;
+                    ColorShooterNode a = floatingPileNodes[i];
+                    if (a == null) continue;
+
+                    for (int j = 0; j < floatingPileNodes.Count; j++)
+                    {
+                        if (indicesToDestroy.Contains(j)) continue;
+                        if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(j)) continue;
+                        ColorShooterNode b = floatingPileNodes[j];
+                        if (b == null || b.colorIndex != a.colorIndex) continue;
+
+                        float sumRx = (a.radiusX + b.radiusX) * 1.12f;
+                        float sumRy = (a.radiusY + b.radiusY) * 1.12f;
+                        Vector2 d = b.pos - a.pos;
+                        if ((d.x * d.x) / (sumRx * sumRx) + (d.y * d.y) / (sumRy * sumRy) <= 1.05f)
+                        {
+                            indicesToDestroy.Add(j);
+                            addedMore = true;
+                        }
+                    }
+                }
+            }
+
+            PlaySound(suikaMergeSound, 1.15f);
+
+            for (int i = floatingPileNodes.Count - 1; i >= 0; i--)
+            {
+                if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(i))
+                {
+                    ColorShooterNode absorbed = floatingPileNodes[i];
+                    if (absorbed != null && absorbed.visual != null) absorbed.visual.DestroyPiece();
+                    floatingPileNodes.RemoveAt(i);
+                    continue;
+                }
+                if (!indicesToDestroy.Contains(i)) continue;
+                ColorShooterNode popped = floatingPileNodes[i];
+                if (popped != null && popped.visual != null)
+                {
+                    Vector3 worldPopPos = new Vector3(popped.pos.x, popped.pos.y, baseZ);
+                    int rewardCount = Mathf.Max(1, popped.mergedCount);
+                    mainBouncer.AwardMinigameCornerReward(
+                        rewardCount,
+                        worldPopPos,
+                        popped.visual.primaryColor,
+                        popped.visual.secondaryColor);
+
+                    // Shockwave jiggle on nearby different-color logos!
+                    for (int k = 0; k < floatingPileNodes.Count; k++)
+                    {
+                        if (indicesToDestroy.Contains(k)) continue;
+                        if (indicesAbsorbedByMerge != null && indicesAbsorbedByMerge.Contains(k)) continue;
+                        ColorShooterNode other = floatingPileNodes[k];
+                        if (other == null || other.visual == null) continue;
+                        Vector2 diff = other.pos - popped.pos;
+                        float dist = diff.magnitude;
+                        if (dist > 0.01f && dist < 2.6f)
+                        {
+                            Vector2 pushDir = diff / dist;
+                            float pushFactor = 1f - (dist / 2.6f);
+                            other.vel += pushDir * (4.5f * pushFactor);
+                            other.visual.TriggerSquash(pushDir, 0.22f * pushFactor, 0.42f);
+                        }
+                    }
+
+                    popped.visual.DestroyPiece();
+                }
+                floatingPileNodes.RemoveAt(i);
+            }
+        }
+
+        // Update visual positions & vertex squash animations
+        for (int i = 0; i < floatingPileNodes.Count; i++)
+        {
+            ColorShooterNode n = floatingPileNodes[i];
+            if (n == null || n.visual == null) continue;
+            n.visual.SetCenterPosition(new Vector3(n.pos.x, n.pos.y, baseZ));
+            n.visual.UpdateVisuals(dt);
+        }
     }
 
     // =========================================================================

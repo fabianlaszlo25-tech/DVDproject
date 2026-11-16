@@ -50,17 +50,47 @@ namespace Story
         public bool zoomCameraOnCall = false;
 
         public static bool ForceDay3FinaleForTesting = false;
+        [HideInInspector] public bool pendingForceFinaleCall = false;
+        [HideInInspector] public bool pendingRingOnStart = false;
 
         private InteractableObject interactable;
         private Collider phoneCollider;
         private InteractVisualizer visualizer;
         private bool isRinging = false;
         private bool isInCall = false;
+        public bool IsRinging => isRinging;
         public bool IsInCall => isInCall;
         private float ringTimer = 0f;
         private float nextRingCountdown = 0f;
         private Vector3 originalLocalPos;
         private SmoothCameraFollow cachedCameraFollow;
+
+        public InteractableObject GetPrimaryInteractable()
+        {
+            if (interactable == null) SetupComponents();
+            if (interactable != null && isRinging && !interactable.enabled)
+            {
+                interactable.enabled = true;
+                interactable.hoverText = "Answer Phone";
+            }
+            return interactable;
+        }
+
+        public Bounds GetPhoneWorldBounds()
+        {
+            Renderer[] rends = GetComponentsInChildren<Renderer>(true);
+            if (rends != null && rends.Length > 0)
+            {
+                Bounds b = rends[0].bounds;
+                for (int i = 1; i < rends.Length; i++)
+                {
+                    if (rends[i] != null) b.Encapsulate(rends[i].bounds);
+                }
+                return b;
+            }
+            if (phoneCollider != null) return phoneCollider.bounds;
+            return new Bounds(transform.position, new Vector3(0.8f, 1.0f, 0.8f));
+        }
 
         // Auto-bootstrap in 01Day scene
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -154,6 +184,19 @@ namespace Story
                 return;
             }
 
+            if (pendingForceFinaleCall)
+            {
+                ForceDay3FinaleForTesting = true;
+                StoryCardController.ForceDay3FinaleForTesting = true;
+            }
+
+            if (pendingRingOnStart || ForceDay3FinaleForTesting)
+            {
+                pendingRingOnStart = false;
+                StartRinging();
+                return;
+            }
+
             ScheduleNextRing(isInitialDelay: true);
         }
 
@@ -187,7 +230,19 @@ namespace Story
 
             if (isRinging)
             {
-                ringTimer -= Time.deltaTime;
+                if (interactable != null && !interactable.enabled)
+                {
+                    interactable.enabled = true;
+                    interactable.hoverText = "Answer Phone";
+                }
+
+                bool isFinaleRing = ForceDay3FinaleForTesting || pendingForceFinaleCall || StoryCardController.ForceDay3FinaleForTesting ||
+                    (RunSaveManager.HasInstance && RunSaveManager.Instance.postMaxDaysSurvived >= 3 && !RunSaveManager.Instance.finalPhoneEncounterDone);
+
+                if (!isFinaleRing)
+                {
+                    ringTimer -= Time.deltaTime;
+                }
 
                 if (shakeWhileRinging)
                 {
@@ -195,7 +250,7 @@ namespace Story
                     transform.localPosition = originalLocalPos + new Vector3(shake, 0f, 0f);
                 }
 
-                if (ringTimer <= 0f)
+                if (!isFinaleRing && ringTimer <= 0f)
                 {
                     OnCallMissed();
                 }
@@ -407,10 +462,11 @@ namespace Story
             }
 
             // Forward editor debug Day 3 test flag
-            if (ForceDay3FinaleForTesting)
+            if (ForceDay3FinaleForTesting || pendingForceFinaleCall)
             {
                 StoryCardController.ForceDay3FinaleForTesting = true;
                 ForceDay3FinaleForTesting = false;
+                pendingForceFinaleCall = false;
             }
 
             // Lock movement and mouse look
@@ -442,9 +498,11 @@ namespace Story
                 }
             }
 
-            // Unlock and reveal cursor for UI interaction
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            // Keep OS cursor locked so it never leaves the Unity Editor Game View tab!
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            GridCrawlerController crawler = FindObjectOfType<GridCrawlerController>();
+            if (crawler != null) crawler.SetFocusCursorVisuals(false, false, "");
 
             if (ForceDay3FinaleForTesting)
             {
@@ -590,9 +648,11 @@ namespace Story
                 }
             }
 
-            // Unlock and reveal cursor for UI interaction
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            // Keep OS cursor locked so it never leaves the Unity Editor Game View tab!
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            GridCrawlerController crawler = FindObjectOfType<GridCrawlerController>();
+            if (crawler != null) crawler.SetFocusCursorVisuals(false, false, "");
 
             if (ForceDay3FinaleForTesting)
             {
