@@ -4714,12 +4714,12 @@ public class TVMinigameController : MonoBehaviour
                 continue;
             }
 
-            // Maintain exact gameplay timing ahead of the player; once past player, smoothly accelerate exit speed so it never slows down at the end!
+            // Maintain exact gameplay timing ahead of the player; once past player, exit at a smooth, uniform speed without sudden acceleration or deceleration
             float currentEntSpeed = trackSpeed;
             if (ent.depth01 > SubwayPlayerDepth01)
             {
                 float pastPlayer = ent.depth01 - SubwayPlayerDepth01;
-                currentEntSpeed *= (1f + pastPlayer * 8.5f + pastPlayer * pastPlayer * 25f);
+                currentEntSpeed *= (1f + pastPlayer * 2.8f);
             }
             ent.depth01 += currentEntSpeed * dt;
 
@@ -5479,8 +5479,9 @@ public class TVMinigameController : MonoBehaviour
         float twoWheelSlopeRad = Mathf.Atan2(frontGroundY - rearGroundY, Mathf.Max(0.1f, frontWheelTrackX - rearWheelTrackX));
         float twoWheelSlopeDeg = twoWheelSlopeRad * Mathf.Rad2Deg;
 
-        float supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
-        float supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+        const float terrainSurfaceOffset = 0.065f;
+        float supportYFromRear = rearGroundY + terrainSurfaceOffset + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+        float supportYFromFront = frontGroundY + terrainSurfaceOffset + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
         float groundSupportCenterY = Mathf.Max(supportYFromRear, supportYFromFront);
 
         if (hillCarGrounded)
@@ -5525,8 +5526,8 @@ public class TVMinigameController : MonoBehaviour
             frontWheelTrackX = hillCarTrackX + halfWheelBase * cosAng + wheelOffsetY * sinAng;
             rearGroundY = SampleHillTerrainY(rearWheelTrackX);
             frontGroundY = SampleHillTerrainY(frontWheelTrackX);
-            supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
-            supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromRear = rearGroundY + terrainSurfaceOffset + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromFront = frontGroundY + terrainSurfaceOffset + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
             float nextGroundSupportY = Mathf.Max(supportYFromRear, supportYFromFront);
 
             float analyticalVelY = hillCarVelX * slopeAfter;
@@ -5602,8 +5603,8 @@ public class TVMinigameController : MonoBehaviour
             frontWheelTrackX = hillCarTrackX + halfWheelBase * cosAng + wheelOffsetY * sinAng;
             rearGroundY = SampleHillTerrainY(rearWheelTrackX);
             frontGroundY = SampleHillTerrainY(frontWheelTrackX);
-            supportYFromRear = rearGroundY + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
-            supportYFromFront = frontGroundY + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromRear = rearGroundY + terrainSurfaceOffset + wheelRadius + halfWheelBase * sinAng + wheelOffsetY * cosAng;
+            supportYFromFront = frontGroundY + terrainSurfaceOffset + wheelRadius - halfWheelBase * sinAng + wheelOffsetY * cosAng;
             groundSupportCenterY = Mathf.Max(supportYFromRear, supportYFromFront);
 
             float terrainSlopeAtCar = SampleHillTerrainSlope(hillCarTrackX);
@@ -5628,7 +5629,7 @@ public class TVMinigameController : MonoBehaviour
                     hillCarAngularVelDeg = 0f;
                     PlaySound(towerLandSound, 1.05f);
 
-                    float suspImpulse = Mathf.Clamp(Mathf.Abs(hillCarVelY) * 1.6f, 4.0f, 10.0f);
+                    float suspImpulse = Mathf.Clamp(Mathf.Abs(hillCarVelY) * 0.5f, 0.8f, 2.5f);
                     hillFrontWheelSuspVel = suspImpulse;
                     hillRearWheelSuspVel = suspImpulse;
                 }
@@ -5751,70 +5752,54 @@ public class TVMinigameController : MonoBehaviour
 
         float renderHalfWheelBase = halfWheelBase * hillWorldZoomScale;
         float renderWheelOffsetY = wheelOffsetY * hillWorldZoomScale;
+        float renderWheelRadius = wheelRadius * hillWorldZoomScale;
 
         // Chassis wheel mount anchors
         Vector3 fwMount = carWorldCenter + rightDir * renderHalfWheelBase - upDir * renderWheelOffsetY;
         Vector3 rwMount = carWorldCenter - rightDir * renderHalfWheelBase - upDir * renderWheelOffsetY;
 
-        // Dynamic suspension travel with ample visible movement, strictly bounded around chassis anchors
-        float maxSuspTravel = 0.32f * hillWorldZoomScale;
+        // Ground contact center Y in screen coordinates (contact patch resting right on visible terrain surface)
+        float fgY = SampleHillTerrainY(frontWheelTrackX) + terrainSurfaceOffset;
+        float frontWheelGroundCenterY = baseLineY + (fgY - baseLineY) * hillWorldZoomScale + renderWheelRadius;
+
+        float rgY = SampleHillTerrainY(rearWheelTrackX) + terrainSurfaceOffset;
+        float rearWheelGroundCenterY = baseLineY + (rgY - baseLineY) * hillWorldZoomScale + renderWheelRadius;
+
+        // Tight, controlled suspension travel (never excessive, keeps wheels firmly bound)
+        float maxSuspTravel = 0.065f * hillWorldZoomScale;
         float fwTargetOffset = 0f;
         float rwTargetOffset = 0f;
 
         if (hillCarGrounded)
         {
-            // Dynamic terrain slope curvature reaction
-            float carSlope = SampleHillTerrainSlope(hillCarTrackX);
-            float fwSlope = SampleHillTerrainSlope(frontWheelTrackX);
-            float rwSlope = SampleHillTerrainSlope(rearWheelTrackX);
-            float speedFactor = Mathf.Clamp(Mathf.Abs(hillCarVelX) * 0.16f, 0.4f, 2.0f);
-            fwTargetOffset += (fwSlope - carSlope) * (0.20f * speedFactor * hillWorldZoomScale);
-            rwTargetOffset += (carSlope - rwSlope) * (0.20f * speedFactor * hillWorldZoomScale);
+            // Ideal suspension displacement required to touch the terrain surface
+            float distF = (frontWheelGroundCenterY - fwMount.y) / Mathf.Max(0.2f, upDir.y);
+            float distR = (rearWheelGroundCenterY - rwMount.y) / Mathf.Max(0.2f, upDir.y);
 
-            // Speed-based road chatter and bump vibration (clearly visible bounce!)
-            float speedChirp = Mathf.Clamp01(Mathf.Abs(hillCarVelX) / 1.5f);
-            float roadBumpF = (Mathf.Sin(frontWheelTrackX * 6.2f) * 0.11f + Mathf.Sin(frontWheelTrackX * 12.5f) * 0.06f) * speedChirp * hillWorldZoomScale;
-            float roadBumpR = (Mathf.Sin(rearWheelTrackX * 6.2f) * 0.11f + Mathf.Sin(rearWheelTrackX * 12.5f) * 0.06f) * speedChirp * hillWorldZoomScale;
-            fwTargetOffset += roadBumpF;
-            rwTargetOffset += roadBumpR;
+            fwTargetOffset = Mathf.Clamp(distF, -maxSuspTravel, maxSuspTravel);
+            rwTargetOffset = Mathf.Clamp(distR, -maxSuspTravel, maxSuspTravel);
 
-            // Pronounced dynamic squat on acceleration & dive on braking
-            if (gasHeld)
-            {
-                rwTargetOffset += 0.19f * hillWorldZoomScale;
-                fwTargetOffset -= 0.17f * hillWorldZoomScale;
-            }
-            if (brakeHeld)
-            {
-                fwTargetOffset += 0.19f * hillWorldZoomScale;
-                rwTargetOffset -= 0.17f * hillWorldZoomScale;
-            }
+            // Subtle high-speed road chatter vibration (subtle, controlled, never clips into ground)
+            float speedChirp = Mathf.Clamp01(Mathf.Abs(hillCarVelX) / 2.0f);
+            float bumpF = Mathf.Sin(frontWheelTrackX * 14f) * (0.012f * speedChirp * hillWorldZoomScale);
+            float bumpR = Mathf.Sin(rearWheelTrackX * 14f) * (0.012f * speedChirp * hillWorldZoomScale);
+            fwTargetOffset += bumpF;
+            rwTargetOffset += bumpR;
         }
         else
         {
-            // In the air, wheels extend visibly downwards under gravity (droop)
-            fwTargetOffset = -maxSuspTravel * 0.70f;
-            rwTargetOffset = -maxSuspTravel * 0.70f;
-
-            if (gasHeld)
-            {
-                rwTargetOffset += 0.09f * hillWorldZoomScale;
-                fwTargetOffset -= 0.09f * hillWorldZoomScale;
-            }
-            if (brakeHeld)
-            {
-                fwTargetOffset += 0.09f * hillWorldZoomScale;
-                rwTargetOffset -= 0.09f * hillWorldZoomScale;
-            }
+            // In the air, wheels droop naturally downwards under gravity
+            fwTargetOffset = -maxSuspTravel * 0.65f;
+            rwTargetOffset = -maxSuspTravel * 0.65f;
         }
 
         // Strictly clamp targets within travel bounds
         fwTargetOffset = Mathf.Clamp(fwTargetOffset, -maxSuspTravel, maxSuspTravel);
         rwTargetOffset = Mathf.Clamp(rwTargetOffset, -maxSuspTravel, maxSuspTravel);
 
-        // Fluid 2nd-order damped spring-mass suspension simulation (lively & responsive!)
-        const float kSusp = 110f;
-        const float cSusp = 8.5f;
+        // Responsive damped spring-mass suspension simulation
+        const float kSusp = 160f;
+        const float cSusp = 14f;
 
         float fForce = -kSusp * (hillFrontWheelSuspensionOffset - fwTargetOffset) - cSusp * hillFrontWheelSuspVel;
         hillFrontWheelSuspVel += fForce * dt;
@@ -5829,9 +5814,23 @@ public class TVMinigameController : MonoBehaviour
         Vector3 fwDisp = Vector3.ClampMagnitude(upDir * hillFrontWheelSuspensionOffset, maxSuspTravel);
         Vector3 rwDisp = Vector3.ClampMagnitude(upDir * hillRearWheelSuspensionOffset, maxSuspTravel);
 
+        Vector3 fwPos = fwMount + fwDisp + new Vector3(0f, 0f, -0.05f);
+        Vector3 rwPos = rwMount + rwDisp + new Vector3(0f, 0f, -0.05f);
+
+        // Strict physical ground constraint: wheel can NEVER penetrate below the visible terrain surface!
+        if (fwPos.y < frontWheelGroundCenterY)
+        {
+            fwPos.y = frontWheelGroundCenterY;
+            if (hillFrontWheelSuspVel < 0f) hillFrontWheelSuspVel = 0f;
+        }
+        if (rwPos.y < rearWheelGroundCenterY)
+        {
+            rwPos.y = rearWheelGroundCenterY;
+            if (hillRearWheelSuspVel < 0f) hillRearWheelSuspVel = 0f;
+        }
+
         if (hillFrontWheelPiece != null && hillFrontWheelPiece.rootObj != null)
         {
-            Vector3 fwPos = fwMount + fwDisp + new Vector3(0f, 0f, -0.05f);
             hillFrontWheelPiece.overallScaleFactor = 0.26f * hillWorldZoomScale;
             hillFrontWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
             hillFrontWheelPiece.SetCenterPosition(fwPos);
@@ -5839,7 +5838,6 @@ public class TVMinigameController : MonoBehaviour
         }
         if (hillRearWheelPiece != null && hillRearWheelPiece.rootObj != null)
         {
-            Vector3 rwPos = rwMount + rwDisp + new Vector3(0f, 0f, -0.05f);
             hillRearWheelPiece.overallScaleFactor = 0.26f * hillWorldZoomScale;
             hillRearWheelPiece.rootObj.transform.localRotation = wheelSpinRot;
             hillRearWheelPiece.SetCenterPosition(rwPos);
