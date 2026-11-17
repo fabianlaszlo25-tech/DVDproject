@@ -28273,18 +28273,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 771994995}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0200002, y: 1.0200002, z: 1.0200002}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6970281096291296950}
   m_Father: {fileID: 5302665539824311103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1380, y: -620}
+  m_SizeDelta: {x: 552, y: 472}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &771994997
 MonoBehaviour:
@@ -84920,7 +84920,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "[ \u25C0 REJECT ]"
+  m_text: '[ REJECT ]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
@@ -85267,7 +85267,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b>\u25C0 REJECT</b>\n<size=12><color=#ffaaaa>[ SWIPE LEFT ]</color></size>"
+  m_text: "<b>REJECT</b>\n<size=12><color=#ffaaaa>[ SWIPE LEFT ]</color></size>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
@@ -85475,7 +85475,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 25}
-  m_SizeDelta: {x: 340, y: 48}
+  m_SizeDelta: {x: 300, y: 44}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!65 &2776424363070756650
 BoxCollider:
@@ -86440,7 +86440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &2859308227666839129
 GameObject:
   m_ObjectHideFlags: 0
@@ -87923,7 +87923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "[ ACCEPT \u25B6 ]"
+  m_text: '[ ACCEPT ]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
@@ -88832,7 +88832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b>ACCEPT \u25B6</b>\n<size=12><color=#aaffaa>[ SWIPE RIGHT ]</color></size>"
+  m_text: "<b>ACCEPT</b>\n<size=12><color=#aaffaa>[ SWIPE RIGHT ]</color></size>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
@@ -90222,9 +90222,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4878763815120653462}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.980392, y: 0.980392, z: 0.980392}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 493677544075789400}
@@ -90502,7 +90502,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "[ \u25C0 SWIPE RESULTS LEFT / RIGHT OR CLICK TO HANG UP \u25B6 ]"
+  m_text: '[ CLICK TO HANG UP ]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
   m_sharedMaterial: {fileID: 8593347594476529889, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
@@ -90529,8 +90529,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27.3
-  m_fontSizeBase: 27.3
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -90686,12 +90686,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33
-  m_fontSizeBase: 33
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 20
+  m_fontSizeMax: 30
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -91073,12 +91073,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33
-  m_fontSizeBase: 33
+  m_fontSize: 21
+  m_fontSizeBase: 21
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 15
+  m_fontSizeMax: 22
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

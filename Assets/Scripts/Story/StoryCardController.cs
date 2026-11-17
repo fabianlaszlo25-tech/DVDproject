@@ -2046,6 +2046,8 @@ namespace Story
             // Hide answer/reject side indicators on the consequence screen so only the consequence results are shown!
             HideSideIndicators();
 
+            NormalizeConsequenceLayout();
+
             if (consequenceHolder != null)
             {
                 RectTransform hRT = consequenceHolder.GetComponent<RectTransform>();
@@ -2053,6 +2055,7 @@ namespace Story
                 {
                     hRT.anchoredPosition = Vector2.zero;
                     hRT.localRotation = Quaternion.identity;
+                    hRT.localScale = Vector3.one;
                 }
                 consequenceHolder.SetActive(true);
             }
@@ -2064,6 +2067,7 @@ namespace Story
                 {
                     consRT.anchoredPosition = Vector2.zero;
                     consRT.localRotation = Quaternion.identity;
+                    consRT.localScale = Vector3.one;
                 }
                 consequencePanel.SetActive(true);
 
@@ -2149,6 +2153,7 @@ namespace Story
                 {
                     hRT.anchoredPosition = Vector2.zero;
                     hRT.localRotation = Quaternion.identity;
+                    hRT.localScale = Vector3.one;
                 }
                 consequenceHolder.SetActive(false);
             }
@@ -2160,6 +2165,7 @@ namespace Story
                 {
                     consRT.anchoredPosition = Vector2.zero;
                     consRT.localRotation = Quaternion.identity;
+                    consRT.localScale = Vector3.one;
                 }
                 consequencePanel.SetActive(false);
             }
@@ -2819,7 +2825,7 @@ namespace Story
                     newRT.pivot = new Vector2(0.5f, 0.5f);
                     newRT.sizeDelta = new Vector2(540f, 460f);
                     newRT.anchoredPosition = Vector2.zero;
-                    newRT.localScale = new Vector3(0.98f, 0.98f, 0.98f);
+                    newRT.localScale = Vector3.one;
                     Image newImg = consequencePanel.GetComponent<Image>() ?? consequencePanel.AddComponent<Image>();
                     newImg.color = new Color(0.1226f, 0.1871f, 0.2516f, 1f);
                     newImg.raycastTarget = false;
@@ -2830,6 +2836,8 @@ namespace Story
             {
                 consequenceHolder = consequencePanel.transform.parent.gameObject;
             }
+
+            NormalizeConsequenceLayout();
 
             Transform cpTrans = consequencePanel.transform;
             if (consequenceTitleText == null) consequenceTitleText = cpTrans.Find("ConsTitle")?.GetComponent<TMP_Text>();
@@ -2955,6 +2963,144 @@ namespace Story
             else
             {
                 phoneVirtualCursorRect.sizeDelta = new Vector2(21.2f, 31.8f);
+            }
+        }
+
+        /// <summary>
+        /// Guarantees that the consequence results card and its outer border (bg/holder) are
+        /// immaculately centered, locked together, and perfectly proportioned regardless of aspect ratio or resolution.
+        /// </summary>
+        public void NormalizeConsequenceLayout()
+        {
+            if (consequenceHolder != null)
+            {
+                RectTransform hRT = consequenceHolder.GetComponent<RectTransform>();
+                if (hRT != null)
+                {
+                    hRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    hRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    hRT.pivot = new Vector2(0.5f, 0.5f);
+                    hRT.sizeDelta = new Vector2(552f, 472f);
+                    hRT.anchoredPosition = Vector2.zero;
+                    hRT.localScale = Vector3.one;
+                    hRT.localRotation = Quaternion.identity;
+                }
+            }
+
+            if (consequencePanel != null)
+            {
+                RectTransform cRT = consequencePanel.GetComponent<RectTransform>();
+                if (cRT != null)
+                {
+                    cRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    cRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    cRT.pivot = new Vector2(0.5f, 0.5f);
+                    cRT.sizeDelta = new Vector2(540f, 460f);
+                    cRT.anchoredPosition = Vector2.zero;
+                    cRT.localScale = Vector3.one;
+                    cRT.localRotation = Quaternion.identity;
+                }
+
+                Transform cpTrans = consequencePanel.transform;
+
+                Transform titleT = cpTrans.Find("ConsTitle");
+                if (titleT != null)
+                {
+                    RectTransform tRT = titleT.GetComponent<RectTransform>();
+                    if (tRT != null)
+                    {
+                        tRT.anchorMin = new Vector2(0.5f, 1f);
+                        tRT.anchorMax = new Vector2(0.5f, 1f);
+                        tRT.pivot = new Vector2(0.5f, 1f);
+                        tRT.anchoredPosition = new Vector2(0f, -25f);
+                        tRT.sizeDelta = new Vector2(500f, 40f);
+                        tRT.localScale = Vector3.one;
+                    }
+                }
+
+                Transform bodyT = cpTrans.Find("ConsBody");
+                if (bodyT != null)
+                {
+                    RectTransform bRT = bodyT.GetComponent<RectTransform>();
+                    if (bRT != null)
+                    {
+                        bRT.anchorMin = new Vector2(0.5f, 1f);
+                        bRT.anchorMax = new Vector2(0.5f, 1f);
+                        bRT.pivot = new Vector2(0.5f, 1f);
+                        bRT.anchoredPosition = new Vector2(0f, -72f);
+                        bRT.sizeDelta = new Vector2(480f, 115f);
+                        bRT.localScale = Vector3.one;
+                    }
+                }
+
+                Transform moneyT = cpTrans.Find("MoneyDelta") ?? cpTrans.Find("StatsBox/MoneyDelta");
+                if (moneyT != null)
+                {
+                    RectTransform mRT = moneyT.GetComponent<RectTransform>();
+                    if (mRT != null)
+                    {
+                        mRT.anchorMin = new Vector2(0.5f, 1f);
+                        mRT.anchorMax = new Vector2(0.5f, 1f);
+                        mRT.pivot = new Vector2(0.5f, 1f);
+                        mRT.anchoredPosition = new Vector2(0f, -200f);
+                        mRT.sizeDelta = new Vector2(460f, 28f);
+                        mRT.localScale = Vector3.one;
+                    }
+                }
+
+                Transform depT = cpTrans.Find("DepDelta") ?? cpTrans.Find("StatsBox/DepDelta");
+                if (depT != null)
+                {
+                    RectTransform dRT = depT.GetComponent<RectTransform>();
+                    if (dRT != null)
+                    {
+                        dRT.anchorMin = new Vector2(0.5f, 1f);
+                        dRT.anchorMax = new Vector2(0.5f, 1f);
+                        dRT.pivot = new Vector2(0.5f, 1f);
+                        dRT.anchoredPosition = new Vector2(0f, -232f);
+                        dRT.sizeDelta = new Vector2(460f, 28f);
+                        dRT.localScale = Vector3.one;
+                    }
+                }
+
+                Transform tiredT = cpTrans.Find("TiredDelta") ?? cpTrans.Find("StatsBox/TiredDelta");
+                if (tiredT != null)
+                {
+                    RectTransform tiRT = tiredT.GetComponent<RectTransform>();
+                    if (tiRT != null)
+                    {
+                        tiRT.anchorMin = new Vector2(0.5f, 1f);
+                        tiRT.anchorMax = new Vector2(0.5f, 1f);
+                        tiRT.pivot = new Vector2(0.5f, 1f);
+                        tiRT.anchoredPosition = new Vector2(0f, -264f);
+                        tiRT.sizeDelta = new Vector2(460f, 28f);
+                        tiRT.localScale = Vector3.one;
+                    }
+                }
+
+                Transform contT = cpTrans.Find("ContinueButton");
+                if (contT != null)
+                {
+                    RectTransform cbRT = contT.GetComponent<RectTransform>();
+                    if (cbRT != null)
+                    {
+                        cbRT.anchorMin = new Vector2(0.5f, 0f);
+                        cbRT.anchorMax = new Vector2(0.5f, 0f);
+                        cbRT.pivot = new Vector2(0.5f, 0f);
+                        cbRT.anchoredPosition = new Vector2(0f, 25f);
+                        cbRT.sizeDelta = new Vector2(300f, 44f);
+                        cbRT.localScale = Vector3.one;
+                    }
+                    contT.gameObject.SetActive(true);
+
+                    TMP_Text btnLabel = contT.Find("Label")?.GetComponent<TMP_Text>();
+                    if (btnLabel != null)
+                    {
+                        btnLabel.text = "[ CLICK TO HANG UP ]";
+                        btnLabel.fontSize = 20f;
+                        btnLabel.alignment = TextAlignmentOptions.Center;
+                    }
+                }
             }
         }
 
