@@ -391,7 +391,7 @@ public class BarManager : MonoBehaviour
 
         currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
         currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
-        currentSleep = Mathf.Clamp(currentSleep + 1f, 0f, maxSleep); // +1 tiredness per trash cleaned
+        currentSleep = Mathf.Clamp(currentSleep + 0.5f, 0f, maxSleep); // +0.5 tiredness per trash cleaned
     }
 
     public void CleanSelf()

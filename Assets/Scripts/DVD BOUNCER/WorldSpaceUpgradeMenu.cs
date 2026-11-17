@@ -1017,7 +1017,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         }
 
         // Tier Badge + Prev/Next Row at top of Inspector
-        inspectorPrevBtn = GetOrCreateUIButton("PrevTierBtn", rightPanel.transform, "◀ PREV", 18f, new Color(0.18f, 0.28f, 0.38f, 1f), Color.white, sharedFont, out _, out _, out bool createdPrev);
+        inspectorPrevBtn = GetOrCreateUIButton("PrevTierBtn", rightPanel.transform, "< PREV", 18f, new Color(0.18f, 0.28f, 0.38f, 1f), Color.white, sharedFont, out _, out _, out bool createdPrev);
         if (createdPrev)
         {
             RectTransform prevRT = inspectorPrevBtn.GetComponent<RectTransform>();
@@ -1039,7 +1039,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
             badgeRT.offsetMax = Vector2.zero;
         }
 
-        inspectorNextBtn = GetOrCreateUIButton("NextTierBtn", rightPanel.transform, "NEXT ▶", 18f, new Color(0.18f, 0.28f, 0.38f, 1f), Color.white, sharedFont, out _, out _, out bool createdNext);
+        inspectorNextBtn = GetOrCreateUIButton("NextTierBtn", rightPanel.transform, "NEXT >", 18f, new Color(0.18f, 0.28f, 0.38f, 1f), Color.white, sharedFont, out _, out _, out bool createdNext);
         if (createdNext)
         {
             RectTransform nextRT = inspectorNextBtn.GetComponent<RectTransform>();
