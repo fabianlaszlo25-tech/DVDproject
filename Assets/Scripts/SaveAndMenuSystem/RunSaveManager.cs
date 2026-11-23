@@ -226,7 +226,7 @@ public class RunSaveManager : MonoBehaviour
     private float savedMaxSleep = 100f;
     private float savedMaxDirtiness = 100f;
     private float savedMaxDepression = 100f;
-    private float savedHungerFillRate = 1f;
+    private float savedHungerFillRate = 0.5f;
     private float savedSleepFillRate = 0.05f;
     private float savedBaseDepressionFillRate = 1f;
     private float savedFoodHungerReduction = 50f;
@@ -262,6 +262,12 @@ public class RunSaveManager : MonoBehaviour
     public bool isCurrentBillPaid = false;
     public int lastBillDay = -1;
     public List<int> billHistory = new List<int>();
+
+    [Header("Daily Inflation State")]
+    public float currentDayInflationMultiplier = 1f;
+    public float previousDayInflationMultiplier = 1f;
+    public bool pendingMorningInflationAnnouncement = false;
+    public float pendingMorningInflationPercent = 0f;
 
     // UpgradeManager state
     private bool hasSavedUpgrades;
@@ -587,6 +593,20 @@ public class RunSaveManager : MonoBehaviour
             pendingMorningTrashCount = CalculateMorningTrashCount();
             pendingMorningDepression = CalculateMorningDepression(pendingMorningTrashCount);
 
+            // Calculate next morning's locked-in daily inflation (stays fixed all day, never increases mid-day)
+            DVDLogoBouncer bouncer = FindObjectOfType<DVDLogoBouncer>();
+            float allTimeMoneyFloat = Mathf.Max(
+                (float)totalMoneyEarnedDecimal,
+                bouncer != null ? (float)bouncer.AllTimeMoneyEarned : 0f);
+            float ratePerDollar = barManager != null ? barManager.inflationRatePerDollar : savedInflationRatePerDollar;
+            float maxPercentOfMoney = barManager != null ? barManager.maxInflationPercentOfMoneyGained : 0.5f;
+            float computedMult = BarManager.ComputeInflationMultiplier(allTimeMoneyFloat, ratePerDollar, maxPercentOfMoney);
+
+            previousDayInflationMultiplier = Mathf.Max(1f, currentDayInflationMultiplier);
+            currentDayInflationMultiplier = Mathf.Max(previousDayInflationMultiplier, computedMult);
+            pendingMorningInflationPercent = (currentDayInflationMultiplier - 1f) * 100f;
+            pendingMorningInflationAnnouncement = !isGoodDayActive && pendingMorningInflationPercent >= 0.05f;
+
             // Waking up after the dream will reset trash and restore the calculated morning depression
             resetTrashOnNextRoomLoad = true;
             if (hasSavedPlayerBars)
@@ -699,6 +719,11 @@ public class RunSaveManager : MonoBehaviour
         finalPhoneEncounterDone = false;
         pendingMorningTrashCount = baseTrashCount;
         pendingMorningDepression = baseMorningDepression;
+
+        currentDayInflationMultiplier = 1f;
+        previousDayInflationMultiplier = 1f;
+        pendingMorningInflationAnnouncement = false;
+        pendingMorningInflationPercent = 0f;
 
         drunkConsumedCount = 0;
         caffeinatedConsumedCount = 0;
@@ -1203,6 +1228,7 @@ public class RunSaveManager : MonoBehaviour
                 barManager.baseFoodCost = savedBaseFoodCost;
                 barManager.inflationRatePerDollar = savedInflationRatePerDollar;
                 barManager.penaltyMultiplier = savedPenaltyMultiplier;
+                barManager.SetDailyInflationMultiplier(currentDayInflationMultiplier);
 
                 barManager.currentHunger = Mathf.Clamp(savedHunger, 0f, barManager.maxHunger);
                 barManager.currentNeeds = Mathf.Clamp(savedNeeds, 0f, barManager.maxNeeds);

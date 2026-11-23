@@ -100,6 +100,8 @@ public class TrashItem : MonoBehaviour
         renderers = GetComponentsInChildren<Renderer>();
         visualizer = GetComponent<InteractVisualizer>();
 
+        DrawnShaderRuntime.EnsureAppliedTo(gameObject);
+
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;

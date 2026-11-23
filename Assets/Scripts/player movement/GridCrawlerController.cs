@@ -30,7 +30,7 @@ public class GridCrawlerController : MonoBehaviour
     public TextMeshProUGUI interactTextUI;
     [Tooltip("Underlay shadow text for crisp readability against any background.")]
     public TextMeshProUGUI interactTextShadowUI;
-    public float interactReach = 5.5f;
+    public float interactReach = 3.2f;
 
     [Header("HUD Pause Button")]
     [Tooltip("The pause button in the HUD overlay (auto-found if not assigned).")]
@@ -389,7 +389,7 @@ public class GridCrawlerController : MonoBehaviour
         {
             Bounds phoneBounds = Story.KitchenPhone.Instance.GetPhoneWorldBounds();
             phoneBounds.Expand(0.38f);
-            if (phoneBounds.IntersectRay(ray, out float phoneDist) && phoneDist <= Mathf.Max(interactReach * 2.4f, 7.5f))
+            if (phoneBounds.IntersectRay(ray, out float phoneDist) && phoneDist <= Mathf.Max(interactReach * 1.35f, 4.2f))
             {
                 InteractableObject phoneIo = Story.KitchenPhone.Instance.GetPrimaryInteractable();
                 if (phoneIo != null)

@@ -1,24 +1,18 @@
 // ============================================================================
 // DrawnShader.shader
-// Seamless World-Space Triplanar Unity URP Recreation of @a_iwaac's Painted
-// Blender Shader ("Custom/DrawnShader"):
+// Seamless World-Space Triplanar Unity URP Painted Shader ("Custom/DrawnShader")
 //
-//   1. Seamless World-Space Triplanar Projection (XY, XZ, YZ planes blended by
-//      surface normal): Brushstrokes flow seamlessly across different objects,
-//      wall segments, floors, and transitions so the entire scene looks painted
-//      together on one unified canvas!
-//   2. Directional Flat-Brush Flow & Aspect Ratio: Elongates and sweeps the
-//      3D fBM Noise + Minkowski Voronoi (Exponent = 0.5) cells along the
-//      triplanar surface planes so dabs look like real flat-bristle paint strokes.
-//   3. Exact Blender Node Graph Core:
-//      Triplanar 3D fBM Noise (Scale 5, Detail 2, Roughness 0.5, Lacunarity 2)
-//      -> Linear Light with Normal -> Minkowski Voronoi (Exponent 0.5) ->
-//      Position -> Flat Cell Normal -> Principled BSDF (Diffuse + GGX Specular
-//      Roughness 0.5 + Schlick Fresnel Rim/Bounce IOR 1.5).
-//   4. Directional Overlapping Brush-Dab Impasto: Leading edge of each stroke
-//      catches the light while the trailing edge casts a subtle paint-dab step.
-//   5. Single-pass, fast, and 100% stable (Blend DstColor SrcColor preserves
-//      every object's true material color and texture).
+// Key Guarantees:
+//   1. 100% World-Space Locked (Zero Camera-Distance / View-Angle Popping):
+//      All brushstroke facets, specular dabs, and rim accents are computed in
+//      pure 3D world space without depending on camera viewZ Z-bins, screen
+//      tiles, or camera view angle, so the effect NEVER changes or shows a
+//      separation line as you move closer or further!
+//   2. Smooth Multi-Light Blending (Zero Room-Transition Seams):
+//      Accumulates all scene lights via continuous weighted vector sums instead
+//      of a winner-take-all light switch.
+//   3. Seamless World-Space Triplanar Mapping across all objects and walls.
+//   4. Single-pass, fast, and 100% color-preserving (Blend DstColor SrcColor).
 // ============================================================================
 Shader "Custom/DrawnShader"
 {
@@ -26,39 +20,39 @@ Shader "Custom/DrawnShader"
     {
         [Header(1. Overall Drawn Effect and WebGL Toggle)]
         [Toggle] _EffectEnabled ("Enable Drawn Shader Effect", Float) = 1.0
-        _EffectIntensity ("Overall Drawn Shader Intensity", Range(0.0, 1.5)) = 1.15
+        _EffectIntensity ("Overall Drawn Shader Intensity", Range(0.0, 1.5)) = 0.5964
 
         [Header(2. Seamless World Triplanar Brush Mapping)]
         _Stroke3DScale ("World Triplanar Brush Scale", Float) = 0.72
         _TriplanarSharpness ("Triplanar Plane Blend Sharpness", Range(1.0, 12.0)) = 4.5
-        _BrushAspect ("Directional Brush Stroke Elongation", Range(1.0, 3.0)) = 1.65
-        _BrushFlowSweep ("Organic Wrist-Sweep Flow Curvature", Range(0.0, 1.0)) = 0.42
+        _BrushAspect ("Directional Brush Stroke Elongation", Range(1.0, 3.0)) = 1.0
+        _BrushFlowSweep ("Organic Wrist-Sweep Flow Curvature", Range(0.0, 1.0)) = 0.0
         _MappingScale ("Global Scale Multiplier (X, Y, Z)", Vector) = (1.0, 1.0, 1.0, 1.0)
         _MappingLocation ("Global 3D Offset (X, Y, Z)", Vector) = (0.0, 0.0, 0.0, 0.0)
 
         [Header(3. Blender Node Graph  3D fBM Noise and Linear Light)]
         _NoiseScale ("Noise Texture Scale (Blender: 5.0)", Float) = 4.8
         _NoiseDetail ("Noise Texture Detail (Blender: 2.0)", Range(0.0, 3.0)) = 2.0
-        _NoiseRoughness ("Noise Texture Roughness (Blender: 0.5)", Range(0.0, 1.0)) = 0.52
-        _NoiseLacunarity ("Noise Texture Lacunarity (Blender: 2.0)", Range(1.0, 4.0)) = 2.0
-        _LinearLightFactor ("Linear Light Factor (Blender: 0.175)", Range(0.0, 0.5)) = 0.22
+        _NoiseRoughness ("Noise Texture Roughness (Blender: 0.5)", Range(0.0, 1.0)) = 1.0
+        _NoiseLacunarity ("Noise Texture Lacunarity (Blender: 2.0)", Range(1.0, 4.0)) = 2.145
+        _LinearLightFactor ("Linear Light Factor (Blender: 0.175)", Range(0.0, 0.5)) = 0.3018
         _FlatSurfaceSpread ("Flat Surface Macro Brush Spread", Range(0.0, 1.0)) = 0.42
 
         [Header(4. Blender Node Graph  Minkowski Voronoi Position to Normal)]
         _VoronoiScale ("Voronoi Scale (Blender: 8.8)", Float) = 7.4
-        _VoronoiExponent ("Voronoi Minkowski Exponent (Blender: 0.5)", Range(0.3, 1.5)) = 0.5
+        _VoronoiExponent ("Voronoi Minkowski Exponent (Blender: 0.5)", Range(0.3, 1.5)) = 1.5
         _VoronoiRandomness ("Voronoi Randomness (Blender: 1.0)", Range(0.0, 1.0)) = 1.0
-        _PainterlyNormalStrength ("Voronoi Position -> Normal Tilt Strength", Range(0.0, 3.0)) = 1.85
+        _PainterlyNormalStrength ("Voronoi Position -> Normal Tilt Strength", Range(0.0, 3.0)) = 1.798
 
         [Header(5. Painted Light Color Switches and Gouache Impasto)]
-        _PaintedLightStrength ("Painted Light Color-Switch Contrast", Range(0.0, 2.0)) = 1.12
-        _SmoothFlattenStrength ("Flatten Underlying Smooth Gradient Inside Strokes", Range(0.0, 1.0)) = 0.65
+        _PaintedLightStrength ("Painted Light Color-Switch Contrast", Range(0.0, 2.0)) = 0.804
+        _SmoothFlattenStrength ("Flatten Underlying Smooth Gradient Inside Strokes", Range(0.0, 1.0)) = 0.0
         _LightSteps ("Painted Light Color-Switch Steps", Range(2.0, 8.0)) = 4.0
         _LightStepSharpness ("Brushstroke Step Sharpness", Range(1.0, 25.0)) = 14.0
         _Roughness ("Principled BSDF Roughness (Blender: 0.5)", Range(0.15, 0.95)) = 0.48
         _PaintedSpecularStrength ("Principled BSDF Specular Dab Boost", Range(0.0, 1.5)) = 0.85
-        _FresnelRimStrength ("Principled BSDF Fresnel Rim & Bounce Dab", Range(0.0, 1.5)) = 0.68
-        _BrushOverlapImpasto ("Directional Brush-Edge Overlap Relief", Range(0.0, 0.5)) = 0.22
+        _FresnelRimStrength ("Principled BSDF Fresnel Rim & Bounce Dab", Range(0.0, 1.5)) = 0.108
+        _BrushOverlapImpasto ("Directional Brush-Edge Overlap Relief", Range(0.0, 0.5)) = 0.0
         _PerStrokeVariation ("Per-Brushstroke Value Switch", Range(0.0, 0.4)) = 0.18
         _WarmCoolShift ("Sunlit Warm / Shadow Cool Pigment Switch", Range(0.0, 0.45)) = 0.24
         _ShadowProtection ("Keep Deep Unlit Shadows Rich & Dark", Range(0.0, 1.0)) = 0.65
@@ -82,18 +76,27 @@ Shader "Custom/DrawnShader"
             Cull Back
             ZWrite Off
             ZTest LEqual
-            Offset -1, -1
+            // Full slope-scaled depth bias eliminates all Z-fighting flicker during camera movement,
+            // while the 8-bit Stencil guard below prevents overlapping floor/wall slabs from double-blending.
+            Offset -1, -2
             Blend DstColor SrcColor
+
+            // Stencil guard ensures DrawnShader executes at most ONCE per pixel (requires Depth+Stencil attachment)
+            Stencil
+            {
+                Ref 77
+                Comp NotEqual
+                Pass Replace
+            }
 
             HLSLPROGRAM
             #pragma vertex vertDrawn
             #pragma fragment fragDrawn
 
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile_instancing
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-            #pragma multi_compile _ _FORWARD_PLUS
-            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_ATLAS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -148,6 +151,7 @@ Shader "Custom/DrawnShader"
                 float4 positionCS : SV_POSITION;
                 float3 positionWS : TEXCOORD0;
                 float3 normalWS   : TEXCOORD1;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -155,11 +159,12 @@ Shader "Custom/DrawnShader"
             {
                 Varyings output = (Varyings)0;
                 UNITY_SETUP_INSTANCE_ID(input);
+                UNITY_TRANSFER_INSTANCE_ID(input, output);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-                VertexPositionInputs posInputs = GetVertexPositionInputs(input.positionOS.xyz);
-                output.positionCS = posInputs.positionCS;
-                output.positionWS = posInputs.positionWS;
+                // Match URP DepthOnlyPass.hlsl exactly (TransformObjectToHClip) for bit-consistent depth
+                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 return output;
             }
@@ -211,47 +216,39 @@ Shader "Custom/DrawnShader"
 
             // ----------------------------------------------------------------
             // Seamless World-Space Triplanar Brush Coordinate Generator
-            // Projects world position onto YZ (X-facing), XZ (Y-facing), and
-            // XY (Z-facing) planes with directional brush elongation & wrist-sweep
-            // curvature, then blends seamlessly by normal weights!
-            // Because it uses continuous World-Space coordinates, adjacent wall
-            // meshes, floors, cabinets, and props flow together with ZERO seams!
             // ----------------------------------------------------------------
             float3 GetSeamlessTriplanarCoords(float3 positionWS, float3 normalWS, out float3 outTriWeights)
             {
                 float3 wp = (positionWS * _MappingScale.xyz + _MappingLocation.xyz) * _Stroke3DScale;
 
-                // Compute smooth triplanar normal weights across X, Y, Z axes
                 float3 absN = max(abs(normalWS), float3(0.0001, 0.0001, 0.0001));
                 float3 w = pow(absN, clamp(_TriplanarSharpness, 1.0, 12.0));
                 outTriWeights = w / max(w.x + w.y + w.z, 0.0001);
 
-                // Low-frequency 3D wrist-sweep curve so strokes sweep organically across surfaces
                 float sweepAngle = GradientNoise3D(wp * 0.35 + float3(11.7, 23.1, 37.9)) * 1.57 * _BrushFlowSweep;
                 float cs = cos(sweepAngle);
                 float sn = sin(sweepAngle);
                 float aspect = max(_BrushAspect, 1.0);
 
-                // Plane X (YZ plane: walls facing East/West)
+                // Plane X (YZ plane)
                 float2 uvX = float2(wp.z * cs - wp.y * sn, wp.z * sn + wp.y * cs);
                 uvX.x /= aspect;
                 float3 coordX = float3(wp.x * 0.5, uvX.y, uvX.x);
 
-                // Plane Y (XZ plane: floors, ceilings, tabletops)
+                // Plane Y (XZ plane)
                 float2 uvY = float2(wp.x * cs - wp.z * sn, wp.x * sn + wp.z * cs);
                 uvY.x /= aspect;
                 float3 coordY = float3(uvY.x, wp.y * 0.5, uvY.y);
 
-                // Plane Z (XY plane: walls facing North/South)
+                // Plane Z (XY plane)
                 float2 uvZ = float2(wp.x * cs - wp.y * sn, wp.x * sn + wp.y * cs);
                 uvZ.x /= aspect;
                 float3 coordZ = float3(uvZ.x, uvZ.y, wp.z * 0.5);
 
-                // Seamlessly blend the 3 directional triplanar spaces
                 return coordX * outTriWeights.x + coordY * outTriWeights.y + coordZ * outTriWeights.z;
             }
 
-            // Fixed 3-Octave Blender 3D fBM (Detail = 2.0 -> 3 octaves, Normalize = true)
+            // Fixed 3-Octave Blender 3D fBM
             float BlenderNoiseFBM(float3 p, float roughness, float lacunarity)
             {
                 float n0 = GradientNoise3D(p);
@@ -272,7 +269,6 @@ Shader "Custom/DrawnShader"
 
             // ----------------------------------------------------------------
             // Exact Blender F1 Minkowski Voronoi -> Position Output
-            // Plus directional cell delta & F2-F1 border for overlapping impasto dabs!
             // ----------------------------------------------------------------
             void EvaluateBlenderVoronoiPosition(
                 float3 vec,
@@ -347,11 +343,15 @@ Shader "Custom/DrawnShader"
                 outBorderDist = max(minDist2 - minDist1, 0.0);
             }
 
-            // Blender Principled BSDF GGX Specular Term (Roughness = 0.5, IOR = 1.5)
-            float EvaluatePrincipledGGX(float ndoth, float ndotl, float roughness)
+            // World-Space Locked Principled BSDF GGX Highlight Evaluation
+            // Uses a fixed world-space reference half-vector (lightDir + normalWS)
+            // instead of camera viewDirWS so highlights never pop or shift as you walk closer/further!
+            float EvaluateWorldLockedPrincipledGGX(float3 paintedNormalWS, float3 normalWS, float3 lightDir, float ndotl, float roughness)
             {
                 if (ndotl <= 0.0)
                     return 0.0;
+                float3 worldRefHalf = normalize(lightDir + normalWS * 0.75 + float3(0.12, 0.65, -0.12));
+                float ndoth = saturate(dot(paintedNormalWS, worldRefHalf));
                 float a = max(roughness * roughness, 0.02);
                 float a2 = a * a;
                 float d = (ndoth * ndoth) * (a2 - 1.0) + 1.0;
@@ -372,18 +372,16 @@ Shader "Custom/DrawnShader"
 
             half4 fragDrawn(Varyings input) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(input);
                 if (_DrawnShaderGlobalDisabled > 0.5 || _EffectEnabled < 0.5 || _EffectIntensity <= 0.001)
                 {
                     return half4(0.5, 0.5, 0.5, 1.0);
                 }
 
                 float3 normalWS = normalize(input.normalWS);
-                float3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
 
                 // ------------------------------------------------------------
                 // 1. Seamless World-Space Triplanar Coordinates
-                //    Connects brushstrokes seamlessly across adjacent wall cubes,
-                //    floors, doors, and props so the whole scene feels painted together!
                 // ------------------------------------------------------------
                 float3 triWeights;
                 float3 triCoord = GetSeamlessTriplanarCoords(input.positionWS, normalWS, triWeights);
@@ -391,12 +389,10 @@ Shader "Custom/DrawnShader"
                 // ------------------------------------------------------------
                 // 2. Exact @a_iwaac Blender Node Tree:
                 //    Triplanar 3D fBM Noise -> Linear Light with Normal ->
-                //    Minkowski Voronoi (Exponent 0.5) -> Position -> Normal
+                //    Minkowski Voronoi -> Position -> Normal
                 // ------------------------------------------------------------
                 float3 noiseRGB = BlenderNoiseTextureRGB(triCoord);
 
-                // Smooth world-space macro normal spread so flat walls, floors, and ceilings
-                // sweep across diverse Voronoi brushstrokes seamlessly across mesh borders
                 float3 macroDrift = float3(
                     GradientNoise3D(triCoord * 0.62 + float3(5.3, 13.7, 29.1)),
                     GradientNoise3D(triCoord * 0.62 + float3(41.9, 7.1, 63.7)),
@@ -421,68 +417,54 @@ Shader "Custom/DrawnShader"
                     vorBorder
                 );
 
-                // Inside each Voronoi cell, voronoiPos is a SINGLE CONSTANT 3D VECTOR ->
-                // 100% flat, noise-free brushstroke interior!
                 float vorLenSq = dot(voronoiPos, voronoiPos);
                 float3 cellFlatNormal = (vorLenSq > 1e-6) ? (voronoiPos * rsqrt(vorLenSq)) : referenceNormalWS;
                 float3 paintedNormalWS = normalize(referenceNormalWS + (cellFlatNormal - referenceNormalWS) * _PainterlyNormalStrength);
 
                 // ------------------------------------------------------------
-                // 3. Principled BSDF Lighting Evaluation on Painted Voronoi Normal
-                //    (Diffuse + GGX Specular Roughness 0.5 + Schlick Fresnel IOR 1.5)
+                // 3. 100% World-Space Locked Multi-Light Evaluation
+                //    - Evaluates all scene lights directly in world space using
+                //      GetAdditionalPerObjectLight (bypassing camera-depth viewZ
+                //      Z-bins and screen-tile boundaries completely!).
+                //    - Smoothly accumulates weighted light directions & colors
+                //      instead of a discontinuous winner-take-all light switch!
                 // ------------------------------------------------------------
-                float4 shadowCoord = TransformWorldToShadowCoord(input.positionWS);
-                Light mainLight = GetMainLight(shadowCoord);
-                float mainAtten = mainLight.distanceAttenuation * mainLight.shadowAttenuation;
+                Light mainLight = GetMainLight();
+                float mainAtten = mainLight.distanceAttenuation;
                 float mainLum = dot(mainLight.color, float3(0.299, 0.587, 0.114));
+                float mainWeight = mainAtten * mainLum;
 
-                float smoothDiffuse = saturate(dot(normalWS, mainLight.direction)) * mainAtten * mainLum;
+                float smoothDiffuse = saturate(dot(normalWS, mainLight.direction)) * mainWeight;
                 float paintedNdotL = saturate(dot(paintedNormalWS, mainLight.direction));
-                float paintedDiffuse = paintedNdotL * mainAtten * mainLum;
+                float paintedDiffuse = paintedNdotL * mainWeight;
+                float paintedSpec = EvaluateWorldLockedPrincipledGGX(paintedNormalWS, normalWS, mainLight.direction, paintedNdotL, _Roughness) * mainWeight;
+                float totalLightEnergy = mainWeight * saturate(dot(normalWS, mainLight.direction) * 0.5 + 0.5);
 
-                float3 mainHalfDir = normalize(mainLight.direction + viewDirWS);
-                float paintedSpec = EvaluatePrincipledGGX(saturate(dot(paintedNormalWS, mainHalfDir)), paintedNdotL, _Roughness)
-                                  * mainAtten * max(mainLum, 0.25);
+                // Smoothly accumulated light direction and color (seeded with gentle overhead room ambient vector)
+                float3 overheadRoomDir = normalize(float3(0.28, 0.88, -0.28));
+                float accumWeight = 0.25 + mainWeight;
+                float3 accumLightDir = overheadRoomDir * 0.25 + mainLight.direction * mainWeight;
+                float3 accumLightColor = float3(1.0, 0.96, 0.90) * 0.25
+                                       + ((mainLum > 0.01) ? (mainLight.color / max(mainLum, 0.1)) : float3(1.0, 0.96, 0.90)) * mainWeight;
 
-                float totalLightEnergy = mainAtten * mainLum * saturate(dot(normalWS, mainLight.direction) * 0.5 + 0.5);
-                float bestLightWeight = mainAtten * mainLum;
-                float3 closestLightDir = mainLight.direction;
-                float3 closestLightColor = (mainLum > 0.01) ? (mainLight.color / max(mainLum, 0.1)) : float3(1.0, 0.96, 0.90);
-
-                // URP Additional Lights (Point & Spot Lights in Forward / Forward+)
-                #if defined(_ADDITIONAL_LIGHTS) || defined(_FORWARD_PLUS)
+                #if defined(_ADDITIONAL_LIGHTS) || defined(_CLUSTER_LIGHT_LOOP)
                 {
-                    InputData inputData = (InputData)0;
-                    inputData.positionWS = input.positionWS;
-                    inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);
-
-                    uint pixelLightCount = GetAdditionalLightsCount();
-
                     #if USE_CLUSTER_LIGHT_LOOP
+                    // In Forward+ mode, _FPParams0.z is local light count and _FPParams0.w is additional directional light count.
+                    // Looping directly over the visible lights in world space completely eliminates
+                    // viewZ Z-Bin and 2D screen-tile boundary lines!
+                    uint totalLights = min((uint)_FPParams0.z + (uint)_FPParams0.w, 16u);
                     [loop]
-                    for (uint dIdx = 0u; dIdx < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); dIdx++)
+                    for (uint lightIndex = 0u; lightIndex < totalLights; lightIndex++)
                     {
-                        Light dLight = GetAdditionalLight(dIdx, inputData.positionWS, half4(1, 1, 1, 1));
-                        float dAtten = dLight.distanceAttenuation * dLight.shadowAttenuation;
-                        float dLum = dot(dLight.color, float3(0.299, 0.587, 0.114));
-                        float w = dAtten * dLum;
-
-                        smoothDiffuse += saturate(dot(normalWS, dLight.direction)) * w;
-                        paintedDiffuse += saturate(dot(paintedNormalWS, dLight.direction)) * w;
-                        totalLightEnergy += w;
-
-                        if (w > bestLightWeight)
-                        {
-                            bestLightWeight = w;
-                            closestLightDir = dLight.direction;
-                            closestLightColor = dLight.color / max(dLum, 0.1);
-                        }
-                    }
+                        Light addLight = GetAdditionalPerObjectLight(lightIndex, input.positionWS);
+                    #else
+                    uint pixelLightCount = GetAdditionalLightsCount();
+                    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+                    {
+                        Light addLight = GetAdditionalLight(lightIndex, input.positionWS);
                     #endif
-
-                    LIGHT_LOOP_BEGIN(pixelLightCount)
-                        Light addLight = GetAdditionalLight(lightIndex, inputData.positionWS, half4(1, 1, 1, 1));
-                        float addAtten = addLight.distanceAttenuation * addLight.shadowAttenuation;
+                        float addAtten = addLight.distanceAttenuation;
                         float addLum = dot(addLight.color, float3(0.299, 0.587, 0.114));
                         float w = addAtten * addLum;
 
@@ -491,49 +473,49 @@ Shader "Custom/DrawnShader"
 
                         smoothDiffuse += sNdotL * w;
                         paintedDiffuse += pNdotL * w;
-
-                        float3 addHalf = normalize(addLight.direction + viewDirWS);
-                        float pNdotH = saturate(dot(paintedNormalWS, addHalf));
-                        paintedSpec += EvaluatePrincipledGGX(pNdotH, pNdotL, _Roughness) * w;
-
+                        paintedSpec += EvaluateWorldLockedPrincipledGGX(paintedNormalWS, normalWS, addLight.direction, pNdotL, _Roughness) * w;
                         totalLightEnergy += w * saturate(dot(normalWS, addLight.direction) * 0.5 + 0.5);
 
-                        if (w > bestLightWeight)
-                        {
-                            bestLightWeight = w;
-                            closestLightDir = addLight.direction;
-                            closestLightColor = addLight.color / max(addLum, 0.1);
-                        }
-                    LIGHT_LOOP_END
+                        accumLightDir += addLight.direction * w;
+                        accumLightColor += (addLight.color / max(addLum, 0.1)) * w;
+                        accumWeight += w;
+                    }
                 }
                 #endif
 
-                // Ambient GI / Lightmap directional response
-                float3 shSmooth = max(SampleSH(normalWS), float3(0.0, 0.0, 0.0));
-                float3 shPainted = max(SampleSH(paintedNormalWS), float3(0.0, 0.0, 0.0));
+                float3 effectiveLightDir = normalize(accumLightDir / max(accumWeight, 0.001));
+                float3 closestLightColor = accumLightColor / max(accumWeight, 0.001);
+
+                // Global world-space ambient hemisphere (replaces per-object SampleSH so adjacent
+                // or overlapping floor/wall slabs produce identical shading with zero seam!)
+                float3 ambSky = max(unity_AmbientSky.rgb, float3(0.24, 0.22, 0.20));
+                float3 ambGround = max(unity_AmbientGround.rgb, float3(0.10, 0.09, 0.11));
+                float3 shSmooth = lerp(ambGround, ambSky, normalWS.y * 0.5 + 0.5);
+                float3 shPainted = lerp(ambGround, ambSky, paintedNormalWS.y * 0.5 + 0.5);
                 float shLumSmooth = dot(shSmooth, float3(0.299, 0.587, 0.114));
                 float shLumPainted = dot(shPainted, float3(0.299, 0.587, 0.114));
 
-                float3 overheadRoomDir = normalize(float3(0.28, 0.86, -0.28) + viewDirWS * 0.22);
-                float3 effectiveLightDir = normalize(lerp(overheadRoomDir, closestLightDir, saturate(bestLightWeight * 2.5)));
-
-                // Compare painted cell normal against referenceNormalWS so the value is 100% flat inside each stroke!
+                // Flat cell lighting difference relative to the smooth multi-light direction
                 float facetLightDiff = dot(paintedNormalWS, effectiveLightDir) - dot(referenceNormalWS, effectiveLightDir);
 
-                float3 effHalfDir = normalize(effectiveLightDir + viewDirWS);
-                float effSpec = EvaluatePrincipledGGX(
-                    saturate(dot(paintedNormalWS, effHalfDir)),
+                float effSpec = EvaluateWorldLockedPrincipledGGX(
+                    paintedNormalWS,
+                    normalWS,
+                    effectiveLightDir,
                     saturate(dot(paintedNormalWS, effectiveLightDir)),
                     _Roughness
                 );
 
                 // ------------------------------------------------------------
-                // 4. Principled BSDF Fresnel Rim & Bounce Dabs (IOR = 1.5)
+                // 4. World-Locked Principled BSDF Fresnel Rim & Bounce Dabs
+                //    Evaluated against surface normal referenceNormalWS instead
+                //    of camera viewDirWS so rim dabs stay 100% locked to the object
+                //    and never pop as you walk closer or further!
                 // ------------------------------------------------------------
-                float paintedNdotV = saturate(dot(paintedNormalWS, viewDirWS));
-                float oneMinusNdotV = 1.0 - paintedNdotV;
-                float schlickFresnel = oneMinusNdotV * oneMinusNdotV * oneMinusNdotV * oneMinusNdotV;
-                float fresnelDab = smoothstep(0.18, 0.44, schlickFresnel);
+                float paintedNdotRef = saturate(dot(paintedNormalWS, referenceNormalWS));
+                float oneMinusNdotRef = 1.0 - paintedNdotRef;
+                float schlickFresnel = oneMinusNdotRef * oneMinusNdotRef;
+                float fresnelDab = smoothstep(0.14, 0.42, schlickFresnel);
 
                 float litRimMask = fresnelDab * smoothstep(-0.05, 0.42, dot(paintedNormalWS, effectiveLightDir));
                 float shadowBounceMask = fresnelDab * smoothstep(0.05, -0.42, dot(paintedNormalWS, effectiveLightDir))
@@ -541,15 +523,11 @@ Shader "Custom/DrawnShader"
 
                 // ------------------------------------------------------------
                 // 5. Directional Overlapping Brush-Dab Impasto
-                //    Instead of outlining all sides of a cell, only the leading
-                //    edge of the brushstroke facing the light gets a crisp pigment
-                //    ridge while the trailing edge gets a subtle overlap step!
                 // ------------------------------------------------------------
                 float edgeMask = 1.0 - smoothstep(0.01, 0.13, vorBorder);
                 float edgeDirection = clamp(dot(normalize(cellDelta + 1e-5), effectiveLightDir), -1.0, 1.0);
                 float directionalImpasto = edgeMask * edgeDirection * _BrushOverlapImpasto;
 
-                // Combine direct light difference + flat cell difference + per-stroke pigment value switch
                 float directDelta = paintedDiffuse - smoothDiffuse;
                 float combinedDelta = directDelta * 1.55 + facetLightDiff * 1.05 + (shLumPainted - shLumSmooth) * 0.85;
                 float cellValueOffset = (cellHash.x - 0.5) * 2.0 * _PerStrokeVariation;
@@ -560,8 +538,6 @@ Shader "Custom/DrawnShader"
                     _LightStepSharpness
                 );
 
-                // Flatten the underlying smooth lighting gradient across each Voronoi cell
-                // so each brushstroke looks like a solid, flat-colored dab of gouache paint!
                 float smoothTotal = clamp(smoothDiffuse + shLumSmooth + 0.35, 0.30, 1.75);
                 float cellTargetFlat = clamp(lerp(smoothTotal, 0.78, 0.50), 0.35, 1.45);
                 float flattenFactor = lerp(1.0, clamp(cellTargetFlat / smoothTotal, 0.68, 1.42), _SmoothFlattenStrength);
@@ -576,14 +552,10 @@ Shader "Custom/DrawnShader"
 
                 // ------------------------------------------------------------
                 // 6. Rich Gouache Warm-Lit / Terminator / Cool-Shadow Pigment Switch
-                //    Preserves 100% of every object's base color while shifting
-                //    lit strokes warmer, mid-transition strokes richer, and shadow
-                //    strokes cooler (matching @a_iwaac's gouache palette!)
                 // ------------------------------------------------------------
                 float3 normalizedLightTint = clamp(closestLightColor, float3(0.84, 0.84, 0.84), float3(1.24, 1.18, 1.14));
                 float tempAmount = clamp(strokeSignal * _WarmCoolShift, -0.28, 0.28);
 
-                // Per-cell subtle warm/cool hue variation so adjacent strokes have hand-mixed character
                 float cellHueJitter = (cellHash.z - 0.5) * _WarmCoolShift * 0.45 * lightGate;
                 float totalTemp = tempAmount + cellHueJitter;
 
@@ -598,7 +570,6 @@ Shader "Custom/DrawnShader"
                     saturate(-totalTemp * 2.8)
                 );
 
-                // Subtle cool lavender-blue bounce dab on shadow-side Fresnel edges (cone base left corner!)
                 strokeColorShift = lerp(
                     strokeColorShift,
                     float3(1.06, 0.95, 1.20),
@@ -608,7 +579,6 @@ Shader "Custom/DrawnShader"
                 float3 strokeMultiplier = max((1.0 + strokeSignal) * flattenFactor, 0.32) * strokeColorShift;
                 float3 finalMultiplier = lerp(float3(1.0, 1.0, 1.0), strokeMultiplier, _EffectIntensity);
 
-                // Map 1.0 -> 0.5 for Blend DstColor SrcColor (2.0 * DstColor * SrcColor)
                 float3 srcBlendValue = max(finalMultiplier * 0.5, float3(0.05, 0.05, 0.05));
                 return half4(srcBlendValue, 1.0);
             }

@@ -10,8 +10,12 @@ public class SceneLoaderFade : MonoBehaviour
     public Image fadeImage; //
     public float fadeDuration = 1.0f; //[cite: 5]
 
+    private bool isLoading = false;
+
     private void Start()
     {
+        if (isLoading) return;
+
         // Ensure the screen is clear when the scene first loads
         if (fadeImage != null)
         {
@@ -24,7 +28,23 @@ public class SceneLoaderFade : MonoBehaviour
 
     public void LoadSceneWithFade(string sceneName)
     {
-        StartCoroutine(FadeAndLoadRoutine(sceneName)); //[cite: 5]
+        if (isLoading) return;
+        isLoading = true;
+
+        if (gameObject.activeInHierarchy && enabled)
+        {
+            StartCoroutine(FadeAndLoadRoutine(sceneName)); //[cite: 5]
+            return;
+        }
+
+        // If this component lives on a button/panel that was deactivated (e.g. MainButtonsPanel/Story
+        // hidden by the Tutorial prompt), run the exact same fade routine on an active runner object.
+        GameObject runnerObj = new GameObject("SceneLoaderFadeRunner");
+        SceneLoaderFade runner = runnerObj.AddComponent<SceneLoaderFade>();
+        runner.isLoading = true;
+        runner.fadeImage = fadeImage;
+        runner.fadeDuration = fadeDuration;
+        runner.StartCoroutine(runner.FadeAndLoadRoutine(sceneName));
     }
 
     private IEnumerator FadeAndLoadRoutine(string sceneName)

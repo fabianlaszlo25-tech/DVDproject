@@ -176,6 +176,8 @@ public class MainMenuController : MonoBehaviour
 
     private void LaunchGameWithTutorialChoice(bool withTutorial)
     {
+        isTransitioning = true;
+
         // 1. Reset run statistics for a fresh game
         if (RunSaveManager.HasInstance)
         {
@@ -185,8 +187,8 @@ public class MainMenuController : MonoBehaviour
         // 2. Record whether to play with or without the tutorial
         TutorialManager.SetMenuTutorialChoice(withTutorial);
 
-        // 3. Load the main room scene cleanly
-        if (sceneLoaderFade == null) sceneLoaderFade = FindObjectOfType<SceneLoaderFade>();
+        // 3. Load the main room scene cleanly (includeInactive=true because SceneLoaderFade sits on 'Story' inside MainButtonsPanel)
+        if (sceneLoaderFade == null) sceneLoaderFade = FindObjectOfType<SceneLoaderFade>(true);
         if (sceneLoaderFade != null)
         {
             sceneLoaderFade.LoadSceneWithFade(mainSceneName);

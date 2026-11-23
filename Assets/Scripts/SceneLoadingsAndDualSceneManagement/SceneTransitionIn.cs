@@ -28,6 +28,26 @@ public class SceneTransitionIn : MonoBehaviour
     {
         if (targetCamera == null) targetCamera = Camera.main;
 
+        // During the interactive tutorial opening, TutorialManager starts the camera locked onto the TV
+        // with cursor and movement hidden. Perform a clean black fade-in only without overriding FOV or
+        // re-enabling the cursor / movement scripts prematurely.
+        if (TutorialManager.IsTutorialActive)
+        {
+            foreach (RectTransform ui in uiToScale) { if (ui != null) ui.localScale = Vector3.one; }
+            ToggleHiddenUI(false);
+
+            if (fadeImage != null)
+            {
+                Color c = fadeImage.color;
+                c.a = 1f;
+                fadeImage.color = c;
+                fadeImage.raycastTarget = false;
+            }
+
+            StartCoroutine(TutorialFadeOnlyRoutine());
+            return;
+        }
+
         // Snap camera immediately to the player target at the restored location
         // BEFORE beginning the transition routine so the animation never renders at the wrong spawn point
         SnapCameraImmediate();
@@ -53,6 +73,38 @@ public class SceneTransitionIn : MonoBehaviour
         ToggleHiddenUI(false);
 
         StartCoroutine(TransitionRoutine());
+    }
+
+    private IEnumerator TutorialFadeOnlyRoutine()
+    {
+        Color fadeColor = fadeImage != null ? fadeImage.color : Color.black;
+
+        for (int settleFrames = 0; settleFrames < 2; settleFrames++)
+        {
+            yield return null;
+        }
+
+        float elapsedTime = 0f;
+        float duration = Mathf.Max(0.25f, zoomOutTime);
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
+            float t = Mathf.Clamp01(elapsedTime / duration);
+
+            if (fadeImage != null)
+            {
+                fadeColor.a = Mathf.Lerp(1f, 0f, t);
+                fadeImage.color = fadeColor;
+            }
+            yield return null;
+        }
+
+        if (fadeImage != null)
+        {
+            fadeColor.a = 0f;
+            fadeImage.color = fadeColor;
+            fadeImage.raycastTarget = false;
+        }
     }
 
     private void SnapCameraImmediate()

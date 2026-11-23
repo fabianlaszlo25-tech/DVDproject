@@ -21,6 +21,7 @@ public class SmoothCameraFollow : MonoBehaviour
     public float mouseSensitivity = 1.0f;
 
     [HideInInspector] public bool isAutoCentering = false;
+    [HideInInspector] public bool lockCameraLook = false;
 
     [Header("TV Focus Mode Settings")]
     [Tooltip("Interpolation speed when zooming into or out of TV Focus Mode.")]
@@ -38,7 +39,15 @@ public class SmoothCameraFollow : MonoBehaviour
     private Quaternion focusWorldRot;
     private float focusTargetFOV = 36f;
 
+    private bool isExitingFocusTransition = false;
+    private float exitTransitionElapsed = 0f;
+    private float exitTransitionDuration = 0f;
+    private Vector3 exitStartPos;
+    private Quaternion exitStartRot;
+    private float exitStartFOV;
+
     public bool IsInFocusMode => isFocusMode;
+    public bool IsExitingFocusTransition => isExitingFocusTransition;
 
     void Awake()
     {
@@ -74,6 +83,7 @@ public class SmoothCameraFollow : MonoBehaviour
     {
         if (cam == null) cam = GetComponent<Camera>();
         isFocusMode = true;
+        isExitingFocusTransition = false;
         focusWorldPos = worldPos;
         focusWorldRot = worldRot;
         focusTargetFOV = targetFOV;
@@ -82,13 +92,52 @@ public class SmoothCameraFollow : MonoBehaviour
     }
 
     /// <summary>
-    /// Exits TV Focus Mode and smoothly returns the camera FOV, position, and rotation to normal.
+    /// Enters TV Focus Mode immediately on frame 1 without lerping from the player position.
+    /// Used at the start of the tutorial so the game launches already focused on the TV.
     /// </summary>
-    public void ExitFocusMode()
+    public void EnterFocusModeImmediate(Vector3 worldPos, Quaternion worldRot, float targetFOV)
     {
+        if (cam == null) cam = GetComponent<Camera>();
+        isFocusMode = true;
+        isExitingFocusTransition = false;
+        focusWorldPos = worldPos;
+        focusWorldRot = worldRot;
+        focusTargetFOV = targetFOV;
+        mouseX = 0f;
+        mouseY = 0f;
+
+        transform.position = worldPos;
+        transform.rotation = worldRot;
+        if (cam != null)
+        {
+            cam.fieldOfView = targetFOV;
+        }
+    }
+
+    /// <summary>
+    /// Exits TV Focus Mode and smoothly returns the camera FOV, position, and rotation to normal.
+    /// When smoothDuration > 0, position, rotation, and FOV all interpolate smoothly in sync over that duration.
+    /// </summary>
+    public void ExitFocusMode(float smoothDuration = 0f)
+    {
+        if (cam == null) cam = GetComponent<Camera>();
         isFocusMode = false;
         mouseX = 0f;
         mouseY = 0f;
+
+        if (smoothDuration > 0.01f)
+        {
+            isExitingFocusTransition = true;
+            exitTransitionElapsed = 0f;
+            exitTransitionDuration = smoothDuration;
+            exitStartPos = transform.position;
+            exitStartRot = transform.rotation;
+            exitStartFOV = cam != null ? cam.fieldOfView : defaultFOV;
+        }
+        else
+        {
+            isExitingFocusTransition = false;
+        }
     }
 
     /// <summary>
@@ -132,6 +181,36 @@ public class SmoothCameraFollow : MonoBehaviour
             return;
         }
 
+        if (isExitingFocusTransition)
+        {
+            exitTransitionElapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(exitTransitionElapsed / Mathf.Max(0.01f, exitTransitionDuration));
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+
+            Vector3 targetPos = target.position + offset;
+            Quaternion targetRot = target.rotation;
+
+            transform.position = Vector3.Lerp(exitStartPos, targetPos, smoothT);
+            transform.rotation = Quaternion.Slerp(exitStartRot, targetRot, smoothT);
+            currentBodyRotation = targetRot;
+            mouseX = 0f;
+            mouseY = 0f;
+
+            if (cam != null)
+            {
+                cam.fieldOfView = Mathf.Lerp(exitStartFOV, defaultFOV, smoothT);
+            }
+
+            if (t >= 1f)
+            {
+                isExitingFocusTransition = false;
+                transform.position = targetPos;
+                transform.rotation = targetRot;
+                if (cam != null) cam.fieldOfView = defaultFOV;
+            }
+            return;
+        }
+
         // 1. Tightly follow the player.
         transform.position = Vector3.Lerp(transform.position, target.position + offset, Time.deltaTime * positionLerpSpeed);
 
@@ -146,7 +225,7 @@ public class SmoothCameraFollow : MonoBehaviour
         }
 
         // 3. Camera Rotation Logic
-        if (isAutoCentering)
+        if (isAutoCentering || lockCameraLook || GridCrawlerController.InputFrozen)
         {
             mouseX = Mathf.Lerp(mouseX, 0f, Time.deltaTime * recenterSpeed);
             mouseY = Mathf.Lerp(mouseY, 0f, Time.deltaTime * recenterSpeed);

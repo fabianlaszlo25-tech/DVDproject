@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -41,7 +42,7 @@ public class BarManager : MonoBehaviour
     public float currentDepression = 0f;
 
     [Header("Automatic Fill Rates (Per Second)")]
-    public float hungerFillRate = 1f;
+    public float hungerFillRate = 0.5f;
     public float sleepFillRate = 0.05f;
     public float baseDepressionFillRate = 1f;
 
@@ -68,15 +69,29 @@ public class BarManager : MonoBehaviour
     public float sleepDepressionReduction = 3f;
     public float cleanDepressionReduction = 25f;
 
-    [Header("Economy & Inflation")]
+    [Header("Economy & Daily Inflation")]
     public float baseFoodCost = 10f;
-    [Tooltip("Rate at which prices inflate per dollar of all-time money earned (e.g. 0.0001 = 0.01% per $1, 0.00025 = 0.025% per $1, 0.001 = 0.1% per $1).")]
+    [Tooltip("Rate at which prices inflate each morning per dollar of all-time money earned (e.g. 0.0001 = 0.01% per $1).")]
     public float inflationRatePerDollar = 0.0001f;
     [Tooltip("Inflation increase (in percent) can never be more than this fraction of the money gained (0.5 = 50%).")]
     [Range(0.05f, 1f)]
     public float maxInflationPercentOfMoneyGained = 0.5f;
+    [Tooltip("Impact TMP font asset used for the subtle morning inflation notification.")]
+    public TMP_FontAsset morningBannerFont;
+    [Tooltip("Delay after waking up before the morning inflation notice fades in.")]
+    public float morningBannerDelay = 1.05f;
+    [Tooltip("How long the morning inflation notice stays visible on screen.")]
+    public float morningBannerHold = 5.5f;
     private decimal currentFoodCost = 0m;
     private float currentInflationMultiplier = 1f;
+
+    // Runtime morning inflation notification UI (matches tutorial Impact text + soft shadow box)
+    private Canvas morningNoticeCanvas;
+    private RectTransform morningNoticeRect;
+    private CanvasGroup morningNoticeGroup;
+    private TextMeshProUGUI morningNoticeText;
+    private Sprite morningSoftShadowSprite;
+    private Coroutine morningNoticeRoutine;
 
     [Header("Tiredness & Endgame Pressure (runtime, read-only)")]
     [Tooltip("Hunger/dirtiness gain per unlocked DVD Player / DVD Disc tier.")]
@@ -106,7 +121,6 @@ public class BarManager : MonoBehaviour
     public event System.Action OnSleptEvent;
 
     private bool hasTriggeredDepressionEnding = false;
-    private float lastDisplayedInflationPercent = -1f;
     private decimal lastDisplayedFoodCost = -1m;
 
     public void SetBarsActiveState(bool hunger, bool needs, bool dirtiness, bool sleep, bool depression)
@@ -147,8 +161,19 @@ public class BarManager : MonoBehaviour
     /// Forces the tuned survival numbers even if the scene instance still has older serialized values.
     /// (Runs once on load; RunSaveManager / boosters can modify them afterwards.)
     /// </summary>
+    private void OnValidate()
+    {
+#if UNITY_EDITOR
+        if (morningBannerFont == null)
+        {
+            morningBannerFont = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Scripts/DVD BOUNCER/IMPACT SDF.asset");
+        }
+#endif
+    }
+
     private void ApplyBalanceTuning()
     {
+        hungerFillRate = Mathf.Min(hungerFillRate, 0.5f);
         sleepFillRate = Mathf.Min(sleepFillRate, 0.05f);
         trashDepressionReduction = 2.5f;
         trashDirtinessIncrease = 1.17f;
@@ -156,6 +181,30 @@ public class BarManager : MonoBehaviour
         cleanDepressionReduction = 25f;
         eatDepressionReduction = 10f;
         currentMoneyDepressionMultiplier = 1f;
+    }
+
+    /// <summary>
+    /// Calculates the inflation multiplier for a new morning based on all-time money circulating in the economy.
+    /// </summary>
+    public static float ComputeInflationMultiplier(float allTimeMoneyFloat, float ratePerDollar, float maxPercentOfMoneyGained)
+    {
+        float safeMoney = Mathf.Max(0f, allTimeMoneyFloat);
+        float mult = 1f + (safeMoney * Mathf.Max(0f, ratePerDollar));
+
+        float maxInflationPercent = safeMoney * Mathf.Max(0f, maxPercentOfMoneyGained);
+        float maxMultiplier = 1f + (maxInflationPercent / 100f);
+        if (mult > maxMultiplier) mult = maxMultiplier;
+
+        return Mathf.Max(1f, mult);
+    }
+
+    /// <summary>
+    /// Sets today's locked-in inflation multiplier (calculated once per morning, stays fixed all day).
+    /// </summary>
+    public void SetDailyInflationMultiplier(float multiplier)
+    {
+        currentInflationMultiplier = Mathf.Max(1f, multiplier);
+        RefreshDailyFoodCost();
     }
 
     // ---------------- Tier scaling & endgame pressure ----------------
@@ -219,6 +268,20 @@ public class BarManager : MonoBehaviour
             }
         }
 
+        // Permanent inflation HUD UI is hidden; inflation is announced once each morning via a subtle Impact banner
+        if (inflationText != null) inflationText.gameObject.SetActive(false);
+
+        // Sync today's locked-in daily inflation multiplier from RunSaveManager
+        if (RunSaveManager.HasInstance)
+        {
+            currentInflationMultiplier = Mathf.Max(1f, RunSaveManager.Instance.currentDayInflationMultiplier);
+        }
+        else
+        {
+            currentInflationMultiplier = 1f;
+        }
+        RefreshDailyFoodCost();
+
         // Secret Good Day: Hide all survival bars, inflation, and food cost UI
         if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive)
         {
@@ -230,6 +293,14 @@ public class BarManager : MonoBehaviour
             if (inflationText != null) inflationText.gameObject.SetActive(false);
             if (foodCostText != null) foodCostText.gameObject.SetActive(false);
         }
+        else if (RunSaveManager.HasInstance &&
+                 RunSaveManager.Instance.pendingMorningInflationAnnouncement &&
+                 !TutorialManager.IsTutorialActive)
+        {
+            float pct = RunSaveManager.Instance.pendingMorningInflationPercent;
+            RunSaveManager.Instance.pendingMorningInflationAnnouncement = false;
+            ShowMorningInflationNotification(pct);
+        }
 
         UpdateUI();
     }
@@ -238,25 +309,17 @@ public class BarManager : MonoBehaviour
     {
         if (RunSaveManager.HasInstance && RunSaveManager.Instance.isGoodDayActive) return;
 
-        ProcessInflation();
+        RefreshDailyFoodCost();
         ProcessBars();
         UpdateUI();
     }
 
-    private void ProcessInflation()
+    /// <summary>
+    /// Inflation stays fixed for the entire day (only recalculated each morning).
+    /// This only keeps food cost synced with any active Food Bill penalty.
+    /// </summary>
+    private void RefreshDailyFoodCost()
     {
-        if (economyBouncer == null) return;
-        // Monotonic inflation: based strictly on all-time money earned so spending money never lowers inflation
-        float allTimeMoneyFloat = (float)economyBouncer.AllTimeMoneyEarned;
-        currentInflationMultiplier = 1f + (allTimeMoneyFloat * inflationRatePerDollar);
-
-        // Safety cap: the inflation increase (shown as "+X% Inflation") can never exceed
-        // maxInflationPercentOfMoneyGained (50%) of the money gained, so stacked permanent boosters
-        // can never make prices run away from what the player earns.
-        float maxInflationPercent = Mathf.Max(0f, allTimeMoneyFloat * maxInflationPercentOfMoneyGained);
-        float maxMultiplier = 1f + (maxInflationPercent / 100f);
-        if (currentInflationMultiplier > maxMultiplier) currentInflationMultiplier = maxMultiplier;
-
         float foodMultiplier = currentInflationMultiplier;
         if (BillManager.Instance != null && BillManager.Instance.IsFoodMoreExpensive)
         {
@@ -353,11 +416,9 @@ public class BarManager : MonoBehaviour
         if (dirtinessSlider) dirtinessSlider.value = currentDirtiness / maxDirtiness;
         if (depressionSlider) depressionSlider.value = currentDepression / maxDepression;
 
-        float percentOverBase = (currentInflationMultiplier - 1f) * 100f;
-        if (inflationText && (Mathf.Abs(percentOverBase - lastDisplayedInflationPercent) > 0.005f || lastDisplayedInflationPercent < 0f))
+        if (inflationText != null && inflationText.gameObject.activeSelf)
         {
-            lastDisplayedInflationPercent = percentOverBase;
-            inflationText.text = $"+{percentOverBase:0.00}% Inflation";
+            inflationText.gameObject.SetActive(false);
         }
 
         if (foodCostText && currentFoodCost != lastDisplayedFoodCost)
@@ -365,6 +426,232 @@ public class BarManager : MonoBehaviour
             lastDisplayedFoodCost = currentFoodCost;
             foodCostText.text = $"Food Cost: {CurrencyFormatter.Format(currentFoodCost)}";
         }
+    }
+
+    // =========================================================================
+    // MORNING INFLATION NOTIFICATION (IMPACT FONT + SOFT SHADOW BOX)
+    // =========================================================================
+
+    public void ShowMorningInflationNotification(float percentUp)
+    {
+        if (percentUp < 0.05f) return;
+
+        if (morningNoticeRoutine != null)
+        {
+            StopCoroutine(morningNoticeRoutine);
+        }
+        morningNoticeRoutine = StartCoroutine(MorningInflationNoticeRoutine(percentUp));
+    }
+
+    private IEnumerator MorningInflationNoticeRoutine(float percentUp)
+    {
+        BuildMorningInflationUI();
+
+        string pctStr = percentUp < 0.1f
+            ? "0.1"
+            : (percentUp < 10f ? percentUp.ToString("0.#") : Mathf.RoundToInt(percentUp).ToString());
+        string message = $"Due to unexplained money circulating in the economy, inflation is up {pctStr}%";
+
+        if (morningNoticeText != null)
+        {
+            morningNoticeText.text = message;
+            if (morningNoticeRect != null)
+            {
+                const float maxTextWidth = 1100f;
+                Vector2 preferred = morningNoticeText.GetPreferredValues(message, maxTextWidth, 0f);
+                float boxW = Mathf.Clamp(preferred.x + 116f, 360f, 1220f);
+                float boxH = Mathf.Clamp(preferred.y + 66f, 84f, 220f);
+                morningNoticeRect.sizeDelta = new Vector2(boxW, boxH);
+            }
+        }
+
+        if (morningNoticeGroup != null) morningNoticeGroup.alpha = 0f;
+        if (morningNoticeRect != null) morningNoticeRect.gameObject.SetActive(false);
+
+        // Wait for wake-up fade-in to clear
+        float delay = Mathf.Max(0f, morningBannerDelay);
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        EnsureMorningNoticeCameraBound();
+        if (morningNoticeRect != null) morningNoticeRect.gameObject.SetActive(true);
+
+        // Fade in
+        float fadeInDur = 0.45f;
+        float t = 0f;
+        while (t < fadeInDur)
+        {
+            t += Time.deltaTime;
+            if (morningNoticeGroup != null) morningNoticeGroup.alpha = Mathf.Clamp01(t / fadeInDur);
+            yield return null;
+        }
+        if (morningNoticeGroup != null) morningNoticeGroup.alpha = 1f;
+
+        // Hold visible
+        yield return new WaitForSeconds(Mathf.Max(1.5f, morningBannerHold));
+
+        // Fade out
+        float fadeOutDur = 0.9f;
+        t = 0f;
+        while (t < fadeOutDur)
+        {
+            t += Time.deltaTime;
+            if (morningNoticeGroup != null) morningNoticeGroup.alpha = 1f - Mathf.Clamp01(t / fadeOutDur);
+            yield return null;
+        }
+        if (morningNoticeGroup != null) morningNoticeGroup.alpha = 0f;
+        if (morningNoticeRect != null) morningNoticeRect.gameObject.SetActive(false);
+
+        morningNoticeRoutine = null;
+    }
+
+    private void EnsureMorningNoticeCameraBound()
+    {
+        if (morningNoticeCanvas == null) return;
+        Camera cam = Camera.main;
+        if (cam == null || cam.targetTexture != null)
+        {
+            Camera[] cams = FindObjectsOfType<Camera>(true);
+            for (int i = 0; i < cams.Length; i++)
+            {
+                if (cams[i] != null && cams[i].targetTexture == null)
+                {
+                    cam = cams[i];
+                    break;
+                }
+            }
+        }
+        if (cam != null)
+        {
+            morningNoticeCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            morningNoticeCanvas.worldCamera = cam;
+            morningNoticeCanvas.planeDistance = 0.21f;
+        }
+    }
+
+    private void BuildMorningInflationUI()
+    {
+        if (morningNoticeCanvas != null) return;
+
+        int uiLayer = LayerMask.NameToLayer("UI");
+        if (uiLayer < 0) uiLayer = 5;
+
+        GameObject canvasObj = new GameObject("MorningInflationNoticeCanvas");
+        canvasObj.layer = uiLayer;
+        canvasObj.transform.SetParent(transform, false);
+
+        morningNoticeCanvas = canvasObj.AddComponent<Canvas>();
+        EnsureMorningNoticeCameraBound();
+        morningNoticeCanvas.sortingOrder = 32760;
+
+        CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+
+        morningSoftShadowSprite = CreateSoftShadowBoxSprite(128, 32);
+
+        GameObject shadowObj = new GameObject("MorningInflationShadowBox", typeof(RectTransform), typeof(Image));
+        shadowObj.layer = uiLayer;
+        shadowObj.transform.SetParent(canvasObj.transform, false);
+
+        Image shadowImg = shadowObj.GetComponent<Image>();
+        shadowImg.sprite = morningSoftShadowSprite;
+        shadowImg.type = Image.Type.Sliced;
+        shadowImg.color = new Color(0f, 0f, 0f, 0.62f);
+        shadowImg.raycastTarget = false;
+
+        morningNoticeRect = shadowObj.GetComponent<RectTransform>();
+        morningNoticeRect.anchorMin = new Vector2(0.5f, 1f);
+        morningNoticeRect.anchorMax = new Vector2(0.5f, 1f);
+        morningNoticeRect.pivot = new Vector2(0.5f, 1f);
+        morningNoticeRect.sizeDelta = new Vector2(960f, 92f);
+        morningNoticeRect.anchoredPosition = new Vector2(0f, -74f);
+
+        morningNoticeGroup = shadowObj.AddComponent<CanvasGroup>();
+        morningNoticeGroup.blocksRaycasts = false;
+        morningNoticeGroup.alpha = 0f;
+
+        GameObject textObj = new GameObject("MorningInflationText", typeof(RectTransform), typeof(TextMeshProUGUI));
+        textObj.layer = uiLayer;
+        textObj.transform.SetParent(shadowObj.transform, false);
+
+        morningNoticeText = textObj.GetComponent<TextMeshProUGUI>();
+        TMP_FontAsset fontToUse = morningBannerFont;
+        if (fontToUse == null && inflationText != null) fontToUse = inflationText.font;
+        if (fontToUse == null && economyBouncer != null && economyBouncer.totalMoneyText != null) fontToUse = economyBouncer.totalMoneyText.font;
+        if (fontToUse != null) morningNoticeText.font = fontToUse;
+
+        morningNoticeText.fontSize = 31f;
+        morningNoticeText.fontStyle = FontStyles.Normal;
+        morningNoticeText.alignment = TextAlignmentOptions.Center;
+        morningNoticeText.color = new Color(0.98f, 0.97f, 0.94f, 1f);
+        morningNoticeText.enableWordWrapping = true;
+        morningNoticeText.raycastTarget = false;
+
+        Material mat = morningNoticeText.fontMaterial;
+        if (mat != null)
+        {
+            mat.EnableKeyword("OUTLINE_ON");
+            mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.08f);
+            mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.85f));
+            mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.06f);
+
+            mat.EnableKeyword("UNDERLAY_ON");
+            mat.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.78f));
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0.25f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.35f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.12f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.42f);
+
+            morningNoticeText.UpdateMeshPadding();
+        }
+
+        RectTransform textRT = morningNoticeText.GetComponent<RectTransform>();
+        textRT.anchorMin = Vector2.zero;
+        textRT.anchorMax = Vector2.one;
+        textRT.offsetMin = new Vector2(46f, 22f);
+        textRT.offsetMax = new Vector2(-46f, -22f);
+
+        shadowObj.SetActive(false);
+    }
+
+    private static Sprite CreateSoftShadowBoxSprite(int size, int featherBorder)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.wrapMode = TextureWrapMode.Clamp;
+        tex.filterMode = FilterMode.Bilinear;
+
+        int innerMin = featherBorder;
+        int innerMax = size - 1 - featherBorder;
+        float invBorder = 1f / Mathf.Max(1f, featherBorder);
+        Color[] pixels = new Color[size * size];
+
+        for (int y = 0; y < size; y++)
+        {
+            float dy = 0f;
+            if (y < innerMin) dy = (innerMin - y) * invBorder;
+            else if (y > innerMax) dy = (y - innerMax) * invBorder;
+
+            for (int x = 0; x < size; x++)
+            {
+                float dx = 0f;
+                if (x < innerMin) dx = (innerMin - x) * invBorder;
+                else if (x > innerMax) dx = (x - innerMax) * invBorder;
+
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                float t = Mathf.Clamp01(1f - dist);
+                float smooth = t * t * (3f - 2f * t);
+                float alpha = smooth * smooth;
+                pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
+            }
+        }
+
+        tex.SetPixels(pixels);
+        tex.Apply(false, true);
+
+        Vector4 border = new Vector4(featherBorder, featherBorder, featherBorder, featherBorder);
+        return Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, border);
     }
 
     public decimal GetCurrentFoodCost()

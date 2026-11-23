@@ -204,6 +204,12 @@ public class TutorialManager : MonoBehaviour
     public Renderer bgVideoRenderer;
     public AudioSource tvAudioSource;
 
+    [Header("5. Tutorial Typography & Opening Focus")]
+    [Tooltip("Impact TMP font asset used for the subtle tutorial text overlay.")]
+    public TMP_FontAsset impactFont;
+    [Tooltip("Duration (seconds) of the smooth camera zoom-out from the TV to normal view when the opening broadcast stops.")]
+    public float openingZoomOutDuration = 0.85f;
+
     // Runtime state tracking
     private bool hasCompletedStarterShop = false;
     private bool boughtStarterDisc = false;
@@ -221,13 +227,14 @@ public class TutorialManager : MonoBehaviour
     private int savedBgRenderQueue = -1;
     private float savedNormalBgAlpha = 0.27450982f;
 
-    // Tutorial UI Overlay (Prompt Banner + Controls Popup + Virtual Cursor)
+    // Tutorial UI Overlay (Simple Impact Tip Text + Soft Shadow Box + Controls Popup + Virtual Cursor)
     private Canvas tutorialCanvas;
     private RectTransform tipBannerRect;
     private CanvasGroup tipBannerGroup;
-    private TextMeshProUGUI tipHeaderText;
+    private Image tipShadowBoxImage;
     private TextMeshProUGUI tipBodyText;
-    private Image tipAccentBar;
+    private Sprite softShadowBoxSprite;
+    private GameObject cachedCursorHolderObj;
 
     private GameObject controlsPopupBackdrop;
     private RectTransform controlsPopupWindow;
@@ -291,6 +298,13 @@ public class TutorialManager : MonoBehaviour
             if (staticNoiseClip == null) staticNoiseClip = tvScreenHazard.staticNoiseSound;
             if (tvAudioSource == null) tvAudioSource = tvScreenHazard.staticLoopAudioSource;
         }
+
+#if UNITY_EDITOR
+        if (impactFont == null)
+        {
+            impactFont = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Scripts/DVD BOUNCER/IMPACT SDF.asset");
+        }
+#endif
     }
 
     private void Awake()
@@ -321,6 +335,15 @@ public class TutorialManager : MonoBehaviour
     private void OnDisable()
     {
         UnhookEvents();
+        if (smoothCamera != null)
+        {
+            smoothCamera.lockCameraLook = false;
+        }
+        if (currentStage == TutorialStage.OpeningVideos || currentStage == TutorialStage.ControlsPopup)
+        {
+            GridCrawlerController.InputFrozen = false;
+            SetOpeningCursorAndHudVisible(true);
+        }
         if (tutorialCanvas != null)
         {
             tutorialCanvas.gameObject.SetActive(false);
@@ -420,7 +443,11 @@ public class TutorialManager : MonoBehaviour
             staticNoiseClip = tvScreenHazard.staticNoiseSound;
         }
 
-        if (sharedFont == null)
+        if (impactFont != null)
+        {
+            sharedFont = impactFont;
+        }
+        else if (sharedFont == null)
         {
             if (bouncer != null && bouncer.totalMoneyText != null && bouncer.totalMoneyText.font != null)
             {
@@ -430,6 +457,11 @@ public class TutorialManager : MonoBehaviour
             {
                 sharedFont = barManager.inflationText.font;
             }
+        }
+
+        if (cachedCursorHolderObj == null && playerController != null && playerController.crosshairContainer != null)
+        {
+            cachedCursorHolderObj = playerController.crosshairContainer.gameObject;
         }
 
         if (uiAudioSource == null)
@@ -635,25 +667,90 @@ public class TutorialManager : MonoBehaviour
     }
 
     // =========================================================================
-    // STAGE 1 & 2: OPENING TV VIDEO SEQUENCE -> PHONE RING & CONTROLS POPUP
+    // STAGE 1 & 2: OPENING TV VIDEO SEQUENCE -> ZOOM OUT -> CONTROLS POPUP
     // =========================================================================
+
+    private void EnterOpeningTvFocusImmediate()
+    {
+        if (smoothCamera == null) smoothCamera = FindObjectOfType<SmoothCameraFollow>(true);
+        if (smoothCamera == null) return;
+
+        Renderer tvRend = tvFocusController != null ? tvFocusController.tvScreenRenderer : null;
+        if (tvRend == null)
+        {
+            GameObject screenObj = GameObject.Find("DVDSetup/Televisor_80/screen");
+            if (screenObj != null) tvRend = screenObj.GetComponent<Renderer>();
+        }
+        if (tvRend == null) return;
+
+        Bounds b = tvRend.bounds;
+        Vector3 screenCenter = b.center;
+        float dist = tvFocusController != null ? Mathf.Max(0.8f, tvFocusController.focusDistanceFromScreen) : 1.45f;
+
+        Vector3 focusCamPos = screenCenter + new Vector3(0f, 0f, -dist);
+        Quaternion focusCamRot = Quaternion.LookRotation((screenCenter - focusCamPos).normalized, Vector3.up);
+
+        float targetFill = tvFocusController != null ? tvFocusController.targetViewportFill : 0.88f;
+        float activeViewportFraction = 0.85f;
+        float desiredVisibleHeightAtScreen = b.size.y / (targetFill * activeViewportFraction);
+        float calculatedFOV = 2f * Mathf.Atan(desiredVisibleHeightAtScreen / (2f * dist)) * Mathf.Rad2Deg;
+        calculatedFOV = Mathf.Clamp(calculatedFOV, 22f, 58f);
+
+        smoothCamera.EnterFocusModeImmediate(focusCamPos, focusCamRot, calculatedFOV);
+    }
+
+    private void SetOpeningCursorAndHudVisible(bool visible)
+    {
+        if (playerController != null)
+        {
+            playerController.SetHudCropPanelVisible(visible);
+            playerController.SetFocusCursorVisuals(visible, false, "");
+            if (playerController.crosshairContainer != null)
+            {
+                cachedCursorHolderObj = playerController.crosshairContainer.gameObject;
+            }
+        }
+        if (cachedCursorHolderObj != null && cachedCursorHolderObj.activeSelf != visible)
+        {
+            cachedCursorHolderObj.SetActive(visible);
+        }
+        if (!visible)
+        {
+            if (tutorialVirtualCursorRect != null && tutorialVirtualCursorRect.gameObject.activeSelf)
+            {
+                tutorialVirtualCursorRect.gameObject.SetActive(false);
+            }
+            if (!PauseManager.IsGamePaused)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+    }
 
     private IEnumerator OpeningSequenceRoutine()
     {
         currentStage = TutorialStage.OpeningVideos;
 
-        // Lock player movement while watching the opening TV sequence
+        // Lock player movement, camera look, and hide cursor completely while watching the TV in focus
         GridCrawlerController.InputFrozen = true;
+        if (smoothCamera != null)
+        {
+            smoothCamera.lockCameraLook = true;
+        }
+        SetOpeningCursorAndHudVisible(false);
         SetTutorialBannerVisible(false);
 
-        // Ensure player is facing the TV and bgvideo is at full opacity in front of the TV camera
+        // Launch the game already focused tightly on the TV screen
+        EnterOpeningTvFocusImmediate();
+
+        // Ensure bgvideo is at full opacity in front of the TV camera
         SetTvFullScreenVideoMode(true);
 
         // Wait one frame for scene & VideoPlayer initialization
         yield return null;
 
         // 1. Play News Video (Slot 1)
-        ShowTipBanner(" BREAKING NEWS", "Watching the evening broadcast on TV...");
         yield return StartCoroutine(PlayTutorialVideoSegmentRoutine(
             newsVideoClip,
             newsVideoFileName,
@@ -663,12 +760,10 @@ public class TutorialManager : MonoBehaviour
             "\"...local warehouse pile-up leaves one worker permanently paralyzed.\nCorporate spokespeople declined to comment on long-term disability coverage...\""));
 
         // 2. First Static Transition
-        ShowTipBanner(" SIGNAL LOST", "...");
         StartTvStaticLoop(playAudio: true);
         yield return new WaitForSeconds(Mathf.Max(0.5f, staticBetweenVideosDuration));
 
         // 3. Play Unpaid Bills Disclaimer Video (Slot 2)
-        ShowTipBanner(" SERVICE NOTICE", "Emergency utility & billing broadcast...");
         StopTvStaticAudio();
         yield return StartCoroutine(PlayTutorialVideoSegmentRoutine(
             disclaimerVideoClip,
@@ -681,7 +776,7 @@ public class TutorialManager : MonoBehaviour
         // 4. Static plays from then on
         HideInTvBroadcastFallback();
         StartTvStaticLoop(playAudio: true);
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.45f);
 
         // Lower static audio slightly so phone ringing is prominent
         if (tvScreenHazard != null && tvScreenHazard.staticLoopAudioSource != null)
@@ -689,14 +784,27 @@ public class TutorialManager : MonoBehaviour
             tvScreenHazard.staticLoopAudioSource.volume = 0.14f;
         }
 
-        // 5. Phone starts ringing + Controls UI pops up
-        currentStage = TutorialStage.ControlsPopup;
+        // Start ringing the kitchen phone as the camera pulls back to regular view
         KitchenPhone phone = KitchenPhone.EnsureInstanceInScene();
         if (phone != null)
         {
             phone.StartTutorialCall(bossCallCard, OnBossCallCompleted);
         }
 
+        // 5. Smoothly zoom out from the TV to the regular player view (camera look & cursor still locked)
+        float zoomDur = Mathf.Max(0.25f, openingZoomOutDuration);
+        if (smoothCamera != null)
+        {
+            smoothCamera.ExitFocusMode(zoomDur);
+        }
+        yield return new WaitForSeconds(zoomDur + 0.08f);
+
+        // 6. Pop up Controls UI and activate the cursor so the player can click "I UNDERSTAND"
+        currentStage = TutorialStage.ControlsPopup;
+        if (playerController != null)
+        {
+            playerController.virtualMousePos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        }
         ShowControlsPopup(true);
     }
 
@@ -969,18 +1077,16 @@ public class TutorialManager : MonoBehaviour
         PlayUiBeep(640f, 0.08f);
         ShowControlsPopup(false);
 
-        // Unlock player movement & interaction!
-        GridCrawlerController.InputFrozen = false;
-        if (playerController != null)
+        // Unlock camera look, movement, HUD, and regular game cursor!
+        if (smoothCamera != null)
         {
-            playerController.SetHudCropPanelVisible(true);
-            playerController.SetFocusCursorVisuals(true, false, "");
+            smoothCamera.lockCameraLook = false;
         }
+        SetOpeningCursorAndHudVisible(true);
+        GridCrawlerController.InputFrozen = false;
 
         currentStage = TutorialStage.WaitForBossCall;
-        ShowTipBanner(
-            "INCOMING CALL — KITCHEN TELEPHONE",
-            "The telephone is ringing in the kitchen! Move over to the kitchen wall phone and click it to answer.");
+        ShowTipBanner("The phone is ringing in the kitchen — go answer it");
     }
 
     private void OnBossCallCompleted()
@@ -1027,9 +1133,7 @@ public class TutorialManager : MonoBehaviour
             billManager.ApplyBillStateToWorld();
         }
 
-        ShowTipBanner(
-            "OBJECTIVE: PAY YOUR OVERDUE BILL",
-            "Your boss transferred $2,000 severance to your account. Go to the front door and hold Left-Click on the bill on the wall to pay it.");
+        ShowTipBanner("You received $2,000 severance — pay the overdue bill by the front door");
     }
 
     // =========================================================================
@@ -1054,9 +1158,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(660f, 0.09f);
-        ShowTipBanner(
-            "NEW BAR ACTIVATED: HUNGER",
-            "Your Hunger bar is now active at the bottom of the screen! Go to the kitchen and hold Left-Click on some food to eat.");
+        ShowTipBanner("Hunger bar active — eat some food in the kitchen");
     }
 
     private void HandleFoodEaten()
@@ -1086,9 +1188,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(660f, 0.09f);
-        ShowTipBanner(
-            "NEW BAR ACTIVATED: NEEDS",
-            "Eating fills your Needs bar! Head into the bathroom and click on the toilet to relieve yourself.");
+        ShowTipBanner("Needs bar active — use the toilet in the bathroom");
     }
 
     private void HandleToiletUsed()
@@ -1119,9 +1219,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(660f, 0.09f);
-        ShowTipBanner(
-            "NEW BAR ACTIVATED: DIRTINESS",
-            "Your Dirtiness bar is now active! Click on the shower in the bathroom to wash up.");
+        ShowTipBanner("Dirtiness bar active — take a shower in the bathroom");
     }
 
     private void HandleShowered()
@@ -1169,9 +1267,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(660f, 0.09f);
-        ShowTipBanner(
-            "NEW BAR ACTIVATED: TIREDNESS (SLEEP)",
-            "Your Tiredness bar is now active! Go to your bed in the bedroom and click it to go to sleep.");
+        ShowTipBanner("Tiredness bar active — go to bed and get some sleep");
     }
 
     public bool CanPerformSurvivalAction(SurvivalAction.ActionType type, GameObject sourceObj)
@@ -1347,9 +1443,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(720f, 0.10f);
-        ShowTipBanner(
-            "NEW BAR ACTIVATED: DEPRESSION — INCOMING CALL",
-            "You woke up and your Depression bar is now active! The kitchen phone is ringing from an Unknown Number—go answer it!");
+        ShowTipBanner("Depression bar active — answer the ringing phone in the kitchen");
     }
 
     private void OnUnknownCallerCompleted()
@@ -1412,27 +1506,19 @@ public class TutorialManager : MonoBehaviour
 
         if (!boughtStarterDisc && !boughtStarterPlayer)
         {
-            ShowTipBanner(
-                "STARTER HARDWARE STORE ($1,000 TOTAL)",
-                "Buy BOTH your Starter DVD Disc ($500) in [1. DVD DISCS] and your Starter DVD Player ($500) in [2. DVD PLAYERS]!");
+            ShowTipBanner("Buy the Starter DVD Disc ($500) and Starter DVD Player ($500)");
         }
         else if (boughtStarterDisc && !boughtStarterPlayer)
         {
-            ShowTipBanner(
-                "STARTER DISC PURCHASED (1/2)",
-                "Great! Now click the [ 2. DVD PLAYERS (SPEED) ] tab at the top and click [ BUY & EQUIP ($500.00) ] to buy your DVD Player!");
+            ShowTipBanner("Switch to [2. DVD PLAYERS] and buy the Starter DVD Player ($500)");
         }
         else if (!boughtStarterDisc && boughtStarterPlayer)
         {
-            ShowTipBanner(
-                "STARTER PLAYER PURCHASED (1/2)",
-                "Great! Now click the [ 1. DVD DISCS (BOUNCE VALUE) ] tab at the top and click [ BUY & EQUIP ($500.00) ] to buy your DVD Disc!");
+            ShowTipBanner("Switch to [1. DVD DISCS] and buy the Starter DVD Disc ($500)");
         }
         else
         {
-            ShowTipBanner(
-                "STARTER KIT COMPLETE (2/2)!",
-                "You bought both the DVD Player and Disc! Click [ EXIT SHOP (ESC) ] to hook them up to your TV.");
+            ShowTipBanner("Starter kit bought! Closing store...");
         }
     }
 
@@ -1446,11 +1532,6 @@ public class TutorialManager : MonoBehaviour
         {
             DVDLogoBouncer.GlobalStaticHalt = false;
             SetDvdLogoVisualsVisible(true);
-        }
-
-        if (barManager != null && barManager.inflationText != null)
-        {
-            barManager.inflationText.gameObject.SetActive(true);
         }
 
         if (upgradeManager != null)
@@ -1473,9 +1554,7 @@ public class TutorialManager : MonoBehaviour
         SetRemoteAndTowelInteractable(true);
 
         PlayUiBeep(680f, 0.09f);
-        ShowTipBanner(
-            "OBJECTIVE: USE THE TV REMOTE",
-            "Your DVD Player is now running on the TV! Go to the TV table and click the Remote to pick it up.");
+        ShowTipBanner("Go to the TV and pick up the Remote");
     }
 
     public void NotifyRemotePickedUp()
@@ -1483,9 +1562,7 @@ public class TutorialManager : MonoBehaviour
         if (!IsTutorialActive || currentStage != TutorialStage.PickUpAndUseRemote) return;
         hasPickedUpRemoteInTutorial = true;
 
-        ShowTipBanner(
-            "TV FOCUS MODE — CLICK THE BOUNCING LOGO",
-            "Click on the bouncing DVD logo with the remote to boost its speed and earn bonus cash! When done, click outside the TV screen to put the remote down.");
+        ShowTipBanner("Click the bouncing DVD logo — click outside the TV to put the remote down");
     }
 
     public void NotifyRemoteClickedInFocus()
@@ -1494,9 +1571,7 @@ public class TutorialManager : MonoBehaviour
         if (!hasClickedRemoteInFocus)
         {
             hasClickedRemoteInFocus = true;
-            ShowTipBanner(
-                "NICE SHOT! PUT DOWN THE REMOTE WHEN READY",
-                "Keep clicking the logo or move your cursor outside the TV screen and Left-Click to put the remote down.");
+            ShowTipBanner("Click outside the TV screen whenever you're ready to put the remote down");
         }
     }
 
@@ -1532,9 +1607,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         PlayUiBeep(780f, 0.12f);
-        ShowTipBanner(
-            "FINAL TIP: CHECK OUT YOUR DVD PLAYER",
-            "Look at your DVD Player on the desk and click it to check out all the other DVDs, Players, and Remotes you can buy! Good luck!");
+        ShowTipBanner("Look at the DVD Player on your desk to check out what else you can buy");
     }
 
     private void CompleteTutorial()
@@ -1550,7 +1623,6 @@ public class TutorialManager : MonoBehaviour
         if (barManager != null)
         {
             barManager.SetBarsActiveState(true, true, true, true, true);
-            if (barManager.inflationText != null) barManager.inflationText.gameObject.SetActive(true);
         }
         if (bouncer != null)
         {
@@ -1582,8 +1654,15 @@ public class TutorialManager : MonoBehaviour
 
         switch (currentStage)
         {
+            case TutorialStage.OpeningVideos:
+                GridCrawlerController.InputFrozen = true;
+                if (smoothCamera != null) smoothCamera.lockCameraLook = true;
+                SetOpeningCursorAndHudVisible(false);
+                break;
+
             case TutorialStage.ControlsPopup:
                 GridCrawlerController.InputFrozen = true;
+                if (smoothCamera != null) smoothCamera.lockCameraLook = true;
                 UpdateControlsPopupInput();
                 break;
 
@@ -1602,7 +1681,7 @@ public class TutorialManager : MonoBehaviour
                 }
                 if (tipBannerRect != null)
                 {
-                    tipBannerRect.anchoredPosition = new Vector2(0f, -920f);
+                    tipBannerRect.anchoredPosition = new Vector2(0f, -940f);
                 }
 
                 // Check if both starter items were bought
@@ -1633,7 +1712,7 @@ public class TutorialManager : MonoBehaviour
 
                     if (upgradeMenu == null || !upgradeMenu.IsMenuOpen)
                     {
-                        if (tipBannerRect != null) tipBannerRect.anchoredPosition = new Vector2(0f, -96f);
+                        if (tipBannerRect != null) tipBannerRect.anchoredPosition = new Vector2(0f, -74f);
                         AdvanceToRemoteStage();
                     }
                 }
@@ -1822,91 +1901,83 @@ public class TutorialManager : MonoBehaviour
         canvasObj.AddComponent<GraphicRaycaster>();
 
         // ---------------------------------------------------------------------
-        // 1. TOP TUTORIAL OBJECTIVE / TIP BANNER
+        // 1. SUBTLE TOP TUTORIAL TEXT (IMPACT FONT + SOFT FEATHERED SHADOW BOX)
         // ---------------------------------------------------------------------
-        GameObject bannerBorder = CreatePanel("TutorialTipBanner", canvasObj.transform, new Color(0.25f, 0.88f, 1.0f, 0.94f));
-        tipBannerRect = bannerBorder.GetComponent<RectTransform>();
+        softShadowBoxSprite = CreateSoftShadowBoxSprite(128, 32);
+
+        GameObject tipShadowObj = new GameObject("TutorialTipShadowBox", typeof(RectTransform), typeof(Image));
+        tipShadowObj.layer = uiLayer;
+        tipShadowObj.transform.SetParent(canvasObj.transform, false);
+
+        tipShadowBoxImage = tipShadowObj.GetComponent<Image>();
+        tipShadowBoxImage.sprite = softShadowBoxSprite;
+        tipShadowBoxImage.type = Image.Type.Sliced;
+        tipShadowBoxImage.color = new Color(0f, 0f, 0f, 0.62f);
+        tipShadowBoxImage.raycastTarget = false;
+
+        tipBannerRect = tipShadowObj.GetComponent<RectTransform>();
         tipBannerRect.anchorMin = new Vector2(0.5f, 1f);
         tipBannerRect.anchorMax = new Vector2(0.5f, 1f);
         tipBannerRect.pivot = new Vector2(0.5f, 1f);
-        tipBannerRect.sizeDelta = new Vector2(1060f, 118f);
-        tipBannerRect.anchoredPosition = new Vector2(0f, -86f);
-        tipBannerGroup = bannerBorder.AddComponent<CanvasGroup>();
+        tipBannerRect.sizeDelta = new Vector2(780f, 92f);
+        tipBannerRect.anchoredPosition = new Vector2(0f, -74f);
+
+        tipBannerGroup = tipShadowObj.AddComponent<CanvasGroup>();
         tipBannerGroup.blocksRaycasts = false;
 
-        GameObject bannerInner = CreatePanel("Inner", bannerBorder.transform, new Color(0.05f, 0.09f, 0.15f, 0.96f));
-        RectTransform innerRT = bannerInner.GetComponent<RectTransform>();
-        innerRT.anchorMin = Vector2.zero;
-        innerRT.anchorMax = Vector2.one;
-        innerRT.offsetMin = new Vector2(3f, 3f);
-        innerRT.offsetMax = new Vector2(-3f, -3f);
-
-        GameObject leftAccent = CreatePanel("LeftAccent", bannerInner.transform, new Color(1f, 0.84f, 0.28f, 1f));
-        tipAccentBar = leftAccent.GetComponent<Image>();
-        RectTransform accRT = leftAccent.GetComponent<RectTransform>();
-        accRT.anchorMin = new Vector2(0f, 0f);
-        accRT.anchorMax = new Vector2(0f, 1f);
-        accRT.pivot = new Vector2(0f, 0.5f);
-        accRT.sizeDelta = new Vector2(10f, 0f);
-        accRT.anchoredPosition = Vector2.zero;
-
-        tipHeaderText = CreateText(
-            "TipHeader",
-            bannerInner.transform,
-            "TUTORIAL OBJECTIVE",
-            22f,
-            FontStyles.Bold,
-            TextAlignmentOptions.MidlineLeft,
-            new Color(1f, 0.86f, 0.32f, 1f));
-        RectTransform thRT = tipHeaderText.GetComponent<RectTransform>();
-        thRT.anchorMin = new Vector2(0f, 0.60f);
-        thRT.anchorMax = new Vector2(1f, 0.94f);
-        thRT.offsetMin = new Vector2(26f, 0f);
-        thRT.offsetMax = new Vector2(-20f, 0f);
-
         tipBodyText = CreateText(
-            "TipBody",
-            bannerInner.transform,
+            "TipText",
+            tipShadowObj.transform,
             "",
-            21f,
+            31f,
             FontStyles.Normal,
-            TextAlignmentOptions.MidlineLeft,
-            new Color(0.92f, 0.96f, 1f, 1f));
+            TextAlignmentOptions.Center,
+            new Color(0.98f, 0.97f, 0.94f, 1f));
         tipBodyText.enableWordWrapping = true;
-        RectTransform tbRT = tipBodyText.GetComponent<RectTransform>();
-        tbRT.anchorMin = new Vector2(0f, 0.08f);
-        tbRT.anchorMax = new Vector2(1f, 0.60f);
-        tbRT.offsetMin = new Vector2(26f, 0f);
-        tbRT.offsetMax = new Vector2(-20f, 0f);
+        ApplyImpactTextShadow(tipBodyText);
 
-        bannerBorder.SetActive(false);
+        RectTransform tbRT = tipBodyText.GetComponent<RectTransform>();
+        tbRT.anchorMin = Vector2.zero;
+        tbRT.anchorMax = Vector2.one;
+        tbRT.offsetMin = new Vector2(46f, 22f);
+        tbRT.offsetMax = new Vector2(-46f, -22f);
+
+        tipShadowObj.SetActive(false);
 
         // ---------------------------------------------------------------------
         // 2. CONTROLS POPUP WINDOW ("I UNDERSTAND")
         // ---------------------------------------------------------------------
-        controlsPopupBackdrop = CreatePanel("ControlsPopupBackdrop", canvasObj.transform, new Color(0.02f, 0.04f, 0.08f, 0.88f));
+        controlsPopupBackdrop = CreatePanel("ControlsPopupBackdrop", canvasObj.transform, new Color(0f, 0f, 0f, 0.72f));
         RectTransform backRT = controlsPopupBackdrop.GetComponent<RectTransform>();
         backRT.anchorMin = Vector2.zero;
         backRT.anchorMax = Vector2.one;
         backRT.offsetMin = Vector2.zero;
         backRT.offsetMax = Vector2.zero;
 
-        GameObject winBorder = CreatePanel("ControlsWindowBorder", controlsPopupBackdrop.transform, new Color(0.28f, 0.88f, 1.0f, 0.96f));
-        controlsPopupWindow = winBorder.GetComponent<RectTransform>();
+        // Soft outer shadow behind the Controls card
+        GameObject winShadow = new GameObject("ControlsWindowShadow", typeof(RectTransform), typeof(Image));
+        winShadow.layer = uiLayer;
+        winShadow.transform.SetParent(controlsPopupBackdrop.transform, false);
+        Image winShadowImg = winShadow.GetComponent<Image>();
+        winShadowImg.sprite = softShadowBoxSprite;
+        winShadowImg.type = Image.Type.Sliced;
+        winShadowImg.color = new Color(0f, 0f, 0f, 0.85f);
+        winShadowImg.raycastTarget = false;
+        controlsPopupWindow = winShadow.GetComponent<RectTransform>();
         controlsPopupWindow.anchorMin = new Vector2(0.5f, 0.5f);
         controlsPopupWindow.anchorMax = new Vector2(0.5f, 0.5f);
         controlsPopupWindow.pivot = new Vector2(0.5f, 0.5f);
-        controlsPopupWindow.sizeDelta = new Vector2(980f, 680f);
+        controlsPopupWindow.sizeDelta = new Vector2(1020f, 700f);
         controlsPopupWindow.anchoredPosition = Vector2.zero;
 
-        GameObject winInner = CreatePanel("ControlsWindowInner", winBorder.transform, new Color(0.07f, 0.11f, 0.18f, 0.98f));
+        GameObject winInner = CreatePanel("ControlsWindowInner", winShadow.transform, new Color(0.08f, 0.09f, 0.11f, 0.95f));
         RectTransform winInnerRT = winInner.GetComponent<RectTransform>();
         winInnerRT.anchorMin = Vector2.zero;
         winInnerRT.anchorMax = Vector2.one;
-        winInnerRT.offsetMin = new Vector2(3f, 3f);
-        winInnerRT.offsetMax = new Vector2(-3f, -3f);
+        winInnerRT.offsetMin = new Vector2(28f, 28f);
+        winInnerRT.offsetMax = new Vector2(-28f, -28f);
 
-        GameObject headerStrip = CreatePanel("HeaderStrip", winInner.transform, new Color(0.12f, 0.20f, 0.30f, 1f));
+        GameObject headerStrip = CreatePanel("HeaderStrip", winInner.transform, new Color(0.13f, 0.14f, 0.17f, 1f));
         RectTransform hsRT = headerStrip.GetComponent<RectTransform>();
         hsRT.anchorMin = new Vector2(0f, 1f);
         hsRT.anchorMax = new Vector2(1f, 1f);
@@ -1917,29 +1988,30 @@ public class TutorialManager : MonoBehaviour
         TextMeshProUGUI ctrlTitle = CreateText(
             "ControlsTitle",
             headerStrip.transform,
-            "HOW TO PLAY — CONTROLS & BASICS",
-            30f,
-            FontStyles.Bold,
+            "CONTROLS",
+            34f,
+            FontStyles.Normal,
             TextAlignmentOptions.Center,
-            new Color(0.48f, 0.95f, 1f, 1f));
+            new Color(0.98f, 0.96f, 0.92f, 1f));
+        ApplyImpactTextShadow(ctrlTitle);
         StretchFull(ctrlTitle.GetComponent<RectTransform>());
 
         string controlsList =
-            "<color=#FFD94A><b>• MOVE FORWARD:</b></color>   Press <b>[W]</b>, <b>[UP ARROW]</b>, or <b>[SCROLL WHEEL UP]</b>\n\n" +
-            "<color=#FFD94A><b>• TURN LEFT / RIGHT:</b></color>   Press <b>[A] / [D]</b>, <b>[LEFT / RIGHT ARROWS]</b>, or click the <b>Screen Edge Arrows</b>\n\n" +
-            "<color=#FFD94A><b>• TURN AROUND (180°):</b></color>   Press <b>[S]</b>, <b>[DOWN ARROW]</b>, or <b>[SCROLL WHEEL DOWN]</b>\n\n" +
-            "<color=#FFD94A><b>• INTERACT WITH OBJECTS:</b></color>   Aim cursor & <b>[LEFT-CLICK]</b> (or <b>[HOLD LEFT-CLICK]</b> on Bills & Food)\n\n" +
-            "<color=#FFD94A><b>• CLEAN TRASH:</b></color>   Hold <b>[LEFT-CLICK]</b> and swipe over trash on the floor\n\n" +
-            "<color=#FFD94A><b>• PAUSE MENU:</b></color>   Press <b>[ESC]</b> or click the top Pause icon";
+            "<color=#FFD966>MOVE FORWARD:</color>   [W], [UP ARROW], or [SCROLL WHEEL UP]\n\n" +
+            "<color=#FFD966>TURN LEFT / RIGHT:</color>   [A] / [D], [LEFT / RIGHT ARROWS], or Screen Edge Arrows\n\n" +
+            "<color=#FFD966>TURN AROUND (180°):</color>   [S], [DOWN ARROW], or [SCROLL WHEEL DOWN]\n\n" +
+            "<color=#FFD966>INTERACT:</color>   Aim cursor & [LEFT-CLICK] (Hold on Bills & Food)\n\n" +
+            "<color=#FFD966>CLEAN TRASH:</color>   Hold [LEFT-CLICK] and swipe over trash on the floor\n\n" +
+            "<color=#FFD966>PAUSE:</color>   Press [ESC] or click the Pause icon";
 
         TextMeshProUGUI ctrlBody = CreateText(
             "ControlsBody",
             winInner.transform,
             controlsList,
-            23f,
+            24f,
             FontStyles.Normal,
             TextAlignmentOptions.MidlineLeft,
-            new Color(0.92f, 0.96f, 1f, 1f));
+            new Color(0.93f, 0.94f, 0.96f, 1f));
         ctrlBody.enableWordWrapping = true;
         RectTransform cbRT = ctrlBody.GetComponent<RectTransform>();
         cbRT.anchorMin = new Vector2(0.06f, 0.22f);
@@ -1956,8 +2028,8 @@ public class TutorialManager : MonoBehaviour
         controlsUnderstandButton.onClick.AddListener(OnControlsUnderstandClicked);
 
         RectTransform btnRT = btnObj.GetComponent<RectTransform>();
-        btnRT.anchorMin = new Vector2(0.26f, 0.05f);
-        btnRT.anchorMax = new Vector2(0.74f, 0.16f);
+        btnRT.anchorMin = new Vector2(0.27f, 0.05f);
+        btnRT.anchorMax = new Vector2(0.73f, 0.16f);
         btnRT.offsetMin = Vector2.zero;
         btnRT.offsetMax = Vector2.zero;
 
@@ -1965,10 +2037,11 @@ public class TutorialManager : MonoBehaviour
             "Label",
             btnObj.transform,
             "I UNDERSTAND",
-            28f,
-            FontStyles.Bold,
+            30f,
+            FontStyles.Normal,
             TextAlignmentOptions.Center,
             Color.white);
+        ApplyImpactTextShadow(btnTxt);
         StretchFull(btnTxt.GetComponent<RectTransform>());
 
         // Virtual Cursor inside Tutorial Canvas (for Controls Popup)
@@ -1993,19 +2066,96 @@ public class TutorialManager : MonoBehaviour
         if (controlsPopupBackdrop != null) controlsPopupBackdrop.SetActive(show);
         if (tutorialVirtualCursorRect != null) tutorialVirtualCursorRect.gameObject.SetActive(show);
 
-        if (playerController != null)
+        if (show)
         {
-            playerController.SetHudCropPanelVisible(!show);
-            playerController.SetFocusCursorVisuals(!show, false, "");
+            // Keep gameplay HUD & gameplay cursor hidden while the Controls Popup and its own cursor are active
+            if (playerController != null)
+            {
+                playerController.SetHudCropPanelVisible(false);
+                playerController.SetFocusCursorVisuals(false, false, "");
+            }
+            if (cachedCursorHolderObj != null)
+            {
+                cachedCursorHolderObj.SetActive(false);
+            }
         }
     }
 
-    private void ShowTipBanner(string header, string body)
+    private void ShowTipBanner(string message)
     {
         if (tutorialCanvas == null) BuildTutorialUI();
-        if (tipHeaderText != null) tipHeaderText.text = header;
-        if (tipBodyText != null) tipBodyText.text = body;
+        if (tipBodyText != null)
+        {
+            tipBodyText.text = message;
+            if (tipBannerRect != null)
+            {
+                const float maxTextWidth = 1040f;
+                Vector2 preferred = tipBodyText.GetPreferredValues(message, maxTextWidth, 0f);
+                float boxW = Mathf.Clamp(preferred.x + 116f, 320f, 1160f);
+                float boxH = Mathf.Clamp(preferred.y + 66f, 84f, 220f);
+                tipBannerRect.sizeDelta = new Vector2(boxW, boxH);
+            }
+        }
         SetTutorialBannerVisible(true);
+    }
+
+    private static Sprite CreateSoftShadowBoxSprite(int size, int featherBorder)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.wrapMode = TextureWrapMode.Clamp;
+        tex.filterMode = FilterMode.Bilinear;
+
+        int innerMin = featherBorder;
+        int innerMax = size - 1 - featherBorder;
+        float invBorder = 1f / Mathf.Max(1f, featherBorder);
+        Color[] pixels = new Color[size * size];
+
+        for (int y = 0; y < size; y++)
+        {
+            float dy = 0f;
+            if (y < innerMin) dy = (innerMin - y) * invBorder;
+            else if (y > innerMax) dy = (y - innerMax) * invBorder;
+
+            for (int x = 0; x < size; x++)
+            {
+                float dx = 0f;
+                if (x < innerMin) dx = (innerMin - x) * invBorder;
+                else if (x > innerMax) dx = (x - innerMax) * invBorder;
+
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                float t = Mathf.Clamp01(1f - dist);
+                float smooth = t * t * (3f - 2f * t);
+                float alpha = smooth * smooth;
+                pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
+            }
+        }
+
+        tex.SetPixels(pixels);
+        tex.Apply(false, true);
+
+        Vector4 border = new Vector4(featherBorder, featherBorder, featherBorder, featherBorder);
+        return Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, border);
+    }
+
+    private static void ApplyImpactTextShadow(TextMeshProUGUI tmp)
+    {
+        if (tmp == null) return;
+        Material mat = tmp.fontMaterial;
+        if (mat == null) return;
+
+        mat.EnableKeyword("OUTLINE_ON");
+        mat.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.08f);
+        mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.85f));
+        mat.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.06f);
+
+        mat.EnableKeyword("UNDERLAY_ON");
+        mat.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.78f));
+        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0.25f);
+        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.35f);
+        mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.12f);
+        mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.42f);
+
+        tmp.UpdateMeshPadding();
     }
 
     private void SetTutorialBannerVisible(bool visible)

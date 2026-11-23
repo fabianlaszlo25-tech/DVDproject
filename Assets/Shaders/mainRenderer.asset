@@ -171,7 +171,7 @@ MonoBehaviour:
   m_RenderingMode: 2
   m_DepthPrimingMode: 2
   m_CopyDepthMode: 1
-  m_DepthAttachmentFormat: 93
+  m_DepthAttachmentFormat: 0
   m_DepthTextureFormat: 93
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1

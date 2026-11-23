@@ -78,6 +78,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
         EnsureDrawnMaterialExists(logCreation: false);
         Shader.SetGlobalFloat("_DrawnShaderGlobalDisabled", 0.0f);
         CacheOriginalMaterialsInLoadedScenes();
+        EnforceExclusionsAndGameplayPrefabs();
     }
 
     // ========================================================================
@@ -232,39 +233,39 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
 
         // 1. Overall Drawn Effect
         mat.SetFloat("_EffectEnabled", 1.0f);
-        mat.SetFloat("_EffectIntensity", 1.15f);
+        mat.SetFloat("_EffectIntensity", 0.5964f);
 
         // 2. Seamless World Triplanar Brush Mapping
         mat.SetFloat("_Stroke3DScale", 0.72f);
         mat.SetFloat("_TriplanarSharpness", 4.5f);
-        mat.SetFloat("_BrushAspect", 1.65f);
-        mat.SetFloat("_BrushFlowSweep", 0.42f);
+        mat.SetFloat("_BrushAspect", 1.0f);
+        mat.SetFloat("_BrushFlowSweep", 0.0f);
         mat.SetVector("_MappingScale", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         mat.SetVector("_MappingLocation", Vector4.zero);
 
         // 3. Blender Node Graph: 3D fBM Noise & Linear Light
         mat.SetFloat("_NoiseScale", 4.8f);
         mat.SetFloat("_NoiseDetail", 2.0f);
-        mat.SetFloat("_NoiseRoughness", 0.52f);
-        mat.SetFloat("_NoiseLacunarity", 2.0f);
-        mat.SetFloat("_LinearLightFactor", 0.22f);
+        mat.SetFloat("_NoiseRoughness", 1.0f);
+        mat.SetFloat("_NoiseLacunarity", 2.145f);
+        mat.SetFloat("_LinearLightFactor", 0.3018f);
         mat.SetFloat("_FlatSurfaceSpread", 0.42f);
 
         // 4. Blender Node Graph: Minkowski Voronoi -> Position -> Normal
         mat.SetFloat("_VoronoiScale", 7.4f);
-        mat.SetFloat("_VoronoiExponent", 0.5f);
+        mat.SetFloat("_VoronoiExponent", 1.5f);
         mat.SetFloat("_VoronoiRandomness", 1.0f);
-        mat.SetFloat("_PainterlyNormalStrength", 1.85f);
+        mat.SetFloat("_PainterlyNormalStrength", 1.798f);
 
         // 5. Painted Light Color Switches & Gouache Impasto
-        mat.SetFloat("_PaintedLightStrength", 1.12f);
-        mat.SetFloat("_SmoothFlattenStrength", 0.65f);
+        mat.SetFloat("_PaintedLightStrength", 0.804f);
+        mat.SetFloat("_SmoothFlattenStrength", 0.0f);
         mat.SetFloat("_LightSteps", 4.0f);
         mat.SetFloat("_LightStepSharpness", 14.0f);
         mat.SetFloat("_Roughness", 0.48f);
         mat.SetFloat("_PaintedSpecularStrength", 0.85f);
-        mat.SetFloat("_FresnelRimStrength", 0.68f);
-        mat.SetFloat("_BrushOverlapImpasto", 0.22f);
+        mat.SetFloat("_FresnelRimStrength", 0.108f);
+        mat.SetFloat("_BrushOverlapImpasto", 0.0f);
         mat.SetFloat("_PerStrokeVariation", 0.18f);
         mat.SetFloat("_WarmCoolShift", 0.24f);
         mat.SetFloat("_ShadowProtection", 0.65f);
@@ -315,7 +316,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
         for (int i = _db.managedRenderers.Count - 1; i >= 0; i--)
         {
             TrackedRendererRecord rec = _db.managedRenderers[i];
-            if (rec == null || string.IsNullOrEmpty(rec.key))
+            if (rec == null || string.IsNullOrEmpty(rec.key) || string.IsNullOrEmpty(rec.scenePath))
             {
                 _db.managedRenderers.RemoveAt(i);
                 continue;
@@ -448,6 +449,9 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
     private static List<Renderer> CollectGameplayPrefabRenderers()
     {
         List<Renderer> result = new List<Renderer>();
+        HashSet<Renderer> seen = new HashSet<Renderer>();
+        HashSet<string> prefabPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         List<string> validFolders = new List<string>();
         for (int i = 0; i < GameplayPrefabFolders.Length; i++)
         {
@@ -455,16 +459,47 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
                 validFolders.Add(GameplayPrefabFolders[i]);
         }
 
-        if (validFolders.Count == 0)
-            return result;
-
-        string[] guids = AssetDatabase.FindAssets("t:Prefab", validFolders.ToArray());
-        for (int i = 0; i < guids.Length; i++)
+        if (validFolders.Count > 0)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            if (string.IsNullOrEmpty(path))
+            string[] guids = AssetDatabase.FindAssets("t:Prefab", validFolders.ToArray());
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                if (!string.IsNullOrEmpty(path))
+                    prefabPaths.Add(path);
+            }
+        }
+
+        // Also explicitly include every TrashItem prefab referenced by any TrashManager in loaded scenes
+        int sceneCount = SceneManager.sceneCount;
+        for (int s = 0; s < sceneCount; s++)
+        {
+            Scene scene = SceneManager.GetSceneAt(s);
+            if (!scene.IsValid() || !scene.isLoaded)
                 continue;
 
+            GameObject[] roots = scene.GetRootGameObjects();
+            for (int r = 0; r < roots.Length; r++)
+            {
+                TrashManager[] managers = roots[r].GetComponentsInChildren<TrashManager>(true);
+                for (int m = 0; m < managers.Length; m++)
+                {
+                    if (managers[m] == null || managers[m].trashPrefabs == null)
+                        continue;
+                    for (int p = 0; p < managers[m].trashPrefabs.Count; p++)
+                    {
+                        TrashItem item = managers[m].trashPrefabs[p];
+                        if (item == null) continue;
+                        string assetPath = AssetDatabase.GetAssetPath(item.gameObject);
+                        if (!string.IsNullOrEmpty(assetPath))
+                            prefabPaths.Add(assetPath);
+                    }
+                }
+            }
+        }
+
+        foreach (string path in prefabPaths)
+        {
             GameObject prefabRoot = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (prefabRoot == null)
                 continue;
@@ -472,12 +507,112 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
             Renderer[] renderers = prefabRoot.GetComponentsInChildren<Renderer>(true);
             for (int j = 0; j < renderers.Length; j++)
             {
-                if (IsEligibleRenderer(renderers[j], allowPrefabAsset: true))
+                if (IsEligibleRenderer(renderers[j], allowPrefabAsset: true) && seen.Add(renderers[j]))
                     result.Add(renderers[j]);
             }
         }
 
         return result;
+    }
+
+    private static void SaveModifiedPrefabRoots(HashSet<GameObject> modifiedPrefabRoots)
+    {
+        if (modifiedPrefabRoots == null || modifiedPrefabRoots.Count == 0)
+            return;
+
+        foreach (GameObject root in modifiedPrefabRoots)
+        {
+            if (root != null)
+            {
+                PrefabUtility.SavePrefabAsset(root);
+            }
+        }
+        AssetDatabase.SaveAssets();
+    }
+
+    private static void EnforceExclusionsAndGameplayPrefabs()
+    {
+        if (Application.isPlaying || _isPerformingBulkOperation)
+            return;
+
+        LoadDatabase();
+        Material drawnMat = EnsureDrawnMaterialExists(logCreation: false);
+
+        _isPerformingBulkOperation = true;
+        bool sceneModified = false;
+        HashSet<GameObject> modifiedPrefabRoots = new HashSet<GameObject>();
+
+        try
+        {
+            // 1. Ensure any excluded object in loaded scenes (e.g. TV / screen / crt) has DrawnShader removed
+            List<Renderer> sceneRenderers = CollectAllEligibleSceneRenderers();
+            for (int i = 0; i < sceneRenderers.Count; i++)
+            {
+                Renderer r = sceneRenderers[i];
+                if (FindRecordInDict(_excludedByKey, r) != null && RendererHasDrawnMaterial(r))
+                {
+                    RemoveDrawnMaterialFromRenderer(r);
+                    sceneModified = true;
+                }
+            }
+
+            // 2. Ensure gameplay trash prefabs match the active state and properly save variant overrides
+            if (_db.isSceneEffectActive && drawnMat != null)
+            {
+                List<Renderer> prefabRenderers = CollectGameplayPrefabRenderers();
+                for (int i = 0; i < prefabRenderers.Count; i++)
+                {
+                    Renderer r = prefabRenderers[i];
+                    if (FindRecordInDict(_excludedByKey, r) != null)
+                    {
+                        if (RendererHasDrawnMaterial(r))
+                        {
+                            RemoveDrawnMaterialFromRenderer(r);
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                            modifiedPrefabRoots.Add(r.transform.root.gameObject);
+                        }
+                        continue;
+                    }
+
+                    if (!RendererHasDrawnMaterial(r))
+                    {
+                        Material[] currentMats = r.sharedMaterials;
+                        int origCount = currentMats != null ? currentMats.Length : 0;
+                        if (origCount > 0)
+                        {
+                            Material[] newMats = new Material[origCount + 1];
+                            Array.Copy(currentMats, newMats, origCount);
+                            newMats[origCount] = drawnMat;
+                            r.sharedMaterials = newMats;
+                            EditorUtility.SetDirty(r);
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                            modifiedPrefabRoots.Add(r.transform.root.gameObject);
+
+                            TrackedRendererRecord managedRec = CreateRecordForRenderer(r, origCount);
+                            _managedByKey[managedRec.key] = managedRec;
+                        }
+                    }
+                }
+            }
+
+            if (modifiedPrefabRoots.Count > 0)
+            {
+                SaveModifiedPrefabRoots(modifiedPrefabRoots);
+                SaveDatabase();
+            }
+
+            if (sceneModified)
+            {
+                SaveDatabase();
+                MarkLoadedScenesDirtyIfModified(true);
+                SceneView.RepaintAll();
+            }
+        }
+        finally
+        {
+            _isPerformingBulkOperation = false;
+            RepaintOpenWindows();
+        }
     }
 
     private static string GetHierarchyPath(Transform tr)
@@ -648,6 +783,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
         if (_isPerformingBulkOperation || Application.isPlaying)
             return;
         CacheOriginalMaterialsInLoadedScenes();
+        EnforceExclusionsAndGameplayPrefabs();
     }
 
     private static void PollSelectedObjectsForManualChanges()
@@ -850,7 +986,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
 
             List<Renderer> allRenderers = CollectAllEligibleSceneRenderers();
             allRenderers.AddRange(CollectGameplayPrefabRenderers());
-            bool modifiedPrefabs = false;
+            HashSet<GameObject> modifiedPrefabRoots = new HashSet<GameObject>();
 
             for (int i = 0; i < allRenderers.Count; i++)
             {
@@ -864,7 +1000,10 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
                     {
                         RemoveDrawnMaterialFromRenderer(r);
                         if (EditorUtility.IsPersistent(r))
-                            modifiedPrefabs = true;
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                            modifiedPrefabRoots.Add(r.transform.root.gameObject);
+                        }
                     }
                     skippedExcludedCount++;
                     continue;
@@ -898,7 +1037,10 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
                 r.sharedMaterials = newMats;
                 EditorUtility.SetDirty(r);
                 if (EditorUtility.IsPersistent(r))
-                    modifiedPrefabs = true;
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                    modifiedPrefabRoots.Add(r.transform.root.gameObject);
+                }
 
                 TrackedRendererRecord managedRec = CreateRecordForRenderer(r, origCount);
                 _managedByKey[managedRec.key] = managedRec;
@@ -908,8 +1050,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
             Undo.CollapseUndoOperations(undoGroup);
             _db.isSceneEffectActive = true;
             SaveDatabase();
-            if (modifiedPrefabs)
-                AssetDatabase.SaveAssets();
+            SaveModifiedPrefabRoots(modifiedPrefabRoots);
             MarkLoadedScenesDirtyIfModified(appliedSceneCount > 0);
         }
         finally
@@ -938,7 +1079,7 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
 
             List<Renderer> allRenderers = CollectAllEligibleSceneRenderers();
             allRenderers.AddRange(CollectGameplayPrefabRenderers());
-            bool modifiedPrefabs = false;
+            HashSet<GameObject> modifiedPrefabRoots = new HashSet<GameObject>();
 
             for (int i = 0; i < allRenderers.Count; i++)
             {
@@ -953,15 +1094,17 @@ public class DrawnShaderTool : EditorWindow, IProcessSceneWithReport
 
                 RemoveDrawnMaterialFromRenderer(r);
                 if (EditorUtility.IsPersistent(r))
-                    modifiedPrefabs = true;
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                    modifiedPrefabRoots.Add(r.transform.root.gameObject);
+                }
                 removedSceneCount++;
             }
 
             Undo.CollapseUndoOperations(undoGroup);
             _db.isSceneEffectActive = false;
             SaveDatabase();
-            if (modifiedPrefabs)
-                AssetDatabase.SaveAssets();
+            SaveModifiedPrefabRoots(modifiedPrefabRoots);
             MarkLoadedScenesDirtyIfModified(removedSceneCount > 0);
         }
         finally
