@@ -28,11 +28,18 @@ public class MainMenuController : MonoBehaviour
     public GameObject mainButtonsPanel;
     [Tooltip("Panel containing the Music & SFX audio sliders and Back button.")]
     public GameObject settingsPanel;
+    [Tooltip("Panel asking whether the player wants to play With Tutorial or Without Tutorial.")]
+    public GameObject tutorialPromptPanel;
 
     [Header("Main Menu Buttons")]
     public Button startRunButton;
     public Button settingsButton;
     public Button quitButton;
+
+    [Header("Tutorial Prompt Buttons")]
+    public Button playWithTutorialButton;
+    public Button playWithoutTutorialButton;
+    public Button backFromTutorialButton;
 
     [Header("Settings Panel UI")]
     public Slider musicVolumeSlider;
@@ -59,6 +66,7 @@ public class MainMenuController : MonoBehaviour
 
     private CanvasGroup mainButtonsCanvasGroup;
     private CanvasGroup settingsCanvasGroup;
+    private CanvasGroup tutorialPromptCanvasGroup;
     private Coroutine transitionRoutine;
     private bool isTransitioning = false;
     private bool isUpdatingSlidersInternally = false;
@@ -66,6 +74,7 @@ public class MainMenuController : MonoBehaviour
 
     private Vector2 mainButtonsBasePos;
     private Vector2 settingsBasePos;
+    private Vector2 tutorialPromptBasePos;
     private bool hasRecordedBasePositions = false;
 
     private void Awake()
@@ -141,14 +150,42 @@ public class MainMenuController : MonoBehaviour
     {
         if (isTransitioning) return;
         PlayClickSound();
+        SwitchToTutorialPrompt(true);
+    }
 
+    public void OnPlayWithTutorialClicked()
+    {
+        if (isTransitioning) return;
+        PlayClickSound();
+        LaunchGameWithTutorialChoice(true);
+    }
+
+    public void OnPlayWithoutTutorialClicked()
+    {
+        if (isTransitioning) return;
+        PlayClickSound();
+        LaunchGameWithTutorialChoice(false);
+    }
+
+    public void OnBackFromTutorialPromptClicked()
+    {
+        if (isTransitioning) return;
+        PlayClickSound();
+        SwitchToTutorialPrompt(false);
+    }
+
+    private void LaunchGameWithTutorialChoice(bool withTutorial)
+    {
         // 1. Reset run statistics for a fresh game
         if (RunSaveManager.HasInstance)
         {
             RunSaveManager.Instance.ResetRunForNewGame();
         }
 
-        // 2. Load the main room scene cleanly
+        // 2. Record whether to play with or without the tutorial
+        TutorialManager.SetMenuTutorialChoice(withTutorial);
+
+        // 3. Load the main room scene cleanly
         if (sceneLoaderFade == null) sceneLoaderFade = FindObjectOfType<SceneLoaderFade>();
         if (sceneLoaderFade != null)
         {
@@ -208,39 +245,61 @@ public class MainMenuController : MonoBehaviour
         {
             StopCoroutine(transitionRoutine);
         }
-        transitionRoutine = StartCoroutine(TransitionRoutine(toSettings));
+        EnsureCanvasGroups();
+        RecordBasePositions();
+        transitionRoutine = StartCoroutine(TransitionPanelsRoutine(
+            toSettings ? mainButtonsCanvasGroup : settingsCanvasGroup,
+            toSettings ? settingsCanvasGroup : mainButtonsCanvasGroup,
+            toSettings ? mainButtonsBasePos : settingsBasePos,
+            toSettings ? settingsBasePos : mainButtonsBasePos,
+            toSettings));
     }
 
-    private IEnumerator TransitionRoutine(bool toSettings)
+    public void SwitchToTutorialPrompt(bool toPrompt)
     {
+        if (transitionRoutine != null)
+        {
+            StopCoroutine(transitionRoutine);
+        }
+        EnsureTutorialPromptPanel();
+        EnsureCanvasGroups();
+        RecordBasePositions();
+        transitionRoutine = StartCoroutine(TransitionPanelsRoutine(
+            toPrompt ? mainButtonsCanvasGroup : tutorialPromptCanvasGroup,
+            toPrompt ? tutorialPromptCanvasGroup : mainButtonsCanvasGroup,
+            toPrompt ? mainButtonsBasePos : tutorialPromptBasePos,
+            toPrompt ? tutorialPromptBasePos : mainButtonsBasePos,
+            toPrompt));
+    }
+
+    private IEnumerator TransitionPanelsRoutine(
+        CanvasGroup outgoing,
+        CanvasGroup incoming,
+        Vector2 outBase,
+        Vector2 inBase,
+        bool forward)
+    {
+        if (outgoing == null || incoming == null) yield break;
+
         isTransitioning = true;
         activeDraggedSlider = null;
 
-        if (toSettings)
+        if (incoming == settingsCanvasGroup)
         {
             SyncSlidersToGlobalAudio();
         }
 
-        EnsureCanvasGroups();
-        RecordBasePositions();
-
-        CanvasGroup outgoing = toSettings ? mainButtonsCanvasGroup : settingsCanvasGroup;
-        CanvasGroup incoming = toSettings ? settingsCanvasGroup : mainButtonsCanvasGroup;
-
         RectTransform outgoingRT = outgoing.GetComponent<RectTransform>();
         RectTransform incomingRT = incoming.GetComponent<RectTransform>();
 
-        Vector2 outBase = toSettings ? mainButtonsBasePos : settingsBasePos;
-        Vector2 inBase = toSettings ? settingsBasePos : mainButtonsBasePos;
-
-        Vector2 outTargetPos = outBase + (toSettings ? new Vector2(-transitionHorizontalDrift, 0f) : new Vector2(transitionHorizontalDrift, 0f));
-        Vector2 inStartPos = inBase + (toSettings ? new Vector2(transitionHorizontalDrift, 0f) : new Vector2(-transitionHorizontalDrift, 0f));
+        Vector2 outTargetPos = outBase + (forward ? new Vector2(-transitionHorizontalDrift, 0f) : new Vector2(transitionHorizontalDrift, 0f));
+        Vector2 inStartPos = inBase + (forward ? new Vector2(transitionHorizontalDrift, 0f) : new Vector2(-transitionHorizontalDrift, 0f));
 
         incoming.gameObject.SetActive(true);
         incoming.alpha = 0f;
         incoming.interactable = false;
         incoming.blocksRaycasts = false;
-        incomingRT.anchoredPosition = inStartPos;
+        if (incomingRT != null) incomingRT.anchoredPosition = inStartPos;
 
         outgoing.interactable = false;
         outgoing.blocksRaycasts = false;
@@ -257,18 +316,18 @@ public class MainMenuController : MonoBehaviour
             outgoing.alpha = 1f - smoothT;
             incoming.alpha = smoothT;
 
-            outgoingRT.anchoredPosition = Vector2.Lerp(outBase, outTargetPos, smoothT);
-            incomingRT.anchoredPosition = Vector2.Lerp(inStartPos, inBase, smoothT);
+            if (outgoingRT != null) outgoingRT.anchoredPosition = Vector2.Lerp(outBase, outTargetPos, smoothT);
+            if (incomingRT != null) incomingRT.anchoredPosition = Vector2.Lerp(inStartPos, inBase, smoothT);
 
             yield return null;
         }
 
         outgoing.alpha = 0f;
         outgoing.gameObject.SetActive(false);
-        outgoingRT.anchoredPosition = outBase;
+        if (outgoingRT != null) outgoingRT.anchoredPosition = outBase;
 
         incoming.alpha = 1f;
-        incomingRT.anchoredPosition = inBase;
+        if (incomingRT != null) incomingRT.anchoredPosition = inBase;
         incoming.interactable = true;
         incoming.blocksRaycasts = true;
 
@@ -289,6 +348,12 @@ public class MainMenuController : MonoBehaviour
             settingsCanvasGroup = settingsPanel.GetComponent<CanvasGroup>();
             if (settingsCanvasGroup == null) settingsCanvasGroup = settingsPanel.AddComponent<CanvasGroup>();
         }
+
+        if (tutorialPromptPanel != null && tutorialPromptCanvasGroup == null)
+        {
+            tutorialPromptCanvasGroup = tutorialPromptPanel.GetComponent<CanvasGroup>();
+            if (tutorialPromptCanvasGroup == null) tutorialPromptCanvasGroup = tutorialPromptPanel.AddComponent<CanvasGroup>();
+        }
     }
 
     private void RecordBasePositions()
@@ -305,6 +370,12 @@ public class MainMenuController : MonoBehaviour
         {
             RectTransform rt = settingsPanel.GetComponent<RectTransform>();
             if (rt != null) settingsBasePos = rt.anchoredPosition;
+        }
+
+        if (tutorialPromptPanel != null)
+        {
+            RectTransform rt = tutorialPromptPanel.GetComponent<RectTransform>();
+            if (rt != null) tutorialPromptBasePos = rt.anchoredPosition;
         }
 
         hasRecordedBasePositions = true;
@@ -562,6 +633,7 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
+        EnsureTutorialPromptPanel();
         EnsureCanvasGroups();
         RecordBasePositions();
 
@@ -577,6 +649,18 @@ public class MainMenuController : MonoBehaviour
             }
         }
 
+        // Tutorial prompt panel starts hidden at runtime
+        if (tutorialPromptPanel != null)
+        {
+            tutorialPromptPanel.SetActive(false);
+            if (tutorialPromptCanvasGroup != null)
+            {
+                tutorialPromptCanvasGroup.alpha = 0f;
+                tutorialPromptCanvasGroup.interactable = false;
+                tutorialPromptCanvasGroup.blocksRaycasts = false;
+            }
+        }
+
         // Main buttons start visible and interactable at runtime
         if (mainButtonsPanel != null)
         {
@@ -588,6 +672,106 @@ public class MainMenuController : MonoBehaviour
                 mainButtonsCanvasGroup.blocksRaycasts = true;
             }
         }
+    }
+
+    private void EnsureTutorialPromptPanel()
+    {
+        if (tutorialPromptPanel != null) return;
+        if (mainButtonsPanel == null || mainButtonsPanel.transform.parent == null) return;
+
+        Transform parent = mainButtonsPanel.transform.parent;
+        Transform existing = parent.Find("TutorialPromptPanel");
+        if (existing != null)
+        {
+            tutorialPromptPanel = existing.gameObject;
+            playWithTutorialButton = FindButtonByNameOrIndex(existing, "WithTutorial", "Yes", 0);
+            playWithoutTutorialButton = FindButtonByNameOrIndex(existing, "WithoutTutorial", "No", 1);
+            backFromTutorialButton = FindButtonByNameOrIndex(existing, "Back", "Back", 2);
+            return;
+        }
+
+        // Clone MainButtonsPanel layout so button styling, sprites, font, and scale match the Main Menu 1:1
+        GameObject panelObj = new GameObject("TutorialPromptPanel", typeof(RectTransform), typeof(CanvasGroup));
+        panelObj.layer = mainButtonsPanel.layer;
+        panelObj.transform.SetParent(parent, false);
+
+        RectTransform srcRT = mainButtonsPanel.GetComponent<RectTransform>();
+        RectTransform dstRT = panelObj.GetComponent<RectTransform>();
+        if (srcRT != null && dstRT != null)
+        {
+            dstRT.anchorMin = srcRT.anchorMin;
+            dstRT.anchorMax = srcRT.anchorMax;
+            dstRT.pivot = srcRT.pivot;
+            dstRT.anchoredPosition = srcRT.anchoredPosition;
+            dstRT.sizeDelta = srcRT.sizeDelta;
+            dstRT.localScale = srcRT.localScale;
+        }
+
+        // Prompt Question Title above buttons
+        GameObject titleObj = new GameObject("PromptTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
+        titleObj.layer = panelObj.layer;
+        titleObj.transform.SetParent(panelObj.transform, false);
+        RectTransform titleRT = titleObj.GetComponent<RectTransform>();
+        titleRT.anchorMin = new Vector2(0.5f, 0.5f);
+        titleRT.anchorMax = new Vector2(0.5f, 0.5f);
+        titleRT.pivot = new Vector2(0.5f, 0.5f);
+        titleRT.anchoredPosition = new Vector2(0f, 172f);
+        titleRT.sizeDelta = new Vector2(540f, 46f);
+
+        TextMeshProUGUI titleTmp = titleObj.GetComponent<TextMeshProUGUI>();
+        if (fontAsset != null) titleTmp.font = fontAsset;
+        titleTmp.text = "PLAY WITH TUTORIAL?";
+        titleTmp.fontSize = 26f;
+        titleTmp.fontStyle = FontStyles.Bold;
+        titleTmp.alignment = TextAlignmentOptions.Center;
+        titleTmp.color = new Color(1f, 0.90f, 0.72f, 1f);
+        titleTmp.raycastTarget = false;
+
+        Button templateBtn = startRunButton != null ? startRunButton : (settingsButton != null ? settingsButton : quitButton);
+        if (templateBtn != null)
+        {
+            playWithTutorialButton = CloneMenuButton(templateBtn, panelObj.transform, "WithTutorialButton", "WITH TUTORIAL", new Vector2(0f, 88f));
+            playWithoutTutorialButton = CloneMenuButton(templateBtn, panelObj.transform, "WithoutTutorialButton", "WITHOUT TUTORIAL", new Vector2(0f, -8f));
+            backFromTutorialButton = CloneMenuButton(templateBtn, panelObj.transform, "BackFromTutorialButton", "BACK", new Vector2(0f, -104f));
+        }
+
+        tutorialPromptPanel = panelObj;
+        tutorialPromptCanvasGroup = panelObj.GetComponent<CanvasGroup>();
+        tutorialPromptBasePos = dstRT != null ? dstRT.anchoredPosition : Vector2.zero;
+    }
+
+    private Button CloneMenuButton(Button template, Transform parent, string name, string label, Vector2 anchoredPos)
+    {
+        GameObject clone = Instantiate(template.gameObject, parent);
+        clone.name = name;
+        clone.SetActive(true);
+
+        // Remove any SceneLoaderFade or non-UI helper scripts copied from startRunButton
+        SceneLoaderFade fadeComp = clone.GetComponent<SceneLoaderFade>();
+        if (fadeComp != null) Destroy(fadeComp);
+
+        RectTransform rt = clone.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+            rt.anchoredPosition = anchoredPos;
+        }
+
+        Button btn = clone.GetComponent<Button>();
+        if (btn != null)
+        {
+            btn.onClick = new Button.ButtonClickedEvent();
+        }
+
+        TextMeshProUGUI tmp = clone.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (tmp != null)
+        {
+            tmp.text = label;
+            tmp.enableAutoSizing = true;
+            tmp.fontSizeMin = 8f;
+            tmp.fontSizeMax = 18f;
+        }
+
+        return btn;
     }
 
     private Button FindButtonByNameOrIndex(Transform parent, string match1, string match2, int fallbackIdx)
@@ -636,6 +820,21 @@ public class MainMenuController : MonoBehaviour
             backFromSettingsButton.onClick.RemoveListener(OnBackFromSettingsClicked);
             backFromSettingsButton.onClick.AddListener(OnBackFromSettingsClicked);
         }
+        if (playWithTutorialButton != null)
+        {
+            playWithTutorialButton.onClick.RemoveListener(OnPlayWithTutorialClicked);
+            playWithTutorialButton.onClick.AddListener(OnPlayWithTutorialClicked);
+        }
+        if (playWithoutTutorialButton != null)
+        {
+            playWithoutTutorialButton.onClick.RemoveListener(OnPlayWithoutTutorialClicked);
+            playWithoutTutorialButton.onClick.AddListener(OnPlayWithoutTutorialClicked);
+        }
+        if (backFromTutorialButton != null)
+        {
+            backFromTutorialButton.onClick.RemoveListener(OnBackFromTutorialPromptClicked);
+            backFromTutorialButton.onClick.AddListener(OnBackFromTutorialPromptClicked);
+        }
         if (musicVolumeSlider != null)
         {
             musicVolumeSlider.onValueChanged.RemoveListener(OnMusicSliderChanged);
@@ -667,12 +866,31 @@ public class MainMenuController : MonoBehaviour
         Camera uiCam = GetMenuCamera();
 
         bool settingsActive = settingsPanel != null && settingsPanel.activeInHierarchy;
-        bool mainActive = mainButtonsPanel != null && mainButtonsPanel.activeInHierarchy && !settingsActive;
+        bool tutorialPromptActive = tutorialPromptPanel != null && tutorialPromptPanel.activeInHierarchy;
+        bool mainActive = mainButtonsPanel != null && mainButtonsPanel.activeInHierarchy && !settingsActive && !tutorialPromptActive;
 
         bool leftPressedThisFrame = WasLeftMousePressedThisFrame();
         bool leftHeld = IsLeftMousePressed();
 
-        if (settingsActive)
+        if (tutorialPromptActive && leftPressedThisFrame)
+        {
+            if (IsScreenPointOverButton(playWithTutorialButton, mouseScreenPos, uiCam, 6f))
+            {
+                OnPlayWithTutorialClicked();
+                return;
+            }
+            if (IsScreenPointOverButton(playWithoutTutorialButton, mouseScreenPos, uiCam, 6f))
+            {
+                OnPlayWithoutTutorialClicked();
+                return;
+            }
+            if (IsScreenPointOverButton(backFromTutorialButton, mouseScreenPos, uiCam, 6f))
+            {
+                OnBackFromTutorialPromptClicked();
+                return;
+            }
+        }
+        else if (settingsActive)
         {
             if (leftPressedThisFrame)
             {

@@ -415,6 +415,10 @@ public class TVFocusController : MonoBehaviour
     public void PickUpRemote()
     {
         EnterToolFocus(HeldTool.Remote);
+        if (TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.NotifyRemotePickedUp();
+        }
     }
 
     public void PickUpTowel()
@@ -426,6 +430,7 @@ public class TVFocusController : MonoBehaviour
     {
         if (CurrentTool == HeldTool.None) return;
 
+        bool wasRemote = (CurrentTool == HeldTool.Remote);
         ReleaseGrabbedLogoIfAny();
         PlaySound(putDownSound);
 
@@ -460,6 +465,11 @@ public class TVFocusController : MonoBehaviour
         if (playerController != null)
         {
             playerController.SetTVFocusMode(false);
+        }
+
+        if (wasRemote && TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.NotifyRemotePutDown();
         }
     }
 

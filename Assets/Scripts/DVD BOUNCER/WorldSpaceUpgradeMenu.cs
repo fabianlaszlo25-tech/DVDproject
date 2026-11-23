@@ -524,6 +524,13 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
     public void CloseMenu()
     {
         if (!IsMenuOpen || isAnimatingAction) return;
+
+        // While in the Tutorial Starter Store, require both starter items ($1,000 total) to be purchased before closing
+        if (TutorialManager.IsTutorialStarterShopActive && TutorialManager.Instance != null && !TutorialManager.Instance.AreBothStarterItemsPurchased)
+        {
+            return;
+        }
+
         if (audioSource != null && closeSound != null) audioSource.PlayOneShot(closeSound);
 
         if (activeTransitionRoutine != null) StopCoroutine(activeTransitionRoutine);
@@ -648,6 +655,7 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
     public void SwitchToCategoryTab(UpgradeCategory category)
     {
         if (isAnimatingAction || UpgradeManager.Instance == null) return;
+        if (TutorialManager.IsTutorialStarterShopActive && category == UpgradeCategory.RemoteUpgrade) return;
 
         UpgradeManager.Instance.EnsureRemoteUpgradePath();
         UpgradePath targetPath = UpgradeManager.Instance.GetPathByCategory(category);
@@ -679,8 +687,9 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
     public void CycleNext()
     {
-        if (currentPath == null || currentPath.tiers == null || currentPath.tiers.Count <= 1 || isAnimatingAction) return;
-        viewingIndex = (viewingIndex + 1) % currentPath.tiers.Count;
+        int maxTiers = TutorialManager.IsTutorialStarterShopActive ? 1 : (currentPath != null && currentPath.tiers != null ? currentPath.tiers.Count : 0);
+        if (currentPath == null || currentPath.tiers == null || maxTiers <= 1 || isAnimatingAction) return;
+        viewingIndex = (viewingIndex + 1) % maxTiers;
         if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
         UpdateInspectorPanel(true);
         RefreshFullscreenShopLiveStates();
@@ -688,8 +697,9 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
 
     public void CyclePrev()
     {
-        if (currentPath == null || currentPath.tiers == null || currentPath.tiers.Count <= 1 || isAnimatingAction) return;
-        viewingIndex = (viewingIndex - 1 + currentPath.tiers.Count) % currentPath.tiers.Count;
+        int maxTiers = TutorialManager.IsTutorialStarterShopActive ? 1 : (currentPath != null && currentPath.tiers != null ? currentPath.tiers.Count : 0);
+        if (currentPath == null || currentPath.tiers == null || maxTiers <= 1 || isAnimatingAction) return;
+        viewingIndex = (viewingIndex - 1 + maxTiers) % maxTiers;
         if (audioSource != null && clickSound != null) audioSource.PlayOneShot(clickSound);
         UpdateInspectorPanel(true);
         RefreshFullscreenShopLiveStates();
@@ -1251,7 +1261,31 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         catalogButtons.Clear();
 
         TMP_FontAsset sharedFont = titleText != null ? titleText.font : null;
-        int tierCount = currentPath.tiers.Count;
+        bool isStarterOnly = TutorialManager.IsTutorialStarterShopActive;
+        int tierCount = isStarterOnly ? Mathf.Min(1, currentPath.tiers.Count) : currentPath.tiers.Count;
+
+        if (isStarterOnly && viewingIndex != 0)
+        {
+            viewingIndex = 0;
+        }
+
+        if (fsRemoteTabBtn != null)
+        {
+            fsRemoteTabBtn.gameObject.SetActive(!isStarterOnly);
+        }
+        if (inspectorPrevBtn != null)
+        {
+            inspectorPrevBtn.gameObject.SetActive(!isStarterOnly);
+        }
+        if (inspectorNextBtn != null)
+        {
+            inspectorNextBtn.gameObject.SetActive(!isStarterOnly);
+        }
+        if (shopExitBtn != null)
+        {
+            bool canExit = !isStarterOnly || (TutorialManager.Instance != null && TutorialManager.Instance.AreBothStarterItemsPurchased);
+            shopExitBtn.gameObject.SetActive(canExit);
+        }
 
         // Compute exact 2-column cell size dynamically from CatalogGridContainer so both columns have the exact same item count & identical aligned dimensions!
         GridLayoutGroup glg = catalogGridContainer.GetComponent<GridLayoutGroup>();
@@ -1584,6 +1618,16 @@ public class WorldSpaceUpgradeMenu : MonoBehaviour
         if (shopWalletText != null)
         {
             shopWalletText.text = $"BALANCE: {CurrencyFormatter.Format(wallet)}";
+        }
+
+        if (shopExitBtn != null)
+        {
+            bool canExit = !TutorialManager.IsTutorialStarterShopActive ||
+                           (TutorialManager.Instance != null && TutorialManager.Instance.AreBothStarterItemsPurchased);
+            if (shopExitBtn.gameObject.activeSelf != canExit)
+            {
+                shopExitBtn.gameObject.SetActive(canExit);
+            }
         }
 
         // Update all catalog grid cards

@@ -65,6 +65,22 @@ namespace Story
         private Vector3 originalLocalPos;
         private SmoothCameraFollow cachedCameraFollow;
 
+        // Tutorial call state
+        private StoryCardData activeTutorialCard = null;
+        private Action activeTutorialCallback = null;
+
+        public void StartTutorialCall(StoryCardData tutorialCard, Action onCallCompleted)
+        {
+            activeTutorialCard = tutorialCard;
+            activeTutorialCallback = onCallCompleted;
+            nextRingCountdown = -1f;
+            if (!isRinging && !isInCall)
+            {
+                StartRinging();
+            }
+            ringTimer = 99999f;
+        }
+
         public InteractableObject GetPrimaryInteractable()
         {
             if (interactable == null) SetupComponents();
@@ -238,8 +254,9 @@ namespace Story
 
                 bool isFinaleRing = ForceDay3FinaleForTesting || pendingForceFinaleCall || StoryCardController.ForceDay3FinaleForTesting ||
                     (RunSaveManager.HasInstance && RunSaveManager.Instance.postMaxDaysSurvived >= 3 && !RunSaveManager.Instance.finalPhoneEncounterDone);
+                bool isTutorialRing = activeTutorialCard != null || TutorialManager.IsTutorialActive;
 
-                if (!isFinaleRing)
+                if (!isFinaleRing && !isTutorialRing)
                 {
                     ringTimer -= Time.deltaTime;
                 }
@@ -250,13 +267,16 @@ namespace Story
                     transform.localPosition = originalLocalPos + new Vector3(shake, 0f, 0f);
                 }
 
-                if (!isFinaleRing && ringTimer <= 0f)
+                if (!isFinaleRing && !isTutorialRing && ringTimer <= 0f)
                 {
                     OnCallMissed();
                 }
             }
             else
             {
+                // Do not auto-ring random calls while the tutorial sequence is active
+                if (TutorialManager.IsTutorialActive) return;
+
                 if (nextRingCountdown > 0f)
                 {
                     nextRingCountdown -= Time.deltaTime;
@@ -513,7 +533,16 @@ namespace Story
             StoryCardController cardController = StoryCardController.EnsureInstance();
             if (cardController != null)
             {
-                cardController.ShowNextEncounter(OnEncounterFinished);
+                if (activeTutorialCard != null)
+                {
+                    StoryCardData tutCard = activeTutorialCard;
+                    activeTutorialCard = null;
+                    cardController.ShowCard(tutCard, OnEncounterFinished);
+                }
+                else
+                {
+                    cardController.ShowNextEncounter(OnEncounterFinished);
+                }
             }
         }
 
@@ -537,6 +566,14 @@ namespace Story
 
             // Ensure normal gameplay CRT is active
             CrtPostProcessManager.SetGameplayCrtActive();
+
+            if (activeTutorialCallback != null)
+            {
+                Action cb = activeTutorialCallback;
+                activeTutorialCallback = null;
+                cb.Invoke();
+                return;
+            }
 
             // Schedule the next encounter call
             ScheduleNextRing();

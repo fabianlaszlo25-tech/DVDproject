@@ -402,6 +402,21 @@ public class SurvivalAction : MonoBehaviour
 
         if (isActing || isHolding || barManager == null) return;
 
+        // Tutorial stage gating & special tutorial sleep handling (no sleep stats canvas on tutorial day 1)
+        if (TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+        {
+            if (!TutorialManager.Instance.CanPerformSurvivalAction(actionType, gameObject))
+            {
+                if (audioSource != null && cantAffordSound != null) audioSource.PlayOneShot(cantAffordSound);
+                return;
+            }
+            if (actionType == ActionType.Sleep && TutorialManager.IsTutorialSleepStepActive)
+            {
+                TutorialManager.Instance.TriggerTutorialSleep(gameObject);
+                return;
+            }
+        }
+
         // Check Bill restrictions
         if (actionType == ActionType.Toilet && BillManager.Instance != null && BillManager.Instance.IsToiletBlocked)
         {
@@ -905,6 +920,11 @@ public class SurvivalAction : MonoBehaviour
         ToggleInput(true);
 
         isActing = false;
+
+        if (TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.NotifySurvivalActionAnimationFinished(actionType);
+        }
 
     }
 

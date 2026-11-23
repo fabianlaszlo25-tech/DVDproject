@@ -124,9 +124,25 @@ public class UpgradeManager : MonoBehaviour
             RunSaveManager.Instance.ApplySavedUpgradesToManager(this);
         }
 
+        bool isTutorialPrePurchase = TutorialManager.IsTutorialStarterShopActive;
+
         foreach (var path in upgradePaths)
         {
             if (path == null || path.tiers == null || path.tiers.Count == 0) continue;
+
+            if (isTutorialPrePurchase && (path.category == UpgradeCategory.MoneyMultiplier || path.category == UpgradeCategory.SpeedMultiplier))
+            {
+                path.unlockedIndices.Clear();
+                path.equippedIndex = -1;
+                for (int i = 0; i < path.tiers.Count; i++)
+                {
+                    if (path.tiers[i] != null && path.tiers[i].worldGameObject != null)
+                    {
+                        path.tiers[i].worldGameObject.SetActive(false);
+                    }
+                }
+                continue;
+            }
 
             if (!path.unlockedIndices.Contains(0)) path.unlockedIndices.Add(0);
 
@@ -690,6 +706,22 @@ public class UpgradeManager : MonoBehaviour
     public decimal GetTierCost(UpgradeTier tier)
     {
         if (tier == null) return 0m;
+
+        // In Tutorial Starter Store mode, the two starter items (Tier 0 Disc & Tier 0 Player) cost $500 each ($1,000 combined)
+        if (TutorialManager.IsTutorialStarterShopActive && TutorialManager.Instance != null)
+        {
+            UpgradePath discPath = GetPathByCategory(UpgradeCategory.MoneyMultiplier);
+            if (discPath != null && discPath.tiers != null && discPath.tiers.Count > 0 && discPath.tiers[0] == tier)
+            {
+                return (decimal)TutorialManager.Instance.starterDvdDiscCost;
+            }
+            UpgradePath playerPath = GetPathByCategory(UpgradeCategory.SpeedMultiplier);
+            if (playerPath != null && playerPath.tiers != null && playerPath.tiers.Count > 0 && playerPath.tiers[0] == tier)
+            {
+                return (decimal)TutorialManager.Instance.starterDvdPlayerCost;
+            }
+        }
+
         float mult = BarManager.Instance != null ? BarManager.Instance.CurrentInflationMultiplier : 1f;
         return (decimal)(GetProgressionBaseCost(tier) * mult);
     }
@@ -805,6 +837,11 @@ public class UpgradeManager : MonoBehaviour
             }
             ActiveRemoteTier = newRemoteTier;
             ApplyWorldVisualsAnimated(path, previousIndex, targetIndex);
+        }
+
+        if (TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.NotifyUpgradePurchasedOrEquipped(path, targetIndex);
         }
     }
 

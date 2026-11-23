@@ -320,7 +320,11 @@ public class DVDLogoBouncer : MonoBehaviour
 
         if (!isChildLogo)
         {
-            if (!RunSaveManager.HasInstance || !RunSaveManager.Instance.HasSavedBouncerState)
+            if (TutorialManager.IsTutorialActive)
+            {
+                currentMoney = 0m;
+            }
+            else if (!RunSaveManager.HasInstance || !RunSaveManager.Instance.HasSavedBouncerState)
             {
                 currentMoney = (decimal)startingMoney;
             }

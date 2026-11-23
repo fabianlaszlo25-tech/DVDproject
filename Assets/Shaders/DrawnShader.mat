@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DrawnShader
+  m_Shader: {fileID: 4800000, guid: f9231921e62bc8940a22bbe8894a2cf2, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _EFFECTENABLED_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _BrushAspect: 1
+    - _BrushFlowSweep: 0
+    - _BrushOverlapImpasto: 0
+    - _EffectEnabled: 1
+    - _EffectIntensity: 0.5964
+    - _FlatSurfaceSpread: 0.42
+    - _FresnelRimStrength: 0.108
+    - _LightStepSharpness: 14
+    - _LightSteps: 4
+    - _LinearLightFactor: 0.3018
+    - _NoiseDetail: 2
+    - _NoiseLacunarity: 2.145
+    - _NoiseRoughness: 1
+    - _NoiseScale: 4.8
+    - _PaintedLightStrength: 0.804
+    - _PaintedSpecularStrength: 0.85
+    - _PainterlyNormalStrength: 1.798
+    - _PerStrokeVariation: 0.18
+    - _Roughness: 0.48
+    - _ShadowProtection: 0.65
+    - _SmoothFlattenStrength: 0
+    - _Stroke3DScale: 0.72
+    - _TriplanarSharpness: 4.5
+    - _VoronoiExponent: 1.5
+    - _VoronoiRandomness: 1
+    - _VoronoiScale: 7.4
+    - _WarmCoolShift: 0.24
+    m_Colors:
+    - _MappingLocation: {r: 0, g: 0, b: 0, a: 0}
+    - _MappingScale: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

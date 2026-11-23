@@ -725,6 +725,8 @@ public class RunSaveManager : MonoBehaviour
         isCurrentBillPaid = false;
         lastBillDay = -1;
         billHistory.Clear();
+
+        TutorialManager.TutorialCompletedInCurrentRun = false;
     }
 
     public void ReturnToMainMenuFromDeath()

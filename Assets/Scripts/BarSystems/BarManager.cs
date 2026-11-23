@@ -93,9 +93,44 @@ public class BarManager : MonoBehaviour
     [Header("Penalty Settings")]
     public float penaltyMultiplier = 2f;
 
+    // Tutorial & runtime individual bar active states (when false, bar UI is hidden AND bar does not fill or function)
+    [HideInInspector] public bool hungerBarActive = true;
+    [HideInInspector] public bool needsBarActive = true;
+    [HideInInspector] public bool dirtinessBarActive = true;
+    [HideInInspector] public bool sleepBarActive = true;
+    [HideInInspector] public bool depressionBarActive = true;
+
+    public event System.Action OnFoodEatenEvent;
+    public event System.Action OnToiletUsedEvent;
+    public event System.Action OnShoweredEvent;
+    public event System.Action OnSleptEvent;
+
     private bool hasTriggeredDepressionEnding = false;
     private float lastDisplayedInflationPercent = -1f;
     private decimal lastDisplayedFoodCost = -1m;
+
+    public void SetBarsActiveState(bool hunger, bool needs, bool dirtiness, bool sleep, bool depression)
+    {
+        hungerBarActive = hunger;
+        needsBarActive = needs;
+        dirtinessBarActive = dirtiness;
+        sleepBarActive = sleep;
+        depressionBarActive = depression;
+
+        if (!hungerBarActive) currentHunger = 0f;
+        if (!needsBarActive) currentNeeds = 0f;
+        if (!dirtinessBarActive) currentDirtiness = 0f;
+        if (!sleepBarActive) currentSleep = 0f;
+        if (!depressionBarActive) currentDepression = 0f;
+
+        if (hungerSlider != null) hungerSlider.gameObject.SetActive(hungerBarActive);
+        if (needsSlider != null) needsSlider.gameObject.SetActive(needsBarActive);
+        if (dirtinessSlider != null) dirtinessSlider.gameObject.SetActive(dirtinessBarActive);
+        if (sleepSlider != null) sleepSlider.gameObject.SetActive(sleepBarActive);
+        if (depressionSlider != null) depressionSlider.gameObject.SetActive(depressionBarActive);
+
+        UpdateUI();
+    }
 
     void Awake()
     {
@@ -153,12 +188,13 @@ public class BarManager : MonoBehaviour
     /// <summary>Adds tiredness (the sleep bar) from an action. Scaled up during the endgame.</summary>
     public void AddTiredness(float amount)
     {
-        if (amount <= 0f || hasTriggeredDepressionEnding) return;
+        if (!sleepBarActive || amount <= 0f || hasTriggeredDepressionEnding) return;
         currentSleep = Mathf.Clamp(currentSleep + amount * TirednessChunkMultiplier, 0, maxSleep);
     }
 
     public void ReduceTiredness(float amount)
     {
+        if (!sleepBarActive) return;
         currentSleep = Mathf.Clamp(currentSleep - Mathf.Abs(amount), 0, maxSleep);
     }
 
@@ -237,13 +273,37 @@ public class BarManager : MonoBehaviour
             return;
         }
 
-        currentHunger = Mathf.Clamp(currentHunger + (hungerFillRate * HungerSpeedMultiplier * Time.deltaTime), 0, maxHunger);
-        currentSleep = Mathf.Clamp(currentSleep + (sleepFillRate * Time.deltaTime), 0, maxSleep);
+        if (hungerBarActive)
+        {
+            currentHunger = Mathf.Clamp(currentHunger + (hungerFillRate * HungerSpeedMultiplier * Time.deltaTime), 0, maxHunger);
+        }
+        else
+        {
+            currentHunger = 0f;
+        }
 
-        bool isHungerFull = currentHunger >= maxHunger;
-        bool isNeedsFull = currentNeeds >= maxNeeds;
-        bool isSleepFull = currentSleep >= maxSleep;
-        bool isDirtinessFull = currentDirtiness >= maxDirtiness;
+        if (sleepBarActive)
+        {
+            currentSleep = Mathf.Clamp(currentSleep + (sleepFillRate * Time.deltaTime), 0, maxSleep);
+        }
+        else
+        {
+            currentSleep = 0f;
+        }
+
+        if (!needsBarActive) currentNeeds = 0f;
+        if (!dirtinessBarActive) currentDirtiness = 0f;
+
+        if (!depressionBarActive)
+        {
+            currentDepression = 0f;
+            return;
+        }
+
+        bool isHungerFull = hungerBarActive && currentHunger >= maxHunger;
+        bool isNeedsFull = needsBarActive && currentNeeds >= maxNeeds;
+        bool isSleepFull = sleepBarActive && currentSleep >= maxSleep;
+        bool isDirtinessFull = dirtinessBarActive && currentDirtiness >= maxDirtiness;
 
         currentMoneyDepressionMultiplier = 1f;
         float depressionSpeed = baseDepressionFillRate;
@@ -253,10 +313,11 @@ public class BarManager : MonoBehaviour
         if (isSleepFull) depressionSpeed *= penaltyMultiplier;
         if (isDirtinessFull) depressionSpeed *= penaltyMultiplier;
 
-        currentDepression = Mathf.Clamp(currentDepression + (depressionSpeed * Time.deltaTime), 0, maxDepression);
+        float cap = TutorialManager.IsTutorialActive ? (maxDepression * 0.85f) : maxDepression;
+        currentDepression = Mathf.Clamp(currentDepression + (depressionSpeed * Time.deltaTime), 0, cap);
 
         // When Depression reaches 100%, lock it at max and trigger the Heart-Attack Breakdown -> Cut to Black -> Gun Cocking -> UI Popup!
-        if (currentDepression >= maxDepression)
+        if (!TutorialManager.IsTutorialActive && currentDepression >= maxDepression)
         {
             currentDepression = maxDepression;
             hasTriggeredDepressionEnding = true;
@@ -320,9 +381,9 @@ public class BarManager : MonoBehaviour
     public bool IsCriticalBarMaxed(out string barName)
     {
         barName = null;
-        if (currentHunger >= maxHunger - 0.01f) barName = "hungry";
-        else if (currentNeeds >= maxNeeds - 0.01f) barName = "desperate for the toilet";
-        else if (currentDirtiness >= maxDirtiness - 0.01f) barName = "filthy";
+        if (hungerBarActive && currentHunger >= maxHunger - 0.01f) barName = "hungry";
+        else if (needsBarActive && currentNeeds >= maxNeeds - 0.01f) barName = "desperate for the toilet";
+        else if (dirtinessBarActive && currentDirtiness >= maxDirtiness - 0.01f) barName = "filthy";
         return barName != null;
     }
 
@@ -341,7 +402,7 @@ public class BarManager : MonoBehaviour
     public bool TryEatFood(decimal cost, float hungerReduction, float needsIncrease, float dirtinessIncrease, float depressionReduction)
     {
         // Cannot eat if needs/bladder are already full
-        if (currentNeeds >= maxNeeds - 0.01f)
+        if (needsBarActive && currentNeeds >= maxNeeds - 0.01f)
         {
             return false;
         }
@@ -351,15 +412,16 @@ public class BarManager : MonoBehaviour
             return false;
         }
 
-        currentHunger = Mathf.Clamp(currentHunger - hungerReduction, 0, maxHunger);
-        currentNeeds = Mathf.Clamp(currentNeeds + needsIncrease * NeedsGainMultiplier, 0, maxNeeds);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
-        AddTiredness(4f); // eating
-        currentDepression = Mathf.Clamp(currentDepression - depressionReduction, 0, maxDepression);
+        if (hungerBarActive) currentHunger = Mathf.Clamp(currentHunger - hungerReduction, 0, maxHunger);
+        if (needsBarActive) currentNeeds = Mathf.Clamp(currentNeeds + needsIncrease * NeedsGainMultiplier, 0, maxNeeds);
+        if (dirtinessBarActive) currentDirtiness = Mathf.Clamp(currentDirtiness + dirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        if (sleepBarActive) AddTiredness(4f); // eating
+        if (depressionBarActive) currentDepression = Mathf.Clamp(currentDepression - depressionReduction, 0, maxDepression);
         if (RunSaveManager.HasInstance)
         {
             RunSaveManager.Instance.RecordFoodEaten();
         }
+        OnFoodEatenEvent?.Invoke();
         return true;
     }
 
@@ -370,34 +432,37 @@ public class BarManager : MonoBehaviour
 
     public void UseToilet()
     {
-        currentNeeds = Mathf.Clamp(currentNeeds - toiletNeedsReduction, 0, maxNeeds);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + toiletDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
-        AddTiredness(3f); // toilet
-        currentDepression = Mathf.Clamp(currentDepression - toiletDepressionReduction, 0, maxDepression);
+        if (needsBarActive) currentNeeds = Mathf.Clamp(currentNeeds - toiletNeedsReduction, 0, maxNeeds);
+        if (dirtinessBarActive) currentDirtiness = Mathf.Clamp(currentDirtiness + toiletDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        if (sleepBarActive) AddTiredness(3f); // toilet
+        if (depressionBarActive) currentDepression = Mathf.Clamp(currentDepression - toiletDepressionReduction, 0, maxDepression);
+        OnToiletUsedEvent?.Invoke();
     }
 
     public void GoToSleep()
     {
-        currentSleep = Mathf.Clamp(currentSleep - sleepReduction, 0, maxSleep);
-        currentDirtiness = Mathf.Clamp(currentDirtiness + sleepDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
-        currentDepression = Mathf.Clamp(currentDepression - sleepDepressionReduction, 0, maxDepression);
+        if (sleepBarActive) currentSleep = Mathf.Clamp(currentSleep - sleepReduction, 0, maxSleep);
+        if (dirtinessBarActive) currentDirtiness = Mathf.Clamp(currentDirtiness + sleepDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        if (depressionBarActive) currentDepression = Mathf.Clamp(currentDepression - sleepDepressionReduction, 0, maxDepression);
+        OnSleptEvent?.Invoke();
     }
 
-    public bool CanCleanTrash => currentDirtiness < maxDirtiness;
+    public bool CanCleanTrash => !dirtinessBarActive || currentDirtiness < maxDirtiness;
 
     public void CleanTrashItem()
     {
         if (!CanCleanTrash) return;
 
-        currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
-        currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
-        currentSleep = Mathf.Clamp(currentSleep + 0.5f, 0f, maxSleep); // +0.5 tiredness per trash cleaned
+        if (dirtinessBarActive) currentDirtiness = Mathf.Clamp(currentDirtiness + trashDirtinessIncrease * DirtinessGainMultiplier, 0, maxDirtiness);
+        if (depressionBarActive) currentDepression = Mathf.Clamp(currentDepression - trashDepressionReduction, 0, maxDepression);
+        if (sleepBarActive) currentSleep = Mathf.Clamp(currentSleep + 0.5f, 0f, maxSleep); // +0.5 tiredness per trash cleaned
     }
 
     public void CleanSelf()
     {
-        currentDirtiness = Mathf.Clamp(currentDirtiness - cleanDirtinessReduction, 0, maxDirtiness);
-        currentDepression = Mathf.Clamp(currentDepression - cleanDepressionReduction, 0, maxDepression);
-        AddTiredness(8f); // shower / clean
+        if (dirtinessBarActive) currentDirtiness = Mathf.Clamp(currentDirtiness - cleanDirtinessReduction, 0, maxDirtiness);
+        if (depressionBarActive) currentDepression = Mathf.Clamp(currentDepression - cleanDepressionReduction, 0, maxDepression);
+        if (sleepBarActive) AddTiredness(8f); // shower / clean
+        OnShoweredEvent?.Invoke();
     }
 }

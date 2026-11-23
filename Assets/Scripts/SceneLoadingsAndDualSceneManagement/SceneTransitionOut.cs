@@ -57,6 +57,28 @@ public class SceneTransitionOut : MonoBehaviour
                 return;
             }
 
+            // Tutorial gating: prevent leaving to Bar during tutorial, and route tutorial Sleep to in-room wake-up (no sleep stats canvas)
+            if (TutorialManager.IsTutorialActive && TutorialManager.Instance != null)
+            {
+                if (sceneToLoad == "BarGameBarni")
+                {
+                    if (BillManager.Instance != null) BillManager.Instance.ShowCustomDenyFeedback(gameObject, "Finish the tutorial before going to the Bar!");
+                    return;
+                }
+                if (sceneToLoad == "KristofDreamGames")
+                {
+                    if (TutorialManager.IsTutorialSleepStepActive)
+                    {
+                        TutorialManager.Instance.TriggerTutorialSleep(gameObject);
+                    }
+                    else if (BillManager.Instance != null)
+                    {
+                        BillManager.Instance.ShowCustomDenyFeedback(gameObject, "Complete your current tutorial objective before sleeping!");
+                    }
+                    return;
+                }
+            }
+
             // Check Bill restrictions
             if (BillManager.Instance != null)
             {
