@@ -5449,6 +5449,12 @@ MonoBehaviour:
   trashCleanedYesterday: 0
   substancesConsumedThisDay: 0
   substancesConsumedYesterday: 0
+  foodEatenThisDay: 0
+  foodEatenYesterday: 0
+  itemsBoughtThisDay: 0
+  itemsBoughtYesterday: 0
+  timeSpentAwakeThisDay: 0
+  timeSpentAwakeYesterday: 0
   storyElementsThisDay: 0
   storyElementsYesterday: 0
   bedtimeDirtiness: 0
@@ -5470,6 +5476,10 @@ MonoBehaviour:
   isCurrentBillPaid: 0
   lastBillDay: -1
   billHistory: 
+  currentDayInflationMultiplier: 1
+  previousDayInflationMultiplier: 1
+  pendingMorningInflationAnnouncement: 0
+  pendingMorningInflationPercent: 0
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1
@@ -6014,6 +6024,9 @@ MonoBehaviour:
   towerRemoteTier: 7
   fishFrenzyRemoteTier: 8
   blockBlastRemoteTier: 9
+  subwayRunnerRemoteTier: 10
+  hillClimbRemoteTier: 11
+  colorShooterRemoteTier: 12
   customGroundObstaclePrefab: {fileID: 0}
   customBirdObstaclePrefab: {fileID: 0}
   dinoLogoXOffsetFromLeft: 2.4
@@ -6123,6 +6136,7 @@ MonoBehaviour:
   tvScreenCollider: {fileID: 917051181}
   remoteInteractable: {fileID: 0}
   towelInteractable: {fileID: 0}
+  lockCameraInPlace: 0
   focusDistanceFromScreen: 1.45
   targetViewportFill: 0.88
   screenReticleTransform: {fileID: 0}
@@ -8561,6 +8575,8 @@ MonoBehaviour:
   recenterSpeed: 10
   mouseSensitivity: 1
   isAutoCentering: 0
+  lockCameraLook: 0
+  staticRestingPose: 0
   focusLerpSpeed: 9
   defaultFOV: 65
 --- !u!20 &740402689
@@ -14107,6 +14123,9 @@ MonoBehaviour:
   baseFoodCost: 10
   inflationRatePerDollar: 0.0001
   maxInflationPercentOfMoneyGained: 0.5
+  morningBannerFont: {fileID: 11400000, guid: 6d795282a2f39f94ab1e799f42073e3f, type: 2}
+  morningBannerDelay: 1.05
+  morningBannerHold: 5.5
   perTierSurvivalScaling: 0.05
   endgameHungerMultiplier: 2.5
   endgameNeedsMultiplier: 2
@@ -14115,6 +14134,11 @@ MonoBehaviour:
   sleepRequiredFraction: 0.9
   currentMoneyDepressionMultiplier: 1
   penaltyMultiplier: 2
+  hungerBarActive: 1
+  needsBarActive: 1
+  dirtinessBarActive: 1
+  sleepBarActive: 1
+  depressionBarActive: 1
 --- !u!1 &1217594705
 GameObject:
   m_ObjectHideFlags: 0
@@ -22249,6 +22273,8 @@ MonoBehaviour:
   interactReach: 3
   hudPauseButton: {fileID: 764795073}
   mouseSensitivity: 1
+  disableMovement: 0
+  disableTrashAndPhoneShortcuts: 0
   virtualMousePos: {x: 0, y: 0}
   isInTVFocusMode: 0
 --- !u!1 &2032163321

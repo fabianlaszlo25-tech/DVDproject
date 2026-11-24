@@ -2245,11 +2245,21 @@ MonoBehaviour:
   trashCleaned: 0
   storyElementsEncountered: 0
   encounteredStoryElementIds: []
+  postMaxDaysSurvived: 0
+  consecutiveLowDepressionDays: 0
+  isGoodDayActive: 0
+  positiveSecretCounter: 0
+  negativeSecretCounter: 0
+  missedStoryCounter: 0
+  finalPhoneEncounterDone: 0
+  isFinalVerdictHopeful: 0
+  finalVerdictObjective: 
   baseTrashCount: 25
   subsequentDaysBaseTrash: 5
   dirtinessTrashMultiplier: 0.08
   depressionTrashMultiplier: 0.06
   cleanedTrashReductionFactor: 0.5
+  trashPerSubstanceYesterday: 4
   minTrashSpawn: 2
   maxTrashSpawn: 25
   baseMorningDepression: 0
@@ -2264,6 +2274,12 @@ MonoBehaviour:
   trashCleanedYesterday: 0
   substancesConsumedThisDay: 0
   substancesConsumedYesterday: 0
+  foodEatenThisDay: 0
+  foodEatenYesterday: 0
+  itemsBoughtThisDay: 0
+  itemsBoughtYesterday: 0
+  timeSpentAwakeThisDay: 0
+  timeSpentAwakeYesterday: 0
   storyElementsThisDay: 0
   storyElementsYesterday: 0
   bedtimeDirtiness: 0
@@ -2285,6 +2301,10 @@ MonoBehaviour:
   isCurrentBillPaid: 0
   lastBillDay: -1
   billHistory: 
+  currentDayInflationMultiplier: 1
+  previousDayInflationMultiplier: 1
+  pendingMorningInflationAnnouncement: 0
+  pendingMorningInflationPercent: 0
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1
@@ -2402,6 +2422,7 @@ MonoBehaviour:
   mode: 1
   menuSceneName: 06Menu
   roomSceneName: 01Day
+  creditsSceneName: 05End-Creds
   targetCanvas: {fileID: 997921301}
   rootCanvasGroup: {fileID: 925147067}
   cardRect: {fileID: 1032911689}
