@@ -245,3 +245,47 @@
 | Hill Climb Minigame | TVMinigameController.cs -> hillClimbRemoteTier | Wheel suspension travel, air momentum decay, rotation speed | 2D vehicle physics with dynamic camera framing in deep ditches. | Suspension travel tuned to prevent ground clipping while flexing. |
 | ↳ **YOUR TUNING** | *[ Target Module / Parameter ]* | *[ Desired Target Value ]* | *[ Gameplay Impact Goal ]* | *[ Tuning Notes / Reasons ]* |
 
+## 9. Arcade Mode: Permanent Items Inclusion & Rework Sheet (All 19 Items -> Pick ~9 Shelf Slots)
+
+*Decide which permanent items from Section 1 should be included in `07Arcade` (which has 1 bookshelf / 9 slots and no survival bars). Items whose current Story Mode stat only affects Hunger, Sleep, Toilet, Dirtiness, or Depression are flagged below so you can either exclude them or give them an Arcade-specific money/speed/minigame effect.*
+
+| Hierarchy Slot / ID | Current Temp Item Name | Current Story Stat & Cost | Current 07Arcade Status & Compatibility | Include in Arcade? / Arcade Rework Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| Cube_Shelf_11_Buyable | Expired Xanax in Pez Dispenser | -60% Depression Fill Rate ($110.00) | In 07Arcade Shelf (Mid-Right) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_12_Buyable | Shoddy Lithium Battery Charger | +50% Bounce Speed ($65.00) | In 07Arcade Shelf (Mid-Center) ? Works directly in Arcade | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_13_Buyable | Overflowing Ceramic Ashtray | -70% Toilet Dirtiness ($40.00) | In 07Arcade Shelf (Mid-Left) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_14_Buyable | Sticky Magnifying Glass | +100% Money per Edge Bounce ($85.00) | In 07Arcade Shelf (Top-Right) ? Works directly in Arcade | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_15_Buyable | Pirated Cable Descrambler | +120% Sleep Depression Reduction ($120.00) | In 07Arcade Shelf (Top-Center) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_16_Buyable | Questionable USB Thumbdrive | +75% Money on All Bounces ($95.00) | In 07Arcade Shelf (Top-Left) ? Works directly in Arcade | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_17_Buyable | Pure Regret Paperweight | +110% Food Hunger Reduction ($50.00) | In 07Arcade Shelf (Bottom-Right) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_18_Buyable | Knockoff Golden Buddha Statue | +120% Cleaning Dirt Reduction ($130.00) | In 07Arcade Shelf (Bottom-Center) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_19_Buyable | Broken Nostalgia Music Box | -75% Depression Fill Rate ($140.00) | In 07Arcade Shelf (Bottom-Left) ? Survival stat (needs Arcade rework if kept) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_Upper_1_Buyable | Crusty Gas Station Scratch-Off | +70% Money on All Bounces ($75.00) | Not on 07Arcade Shelf ? Works directly in Arcade (good swap-in candidate) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_Upper_2_Buyable | Emotional Support Bong | +120% Food Hunger Reduction ($80.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_Upper_3_Buyable | Moldy Takeout Styrofoam | +100% Cleaning Dirt Reduction ($45.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_Upper_4_Buyable | Flask of Warm Cooking Wine | +150% Money per Corner Bounce ($90.00) | Not on 07Arcade Shelf ? Works directly in Arcade (good swap-in candidate) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| Cube_Shelf_Lower_1_Buyable | Half-Empty Anti-Depressant Bottle | +120% Sleep Depression Reduction ($100.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| SM_Book01_Buyable | Overdue Final Tax Notices | +30% Money per Edge Bounce ($35.00) | Not on 07Arcade Shelf ? Works directly in Arcade (good swap-in candidate) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| SM_Book02_Buyable | Ex's Left-Behind Diary | +150% Cleaning Dirt Reduction ($60.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| SM_Book03_Buyable | Gross Anatomy Textbook | +30% Depression Fill Rate (Curse/Risk) ($40.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| SM_Book04_Buyable | Self-Help Book (In Shrinkwrap) | +25% Bounce Speed ($55.00) | Not on 07Arcade Shelf ? Works directly in Arcade (good swap-in candidate) | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |
+| LanternV1_Buyable | Flickering Kerosene Lantern | +25% Sleep Fill Rate ($70.00) | Not on 07Arcade Shelf ? Survival stat | *(Decide below)* |
+| ? **YOUR ARCADE DECISION** | *[ Include in Arcade? Yes / No ]* | *[ Arcade Cost ]* | *[ Arcade Stat / Effect (if reworked) ]* | *[ Arcade Notes / Shelf Slot ]* |

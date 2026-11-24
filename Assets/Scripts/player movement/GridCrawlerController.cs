@@ -40,6 +40,12 @@ public class GridCrawlerController : MonoBehaviour
     [Tooltip("Mouse sensitivity multiplier for cursor movement (governed globally by settings).")]
     public float mouseSensitivity = 1.0f;
 
+    [Header("Arcade / Static Mode")]
+    [Tooltip("Disables all WASD/Arrow/Scroll movement, turning, grid snapping, movement arrows, and camera snapping (used in 07Arcade).")]
+    public bool disableMovement = false;
+    [Tooltip("Disables trash swipe clearing and the Editor 'P' phone-ring shortcut (used in 07Arcade).")]
+    public bool disableTrashAndPhoneShortcuts = false;
+
     [HideInInspector] public Vector2 virtualMousePos;
     [HideInInspector] public bool isInTVFocusMode = false;
 
@@ -85,14 +91,25 @@ public class GridCrawlerController : MonoBehaviour
     {
         mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
 
-        if (gridManager != null)
+        if (disableMovement && allArrows != null)
         {
-            transform.position = gridManager.GetClosestNodePosition(transform.position);
+            foreach (var arrow in allArrows)
+            {
+                if (arrow != null) arrow.gameObject.SetActive(false);
+            }
         }
-        if (cameraScript == null) cameraScript = FindObjectOfType<SmoothCameraFollow>();
-        if (cameraScript != null)
+
+        if (!disableMovement)
         {
-            cameraScript.SnapToTargetImmediate();
+            if (gridManager != null)
+            {
+                transform.position = gridManager.GetClosestNodePosition(transform.position);
+            }
+            if (cameraScript == null) cameraScript = FindObjectOfType<SmoothCameraFollow>();
+            if (cameraScript != null && cameraScript.enabled)
+            {
+                cameraScript.SnapToTargetImmediate();
+            }
         }
     }
 
@@ -115,9 +132,10 @@ public class GridCrawlerController : MonoBehaviour
 
         if (allArrows != null)
         {
+            bool showArrows = !active && !disableMovement;
             foreach (var arrow in allArrows)
             {
-                if (arrow != null) arrow.gameObject.SetActive(!active);
+                if (arrow != null) arrow.gameObject.SetActive(showArrows);
             }
         }
 
@@ -154,7 +172,7 @@ public class GridCrawlerController : MonoBehaviour
     void Update()
     {
 #if UNITY_EDITOR
-        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+        if (!disableTrashAndPhoneShortcuts && Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
         {
             Story.KitchenPhone phone = Story.KitchenPhone.EnsureInstanceInScene();
             if (phone != null)
@@ -178,9 +196,12 @@ public class GridCrawlerController : MonoBehaviour
         if (InputFrozen) return;
 
         HandleCursorAndInteractions();
-        HandleTrashSwipeClearing();
+        if (!disableTrashAndPhoneShortcuts)
+        {
+            HandleTrashSwipeClearing();
+        }
 
-        if (isActing || isInTVFocusMode) return;
+        if (disableMovement || isActing || isInTVFocusMode) return;
         HandleMovementInputs();
     }
 
@@ -497,10 +518,10 @@ public class GridCrawlerController : MonoBehaviour
         }
     }
 
-    public void Action_MoveForward() { if (!isActing && !isInTVFocusMode && gridManager != null) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
-    public void Action_TurnAround() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(180f)); }
-    public void UI_TurnRight() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(90f)); }
-    public void UI_TurnLeft() { if (!isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(-90f)); }
+    public void Action_MoveForward() { if (!disableMovement && !isActing && !isInTVFocusMode && gridManager != null) StartCoroutine(PerformMove(transform.forward, gridManager.GetValidMovePosition(transform.position, transform.forward))); }
+    public void Action_TurnAround() { if (!disableMovement && !isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(180f)); }
+    public void UI_TurnRight() { if (!disableMovement && !isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(90f)); }
+    public void UI_TurnLeft() { if (!disableMovement && !isActing && !isInTVFocusMode) StartCoroutine(PerformTurn(-90f)); }
 
     private IEnumerator PerformMove(Vector3 targetDirection, Vector3? targetPos)
     {

@@ -23,6 +23,10 @@ public class SmoothCameraFollow : MonoBehaviour
     [HideInInspector] public bool isAutoCentering = false;
     [HideInInspector] public bool lockCameraLook = false;
 
+    [Header("Arcade / Static Resting Camera Mode")]
+    [Tooltip("When true, keeps the camera fixed at its placed scene position/rotation (no Player follow, no snap-to-target, no mouse-look sway), while still allowing TV Focus Mode zoom when picking up the Remote or Towel.")]
+    public bool staticRestingPose = false;
+
     [Header("TV Focus Mode Settings")]
     [Tooltip("Interpolation speed when zooming into or out of TV Focus Mode.")]
     public float focusLerpSpeed = 9f;
@@ -45,6 +49,9 @@ public class SmoothCameraFollow : MonoBehaviour
     private Vector3 exitStartPos;
     private Quaternion exitStartRot;
     private float exitStartFOV;
+    private Vector3 restingPos;
+    private Quaternion restingRot = Quaternion.identity;
+    private bool hasCapturedRestingPose = false;
 
     public bool IsInFocusMode => isFocusMode;
     public bool IsExitingFocusTransition => isExitingFocusTransition;
@@ -56,23 +63,50 @@ public class SmoothCameraFollow : MonoBehaviour
         {
             defaultFOV = cam.fieldOfView;
         }
+        if (!hasCapturedRestingPose)
+        {
+            restingPos = transform.position;
+            restingRot = transform.rotation;
+            hasCapturedRestingPose = true;
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SnapToTargetImmediate();
+        if (!staticRestingPose)
+        {
+            SnapToTargetImmediate();
+        }
     }
 
     void OnEnable()
     {
         if (cam == null) cam = GetComponent<Camera>();
+        if (!hasCapturedRestingPose)
+        {
+            restingPos = transform.position;
+            restingRot = transform.rotation;
+            hasCapturedRestingPose = true;
+        }
         mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
-        SnapToTargetImmediate();
+        if (!staticRestingPose)
+        {
+            SnapToTargetImmediate();
+        }
     }
 
     void Start()
     {
         if (cam == null) cam = GetComponent<Camera>();
+        if (!hasCapturedRestingPose)
+        {
+            restingPos = transform.position;
+            restingRot = transform.rotation;
+            hasCapturedRestingPose = true;
+        }
         mouseSensitivity = GlobalAudioSettings.MouseSensitivity;
-        SnapToTargetImmediate();
+        if (!staticRestingPose)
+        {
+            SnapToTargetImmediate();
+        }
     }
 
     /// <summary>
@@ -146,6 +180,8 @@ public class SmoothCameraFollow : MonoBehaviour
     /// </summary>
     public void SnapToTargetImmediate()
     {
+        if (staticRestingPose) return;
+
         if (target == null)
         {
             GridCrawlerController player = FindObjectOfType<GridCrawlerController>();
@@ -168,6 +204,61 @@ public class SmoothCameraFollow : MonoBehaviour
 
     void LateUpdate()
     {
+        if (staticRestingPose)
+        {
+            if (isFocusMode)
+            {
+                transform.position = Vector3.Lerp(transform.position, focusWorldPos, Time.deltaTime * focusLerpSpeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, focusWorldRot, Time.deltaTime * focusLerpSpeed);
+                if (cam != null)
+                {
+                    cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, focusTargetFOV, Time.deltaTime * focusLerpSpeed);
+                }
+                return;
+            }
+
+            if (isExitingFocusTransition)
+            {
+                exitTransitionElapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(exitTransitionElapsed / Mathf.Max(0.01f, exitTransitionDuration));
+                float smoothT = Mathf.SmoothStep(0f, 1f, t);
+
+                transform.position = Vector3.Lerp(exitStartPos, restingPos, smoothT);
+                transform.rotation = Quaternion.Slerp(exitStartRot, restingRot, smoothT);
+                if (cam != null)
+                {
+                    cam.fieldOfView = Mathf.Lerp(exitStartFOV, defaultFOV, smoothT);
+                }
+
+                if (t >= 1f)
+                {
+                    isExitingFocusTransition = false;
+                    transform.position = restingPos;
+                    transform.rotation = restingRot;
+                    if (cam != null) cam.fieldOfView = defaultFOV;
+                }
+                return;
+            }
+
+            // Smoothly return to the placed resting pose after exiting TV Focus Mode, then stay locked in place.
+            if ((transform.position - restingPos).sqrMagnitude > 0.000001f)
+            {
+                transform.position = Vector3.Lerp(transform.position, restingPos, Time.deltaTime * focusLerpSpeed);
+                if ((transform.position - restingPos).sqrMagnitude <= 0.000001f) transform.position = restingPos;
+            }
+            if (Quaternion.Angle(transform.rotation, restingRot) > 0.01f)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, restingRot, Time.deltaTime * focusLerpSpeed);
+                if (Quaternion.Angle(transform.rotation, restingRot) <= 0.01f) transform.rotation = restingRot;
+            }
+            if (cam != null && Mathf.Abs(cam.fieldOfView - defaultFOV) > 0.01f)
+            {
+                cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, defaultFOV, Time.deltaTime * focusLerpSpeed);
+                if (Mathf.Abs(cam.fieldOfView - defaultFOV) <= 0.01f) cam.fieldOfView = defaultFOV;
+            }
+            return;
+        }
+
         if (target == null) return;
 
         if (isFocusMode)

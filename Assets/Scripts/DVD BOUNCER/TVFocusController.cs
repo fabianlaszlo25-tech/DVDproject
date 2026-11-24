@@ -36,6 +36,8 @@ public class TVFocusController : MonoBehaviour
     public InteractableObject towelInteractable;
 
     [Header("Camera Focus Framing (~85-90% Viewport Fill)")]
+    [Tooltip("When true, picking up/putting down the Remote or Towel never moves, rotates, or zooms the camera (used in 07Arcade).")]
+    public bool lockCameraInPlace = false;
     [Tooltip("Distance in front of the TV screen center where the camera positions itself during Focus Mode.")]
     public float focusDistanceFromScreen = 1.45f;
     [Tooltip("Target fraction of the viewport filled by the TV screen (0.85 to 0.90).")]
@@ -457,7 +459,7 @@ public class TVFocusController : MonoBehaviour
             tvScreenCollider.enabled = false;
         }
 
-        if (smoothCamera != null)
+        if (!lockCameraInPlace && smoothCamera != null && smoothCamera.enabled)
         {
             smoothCamera.ExitFocusMode();
         }
@@ -518,7 +520,7 @@ public class TVFocusController : MonoBehaviour
         }
 
         // Smoothly zoom camera so TV screen fills ~85-90% of viewport (exact Iteration 1 centered framing)
-        if (smoothCamera != null && tvScreenRenderer != null)
+        if (!lockCameraInPlace && smoothCamera != null && smoothCamera.enabled && tvScreenRenderer != null)
         {
             Bounds b = tvScreenRenderer.bounds;
             Vector3 screenCenter = b.center;
@@ -764,9 +766,10 @@ public class TVFocusController : MonoBehaviour
 
         // Determine outward normal toward the player camera (-Z in room space)
         Vector3 outwardNormal = screenHit.normal;
-        if (smoothCamera != null)
+        Transform camTr = smoothCamera != null ? smoothCamera.transform : (Camera.main != null ? Camera.main.transform : null);
+        if (camTr != null)
         {
-            Vector3 toCam = (smoothCamera.transform.position - screenHit.point).normalized;
+            Vector3 toCam = (camTr.position - screenHit.point).normalized;
             if (Vector3.Dot(outwardNormal, toCam) < 0f)
             {
                 outwardNormal = -outwardNormal;

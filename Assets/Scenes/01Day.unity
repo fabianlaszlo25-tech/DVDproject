@@ -18854,7 +18854,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 5c28021a6a229e540b021737ab59c4ea, type: 2}
-  - {fileID: 2100000, guid: d05ac5dad91f8ac4099fd6f0795baff4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29159,6 +29158,10 @@ MonoBehaviour:
   isCurrentBillPaid: 0
   lastBillDay: -1
   billHistory: 
+  currentDayInflationMultiplier: 1
+  previousDayInflationMultiplier: 1
+  pendingMorningInflationAnnouncement: 0
+  pendingMorningInflationPercent: 0
   hasSavedAudioSettings: 0
   savedMusicSliderVolume: 1
   savedSfxListenerVolume: 1

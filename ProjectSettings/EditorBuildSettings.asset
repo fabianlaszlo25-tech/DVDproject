@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Kristof/KristofDreamGames.unity
     guid: d3dcf330abaa1ba4ab8590c974806108
+  - enabled: 1
+    path: Assets/Scenes/07Arcade.unity
+    guid: 744b43294ba812642b468b065966b74b
   - enabled: 0
     path: Assets/Scenes/05End-Creds.unity
     guid: 4da6a395ee3d4e24f8883434fcf26b34

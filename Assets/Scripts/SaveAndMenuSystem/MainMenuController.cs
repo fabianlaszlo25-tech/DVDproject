@@ -8,7 +8,7 @@ using TMPro;
 
 /// <summary>
 /// Controls the Main Menu in 06Menu.
-/// - Manages the 3 main buttons: START RUN (loads 01Day), SETTINGS, and QUIT (Windows & WebGL).
+/// - Manages the 4 main buttons: START RUN (loads 01Day), ARCADE (loads 07Arcade), SETTINGS, and QUIT (Windows & WebGL).
 /// - Provides a smooth crossfade transition between the Main Buttons and the Settings Panel.
 /// - Hosts the same global audio sliders (Music & SFX) as the in-game Pause Menu via <see cref="GlobalAudioSettings"/>.
 /// - Supports both Unity UI EventSystem and direct regular-cursor hit-testing/slider dragging
@@ -21,10 +21,11 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Scenes & Transitions")]
     public string mainSceneName = "01Day";
+    public string arcadeSceneName = "07Arcade";
     public SceneLoaderFade sceneLoaderFade;
 
     [Header("Panels & Containers")]
-    [Tooltip("Container holding the 3 main menu buttons.")]
+    [Tooltip("Container holding the main menu buttons.")]
     public GameObject mainButtonsPanel;
     [Tooltip("Panel containing the Music & SFX audio sliders and Back button.")]
     public GameObject settingsPanel;
@@ -33,6 +34,7 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Main Menu Buttons")]
     public Button startRunButton;
+    public Button arcadeButton;
     public Button settingsButton;
     public Button quitButton;
 
@@ -196,6 +198,23 @@ public class MainMenuController : MonoBehaviour
         else
         {
             SceneManager.LoadScene(mainSceneName);
+        }
+    }
+
+    public void OnArcadeClicked()
+    {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        PlayClickSound();
+
+        if (sceneLoaderFade == null) sceneLoaderFade = FindObjectOfType<SceneLoaderFade>(true);
+        if (sceneLoaderFade != null)
+        {
+            sceneLoaderFade.LoadSceneWithFade(arcadeSceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(arcadeSceneName);
         }
     }
 
@@ -504,13 +523,17 @@ public class MainMenuController : MonoBehaviour
             {
                 startRunButton = FindButtonByNameOrIndex(buttonsContainer, "Story", "StartRun", 0);
             }
+            if (arcadeButton == null)
+            {
+                arcadeButton = FindButtonByNameOrIndex(buttonsContainer, "Arcade", "Arcade", -1);
+            }
             if (settingsButton == null)
             {
-                settingsButton = FindButtonByNameOrIndex(buttonsContainer, "Settings", "Settings", 1);
+                settingsButton = FindButtonByNameOrIndex(buttonsContainer, "Settings", "Settings", 2);
             }
             if (quitButton == null)
             {
-                quitButton = FindButtonByNameOrIndex(buttonsContainer, "Quit", "Quit", 2);
+                quitButton = FindButtonByNameOrIndex(buttonsContainer, "Quit", "Quit", 3);
             }
         }
 
@@ -726,7 +749,7 @@ public class MainMenuController : MonoBehaviour
         titleTmp.fontSize = 26f;
         titleTmp.fontStyle = FontStyles.Bold;
         titleTmp.alignment = TextAlignmentOptions.Center;
-        titleTmp.color = new Color(1f, 0.90f, 0.72f, 1f);
+        titleTmp.color = new Color(0.70f, 0.98f, 0.78f, 1f);
         titleTmp.raycastTarget = false;
 
         Button templateBtn = startRunButton != null ? startRunButton : (settingsButton != null ? settingsButton : quitButton);
@@ -806,6 +829,11 @@ public class MainMenuController : MonoBehaviour
         {
             startRunButton.onClick.RemoveListener(OnStartRunClicked);
             startRunButton.onClick.AddListener(OnStartRunClicked);
+        }
+        if (arcadeButton != null)
+        {
+            arcadeButton.onClick.RemoveListener(OnArcadeClicked);
+            arcadeButton.onClick.AddListener(OnArcadeClicked);
         }
         if (settingsButton != null)
         {
@@ -932,6 +960,10 @@ public class MainMenuController : MonoBehaviour
             if (IsScreenPointOverButton(startRunButton, mouseScreenPos, uiCam, 6f))
             {
                 OnStartRunClicked();
+            }
+            else if (IsScreenPointOverButton(arcadeButton, mouseScreenPos, uiCam, 6f))
+            {
+                OnArcadeClicked();
             }
             else if (IsScreenPointOverButton(settingsButton, mouseScreenPos, uiCam, 6f))
             {

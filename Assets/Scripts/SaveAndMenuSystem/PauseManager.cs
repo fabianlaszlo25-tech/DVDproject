@@ -487,6 +487,13 @@ public class PauseManager : MonoBehaviour
         {
             depressionBreakdown.TriggerDepressionBreakdown();
         }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 1.0f;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("06Menu");
+        }
     }
 
     // =========================================================================
